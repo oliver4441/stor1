@@ -32,29 +32,48 @@ function Home() {
   return (
     <div data-name="home-page">
       {/* Hero Section */}
-      <div className="bg-gradient-to-br from-[#ff385c]/10 via-zinc-100 to-white dark:from-[#ff385c]/10 dark:via-zinc-900 dark:to-zinc-950 py-16 px-4 mb-8">
-        <div className="max-w-7xl mx-auto text-center">
-          <h1 className="text-4xl md:text-6xl font-black mb-4 tracking-tighter text-zinc-900 dark:text-white">Buy and sell in Kericho</h1>
-          <p className="text-zinc-600 dark:text-zinc-400 mb-8 max-w-xl mx-auto text-lg font-medium">The cleanest marketplace to find electronics, furniture, and services near you.</p>
-          
-          <div className="max-w-2xl mx-auto relative group">
-            <div className="absolute inset-y-0 left-4 flex items-center pointer-events-none">
-              {isAiMode ? <Sparkles className="w-5 h-5 text-[#ff385c]" /> : <Search className="w-5 h-5 text-zinc-400 group-focus-within:text-[#ff385c]" />}
+      <div className="relative overflow-hidden mb-8">
+        {/* Video Background */}
+        <div className="absolute inset-0 z-0">
+          <video
+            autoPlay
+            muted
+            loop
+            playsInline
+            className="w-full h-full object-cover"
+            poster="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='1920' height='1080'%3E%3Crect fill='%2318181b' width='1920' height='1080'/%3E%3C/svg%3E"
+          >
+            <source src="/eruption.mp4" type="video/mp4" />
+          </video>
+          {/* Dark overlay for text readability */}
+          <div className="absolute inset-0 bg-black/60 backdrop-blur-[2px]"></div>
+        </div>
+
+        {/* Hero Content */}
+        <div className="relative z-10 py-20 md:py-28 px-4">
+          <div className="max-w-7xl mx-auto text-center">
+            <h1 className="text-4xl md:text-6xl font-black mb-4 tracking-tighter text-white drop-shadow-lg">Buy and sell in Kericho</h1>
+            <p className="text-zinc-200 mb-8 max-w-xl mx-auto text-lg font-medium drop-shadow-md">The cleanest marketplace to find electronics, furniture, and services near you.</p>
+            
+            <div className="max-w-2xl mx-auto relative group">
+              <div className="absolute inset-y-0 left-4 flex items-center pointer-events-none">
+                {isAiMode ? <Sparkles className="w-5 h-5 text-[#ff385c]" /> : <Search className="w-5 h-5 text-zinc-400 group-focus-within:text-[#ff385c]" />}
+              </div>
+              <input 
+                type="text" 
+                placeholder={isAiMode ? "Describe what you're looking for (AI)..." : "Search for anything..."}
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className={`w-full pl-12 pr-24 py-4 rounded-2xl bg-white/95 dark:bg-zinc-900/95 backdrop-blur-sm border transition-all focus:outline-none focus:ring-4 focus:ring-[#ff385c]/20 shadow-xl text-lg ${isAiMode ? 'border-[#ff385c] ring-2 ring-[#ff385c]/10' : 'border-zinc-200 dark:border-zinc-800'}`}
+              />
+              <button 
+                onClick={() => setIsAiMode(!isAiMode)}
+                className={`absolute inset-y-2 right-2 px-4 rounded-xl flex items-center gap-2 font-bold text-sm transition-all ${isAiMode ? 'bg-[#ff385c] text-white shadow-lg' : 'bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-400 hover:bg-zinc-200 dark:hover:bg-zinc-700'}`}
+              >
+                {isAiMode ? <X className="w-4 h-4" /> : <Sparkles className="w-4 h-4" />}
+                {isAiMode ? 'Cancel' : 'Ask AI'}
+              </button>
             </div>
-            <input 
-              type="text" 
-              placeholder={isAiMode ? "Describe what you're looking for (AI)..." : "Search for anything..."}
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className={`w-full pl-12 pr-24 py-4 rounded-2xl bg-white dark:bg-zinc-900 border transition-all focus:outline-none focus:ring-4 focus:ring-[#ff385c]/20 shadow-xl text-lg ${isAiMode ? 'border-[#ff385c] ring-2 ring-[#ff385c]/10' : 'border-zinc-200 dark:border-zinc-800'}`}
-            />
-            <button 
-              onClick={() => setIsAiMode(!isAiMode)}
-              className={`absolute inset-y-2 right-2 px-4 rounded-xl flex items-center gap-2 font-bold text-sm transition-all ${isAiMode ? 'bg-[#ff385c] text-white shadow-lg' : 'bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-400 hover:bg-zinc-200 dark:hover:bg-zinc-700'}`}
-            >
-              {isAiMode ? <X className="w-4 h-4" /> : <Sparkles className="w-4 h-4" />}
-              {isAiMode ? 'Cancel' : 'Ask AI'}
-            </button>
           </div>
         </div>
       </div>
