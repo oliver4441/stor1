@@ -1,10 +1,11 @@
-import { useState, useEffect } from 'react'
-import { Search, Sparkles, X } from 'lucide-react'
-import { Link } from 'react-router-dom'
-import ProductCard from '../components/ProductCard'
-import { CATEGORIES } from '../utils/constants'
-import { fetchListings } from '../utils/api'
-import { aiSearch } from '../utils/ai'
+import { useState, useEffect } from 'react';
+import { Search, Sparkles, X } from 'lucide-react';
+import { Link } from 'react-router-dom';
+import ProductCard from '../components/ProductCard';
+import InstallBanner from '../components/InstallBanner';
+import { CATEGORIES } from '../utils/constants';
+import { fetchListings } from '../utils/api';
+import { aiSearch } from '../utils/ai';
 
 function Home() {
   const [activeCategory, setActiveCategory] = useState('All');
@@ -102,6 +103,7 @@ function Home() {
           </div>
         )}
       </div>
+      <InstallBanner />
     </div>
   );
 }
