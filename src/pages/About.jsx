@@ -40,11 +40,11 @@ function About() {
             <div className="space-y-4">
               <div className="flex items-center gap-3">
                 <Mail className="w-5 h-5 text-[#ff385c]" />
-                <a href="mailto:hello@omix.co.ke" className="font-bold hover:underline">hello@omix.co.ke</a>
+                <a href="mailto:omixsystems@gmail.com" className="font-bold hover:underline">omixsystems@gmail.com</a>
               </div>
               <div className="flex items-center gap-3">
                 <Phone className="w-5 h-5 text-[#ff385c]" />
-                <span className="font-bold">+254 700 000 000</span>
+                <a href="tel:+254768213649" className="font-bold hover:underline">+254 768 213 649</a>
               </div>
             </div>
           </div>
