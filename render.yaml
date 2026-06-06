@@ -3,6 +3,7 @@ services:
     name: stor1
     repo: https://github.com/oliver4441/stor1
     branch: main
+    rootDir: .
     buildCommand: npm install && npm run build
     publishPath: dist
     routes:
