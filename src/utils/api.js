@@ -129,3 +129,103 @@ export async function createListing(formData) {
   }
   return { success: true, id: data?.id }
 }
+
+// ── Wishes ──────────────────────────────────────────────
+
+export async function fetchWishes(category = 'All', status = 'open') {
+  let query = supabase
+    .from('wishes')
+    .select('*')
+    .order('created_at', { ascending: false })
+
+  if (status && status !== 'All') {
+    query = query.eq('status', status)
+  }
+  if (category && category !== 'All') {
+    query = query.eq('category', category)
+  }
+
+  const { data, error } = await query
+  if (error) { console.error('fetchWishes error:', error); return [] }
+  return data || []
+}
+
+export async function fetchWish(id) {
+  const { data, error } = await supabase
+    .from('wishes')
+    .select('*')
+    .eq('id', id)
+    .single()
+  if (error) { console.error(error); return null }
+  return data
+}
+
+export async function createWish(formData) {
+  const { data: { user } } = await supabase.auth.getUser()
+
+  const { data, error } = await supabase
+    .from('wishes')
+    .insert({
+      title: formData.title,
+      category: formData.category,
+      description: formData.description,
+      budget_min: parseInt(formData.budget_min) || 0,
+      budget_max: parseInt(formData.budget_max) || 0,
+      urgency: formData.urgency || 'normal',
+      requester_name: formData.requester_name || user?.user_metadata?.full_name || 'Anonymous',
+      requester_phone: formData.requester_phone || null,
+      user_id: user?.id || null,
+      status: 'open',
+    })
+    .select('*')
+    .single()
+
+  if (error) {
+    console.error('createWish error:', error)
+    return { success: false, error: error.message }
+  }
+  return { success: true, wish: data }
+}
+
+export async function updateWishStatus(id, status) {
+  const { error } = await supabase
+    .from('wishes')
+    .update({ status, updated_at: new Date().toISOString() })
+    .eq('id', id)
+  if (error) return { success: false, error: error.message }
+  return { success: true }
+}
+
+// ── Messages (P2P Chat) ────────────────────────────────
+
+export async function fetchMessages(wishId) {
+  const { data, error } = await supabase
+    .from('messages')
+    .select('*')
+    .eq('wish_id', wishId)
+    .order('created_at', { ascending: true })
+  if (error) { console.error('fetchMessages error:', error); return [] }
+  return data || []
+}
+
+export async function sendMessage({ wishId, receiverId, content }) {
+  const { data: { user } } = await supabase.auth.getUser()
+
+  const { data, error } = await supabase
+    .from('messages')
+    .insert({
+      wish_id: wishId,
+      sender_id: user?.id || null,
+      receiver_id: receiverId || null,
+      sender_name: user?.user_metadata?.full_name || 'Anonymous',
+      content,
+    })
+    .select('*')
+    .single()
+
+  if (error) {
+    console.error('sendMessage error:', error)
+    return { success: false, error: error.message }
+  }
+  return { success: true, message: data }
+}

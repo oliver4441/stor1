@@ -9,6 +9,9 @@ import About from './pages/About'
 import Login from './pages/Login'
 import Signup from './pages/Signup'
 import Dashboard from './pages/Dashboard'
+import Wishes from './pages/Wishes'
+import WishForm from './pages/WishForm'
+import WishDetail from './pages/WishDetail'
 
 class ErrorBoundary extends React.Component {
   constructor(props) {
@@ -51,6 +54,9 @@ function App() {
             <Route path="/login" element={<Login />} />
             <Route path="/signup" element={<Signup />} />
             <Route path="/dashboard" element={<Dashboard />} />
+            <Route path="/wishes" element={<Wishes />} />
+            <Route path="/wish/new" element={<WishForm />} />
+            <Route path="/wishes/:id" element={<WishDetail />} />
           </Routes>
         </main>
         <Footer />
