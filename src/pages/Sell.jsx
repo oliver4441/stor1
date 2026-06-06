@@ -1,18 +1,50 @@
 import { useState } from 'react'
 import { useNavigate, Link } from 'react-router-dom'
+import { Upload, X, Image as ImageIcon } from 'lucide-react'
 import { CATEGORIES, LOCATIONS } from '../utils/constants'
-import { createListing } from '../utils/api'
+import { createListing, uploadImage } from '../utils/api'
 
 function Sell() {
   const navigate = useNavigate();
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState(false);
+  const [imageFile, setImageFile] = useState(null);
+  const [imagePreview, setImagePreview] = useState('');
+
+  const handleImageChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      setImageFile(file);
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setImagePreview(reader.result);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const removeImage = () => {
+    setImageFile(null);
+    setImagePreview('');
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setSubmitting(true);
     setError('');
+
+    let imageUrl = '';
+    if (imageFile) {
+      const uploadResult = await uploadImage(imageFile);
+      if (uploadResult.success) {
+        imageUrl = uploadResult.url;
+      } else {
+        setError('Failed to upload image: ' + uploadResult.error);
+        setSubmitting(false);
+        return;
+      }
+    }
 
     const form = e.currentTarget;
     const formData = {
@@ -22,7 +54,7 @@ function Sell() {
       category: form.category.value,
       location: form.location.value,
       description: form.description.value,
-      image_url: form.image_url.value,
+      image_url: imageUrl,
       seller_name: form.seller_name.value,
       seller_phone: form.seller_phone.value,
     };
@@ -53,7 +85,7 @@ function Sell() {
     <div className="max-w-2xl mx-auto px-4 py-8 w-full" data-name="sell-page">
       <div className="mb-8">
         <h1 className="text-3xl font-black mb-2 text-zinc-900 dark:text-white">Post a listing</h1>
-        <p className="text-zinc-500 dark:text-zinc-400">No account needed. Just fill the details and post.</p>
+        <p className="text-zinc-500 dark:text-zinc-400">Add details and a photo to start selling.</p>
       </div>
 
       {error && (
@@ -64,6 +96,29 @@ function Sell() {
 
       <form onSubmit={handleSubmit} className="space-y-6">
         <div className="space-y-4">
+          {/* Image Upload Area */}
+          <div>
+            <label className="block text-sm font-bold mb-2 text-zinc-700 dark:text-zinc-300">Product Photo</label>
+            {imagePreview ? (
+              <div className="relative aspect-[4/3] rounded-2xl overflow-hidden group">
+                <img src={imagePreview} alt="Preview" className="w-full h-full object-cover" />
+                <button 
+                  type="button"
+                  onClick={removeImage}
+                  className="absolute top-4 right-4 bg-black/50 text-white p-2 rounded-full hover:bg-black/70 transition-colors"
+                >
+                  <X className="w-5 h-5" />
+                </button>
+              </div>
+            ) : (
+              <label className="flex flex-col items-center justify-center aspect-[4/3] rounded-2xl border-2 border-dashed border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-900/50 cursor-pointer hover:bg-zinc-100 dark:hover:bg-zinc-900 transition-all">
+                <Upload className="w-10 h-10 text-zinc-400 mb-2" />
+                <span className="text-sm text-zinc-500 font-medium">Click to upload photo</span>
+                <input type="file" accept="image/*" onChange={handleImageChange} className="hidden" />
+              </label>
+            )}
+          </div>
+
           <div>
             <label className="block text-sm font-bold mb-2 text-zinc-700 dark:text-zinc-300">Title</label>
             <input required name="title" type="text" placeholder="e.g. iPhone 12 Pro" className="w-full px-4 py-3.5 rounded-xl bg-zinc-100 dark:bg-zinc-900 border border-transparent focus:border-[#ff385c] focus:bg-white dark:focus:bg-zinc-950 focus:outline-none text-zinc-900 dark:text-white transition-all shadow-sm" />
@@ -104,12 +159,6 @@ function Sell() {
           <div>
             <label className="block text-sm font-bold mb-2 text-zinc-700 dark:text-zinc-300">Description</label>
             <textarea required name="description" rows="4" placeholder="Describe your item..." className="w-full px-4 py-3.5 rounded-xl bg-zinc-100 dark:bg-zinc-900 border border-transparent focus:border-[#ff385c] focus:bg-white dark:focus:bg-zinc-950 focus:outline-none text-zinc-900 dark:text-white transition-all shadow-sm resize-none"></textarea>
-          </div>
-
-          <div>
-            <label className="block text-sm font-bold mb-2 text-zinc-700 dark:text-zinc-300">Image URL</label>
-            <input name="image_url" type="url" placeholder="https://unsplash.com/..." className="w-full px-4 py-3.5 rounded-xl bg-zinc-100 dark:bg-zinc-900 border border-transparent focus:border-[#ff385c] focus:bg-white dark:focus:bg-zinc-950 focus:outline-none text-zinc-900 dark:text-white transition-all shadow-sm" />
-            <p className="text-xs text-zinc-500 mt-2 italic">Tip: Use Unsplash or an image link for now. Storage coming soon!</p>
           </div>
         </div>
 

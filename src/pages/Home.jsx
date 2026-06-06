@@ -1,43 +1,59 @@
 import { useState, useEffect } from 'react'
-import { Search } from 'lucide-react'
+import { Search, Sparkles, X } from 'lucide-react'
 import { Link } from 'react-router-dom'
 import ProductCard from '../components/ProductCard'
 import { CATEGORIES } from '../utils/constants'
 import { fetchListings } from '../utils/api'
+import { aiSearch } from '../utils/ai'
 
 function Home() {
   const [activeCategory, setActiveCategory] = useState('All');
   const [searchQuery, setSearchQuery] = useState('');
   const [listings, setListings] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [isAiMode, setIsAiMode] = useState(false);
 
   useEffect(() => {
     setLoading(true);
-    fetchListings(activeCategory, searchQuery).then(data => {
-      setListings(data);
+    const fetch = async () => {
+      const data = await fetchListings(activeCategory, isAiMode ? '' : searchQuery);
+      if (isAiMode && searchQuery.length > 3) {
+        const filtered = await aiSearch(searchQuery, data);
+        setListings(filtered);
+      } else {
+        setListings(data);
+      }
       setLoading(false);
-    });
-  }, [activeCategory, searchQuery]);
+    };
+    fetch();
+  }, [activeCategory, searchQuery, isAiMode]);
 
   return (
     <div data-name="home-page">
       {/* Hero Section */}
       <div className="bg-gradient-to-br from-[#ff385c]/10 via-zinc-100 to-white dark:from-[#ff385c]/10 dark:via-zinc-900 dark:to-zinc-950 py-16 px-4 mb-8">
         <div className="max-w-7xl mx-auto text-center">
-          <h1 className="text-4xl md:text-6xl font-extrabold mb-4 tracking-tight text-zinc-900 dark:text-white">Buy and sell in Kericho</h1>
-          <p className="text-zinc-600 dark:text-zinc-400 mb-8 max-w-xl mx-auto text-lg">The cleanest marketplace to find electronics, furniture, vehicles, and services near you.</p>
+          <h1 className="text-4xl md:text-6xl font-black mb-4 tracking-tighter text-zinc-900 dark:text-white">Buy and sell in Kericho</h1>
+          <p className="text-zinc-600 dark:text-zinc-400 mb-8 max-w-xl mx-auto text-lg font-medium">The cleanest marketplace to find electronics, furniture, and services near you.</p>
           
           <div className="max-w-2xl mx-auto relative group">
             <div className="absolute inset-y-0 left-4 flex items-center pointer-events-none">
-              <Search className="w-5 h-5 text-zinc-400 group-focus-within:text-[#ff385c]" />
+              {isAiMode ? <Sparkles className="w-5 h-5 text-[#ff385c]" /> : <Search className="w-5 h-5 text-zinc-400 group-focus-within:text-[#ff385c]" />}
             </div>
             <input 
               type="text" 
-              placeholder="Search for anything..." 
+              placeholder={isAiMode ? "Describe what you're looking for (AI)..." : "Search for anything..."}
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full pl-12 pr-4 py-4 rounded-2xl bg-white/50 dark:bg-zinc-900/50 backdrop-blur-xl border border-zinc-200/50 dark:border-zinc-800/50 focus:outline-none focus:ring-2 focus:ring-[#ff385c]/50 text-zinc-900 dark:text-white shadow-xl"
+              className={`w-full pl-12 pr-24 py-4 rounded-2xl bg-white dark:bg-zinc-900 border transition-all focus:outline-none focus:ring-4 focus:ring-[#ff385c]/20 shadow-xl text-lg ${isAiMode ? 'border-[#ff385c] ring-2 ring-[#ff385c]/10' : 'border-zinc-200 dark:border-zinc-800'}`}
             />
+            <button 
+              onClick={() => setIsAiMode(!isAiMode)}
+              className={`absolute inset-y-2 right-2 px-4 rounded-xl flex items-center gap-2 font-bold text-sm transition-all ${isAiMode ? 'bg-[#ff385c] text-white shadow-lg' : 'bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-400 hover:bg-zinc-200 dark:hover:bg-zinc-700'}`}
+            >
+              {isAiMode ? <X className="w-4 h-4" /> : <Sparkles className="w-4 h-4" />}
+              {isAiMode ? 'Cancel' : 'Ask AI'}
+            </button>
           </div>
         </div>
       </div>

@@ -114,23 +114,30 @@ function ListingDetails() {
           )}
 
           {/* M-Pesa Section */}
-          <div className="bg-zinc-100 dark:bg-zinc-900 rounded-[14px] p-6 mt-6 border border-zinc-200 dark:border-zinc-800">
-            <div className="flex items-center gap-4 mb-4">
-              <div className="w-12 h-12 bg-green-500 rounded-2xl flex items-center justify-center text-white shadow-lg shadow-green-500/20">
-                <Smartphone className="w-6 h-6" />
+          <div className="bg-white/40 dark:bg-zinc-900/40 backdrop-blur-xl rounded-3xl p-8 mt-8 border border-white/20 dark:border-zinc-800/50 shadow-2xl">
+            <div className="flex items-center gap-5 mb-6">
+              <div className="w-14 h-14 bg-gradient-to-br from-green-400 to-green-600 rounded-2xl flex items-center justify-center text-white shadow-lg shadow-green-500/30">
+                <Smartphone className="w-8 h-8" />
               </div>
               <div>
-                <h3 className="font-bold text-lg">Pay via M-Pesa</h3>
-                <p className="text-sm text-zinc-500 dark:text-zinc-400">Secure direct payment</p>
+                <h3 className="font-black text-xl text-zinc-900 dark:text-white">Pay via M-Pesa</h3>
+                <p className="text-sm text-zinc-500 dark:text-zinc-400 font-medium">Safe & Direct Transaction</p>
               </div>
             </div>
-            <div className="bg-white dark:bg-zinc-950 p-4 rounded-xl mb-4 border border-zinc-200 dark:border-zinc-800 text-center">
-              <p className="text-xs text-zinc-500 dark:text-zinc-400 uppercase tracking-widest font-bold mb-1">Buy Goods Till Number</p>
-              <p className="text-3xl font-black tracking-tighter text-green-600 dark:text-green-500">1919000</p>
+            <div className="bg-zinc-900 dark:bg-black p-6 rounded-2xl mb-6 text-center transform hover:scale-[1.02] transition-transform">
+              <p className="text-[10px] text-zinc-500 uppercase tracking-[0.2em] font-black mb-2">Buy Goods Till Number</p>
+              <p className="text-4xl font-black tracking-tighter text-green-500">1919000</p>
             </div>
-            <p className="text-xs text-zinc-500 dark:text-zinc-400 leading-relaxed italic">
-              Note: Contact the seller after payment to arrange delivery. For safety, avoid paying in advance for items you haven't seen.
-            </p>
+            <div className="space-y-3">
+              <p className="text-xs text-zinc-500 dark:text-zinc-400 leading-relaxed font-medium flex gap-2">
+                <CheckCircle className="w-4 h-4 text-green-500 flex-shrink-0" />
+                Contact seller after payment to arrange pickup.
+              </p>
+              <p className="text-xs text-zinc-500 dark:text-zinc-400 leading-relaxed font-medium flex gap-2">
+                <CheckCircle className="w-4 h-4 text-[#ff385c] flex-shrink-0" />
+                Never pay in advance for items you haven't seen.
+              </p>
+            </div>
           </div>
         </div>
       </div>

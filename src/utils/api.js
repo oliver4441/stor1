@@ -59,6 +59,28 @@ export async function fetchListing(id) {
   };
 }
 
+// Upload image to Supabase Storage
+export async function uploadImage(file) {
+  const fileExt = file.name.split('.').pop();
+  const fileName = `${Math.random()}.${fileExt}`;
+  const filePath = `listings/${fileName}`;
+
+  const { data, error } = await supabase.storage
+    .from('listing-images')
+    .upload(filePath, file);
+
+  if (error) {
+    console.error('uploadImage error:', error);
+    return { success: false, error: error.message };
+  }
+
+  const { data: { publicUrl } } = supabase.storage
+    .from('listing-images')
+    .getPublicUrl(filePath);
+
+  return { success: true, url: publicUrl };
+}
+
 // Create listing
 export async function createListing(formData) {
   const { data: { user } } = await supabase.auth.getUser();
