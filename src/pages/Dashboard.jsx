@@ -1,7 +1,8 @@
 import { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { Plus, Package, MessageSquare, LogOut, ExternalLink } from 'lucide-react';
-import { getCurrentUser, fetchUserListings, signOut } from '../utils/api';
+import { supabase } from '../utils/supabase';
+import { fetchUserListings } from '../utils/api';
 import { formatKES } from '../utils/constants';
 
 function Dashboard() {
@@ -12,12 +13,12 @@ function Dashboard() {
 
   useEffect(() => {
     const checkUser = async () => {
-      const currentUser = getCurrentUser();
-      if (!currentUser) {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) {
         navigate('/login');
       } else {
-        setUser(currentUser);
-        const userListings = await fetchUserListings(currentUser.id);
+        setUser(user);
+        const userListings = await fetchUserListings(user.id);
         setListings(userListings);
         setLoading(false);
       }
@@ -26,7 +27,7 @@ function Dashboard() {
   }, [navigate]);
 
   const handleLogout = async () => {
-    await signOut();
+    await supabase.auth.signOut();
     navigate('/login');
   };
 
@@ -43,7 +44,7 @@ function Dashboard() {
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-10">
         <div>
           <h1 className="text-3xl font-black text-zinc-900 dark:text-white">Seller Dashboard</h1>
-          <p className="text-zinc-500 dark:text-zinc-400">Welcome back, {user?.full_name || user?.email}</p>
+          <p className="text-zinc-500 dark:text-zinc-400">Welcome back, {user?.user_metadata?.full_name || user?.email}</p>
         </div>
         <div className="flex gap-3">
           <Link to="/sell" className="flex items-center gap-2 bg-[#ff385c] text-white px-6 py-3 rounded-2xl font-bold hover:bg-[#e03150] shadow-lg shadow-[#ff385c]/20">
