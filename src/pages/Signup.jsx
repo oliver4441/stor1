@@ -1,6 +1,6 @@
-import { useState } from 'react'
-import { useNavigate, Link } from 'react-router-dom'
-import { supabase } from '../utils/supabase'
+import { useState } from 'react';
+import { useNavigate, Link } from 'react-router-dom';
+import { signUp } from '../utils/api';
 
 function Signup() {
   const navigate = useNavigate();
@@ -14,55 +14,28 @@ function Signup() {
     setError('');
 
     const { email, password, fullName } = e.target.elements;
-    
-    // 1. Sign up the user
-    const { data: authData, error: authError } = await supabase.auth.signUp({
+    const result = await signUp({
       email: email.value,
       password: password.value,
-      options: {
-        data: {
-          full_name: fullName.value,
-        }
-      }
+      fullName: fullName.value,
     });
 
-    if (authError) {
-      setError(authError.message);
+    if (result.success) {
+      setSuccess(true);
+      setTimeout(() => navigate('/dashboard'), 1500);
+    } else {
+      setError(result.error);
       setLoading(false);
-      return;
     }
-
-    // 2. Create a profile record (optional if using triggers, but good for explicit flow)
-    if (authData.user) {
-      const { error: profileError } = await supabase
-        .from('profiles')
-        .insert({
-          id: authData.user.id,
-          full_name: fullName.value,
-          email: email.value,
-          role: 'seller'
-        });
-      
-      if (profileError) {
-        console.error('Profile creation error:', profileError);
-        // We don't block the flow if profile insert fails as Auth succeeded
-      }
-    }
-
-    setSuccess(true);
-    setLoading(false);
   };
 
   if (success) {
     return (
       <div className="max-w-md mx-auto px-4 py-20 text-center">
         <div className="bg-green-100 dark:bg-green-900/20 text-green-600 p-8 rounded-3xl inline-block mb-4">
-          <h2 className="text-3xl font-black mb-2">Check your email!</h2>
-          <p className="text-zinc-500 dark:text-zinc-400">We've sent you a confirmation link to complete your registration.</p>
+          <h2 className="text-3xl font-black mb-2">Account created!</h2>
+          <p className="text-zinc-500 dark:text-zinc-400">Redirecting to dashboard...</p>
         </div>
-        <p className="mt-6">
-          <Link to="/login" className="text-[#ff385c] font-bold hover:underline">Back to Login</Link>
-        </p>
       </div>
     );
   }

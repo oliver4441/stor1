@@ -1,9 +1,9 @@
-import { useState, useEffect } from 'react'
-import { useParams, Link } from 'react-router-dom'
-import { Image as ImageIcon, MapPin, CheckCircle, Smartphone } from 'lucide-react'
-import ProductCard from '../components/ProductCard'
-import { fetchListing, fetchListings } from '../utils/api'
-import { formatKES } from '../utils/constants'
+import { useState, useEffect } from 'react';
+import { useParams, Link } from 'react-router-dom';
+import { Image as ImageIcon, MapPin, CheckCircle, Smartphone } from 'lucide-react';
+import ProductCard from '../components/ProductCard';
+import { fetchListing, fetchListings } from '../utils/api';
+import { formatKES } from '../utils/constants';
 
 function ListingDetails() {
   const { id } = useParams();
@@ -14,13 +14,13 @@ function ListingDetails() {
 
   useEffect(() => {
     if (!id) { setError('No listing ID'); setLoading(false); return; }
-    
+
     setLoading(true);
     fetchListing(id).then(data => {
       if (!data) { setError('Listing not found'); setLoading(false); return; }
       setListing(data);
       setLoading(false);
-      
+
       // Fetch related
       fetchListings(data.category, '').then(all => {
         setRelated(all.filter(l => l.id !== data.id).slice(0, 4));
@@ -58,7 +58,7 @@ function ListingDetails() {
         {/* Images Left */}
         <div className="w-full md:w-1/2 lg:w-3/5">
           <div className="bg-zinc-100 dark:bg-zinc-900 rounded-[14px] overflow-hidden aspect-[4/3] group relative">
-            {listing.images && listing.images.length > 0 ? (
+            {listing.images && listing.images.length > 0 && listing.images[0] ? (
               <img src={listing.images[0]} alt={listing.title} className="w-full h-full object-cover" />
             ) : (
               <div className="w-full h-full flex items-center justify-center text-zinc-400">
@@ -126,7 +126,7 @@ function ListingDetails() {
             </div>
             <div className="bg-zinc-900 dark:bg-black p-6 rounded-2xl mb-6 text-center transform hover:scale-[1.02] transition-transform">
               <p className="text-[10px] text-zinc-500 uppercase tracking-[0.2em] font-black mb-2">Buy Goods Till Number</p>
-              <p className="text-4xl font-black tracking-tighter text-green-500">1919000</p>
+              <p className="text-4xl font-black tracking-tighter text-green-500">9315501</p>
             </div>
             <div className="space-y-3">
               <p className="text-xs text-zinc-500 dark:text-zinc-400 leading-relaxed font-medium flex gap-2">

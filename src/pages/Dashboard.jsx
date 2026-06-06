@@ -1,8 +1,8 @@
-import { useState, useEffect } from 'react'
-import { useNavigate, Link } from 'react-router-dom'
-import { Plus, Package, MessageSquare, LogOut, ExternalLink } from 'lucide-react'
-import { supabase } from '../utils/supabase'
-import { formatKES } from '../utils/constants'
+import { useState, useEffect } from 'react';
+import { useNavigate, Link } from 'react-router-dom';
+import { Plus, Package, MessageSquare, LogOut, ExternalLink } from 'lucide-react';
+import { getCurrentUser, fetchUserListings, signOut } from '../utils/api';
+import { formatKES } from '../utils/constants';
 
 function Dashboard() {
   const navigate = useNavigate();
@@ -12,34 +12,21 @@ function Dashboard() {
 
   useEffect(() => {
     const checkUser = async () => {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) {
+      const currentUser = getCurrentUser();
+      if (!currentUser) {
         navigate('/login');
       } else {
-        setUser(user);
-        fetchUserListings(user.id);
+        setUser(currentUser);
+        const userListings = await fetchUserListings(currentUser.id);
+        setListings(userListings);
+        setLoading(false);
       }
     };
     checkUser();
   }, [navigate]);
 
-  const fetchUserListings = async (userId) => {
-    const { data, error } = await supabase
-      .from('listings')
-      .select('*')
-      .eq('seller_id', userId)
-      .order('created_at', { ascending: false });
-
-    if (error) {
-      console.error('Error fetching listings:', error);
-    } else {
-      setListings(data || []);
-    }
-    setLoading(false);
-  };
-
   const handleLogout = async () => {
-    await supabase.auth.signOut();
+    await signOut();
     navigate('/login');
   };
 
@@ -56,7 +43,7 @@ function Dashboard() {
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-10">
         <div>
           <h1 className="text-3xl font-black text-zinc-900 dark:text-white">Seller Dashboard</h1>
-          <p className="text-zinc-500 dark:text-zinc-400">Welcome back, {user?.user_metadata?.full_name || user?.email}</p>
+          <p className="text-zinc-500 dark:text-zinc-400">Welcome back, {user?.full_name || user?.email}</p>
         </div>
         <div className="flex gap-3">
           <Link to="/sell" className="flex items-center gap-2 bg-[#ff385c] text-white px-6 py-3 rounded-2xl font-bold hover:bg-[#e03150] shadow-lg shadow-[#ff385c]/20">
@@ -88,7 +75,7 @@ function Dashboard() {
       </div>
 
       <h2 className="text-2xl font-bold mb-6 text-zinc-900 dark:text-white">Your Products</h2>
-      
+
       {listings.length > 0 ? (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {listings.map(listing => (

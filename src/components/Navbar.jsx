@@ -1,21 +1,20 @@
-import { useState, useEffect } from 'react'
-import { Link } from 'react-router-dom'
-import { Sun, Moon, User } from 'lucide-react'
-import { supabase } from '../utils/supabase'
+import { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
+import { Sun, Moon, User } from 'lucide-react';
+import { getCurrentUser } from '../utils/api';
 
 function Navbar() {
   const [user, setUser] = useState(null);
 
   useEffect(() => {
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      setUser(session?.user ?? null);
-    });
-
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
-      setUser(session?.user ?? null);
-    });
-
-    return () => subscription.unsubscribe();
+    const checkUser = () => {
+      const currentUser = getCurrentUser();
+      setUser(currentUser);
+    };
+    checkUser();
+    // Check periodically for session changes
+    const interval = setInterval(checkUser, 1000);
+    return () => clearInterval(interval);
   }, []);
 
   const toggleTheme = () => {

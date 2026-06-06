@@ -5,7 +5,6 @@ import ProductCard from '../components/ProductCard';
 import InstallBanner from '../components/InstallBanner';
 import { CATEGORIES } from '../utils/constants';
 import { fetchListings } from '../utils/api';
-import { aiSearch } from '../utils/ai';
 
 function Home() {
   const [activeCategory, setActiveCategory] = useState('All');
@@ -18,12 +17,7 @@ function Home() {
     setLoading(true);
     const fetch = async () => {
       const data = await fetchListings(activeCategory, isAiMode ? '' : searchQuery);
-      if (isAiMode && searchQuery.length > 3) {
-        const filtered = await aiSearch(searchQuery, data);
-        setListings(filtered);
-      } else {
-        setListings(data);
-      }
+      setListings(data);
       setLoading(false);
     };
     fetch();

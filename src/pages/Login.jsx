@@ -1,6 +1,6 @@
-import { useState } from 'react'
-import { useNavigate, Link } from 'react-router-dom'
-import { supabase } from '../utils/supabase'
+import { useState } from 'react';
+import { useNavigate, Link } from 'react-router-dom';
+import { signIn } from '../utils/api';
 
 function Login() {
   const navigate = useNavigate();
@@ -13,16 +13,16 @@ function Login() {
     setError('');
 
     const { email, password } = e.target.elements;
-    const { error } = await supabase.auth.signInWithPassword({
+    const result = await signIn({
       email: email.value,
       password: password.value,
     });
 
-    if (error) {
-      setError(error.message);
-      setLoading(false);
-    } else {
+    if (result.success) {
       navigate('/dashboard');
+    } else {
+      setError(result.error);
+      setLoading(false);
     }
   };
 
@@ -46,7 +46,7 @@ function Login() {
         </div>
         <div>
           <label className="block text-sm font-bold mb-2 text-zinc-700 dark:text-zinc-300">Password</label>
-          <input required name="password" type="password" placeholder="••••••••" className="w-full px-4 py-3.5 rounded-xl bg-zinc-100 dark:bg-zinc-900 border border-transparent focus:border-[#ff385c] focus:bg-white dark:focus:bg-zinc-950 focus:outline-none text-zinc-900 dark:text-white transition-all shadow-sm" />
+          <input required name="password" type="password" placeholder="........" className="w-full px-4 py-3.5 rounded-xl bg-zinc-100 dark:bg-zinc-900 border border-transparent focus:border-[#ff385c] focus:bg-white dark:focus:bg-zinc-950 focus:outline-none text-zinc-900 dark:text-white transition-all shadow-sm" />
         </div>
         <button type="submit" disabled={loading} className="w-full bg-[#ff385c] text-white font-black py-4 rounded-2xl hover:bg-[#e03150] transition-all disabled:opacity-50 shadow-lg shadow-[#ff385c]/20">
           {loading ? 'Logging in...' : 'Log In'}
