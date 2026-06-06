@@ -1,12 +1,11 @@
 services:
-  - type: static
+  - type: web
     name: stor1
     repo: https://github.com/oliver4441/stor1
     branch: main
-    rootDir: .
     buildCommand: npm install && npm run build
-    publishPath: dist
-    routes:
-      - type: rewrite
-        source: /*
-        destination: /index.html
+    startCommand: npm start
+    healthCheckPath: /
+    envVars:
+      - key: NODE_ENV
+        value: production
