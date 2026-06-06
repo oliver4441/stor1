@@ -61,6 +61,7 @@ export async function fetchListing(id) {
 
 // Create listing
 export async function createListing(formData) {
+  const { data: { user } } = await supabase.auth.getUser();
   const catId = CATEGORY_TO_ID[formData.category] || null;
 
   const insertData = {
@@ -72,7 +73,8 @@ export async function createListing(formData) {
     location_city: formData.location,
     location_region: 'Kericho',
     images: formData.image_url ? [formData.image_url] : [],
-    seller_name: formData.seller_name,
+    seller_name: formData.seller_name || user?.user_metadata?.full_name,
+    seller_id: user?.id || null, // Link to auth user
     seller_phone: formData.seller_phone || null,
     status: 'active',
   };
