@@ -1,0 +1,7 @@
+services:
+  - type: static
+    name: stor1
+    repo: https://github.com/oliver4441/stor1
+    branch: main
+    buildCommand: npm install && npm run build
+    publishPath: dist

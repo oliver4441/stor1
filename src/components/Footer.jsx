@@ -1,3 +1,5 @@
+import { Link } from 'react-router-dom'
+
 function Footer() {
   return (
     <footer className="border-t border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-950 py-8 mt-12" style={{ paddingBottom: 'env(safe-area-inset-bottom)' }}>
@@ -6,10 +8,12 @@ function Footer() {
           &copy; 2026 Omix Marketplace. Kericho, Kenya.
         </p>
         <div className="flex gap-4">
-          <a href="about.html" className="text-sm text-zinc-500 dark:text-zinc-400 hover:text-[#ff385c]">About</a>
-          <a href="sell.html" className="text-sm text-zinc-500 dark:text-zinc-400 hover:text-[#ff385c]">Sell</a>
+          <Link to="/about" className="text-sm text-zinc-500 dark:text-zinc-400 hover:text-[#ff385c]">About</Link>
+          <Link to="/sell" className="text-sm text-zinc-500 dark:text-zinc-400 hover:text-[#ff385c]">Sell</Link>
         </div>
       </div>
     </footer>
   );
 }
+
+export default Footer;

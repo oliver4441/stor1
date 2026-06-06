@@ -1,38 +1,8 @@
-// Supabase client — loaded via CDN in HTML
-const SUPABASE_URL = "https://fdwoezyataxhdtgjlfxt.supabase.co";
-const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZkd29lenlhdGF4aGR0Z2psZnh0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzgxNzI4NjAsImV4cCI6MjA5Mzc0ODg2MH0.EdYm_7067vC16FJU5nocOnejoxAEHbeCatSuj4nYgnE";
-
-const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-
-const CATEGORIES = ['All', 'Electronics', 'Furniture', 'Clothing', 'Services', 'Vehicles', 'Home & Garden', 'Books', 'Sports', 'Health & Beauty', 'Others'];
-const LOCATIONS = ['CBD', 'Litein', 'Kapsoit', 'Brooke', 'Sosiot', 'Kaitet', 'Awasi', 'Kipchimchim', 'Chepseon'];
-
-// Category name → category_id mapping (from Supabase categories table)
-const CATEGORY_TO_ID = {
-  'Electronics': 1,
-  'Furniture': 2,
-  'Clothing': 3,
-  'Books': 4,
-  'Vehicles': 5,
-  'Home & Garden': 6,
-  'Sports': 7,
-  'Toys & Games': 8,
-  'Health & Beauty': 9,
-  'Business Services': 10,
-  'Others': 11,
-};
-
-// Category id → name mapping
-const ID_TO_CATEGORY = {};
-Object.entries(CATEGORY_TO_ID).forEach(([name, id]) => { ID_TO_CATEGORY[id] = name; });
-
-// Helper to format currency
-const formatKES = (amount) => {
-  return new Intl.NumberFormat('en-KE', { style: 'currency', currency: 'KES', maximumFractionDigits: 0 }).format(amount);
-};
+import { supabase } from './supabase'
+import { CATEGORY_TO_ID, ID_TO_CATEGORY } from './constants'
 
 // Fetch listings from Supabase
-async function fetchListings(category = 'All', searchQuery = '') {
+export async function fetchListings(category = 'All', searchQuery = '') {
   let query = supabase
     .from('listings')
     .select('*')
@@ -67,7 +37,7 @@ async function fetchListings(category = 'All', searchQuery = '') {
 }
 
 // Fetch single listing
-async function fetchListing(id) {
+export async function fetchListing(id) {
   const { data, error } = await supabase
     .from('listings')
     .select('*')
@@ -90,7 +60,7 @@ async function fetchListing(id) {
 }
 
 // Create listing
-async function createListing(formData) {
+export async function createListing(formData) {
   const catId = CATEGORY_TO_ID[formData.category] || null;
 
   const insertData = {
