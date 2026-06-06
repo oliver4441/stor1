@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { signUp } from '../utils/api';
+import { supabase } from '../utils/supabase';
 
 function Signup() {
   const navigate = useNavigate();
@@ -29,6 +30,19 @@ function Signup() {
     }
   };
 
+  const handleFacebookLogin = async () => {
+    setLoading(true);
+    setError('');
+    const { error } = await supabase.auth.signInWithOAuth({
+      provider: 'facebook',
+      options: { redirectTo: window.location.origin }
+    });
+    if (error) {
+      setError(error.message);
+      setLoading(false);
+    }
+  };
+
   if (success) {
     return (
       <div className="max-w-md mx-auto px-4 py-20 text-center">
@@ -53,6 +67,26 @@ function Signup() {
         </div>
       )}
 
+      {/* Social Login */}
+      <button
+        type="button"
+        onClick={handleFacebookLogin}
+        disabled={loading}
+        className="w-full bg-[#1877F2] text-white font-bold py-3.5 rounded-xl hover:bg-[#166FE5] transition-all flex items-center justify-center gap-3 mb-6 disabled:opacity-50"
+      >
+        <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+          <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
+        </svg>
+        Continue with Facebook
+      </button>
+
+      {/* Divider */}
+      <div className="flex items-center gap-4 mb-6">
+        <div className="flex-1 h-px bg-zinc-200 dark:bg-zinc-800"></div>
+        <span className="text-xs text-zinc-400 font-medium uppercase">or</span>
+        <div className="flex-1 h-px bg-zinc-200 dark:bg-zinc-800"></div>
+      </div>
+
       <form onSubmit={handleSignup} className="space-y-4">
         <div>
           <label className="block text-sm font-bold mb-2 text-zinc-700 dark:text-zinc-300">Full Name</label>
@@ -60,7 +94,7 @@ function Signup() {
         </div>
         <div>
           <label className="block text-sm font-bold mb-2 text-zinc-700 dark:text-zinc-300">Email Address</label>
-          <input required name="email" type="email" placeholder="you@example.com" className="w-full px-4 py-3.5 rounded-xl bg-zinc-100 dark:bg-zinc-900 border border-transparent focus:border-[#ff385c] focus:bg-white dark:focus:bg-zinc-950 focus:Outline-none text-zinc-900 dark:text-white transition-all shadow-sm" />
+          <input required name="email" type="email" placeholder="you@example.com" className="w-full px-4 py-3.5 rounded-xl bg-zinc-100 dark:bg-zinc-900 border border-transparent focus:border-[#ff385c] focus:bg-white dark:focus:bg-zinc-950 focus:outline-none text-zinc-900 dark:text-white transition-all shadow-sm" />
         </div>
         <div>
           <label className="block text-sm font-bold mb-2 text-zinc-700 dark:text-zinc-300">Password</label>
