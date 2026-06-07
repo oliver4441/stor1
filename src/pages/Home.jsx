@@ -61,6 +61,25 @@ function Home() {
         </div>
       </div>
 
+      {/* Video Preview */}
+      <div className="max-w-4xl mx-auto px-4 mb-12">
+        <div className="rounded-2xl overflow-hidden shadow-2xl border border-zinc-200 dark:border-zinc-800 bg-zinc-900">
+          <video
+            autoPlay
+            muted
+            loop
+            playsInline
+            className="w-full aspect-video"
+            poster="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='1920' height='1080'%3E%3Crect fill='%230f0f10' width='1920' height='1080'/%3E%3C/svg%3E"
+          >
+            <source src="/videos/buy_sell_kericho.mp4" type="video/mp4" />
+          </video>
+        </div>
+        <p className="text-center text-sm text-zinc-500 dark:text-zinc-400 mt-3">
+          <Link to="/how-it-works" className="text-[#ff385c] font-bold hover:underline">Learn how Omix works</Link>
+        </p>
+      </div>
+
       <div className="max-w-7xl mx-auto px-4">
         {/* Categories */}
         <div className="flex gap-2 overflow-x-auto pb-4 mb-6 scrollbar-hide">

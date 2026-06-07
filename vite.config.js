@@ -12,8 +12,15 @@ function copyPublicAssets() {
       const publicDir = resolve(__dirname, 'public')
       const distDir = resolve(__dirname, 'dist')
       if (fs.existsSync(publicDir)) {
-        fs.readdirSync(publicDir).forEach(file => {
-          fs.copyFileSync(resolve(publicDir, file), resolve(distDir, file))
+        fs.readdirSync(publicDir).forEach(item => {
+          const src = resolve(publicDir, item)
+          const dest = resolve(distDir, item)
+          const stat = fs.statSync(src)
+          if (stat.isDirectory()) {
+            fs.cpSync(src, dest, { recursive: true })
+          } else {
+            fs.copyFileSync(src, dest)
+          }
         })
       }
     }

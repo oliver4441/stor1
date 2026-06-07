@@ -162,6 +162,27 @@ function HowItWorks() {
 
       <div className="max-w-6xl mx-auto px-4 py-16">
 
+        {/* Video: How Omix Works */}
+        <section className="mb-20">
+          <div className="text-center mb-8">
+            <span className="text-xs font-bold text-[#ff385c] uppercase tracking-widest">Watch</span>
+            <h2 className="text-3xl md:text-4xl font-black text-zinc-900 dark:text-white mt-2">How Omix Works</h2>
+            <p className="text-zinc-500 dark:text-zinc-400 mt-2 max-w-lg mx-auto">A quick overview of the entire process from start to finish.</p>
+          </div>
+          <div className="rounded-2xl overflow-hidden shadow-2xl border border-zinc-200 dark:border-zinc-800 bg-zinc-900">
+            <video
+              autoPlay
+              muted
+              loop
+              playsInline
+              className="w-full aspect-video"
+              poster="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='1920' height='1080'%3E%3Crect fill='%230f0f10' width='1920' height='1080'/%3E%3C/svg%3E"
+            >
+              <source src="/videos/how_omix_works.mp4" type="video/mp4" />
+            </video>
+          </div>
+        </section>
+
         {/* For Buyers */}
         <section className="mb-20">
           <div className="text-center mb-12">
@@ -227,6 +248,27 @@ function HowItWorks() {
                 </div>
               </div>
             ))}
+          </div>
+        </section>
+
+        {/* Video: Buy & Sell in Kericho */}
+        <section className="mb-20">
+          <div className="text-center mb-8">
+            <span className="text-xs font-bold text-[#ff385c] uppercase tracking-widest">Watch</span>
+            <h2 className="text-3xl md:text-4xl font-black text-zinc-900 dark:text-white mt-2">Buy & Sell in Kericho</h2>
+            <p className="text-zinc-500 dark:text-zinc-400 mt-2 max-w-lg mx-auto">See how Omix brings the Kericho community together.</p>
+          </div>
+          <div className="rounded-2xl overflow-hidden shadow-2xl border border-zinc-200 dark:border-zinc-800 bg-zinc-900">
+            <video
+              autoPlay
+              muted
+              loop
+              playsInline
+              className="w-full aspect-video"
+              poster="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='1920' height='1080'%3E%3Crect fill='%230f0f10' width='1920' height='1080'/%3E%3C/svg%3E"
+            >
+              <source src="/videos/buy_sell_kericho.mp4" type="video/mp4" />
+            </video>
           </div>
         </section>
 
