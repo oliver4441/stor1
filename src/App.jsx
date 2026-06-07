@@ -12,6 +12,7 @@ import Dashboard from './pages/Dashboard'
 import Wishes from './pages/Wishes'
 import WishForm from './pages/WishForm'
 import WishDetail from './pages/WishDetail'
+import ContactFloat from './components/ContactFloat'
 
 class ErrorBoundary extends React.Component {
   constructor(props) {
@@ -60,6 +61,7 @@ function App() {
           </Routes>
         </main>
         <Footer />
+        <ContactFloat />
       </div>
     </ErrorBoundary>
   )
