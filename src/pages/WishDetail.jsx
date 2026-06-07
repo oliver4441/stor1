@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
-import { ArrowLeft, Heart, Clock, AlertTriangle, CheckCircle, Send, MessageCircle, Package } from 'lucide-react';
+import { ArrowLeft, Clock, AlertTriangle, CheckCircle, Send, MessageCircle, Package } from 'lucide-react';
 import { fetchWish, fetchMessages, sendMessage, updateWishStatus } from '../utils/api';
 import { formatKES } from '../utils/constants';
 import { supabase } from '../utils/supabase';

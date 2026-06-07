@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { Heart, Search, Clock, AlertTriangle, CheckCircle, MessageCircle, Plus } from 'lucide-react';
+import { Heart, Search, Clock, AlertTriangle, CheckCircle, Plus } from 'lucide-react';
 import { fetchWishes } from '../utils/api';
 import { CATEGORIES, formatKES } from '../utils/constants';
 
