@@ -8,6 +8,7 @@ function Footer() {
           &copy; 2026 Omix Marketplace. Kericho, Kenya.
         </p>
         <div className="flex gap-4">
+          <Link to="/events" className="text-sm text-zinc-500 dark:text-zinc-400 hover:text-[#ff385c]">Events</Link>
           <Link to="/how-it-works" className="text-sm text-zinc-500 dark:text-zinc-400 hover:text-[#ff385c]">How It Works</Link>
           <Link to="/wishes" className="text-sm text-zinc-500 dark:text-zinc-400 hover:text-[#ff385c]">Wishes</Link>
           <Link to="/about" className="text-sm text-zinc-500 dark:text-zinc-400 hover:text-[#ff385c]">About</Link>

@@ -13,6 +13,10 @@ import Wishes from './pages/Wishes'
 import WishForm from './pages/WishForm'
 import WishDetail from './pages/WishDetail'
 import HowItWorks from './pages/HowItWorks'
+import Events from './pages/Events'
+import EventDetail from './pages/EventDetail'
+import CreateEvent from './pages/CreateEvent'
+import QRScanner from './pages/QRScanner'
 import ContactFloat from './components/ContactFloat'
 
 class ErrorBoundary extends React.Component {
@@ -60,6 +64,11 @@ function App() {
             <Route path="/wish/new" element={<WishForm />} />
             <Route path="/wishes/:id" element={<WishDetail />} />
             <Route path="/how-it-works" element={<HowItWorks />} />
+            <Route path="/events" element={<Events />} />
+            <Route path="/events/create" element={<CreateEvent />} />
+            <Route path="/events/:id" element={<EventDetail />} />
+            <Route path="/events/order/:id" element={<EventDetail />} />
+            <Route path="/scanner" element={<QRScanner />} />
           </Routes>
         </main>
         <Footer />
