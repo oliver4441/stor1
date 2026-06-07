@@ -12,6 +12,7 @@ import Dashboard from './pages/Dashboard'
 import Wishes from './pages/Wishes'
 import WishForm from './pages/WishForm'
 import WishDetail from './pages/WishDetail'
+import HowItWorks from './pages/HowItWorks'
 import ContactFloat from './components/ContactFloat'
 
 class ErrorBoundary extends React.Component {
@@ -58,6 +59,7 @@ function App() {
             <Route path="/wishes" element={<Wishes />} />
             <Route path="/wish/new" element={<WishForm />} />
             <Route path="/wishes/:id" element={<WishDetail />} />
+            <Route path="/how-it-works" element={<HowItWorks />} />
           </Routes>
         </main>
         <Footer />
