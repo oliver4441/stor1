@@ -3,11 +3,13 @@ import { useNavigate, Link } from 'react-router-dom'
 import { Upload, X, Image as ImageIcon, CreditCard, CheckCircle2 } from 'lucide-react'
 import { CATEGORIES, LOCATIONS } from '../utils/constants'
 import { createListing, uploadImage, createListingPayment, updateListingPaymentStatus } from '../utils/api'
+import { useLang } from '../utils/lang'
 
 const PAYSTACK_PUBLIC_KEY = 'pk_live_27f0020f17e275660e4a92c34fb7f7a9fc36ea94';
 const LISTING_FEE_KES = 5;
 
 function Sell() {
+  const { t } = useLang();
   const navigate = useNavigate();
   const [submitting, setSubmitting] = useState(false);
   const [paying, setPaying] = useState(false);
@@ -35,19 +37,17 @@ function Sell() {
     setImagePreview('');
   };
 
-  // Step 1: Upload image, collect form data, create payment record, then pay via Paystack
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     if (!agreed) {
-      setError('Please agree to the terms of service before posting.');
+      setError(t('sell.errorAgree'));
       return;
     }
 
     setSubmitting(true);
     setError('');
 
-    // Upload image first (if any)
     let imageUrl = '';
     if (imageFile) {
       const uploadResult = await uploadImage(imageFile);
@@ -73,7 +73,6 @@ function Sell() {
       seller_phone: form.seller_phone.value,
     };
 
-    // Step 2: Create listing_payment record in Supabase
     const paymentResult = await createListingPayment(formData);
     if (!paymentResult.success) {
       setError('Failed to create payment record: ' + paymentResult.error);
@@ -84,10 +83,8 @@ function Sell() {
     const paymentId = paymentResult.payment.id;
     setPendingListingData(formData);
 
-    // Step 3: Load Paystack script and initialize payment
     setPaying(true);
 
-    // Load Paystack inline script if not already loaded
     if (!window.PaystackPop) {
       const script = document.createElement('script');
       script.src = 'https://js.paystack.co/v1/inline.js';
@@ -98,7 +95,7 @@ function Sell() {
         initiatePaystackPayment(paymentId, formData);
       };
       script.onerror = () => {
-        setError('Failed to load payment gateway. Please try again.');
+        setError(t('sell.errorPayment'));
         setSubmitting(false);
         setPaying(false);
       };
@@ -109,9 +106,6 @@ function Sell() {
 
   const initiatePaystackPayment = async (paymentId, formData) => {
     try {
-      // We need a Paystack reference — call server-side endpoint or use client-side approach
-      // Since Paystack inline.js needs a reference generated server-side with the secret key,
-      // we initialize via our backend which has the secret key
       const API_BASE = import.meta.env.VITE_API_URL || '';
 
       const initRes = await fetch(`${API_BASE}/api/paystack/initialize`, {
@@ -120,7 +114,7 @@ function Sell() {
         body: JSON.stringify({
           reference: `listing_${paymentId}_${Date.now()}`,
           email: formData.seller_name ? `${formData.seller_name.replace(/\s+/g, '.').toLowerCase()}@omix.co.ke` : 'buyer@omix.co.ke',
-          amount: LISTING_FEE_KES * 100, // Paystack expects amount in cents
+          amount: LISTING_FEE_KES * 100,
           payment_id: paymentId,
           callback_url: `${window.location.origin}/sell?payment_callback=true&payment_id=${paymentId}`,
         }),
@@ -128,7 +122,7 @@ function Sell() {
 
       if (!initRes.ok) {
         const err = await initRes.json().catch(() => ({}));
-        setError(err.message || 'Payment initialization failed');
+        setError(err.message || t('sell.errorPaymentInit'));
         setSubmitting(false);
         setPaying(false);
         return;
@@ -136,7 +130,6 @@ function Sell() {
 
       const initData = await initRes.json();
 
-      // Use Paystack Inline
       const handler = window.PaystackPop.setup({
         key: PAYSTACK_PUBLIC_KEY,
         email: initData.email || 'buyer@omix.co.ke',
@@ -146,15 +139,13 @@ function Sell() {
         onClose: async () => {
           setPaying(false);
           setSubmitting(false);
-          setError('Payment was cancelled.');
-          // Update payment status to failed
+          setError(t('sell.paymentCancelled'));
           await updateListingPaymentStatus(paymentId, {
             paystackReference: initData.reference,
             paymentStatus: 'failed',
           });
         },
         callback: async (response) => {
-          // Step 5: Verify payment and create listing
           await verifyAndCreateListing(paymentId, response.reference, formData);
         },
       });
@@ -170,12 +161,11 @@ function Sell() {
 
   const verifyAndCreateListing = async (paymentId, reference, formData) => {
     try {
-      // Verify payment via server
       const API_BASE = import.meta.env.VITE_API_URL || '';
       const verifyRes = await fetch(`${API_BASE}/api/paystack/verify/${reference}`);
 
       if (!verifyRes.ok) {
-        setError('Payment verification failed. If money was deducted, contact support.');
+        setError(t('sell.errorPaymentVerify'));
         setPaying(false);
         setSubmitting(false);
         return;
@@ -184,13 +174,11 @@ function Sell() {
       const verifyData = await verifyRes.json();
 
       if (verifyData.success && verifyData.data?.status === 'success') {
-        // Update payment record to success
         await updateListingPaymentStatus(paymentId, {
           paystackReference: reference,
           paymentStatus: 'success',
         });
 
-        // Now create the actual listing
         const result = await createListing(formData);
 
         if (result.success) {
@@ -198,17 +186,16 @@ function Sell() {
           setPaying(false);
           setTimeout(() => { navigate('/'); }, 2000);
         } else {
-          setError('Payment succeeded but listing creation failed: ' + (result.error || 'Unknown error') + '. Contact support for assistance.');
+          setError(t('sell.errorListingCreate') + ': ' + (result.error || 'Unknown error') + '. Contact support for assistance.');
           setPaying(false);
           setSubmitting(false);
         }
       } else {
-        // Payment verification failed
         await updateListingPaymentStatus(paymentId, {
           paystackReference: reference,
           paymentStatus: 'failed',
         });
-        setError('Payment verification failed.');
+        setError(t('sell.errorPaymentVerify'));
         setPaying(false);
         setSubmitting(false);
       }
@@ -220,7 +207,6 @@ function Sell() {
     }
   };
 
-  // Handle Paystack callback redirect
   React.useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     if (params.get('payment_callback') === 'true' && params.get('payment_id')) {
@@ -231,7 +217,6 @@ function Sell() {
         verifyAndCreateListing(paymentId, reference, pendingListingData);
       }
 
-      // Clean URL
       window.history.replaceState({}, document.title, '/sell');
     }
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
@@ -240,8 +225,8 @@ function Sell() {
     return (
       <div className="max-w-7xl mx-auto px-4 py-20 text-center">
         <div className="bg-green-100 dark:bg-green-900/20 text-green-600 p-8 rounded-3xl inline-block mb-4">
-          <h2 className="text-3xl font-black mb-2">Listing posted!</h2>
-          <p className="text-zinc-500 dark:text-zinc-400">Your KES 5 listing fee was paid successfully. Redirecting to homepage...</p>
+          <h2 className="text-3xl font-black mb-2">{t('sell.listingPosted')}</h2>
+          <p className="text-zinc-500 dark:text-zinc-400">{t('sell.listingPostedDesc')}</p>
         </div>
       </div>
     );
@@ -250,16 +235,16 @@ function Sell() {
   return (
     <div className="max-w-2xl mx-auto px-4 py-8 w-full" data-name="sell-page">
       <div className="mb-8">
-        <h1 className="text-3xl font-black mb-2 text-zinc-900 dark:text-white">Post a listing</h1>
-        <p className="text-zinc-500 dark:text-zinc-400">Add details and a photo to start selling.</p>
+        <h1 className="text-3xl font-black mb-2 text-zinc-900 dark:text-white">{t('sell.title')}</h1>
+        <p className="text-zinc-500 dark:text-zinc-400">{t('sell.subtitle')}</p>
       </div>
 
       {/* Listing Fee Notice */}
       <div className="bg-amber-50 dark:bg-amber-900/10 border border-amber-200 dark:border-amber-800/40 rounded-2xl p-4 mb-6 flex items-start gap-3">
         <CreditCard className="w-5 h-5 text-amber-600 mt-0.5 shrink-0" />
         <div>
-          <p className="text-sm font-bold text-amber-700 dark:text-amber-400">Listing Fee: KES {LISTING_FEE_KES}</p>
-          <p className="text-xs text-amber-600 dark:text-amber-500 mt-0.5">A small KES {LISTING_FEE_KES} fee is required via M-Pesa or card to keep our platform spam-free and active. This is a one-time charge per listing.</p>
+          <p className="text-sm font-bold text-amber-700 dark:text-amber-400">{t('sell.listingFee')}</p>
+          <p className="text-xs text-amber-600 dark:text-amber-500 mt-0.5">{t('sell.listingFeeDesc')}</p>
         </div>
       </div>
 
@@ -272,7 +257,7 @@ function Sell() {
       {paying && (
         <div className="bg-blue-50 dark:bg-blue-900/20 text-blue-700 dark:text-blue-300 p-4 rounded-xl mb-6 text-sm font-medium border border-blue-200 dark:border-blue-800/50 flex items-center gap-2">
           <div className="animate-spin w-4 h-4 border-2 border-blue-500 border-t-transparent rounded-full"></div>
-          Redirecting to Paystack to complete KES {LISTING_FEE_KES} payment...
+          {t('sell.paymentRedirect')}
         </div>
       )}
 
@@ -280,7 +265,7 @@ function Sell() {
         <div className="space-y-4">
           {/* Image Upload Area */}
           <div>
-            <label className="block text-sm font-bold mb-2 text-zinc-700 dark:text-zinc-300">Product Photo</label>
+            <label className="block text-sm font-bold mb-2 text-zinc-700 dark:text-zinc-300">{t('sell.productPhoto')}</label>
             {imagePreview ? (
               <div className="relative aspect-[4/3] rounded-2xl overflow-hidden group">
                 <img src={imagePreview} alt="Preview" className="w-full h-full object-cover" />
@@ -295,24 +280,24 @@ function Sell() {
             ) : (
               <label className="flex flex-col items-center justify-center aspect-[4/3] rounded-2xl border-2 border-dashed border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-900/50 cursor-pointer hover:bg-zinc-100 dark:hover:bg-zinc-900 transition-all">
                 <Upload className="w-10 h-10 text-zinc-400 mb-2" />
-                <span className="text-sm text-zinc-500 font-medium">Click to upload photo</span>
+                <span className="text-sm text-zinc-500 font-medium">{t('sell.clickUpload')}</span>
                 <input type="file" accept="image/*" onChange={handleImageChange} className="hidden" />
               </label>
             )}
           </div>
 
           <div>
-            <label className="block text-sm font-bold mb-2 text-zinc-700 dark:text-zinc-300">Title</label>
-            <input required name="title" type="text" placeholder="e.g. iPhone 12 Pro" className="w-full px-4 py-3.5 rounded-xl bg-zinc-100 dark:bg-zinc-900 border border-transparent focus:border-[#ff385c] focus:bg-white dark:focus:bg-zinc-950 focus:outline-none text-zinc-900 dark:text-white transition-all shadow-sm" />
+            <label className="block text-sm font-bold mb-2 text-zinc-700 dark:text-zinc-300">{t('sell.titleLabel')}</label>
+            <input required name="title" type="text" placeholder={t('sell.titlePlaceholder')} className="w-full px-4 py-3.5 rounded-xl bg-zinc-100 dark:bg-zinc-900 border border-transparent focus:border-[#ff385c] focus:bg-white dark:focus:bg-zinc-950 focus:outline-none text-zinc-900 dark:text-white transition-all shadow-sm" />
           </div>
 
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-bold mb-2 text-zinc-700 dark:text-zinc-300">Price (KES)</label>
-              <input required name="price" type="number" placeholder="0" className="w-full px-4 py-3.5 rounded-xl bg-zinc-100 dark:bg-zinc-900 border border-transparent focus:border-[#ff385c] focus:bg-white dark:focus:bg-zinc-950 focus:outline-none text-zinc-900 dark:text-white transition-all shadow-sm" />
+              <label className="block text-sm font-bold mb-2 text-zinc-700 dark:text-zinc-300">{t('sell.price')}</label>
+              <input required name="price" type="number" placeholder={t('sell.pricePlaceholder')} className="w-full px-4 py-3.5 rounded-xl bg-zinc-100 dark:bg-zinc-900 border border-transparent focus:border-[#ff385c] focus:bg-white dark:focus:bg-zinc-950 focus:outline-none text-zinc-900 dark:text-white transition-all shadow-sm" />
             </div>
             <div>
-              <label className="block text-sm font-bold mb-2 text-zinc-700 dark:text-zinc-300">Condition</label>
+              <label className="block text-sm font-bold mb-2 text-zinc-700 dark:text-zinc-300">{t('sell.condition')}</label>
               <select required name="condition" className="w-full px-4 py-3.5 rounded-xl bg-zinc-100 dark:bg-zinc-900 border border-transparent focus:border-[#ff385c] focus:bg-white dark:focus:bg-zinc-950 focus:outline-none text-zinc-900 dark:text-white transition-all shadow-sm appearance-none">
                 <option value="New">New</option>
                 <option value="Used - Like New">Used - Like New</option>
@@ -325,13 +310,13 @@ function Sell() {
 
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-bold mb-2 text-zinc-700 dark:text-zinc-300">Category</label>
+              <label className="block text-sm font-bold mb-2 text-zinc-700 dark:text-zinc-300">{t('sell.category')}</label>
               <select required name="category" className="w-full px-4 py-3.5 rounded-xl bg-zinc-100 dark:bg-zinc-900 border border-transparent focus:border-[#ff385c] focus:bg-white dark:focus:bg-zinc-950 focus:outline-none text-zinc-900 dark:text-white transition-all shadow-sm appearance-none">
                 {CATEGORIES.filter(c => c !== 'All').map(c => <option key={c} value={c}>{c}</option>)}
               </select>
             </div>
             <div>
-              <label className="block text-sm font-bold mb-2 text-zinc-700 dark:text-zinc-300">Location</label>
+              <label className="block text-sm font-bold mb-2 text-zinc-700 dark:text-zinc-300">{t('sell.location')}</label>
               <select required name="location" className="w-full px-4 py-3.5 rounded-xl bg-zinc-100 dark:bg-zinc-900 border border-transparent focus:border-[#ff385c] focus:bg-white dark:focus:bg-zinc-950 focus:outline-none text-zinc-900 dark:text-white transition-all shadow-sm appearance-none">
                 {LOCATIONS.map(l => <option key={l} value={l}>{l}</option>)}
               </select>
@@ -339,21 +324,21 @@ function Sell() {
           </div>
 
           <div>
-            <label className="block text-sm font-bold mb-2 text-zinc-700 dark:text-zinc-300">Description</label>
-            <textarea required name="description" rows="4" placeholder="Describe your item..." className="w-full px-4 py-3.5 rounded-xl bg-zinc-100 dark:bg-zinc-900 border border-transparent focus:border-[#ff385c] focus:bg-white dark:focus:bg-zinc-950 focus:outline-none text-zinc-900 dark:text-white transition-all shadow-sm resize-none"></textarea>
+            <label className="block text-sm font-bold mb-2 text-zinc-700 dark:text-zinc-300">{t('sell.description')}</label>
+            <textarea required name="description" rows="4" placeholder={t('sell.descriptionPlaceholder')} className="w-full px-4 py-3.5 rounded-xl bg-zinc-100 dark:bg-zinc-900 border border-transparent focus:border-[#ff385c] focus:bg-white dark:focus:bg-zinc-950 focus:outline-none text-zinc-900 dark:text-white transition-all shadow-sm resize-none"></textarea>
           </div>
         </div>
 
         <div className="pt-6 border-t border-zinc-200 dark:border-zinc-800 space-y-4">
-          <h3 className="font-bold text-lg text-zinc-900 dark:text-white">Seller Information</h3>
+          <h3 className="font-bold text-lg text-zinc-900 dark:text-white">{t('sell.sellerInfo')}</h3>
           <div>
-            <label className="block text-sm font-bold mb-2 text-zinc-700 dark:text-zinc-300">Your Name</label>
-            <input required name="seller_name" type="text" placeholder="e.g. Kiprono" className="w-full px-4 py-3.5 rounded-xl bg-zinc-100 dark:bg-zinc-900 border border-transparent focus:border-[#ff385c] focus:bg-white dark:focus:bg-zinc-950 focus:outline-none text-zinc-900 dark:text-white transition-all shadow-sm" />
+            <label className="block text-sm font-bold mb-2 text-zinc-700 dark:text-zinc-300">{t('sell.yourName')}</label>
+            <input required name="seller_name" type="text" placeholder={t('sell.yourNamePlaceholder')} className="w-full px-4 py-3.5 rounded-xl bg-zinc-100 dark:bg-zinc-900 border border-transparent focus:border-[#ff385c] focus:bg-white dark:focus:bg-zinc-950 focus:outline-none text-zinc-900 dark:text-white transition-all shadow-sm" />
           </div>
 
           <div>
-            <label className="block text-sm font-bold mb-2 text-zinc-700 dark:text-zinc-300">Phone (optional)</label>
-            <input name="seller_phone" type="tel" placeholder="+254 700 000 000" className="w-full px-4 py-3.5 rounded-xl bg-zinc-100 dark:bg-zinc-900 border border-transparent focus:border-[#ff385c] focus:bg-white dark:focus:bg-zinc-950 focus:outline-none text-zinc-900 dark:text-white transition-all shadow-sm" />
+            <label className="block text-sm font-bold mb-2 text-zinc-700 dark:text-zinc-300">{t('sell.phone')}</label>
+            <input name="seller_phone" type="tel" placeholder={t('sell.phonePlaceholder')} className="w-full px-4 py-3.5 rounded-xl bg-zinc-100 dark:bg-zinc-900 border border-transparent focus:border-[#ff385c] focus:bg-white dark:focus:bg-zinc-950 focus:outline-none text-zinc-900 dark:text-white transition-all shadow-sm" />
           </div>
         </div>
 
@@ -372,7 +357,7 @@ function Sell() {
               </div>
             </div>
             <span className="text-sm text-zinc-600 dark:text-zinc-400 leading-relaxed">
-              I agree to the <Link to="/terms" className="text-[#ff385c] font-semibold hover:underline" target="_blank" rel="noopener noreferrer">Terms of Service</Link> and confirm that my listing complies with Omix community guidelines.
+              {t('sell.agreeTerms')}
             </span>
           </label>
         </div>
@@ -381,20 +366,20 @@ function Sell() {
           {paying ? (
             <>
               <div className="animate-spin w-5 h-5 border-2 border-white border-t-transparent rounded-full"></div>
-              Processing Payment...
+              {t('sell.processing')}
             </>
           ) : submitting ? (
-            'Uploading...'
+            t('sell.uploading')
           ) : (
             <>
               <CreditCard className="w-5 h-5" />
-              Pay KES {LISTING_FEE_KES} & Post Listing
+              {t('sell.payAndPost')}
             </>
           )}
         </button>
 
         <p className="text-center text-xs text-zinc-400 dark:text-zinc-500 mt-2">
-          Secure payment via Paystack. Pay KES {LISTING_FEE_KES} once per listing.
+          {t('sell.securePayment')}
         </p>
       </form>
     </div>

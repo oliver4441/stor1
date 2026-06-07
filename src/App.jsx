@@ -1,5 +1,6 @@
 import React from 'react'
 import { Routes, Route } from 'react-router-dom'
+import { LanguageProvider } from './utils/lang'
 import Navbar from './components/Navbar'
 import Footer from './components/Footer'
 import Home from './pages/Home'
@@ -15,7 +16,8 @@ import WishDetail from './pages/WishDetail'
 import HowItWorks from './pages/HowItWorks'
 import Events from './pages/Events'
 import EventDetail from './pages/EventDetail'
-import CreateEvent from './pages/CreateEvent'
+import CreateEvent from './pages/CreateEvent';
+import AdminEvents from './pages/AdminEvents';
 import OrderCallback from './pages/PaymentCallback'
 import QRScanner from './pages/QRScanner'
 import Terms from './pages/Terms'
@@ -51,6 +53,7 @@ function App() {
   }, []);
 
   return (
+    <LanguageProvider>
     <ErrorBoundary>
       <div className="min-h-screen flex flex-col bg-white dark:bg-zinc-950 text-zinc-900 dark:text-zinc-50 antialiased">
         <Navbar />
@@ -72,6 +75,7 @@ function App() {
             <Route path="/events/:id" element={<EventDetail />} />
             <Route path="/events/order/callback/:orderId" element={<OrderCallback />} />
             <Route path="/scanner" element={<QRScanner />} />
+            <Route path="/admin/events" element={<AdminEvents />} />
             <Route path="/terms" element={<Terms />} />
             <Route path="/privacy" element={<Privacy />} />
           </Routes>
@@ -80,6 +84,7 @@ function App() {
         <ContactFloat />
       </div>
     </ErrorBoundary>
+    </LanguageProvider>
   )
 }
 

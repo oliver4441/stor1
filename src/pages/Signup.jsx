@@ -1,8 +1,10 @@
 import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { signUp } from '../utils/api';
+import { useLang } from '../utils/lang';
 
 function Signup() {
+  const { t } = useLang();
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
@@ -24,12 +26,10 @@ function Signup() {
     });
 
     if (result.success) {
-      // If we got a session, user is auto-signed in (email confirmation disabled)
       if (result.session) {
         setSuccess(true);
         setTimeout(() => navigate('/dashboard'), 1500);
       } else {
-        // Email confirmation required — show "check your email" message
         setNeedsVerification(true);
         setRegisteredEmail(emailVal);
         setLoading(false);
@@ -48,13 +48,13 @@ function Signup() {
           <div className="w-16 h-16 bg-blue-100 dark:bg-blue-900/40 rounded-full flex items-center justify-center mx-auto mb-4">
             <span className="text-3xl">📧</span>
           </div>
-          <h2 className="text-2xl font-black mb-2">Check your email</h2>
+          <h2 className="text-2xl font-black mb-2">{t('auth.checkEmail')}</h2>
           <p className="text-zinc-500 dark:text-zinc-400 mb-2">
-            We sent a confirmation link to <strong className="text-zinc-700 dark:text-zinc-300">{registeredEmail}</strong>
+            {t('auth.checkEmailDesc')} <strong className="text-zinc-700 dark:text-zinc-300">{registeredEmail}</strong>
           </p>
-          <p className="text-sm text-zinc-400">Click the link in the email to activate your account, then log in.</p>
+          <p className="text-sm text-zinc-400">{t('auth.checkEmailInstr')}</p>
         </div>
-        <Link to="/login" className="text-[#ff385c] font-bold hover:underline">Go to Login</Link>
+        <Link to="/login" className="text-[#ff385c] font-bold hover:underline">{t('auth.goToLogin')}</Link>
       </div>
     );
   }
@@ -63,8 +63,8 @@ function Signup() {
     return (
       <div className="max-w-md mx-auto px-4 py-20 text-center">
         <div className="bg-green-100 dark:bg-green-900/20 text-green-600 p-8 rounded-3xl inline-block mb-4">
-          <h2 className="text-3xl font-black mb-2">Account created!</h2>
-          <p className="text-zinc-500 dark:text-zinc-400">Redirecting to dashboard...</p>
+          <h2 className="text-3xl font-black mb-2">{t('auth.accountCreated')}</h2>
+          <p className="text-zinc-500 dark:text-zinc-400">{t('auth.accountCreatedDesc')}</p>
         </div>
       </div>
     );
@@ -73,8 +73,8 @@ function Signup() {
   return (
     <div className="max-w-md mx-auto px-4 py-20 w-full" data-name="signup-page">
       <div className="text-center mb-10">
-        <h1 className="text-3xl font-black mb-2 text-zinc-900 dark:text-white">Start selling</h1>
-        <p className="text-zinc-500 dark:text-zinc-400">Create your seller account in seconds</p>
+        <h1 className="text-3xl font-black mb-2 text-zinc-900 dark:text-white">{t('auth.startSelling')}</h1>
+        <p className="text-zinc-500 dark:text-zinc-400">{t('auth.signupSubtitle')}</p>
       </div>
 
       {error && (
@@ -85,24 +85,24 @@ function Signup() {
 
       <form onSubmit={handleSignup} className="space-y-4">
         <div>
-          <label className="block text-sm font-bold mb-2 text-zinc-700 dark:text-zinc-300">Full Name</label>
-          <input required name="fullName" type="text" placeholder="e.g. Kiprono Yegon" className="w-full px-4 py-3.5 rounded-xl bg-zinc-100 dark:bg-zinc-900 border border-transparent focus:border-[#ff385c] focus:bg-white dark:focus:bg-zinc-950 focus:outline-none text-zinc-900 dark:text-white transition-all shadow-sm" />
+          <label className="block text-sm font-bold mb-2 text-zinc-700 dark:text-zinc-300">{t('auth.fullName')}</label>
+          <input required name="fullName" type="text" placeholder={t('auth.fullNamePlaceholder')} className="w-full px-4 py-3.5 rounded-xl bg-zinc-100 dark:bg-zinc-900 border border-transparent focus:border-[#ff385c] focus:bg-white dark:focus:bg-zinc-950 focus:outline-none text-zinc-900 dark:text-white transition-all shadow-sm" />
         </div>
         <div>
-          <label className="block text-sm font-bold mb-2 text-zinc-700 dark:text-zinc-300">Email Address</label>
-          <input required name="email" type="email" placeholder="you@example.com" className="w-full px-4 py-3.5 rounded-xl bg-zinc-100 dark:bg-zinc-900 border border-transparent focus:border-[#ff385c] focus:bg-white dark:focus:bg-zinc-950 focus:outline-none text-zinc-900 dark:text-white transition-all shadow-sm" />
+          <label className="block text-sm font-bold mb-2 text-zinc-700 dark:text-zinc-300">{t('auth.email')}</label>
+          <input required name="email" type="email" placeholder={t('auth.emailPlaceholder')} className="w-full px-4 py-3.5 rounded-xl bg-zinc-100 dark:bg-zinc-900 border border-transparent focus:border-[#ff385c] focus:bg-white dark:focus:bg-zinc-950 focus:outline-none text-zinc-900 dark:text-white transition-all shadow-sm" />
         </div>
         <div>
-          <label className="block text-sm font-bold mb-2 text-zinc-700 dark:text-zinc-300">Password</label>
-          <input required name="password" type="password" placeholder="Create a strong password" minLength={6} className="w-full px-4 py-3.5 rounded-xl bg-zinc-100 dark:bg-zinc-900 border border-transparent focus:border-[#ff385c] focus:bg-white dark:focus:bg-zinc-950 focus:outline-none text-zinc-900 dark:text-white transition-all shadow-sm" />
+          <label className="block text-sm font-bold mb-2 text-zinc-700 dark:text-zinc-300">{t('auth.password')}</label>
+          <input required name="password" type="password" placeholder={t('auth.passwordPlaceholder')} minLength={6} className="w-full px-4 py-3.5 rounded-xl bg-zinc-100 dark:bg-zinc-900 border border-transparent focus:border-[#ff385c] focus:bg-white dark:focus:bg-zinc-950 focus:outline-none text-zinc-900 dark:text-white transition-all shadow-sm" />
         </div>
         <button type="submit" disabled={loading} className="w-full bg-[#ff385c] text-white font-black py-4 rounded-2xl hover:bg-[#e03150] transition-all disabled:opacity-50 shadow-lg shadow-[#ff385c]/20">
-          {loading ? 'Creating account...' : 'Create Account'}
+          {loading ? t('auth.creatingAccount') : t('auth.createAccount')}
         </button>
       </form>
 
       <p className="mt-8 text-center text-zinc-500 text-sm">
-        Already have an account? <Link to="/login" className="text-[#ff385c] font-bold hover:underline">Log in</Link>
+        {t('auth.hasAccount')} <Link to="/login" className="text-[#ff385c] font-bold hover:underline">{t('auth.logIn')}</Link>
       </p>
     </div>
   );

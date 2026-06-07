@@ -3,10 +3,12 @@ import { Link } from 'react-router-dom';
 import { Calendar, MapPin, Clock, Tag, Search, ChevronRight } from 'lucide-react';
 import { fetchEvents } from '../utils/api';
 import { formatKES } from '../utils/constants';
+import { useLang } from '../utils/lang';
 
 const EVENT_CATEGORIES = ['All', 'Music', 'Sports', 'Conference', 'Festival', 'Workshop', 'Party', 'Concert', 'General'];
 
 function Events() {
+  const { t } = useLang();
   const [events, setEvents] = useState([]);
   const [loading, setLoading] = useState(true);
   const [activeCategory, setActiveCategory] = useState('All');
@@ -53,12 +55,12 @@ function Events() {
         <div>
           <h1 className="text-3xl font-black text-zinc-900 dark:text-white flex items-center gap-3">
             <Calendar className="w-8 h-8 text-[#ff385c]" />
-            Events
+            {t('events.title')}
           </h1>
-          <p className="text-zinc-500 dark:text-zinc-400 mt-1">Discover and book tickets for events in Kericho and beyond.</p>
+          <p className="text-zinc-500 dark:text-zinc-400 mt-1">{t('events.subtitle')}</p>
         </div>
         <Link to="/events/create" className="bg-[#ff385c] text-white px-6 py-3 rounded-xl font-bold hover:bg-[#e03150] transition-all shadow-lg shadow-[#ff385c]/20 flex items-center gap-2 self-start">
-          Create Event
+          {t('events.createEvent')}
         </Link>
       </div>
 
@@ -106,7 +108,7 @@ function Events() {
                   </div>
                   {ticketsLeft <= 10 && ticketsLeft > 0 && (
                     <div className="absolute top-3 right-3 bg-[#ff385c] text-white text-xs font-bold px-2.5 py-1 rounded-full">
-                      {ticketsLeft} left
+                      {ticketsLeft} {t('events.ticketsLeft')}
                     </div>
                   )}
                 </div>
@@ -132,7 +134,7 @@ function Events() {
                       {lowestPrice !== null ? (
                         <span className="font-black text-[#ff385c]">{formatKES(lowestPrice)}</span>
                       ) : (
-                        <span className="text-sm text-zinc-400">No tickets</span>
+                        <span className="text-sm text-zinc-400">{t('events.free')}</span>
                       )}
                       {lowestPrice !== null && <span className="text-xs text-zinc-400 ml-1">from</span>}
                     </div>
@@ -146,8 +148,8 @@ function Events() {
       ) : (
         <div className="text-center py-20">
           <Calendar className="w-12 h-12 text-zinc-300 dark:text-zinc-700 mx-auto mb-4" />
-          <p className="text-zinc-500 dark:text-zinc-400 text-lg mb-4">No events found.</p>
-          <Link to="/events/create" className="text-[#ff385c] font-bold hover:underline">Create the first event!</Link>
+          <p className="text-zinc-500 dark:text-zinc-400 text-lg mb-4">{t('events.noEvents')}</p>
+          <Link to="/events/create" className="text-[#ff385c] font-bold hover:underline">{t('events.createEvent')}</Link>
         </div>
       )}
     </div>

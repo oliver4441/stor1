@@ -5,8 +5,10 @@ import ProductCard from '../components/ProductCard';
 import InstallBanner from '../components/InstallBanner';
 import { CATEGORIES } from '../utils/constants';
 import { fetchListings } from '../utils/api';
+import { useLang } from '../utils/lang';
 
 function Home() {
+  const { t } = useLang();
   const [activeCategory, setActiveCategory] = useState('All');
   const [searchQuery, setSearchQuery] = useState('');
   const [listings, setListings] = useState([]);
@@ -35,9 +37,18 @@ function Home() {
         {/* Hero Content */}
         <div className="relative z-10 py-20 md:py-28 px-4">
           <div className="max-w-7xl mx-auto text-center">
-            <h1 className="text-4xl md:text-6xl font-black mb-4 tracking-tighter text-white drop-shadow-lg">Buy and sell in Kericho</h1>
-            <p className="text-zinc-200 mb-8 max-w-xl mx-auto text-lg font-medium drop-shadow-md">The cleanest marketplace to find electronics, furniture, and services near you.</p>
+            <h1 className="text-4xl md:text-6xl font-black mb-4 tracking-tighter text-white drop-shadow-lg">{t('home.heroTitle')}</h1>
+            <p className="text-zinc-200 mb-8 max-w-xl mx-auto text-lg font-medium drop-shadow-md">{t('home.heroSubtitle')}</p>
             
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-3 mb-8">
+              <Link to="/" className="px-6 py-3 rounded-xl bg-white text-[#ff385c] font-bold text-sm hover:bg-zinc-100 transition-all shadow-lg">
+                {t('home.browseListings')}
+              </Link>
+              <Link to="/sell" className="px-6 py-3 rounded-xl bg-white/15 backdrop-blur-sm text-white font-bold text-sm hover:bg-white/25 transition-all border border-white/20">
+                {t('home.startSelling')}
+              </Link>
+            </div>
+
             <div className="max-w-2xl mx-auto relative group">
               <div className="absolute inset-y-0 left-4 flex items-center pointer-events-none">
                 {isAiMode ? <Sparkles className="w-5 h-5 text-[#ff385c]" /> : <Search className="w-5 h-5 text-zinc-400 group-focus-within:text-[#ff385c]" />}
@@ -54,7 +65,7 @@ function Home() {
                 className={`absolute inset-y-2 right-2 px-4 rounded-xl flex items-center gap-2 font-bold text-sm transition-all ${isAiMode ? 'bg-[#ff385c] text-white shadow-lg' : 'bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-400 hover:bg-zinc-200 dark:hover:bg-zinc-700'}`}
               >
                 {isAiMode ? <X className="w-4 h-4" /> : <Sparkles className="w-4 h-4" />}
-                {isAiMode ? 'Cancel' : 'Ask AI'}
+                {isAiMode ? t('common.cancel') : 'Ask AI'}
               </button>
             </div>
           </div>
@@ -76,7 +87,7 @@ function Home() {
           </video>
         </div>
         <p className="text-center text-sm text-zinc-500 dark:text-zinc-400 mt-3">
-          <Link to="/how-it-works" className="text-[#ff385c] font-bold hover:underline">Learn how Omix works</Link>
+          <Link to="/how-it-works" className="text-[#ff385c] font-bold hover:underline">{t('home.howItWorks')}</Link>
         </p>
       </div>
 
@@ -117,9 +128,9 @@ function Home() {
           </div>
         ) : (
           <div className="text-center py-20">
-            <p className="text-zinc-500 dark:text-zinc-400 mb-4 text-lg">No listings found.</p>
+            <p className="text-zinc-500 dark:text-zinc-400 mb-4 text-lg">{t('home.noListings')}</p>
             <Link to="/sell" className="text-[#ff385c] font-bold text-lg hover:underline underline-offset-4">
-              Be the first to post!
+              {t('home.startSelling')}
             </Link>
           </div>
         )}
