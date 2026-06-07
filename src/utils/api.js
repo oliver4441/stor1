@@ -233,7 +233,7 @@ export async function sendMessage({ wishId, receiverId, content }) {
 
 // ── Events ──────────────────────────────────────────────
 
-export async function fetchEvents(status = 'active', category = 'All') {
+export async function fetchEvents(status = 'published', category = 'All') {
   let query = supabase
     .from('events')
     .select('*, ticket_types(*)')
@@ -287,8 +287,11 @@ export async function createEvent(formData) {
       organizer_id: user?.id || null,
       organizer_name: formData.organizer_name || user?.user_metadata?.full_name || 'Anonymous',
       organizer_phone: formData.organizer_phone || null,
-      status: 'active',
-      commission_fee: 50,
+      status: 'draft',
+      commission_type: 'hybrid',
+      commission_flat: 50,
+      commission_percent: 5,
+      max_tickets_per_order: 4,
     })
     .select('*')
     .single()
@@ -309,7 +312,7 @@ export async function createTicketType(formData) {
       description: formData.description || null,
       price: parseInt(formData.price) || 0,
       quantity_total: parseInt(formData.quantity_total) || 100,
-      max_per_order: parseInt(formData.max_per_order) || 10,
+      max_per_order: parseInt(formData.max_per_order) || 4,
       sale_start: formData.sale_start || null,
       sale_end: formData.sale_end || null,
     })
