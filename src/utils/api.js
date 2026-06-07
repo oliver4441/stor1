@@ -4,21 +4,22 @@ import { CATEGORY_TO_ID } from './constants'
 
 // Auth
 export async function signUp({ email, password, fullName }) {
-  const { data: authData, error: authError } = await supabase.auth.signUp({
+  const { data, error: authError } = await supabase.auth.signUp({
     email,
     password,
     options: { data: { full_name: fullName } }
-  })
-  if (authError) return { success: false, error: authError.message }
-  if (authData.user) {
+  });
+  if (authError) return { success: false, error: authError.message };
+  if (data.user) {
     await supabase.from('profiles').insert({
-      id: authData.user.id,
+      id: data.user.id,
       full_name: fullName,
       email,
-      role: 'seller'
-    })
+      role: 'seller',
+    });
   }
-  return { success: true, user: authData.user }
+  // Return session if auto-signed in (email confirmation disabled), null if verification needed
+  return { success: true, user: data.user, session: data.session };
 }
 
 export async function signIn({ email, password }) {

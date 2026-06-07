@@ -6,11 +6,13 @@ function Login() {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const [needsVerification, setNeedsVerification] = useState(false);
 
   const handleLogin = async (e) => {
     e.preventDefault();
     setLoading(true);
     setError('');
+    setNeedsVerification(false);
 
     const { email, password } = e.target.elements;
     const result = await signIn({
@@ -21,6 +23,11 @@ function Login() {
     if (result.success) {
       navigate('/dashboard');
     } else {
+      const msg = result.error || '';
+      // Detect email confirmation error
+      if (msg.toLowerCase().includes('confirm') || msg.toLowerCase().includes('verify') || msg.toLowerCase().includes('email')) {
+        setNeedsVerification(true);
+      }
       setError(result.error);
       setLoading(false);
     }
@@ -33,7 +40,15 @@ function Login() {
         <p className="text-zinc-500 dark:text-zinc-400">Log in to manage your listings</p>
       </div>
 
-      {error && (
+      {needsVerification && (
+        <div className="bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-900/50 text-amber-700 dark:text-amber-400 p-4 rounded-xl mb-4 text-sm">
+          <p className="font-bold mb-1">📧 Email not verified</p>
+          <p className="text-zinc-500 dark:text-zinc-400 text-xs mb-2">Please check your inbox and click the confirmation link we sent when you signed up.</p>
+          <p className="text-xs text-zinc-400">Can't find it? Check your spam folder, or <Link to="/signup" className="text-[#ff385c] font-bold hover:underline">create a new account</Link>.</p>
+        </div>
+      )}
+
+      {error && !needsVerification && (
         <div className="bg-red-50 dark:bg-red-900/20 text-red-600 p-4 rounded-xl mb-6 text-sm font-medium border border-red-100 dark:border-red-900/50">
           {error}
         </div>

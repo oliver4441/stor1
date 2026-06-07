@@ -7,6 +7,8 @@ function Signup() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState(false);
+  const [needsVerification, setNeedsVerification] = useState(false);
+  const [registeredEmail, setRegisteredEmail] = useState('');
 
   const handleSignup = async (e) => {
     e.preventDefault();
@@ -14,20 +16,48 @@ function Signup() {
     setError('');
 
     const { email, password, fullName } = e.target.elements;
+    const emailVal = email.value;
     const result = await signUp({
-      email: email.value,
+      email: emailVal,
       password: password.value,
       fullName: fullName.value,
     });
 
     if (result.success) {
-      setSuccess(true);
-      setTimeout(() => navigate('/dashboard'), 1500);
+      // If we got a session, user is auto-signed in (email confirmation disabled)
+      if (result.session) {
+        setSuccess(true);
+        setTimeout(() => navigate('/dashboard'), 1500);
+      } else {
+        // Email confirmation required — show "check your email" message
+        setNeedsVerification(true);
+        setRegisteredEmail(emailVal);
+        setLoading(false);
+      }
     } else {
       setError(result.error);
       setLoading(false);
     }
   };
+
+  // Email verification required state
+  if (needsVerification) {
+    return (
+      <div className="max-w-md mx-auto px-4 py-20 text-center" data-name="signup-verify">
+        <div className="bg-blue-50 dark:bg-blue-900/20 text-blue-600 p-8 rounded-3xl mb-6">
+          <div className="w-16 h-16 bg-blue-100 dark:bg-blue-900/40 rounded-full flex items-center justify-center mx-auto mb-4">
+            <span className="text-3xl">📧</span>
+          </div>
+          <h2 className="text-2xl font-black mb-2">Check your email</h2>
+          <p className="text-zinc-500 dark:text-zinc-400 mb-2">
+            We sent a confirmation link to <strong className="text-zinc-700 dark:text-zinc-300">{registeredEmail}</strong>
+          </p>
+          <p className="text-sm text-zinc-400">Click the link in the email to activate your account, then log in.</p>
+        </div>
+        <Link to="/login" className="text-[#ff385c] font-bold hover:underline">Go to Login</Link>
+      </div>
+    );
+  }
 
   if (success) {
     return (
@@ -64,7 +94,7 @@ function Signup() {
         </div>
         <div>
           <label className="block text-sm font-bold mb-2 text-zinc-700 dark:text-zinc-300">Password</label>
-          <input required name="password" type="password" placeholder="Create a strong password" className="w-full px-4 py-3.5 rounded-xl bg-zinc-100 dark:bg-zinc-900 border border-transparent focus:border-[#ff385c] focus:bg-white dark:focus:bg-zinc-950 focus:outline-none text-zinc-900 dark:text-white transition-all shadow-sm" />
+          <input required name="password" type="password" placeholder="Create a strong password" minLength={6} className="w-full px-4 py-3.5 rounded-xl bg-zinc-100 dark:bg-zinc-900 border border-transparent focus:border-[#ff385c] focus:bg-white dark:focus:bg-zinc-950 focus:outline-none text-zinc-900 dark:text-white transition-all shadow-sm" />
         </div>
         <button type="submit" disabled={loading} className="w-full bg-[#ff385c] text-white font-black py-4 rounded-2xl hover:bg-[#e03150] transition-all disabled:opacity-50 shadow-lg shadow-[#ff385c]/20">
           {loading ? 'Creating account...' : 'Create Account'}
