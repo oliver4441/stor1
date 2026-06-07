@@ -27,21 +27,10 @@ function Home() {
     <div data-name="home-page">
       {/* Hero Section */}
       <div className="relative overflow-hidden mb-8">
-        {/* Video Background */}
-        <div className="absolute inset-0 z-0">
-          <video
-            autoPlay
-            muted
-            loop
-            playsInline
-            className="w-full h-full object-cover"
-            poster="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='1920' height='1080'%3E%3Crect fill='%2318181b' width='1920' height='1080'/%3E%3C/svg%3E"
-          >
-            <source src="/eruption.mp4" type="video/mp4" />
-          </video>
-          {/* Dark overlay for text readability */}
-          <div className="absolute inset-0 bg-black/60 backdrop-blur-[2px]"></div>
-        </div>
+        {/* Gradient Background */}
+        <div className="absolute inset-0 bg-gradient-to-br from-[#ff385c] via-[#e03150] to-[#c02040]"></div>
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,rgba(255,255,255,0.15),transparent_50%)]"></div>
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_bottom_left,rgba(0,0,0,0.1),transparent_50%)]"></div>
 
         {/* Hero Content */}
         <div className="relative z-10 py-20 md:py-28 px-4">

@@ -9,6 +9,7 @@ function Dashboard() {
   const navigate = useNavigate();
   const [user, setUser] = useState(null);
   const [listings, setListings] = useState([]);
+  const [inquiries, setInquiries] = useState(0);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -20,6 +21,21 @@ function Dashboard() {
         setUser(user);
         const userListings = await fetchUserListings(user.id);
         setListings(userListings);
+
+        // Count messages received on user's wishes
+        const { data: userWishes } = await supabase
+          .from('wishes')
+          .select('id')
+          .eq('user_id', user.id);
+
+        if (userWishes && userWishes.length > 0) {
+          const { count } = await supabase
+            .from('messages')
+            .select('*', { count: 'exact', head: true })
+            .in('wish_id', userWishes.map(w => w.id));
+          setInquiries(count || 0);
+        }
+
         setLoading(false);
       }
     };
@@ -71,7 +87,7 @@ function Dashboard() {
             <MessageSquare className="w-6 h-6" />
             <h3 className="font-bold">Total Inquiries</h3>
           </div>
-          <p className="text-4xl font-black text-zinc-900 dark:text-white">0</p>
+            <p className="text-4xl font-black text-zinc-900 dark:text-white">{inquiries}</p>
         </div>
       </div>
 

@@ -1,8 +1,6 @@
-// AI Search utility using Gemini
-// This would typically use a backend proxy to protect the API key,
-// but for this prototype, we'll implement the client-side structure.
-
-const GEMINI_API_KEY = "YOUR_GEMINI_API_KEY"; // Placeholder
+// AI Search utility
+// TODO: Connect to backend proxy for Gemini API
+// const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
 
 export async function aiSearch(query, listings) {
   // In a real app, we'd send the query and listing titles/descriptions to Gemini

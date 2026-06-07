@@ -49,10 +49,6 @@ function About() {
             </div>
           </div>
         </section>
-
-        <section className="text-center pt-8">
-          <p className="text-sm text-zinc-500">Omix Marketplace — Version 3.0 (PWA Upgrade)</p>
-        </section>
       </div>
     </div>
   );
