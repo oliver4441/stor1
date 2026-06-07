@@ -16,7 +16,10 @@ import HowItWorks from './pages/HowItWorks'
 import Events from './pages/Events'
 import EventDetail from './pages/EventDetail'
 import CreateEvent from './pages/CreateEvent'
+import OrderCallback from './pages/PaymentCallback'
 import QRScanner from './pages/QRScanner'
+import Terms from './pages/Terms'
+import Privacy from './pages/Privacy'
 import ContactFloat from './components/ContactFloat'
 
 class ErrorBoundary extends React.Component {
@@ -67,8 +70,10 @@ function App() {
             <Route path="/events" element={<Events />} />
             <Route path="/events/create" element={<CreateEvent />} />
             <Route path="/events/:id" element={<EventDetail />} />
-            <Route path="/events/order/:id" element={<EventDetail />} />
+            <Route path="/events/order/callback/:orderId" element={<OrderCallback />} />
             <Route path="/scanner" element={<QRScanner />} />
+            <Route path="/terms" element={<Terms />} />
+            <Route path="/privacy" element={<Privacy />} />
           </Routes>
         </main>
         <Footer />

@@ -467,7 +467,7 @@ export async function generateTickets(orderId) {
 }
 
 // ── Paystack Integration ─────────────────────────────────
-// Paystack STK Push for M-Pesa payments
+// Paystack inline payment — user completes payment on Paystack's hosted page
 // Server-side proxy needed — these functions call our backend
 
 const API_BASE = import.meta.env.VITE_API_URL || '';
@@ -498,6 +498,51 @@ export async function paystackVerify(reference) {
 
   const data = await res.json();
   return { success: true, ...data };
+}
+
+// ── Listing Payments ─────────────────────────────────────
+
+export async function createListingPayment(listingData) {
+  const { data: { user } } = await supabase.auth.getUser();
+
+  const paymentRecord = {
+    user_id: user?.id || null,
+    amount: 5,
+    payment_status: 'pending',
+    listing_data: listingData,
+  };
+
+  const { data, error } = await supabase
+    .from('listing_payments')
+    .insert(paymentRecord)
+    .select('*')
+    .single();
+
+  if (error) {
+    console.error('createListingPayment error:', error);
+    return { success: false, error: error.message };
+  }
+
+  return { success: true, payment: data };
+}
+
+export async function updateListingPaymentStatus(paymentId, { paystackReference, paymentStatus }) {
+  const { data, error } = await supabase
+    .from('listing_payments')
+    .update({
+      paystack_reference: paystackReference,
+      payment_status: paymentStatus,
+    })
+    .eq('id', paymentId)
+    .select('*')
+    .single();
+
+  if (error) {
+    console.error('updateListingPaymentStatus error:', error);
+    return { success: false, error: error.message };
+  }
+
+  return { success: true, payment: data };
 }
 
 export async function paystackPollStatus(orderId, reference, maxAttempts = 30) {

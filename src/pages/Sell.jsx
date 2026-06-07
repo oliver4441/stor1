@@ -1,14 +1,20 @@
 import { useState } from 'react'
 import { useNavigate, Link } from 'react-router-dom'
-import { Upload, X, Image as ImageIcon } from 'lucide-react'
+import { Upload, X, Image as ImageIcon, CreditCard, CheckCircle2 } from 'lucide-react'
 import { CATEGORIES, LOCATIONS } from '../utils/constants'
-import { createListing, uploadImage } from '../utils/api'
+import { createListing, uploadImage, createListingPayment, updateListingPaymentStatus } from '../utils/api'
+
+const PAYSTACK_PUBLIC_KEY = 'pk_live_27f0020f17e275660e4a92c34fb7f7a9fc36ea94';
+const LISTING_FEE_KES = 5;
 
 function Sell() {
   const navigate = useNavigate();
   const [submitting, setSubmitting] = useState(false);
+  const [paying, setPaying] = useState(false);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState(false);
+  const [agreed, setAgreed] = useState(false);
+  const [pendingListingData, setPendingListingData] = useState(null);
   const [imageFile, setImageFile] = useState(null);
   const [imagePreview, setImagePreview] = useState('');
 
@@ -29,11 +35,19 @@ function Sell() {
     setImagePreview('');
   };
 
+  // Step 1: Upload image, collect form data, create payment record, then pay via Paystack
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    if (!agreed) {
+      setError('Please agree to the terms of service before posting.');
+      return;
+    }
+
     setSubmitting(true);
     setError('');
 
+    // Upload image first (if any)
     let imageUrl = '';
     if (imageFile) {
       const uploadResult = await uploadImage(imageFile);
@@ -59,23 +73,175 @@ function Sell() {
       seller_phone: form.seller_phone.value,
     };
 
-    const result = await createListing(formData);
+    // Step 2: Create listing_payment record in Supabase
+    const paymentResult = await createListingPayment(formData);
+    if (!paymentResult.success) {
+      setError('Failed to create payment record: ' + paymentResult.error);
+      setSubmitting(false);
+      return;
+    }
 
-    if (result.success) {
-      setSuccess(true);
-      setTimeout(() => { navigate('/'); }, 1500);
+    const paymentId = paymentResult.payment.id;
+    setPendingListingData(formData);
+
+    // Step 3: Load Paystack script and initialize payment
+    setPaying(true);
+
+    // Load Paystack inline script if not already loaded
+    if (!window.PaystackPop) {
+      const script = document.createElement('script');
+      script.src = 'https://js.paystack.co/v1/inline.js';
+      script.async = true;
+      document.body.appendChild(script);
+
+      script.onload = () => {
+        initiatePaystackPayment(paymentId, formData);
+      };
+      script.onerror = () => {
+        setError('Failed to load payment gateway. Please try again.');
+        setSubmitting(false);
+        setPaying(false);
+      };
     } else {
-      setError(result.error || 'Failed to create listing');
+      initiatePaystackPayment(paymentId, formData);
+    }
+  };
+
+  const initiatePaystackPayment = async (paymentId, formData) => {
+    try {
+      // We need a Paystack reference — call server-side endpoint or use client-side approach
+      // Since Paystack inline.js needs a reference generated server-side with the secret key,
+      // we initialize via our backend which has the secret key
+      const API_BASE = import.meta.env.VITE_API_URL || '';
+
+      const initRes = await fetch(`${API_BASE}/api/paystack/initialize`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          reference: `listing_${paymentId}_${Date.now()}`,
+          email: formData.seller_name ? `${formData.seller_name.replace(/\s+/g, '.').toLowerCase()}@omix.co.ke` : 'buyer@omix.co.ke',
+          amount: LISTING_FEE_KES * 100, // Paystack expects amount in cents
+          payment_id: paymentId,
+          callback_url: `${window.location.origin}/sell?payment_callback=true&payment_id=${paymentId}`,
+        }),
+      });
+
+      if (!initRes.ok) {
+        const err = await initRes.json().catch(() => ({}));
+        setError(err.message || 'Payment initialization failed');
+        setSubmitting(false);
+        setPaying(false);
+        return;
+      }
+
+      const initData = await initRes.json();
+
+      // Use Paystack Inline
+      const handler = window.PaystackPop.setup({
+        key: PAYSTACK_PUBLIC_KEY,
+        email: initData.email || 'buyer@omix.co.ke',
+        amount: LISTING_FEE_KES * 100,
+        ref: initData.reference,
+        currency: 'KES',
+        onClose: async () => {
+          setPaying(false);
+          setSubmitting(false);
+          setError('Payment was cancelled.');
+          // Update payment status to failed
+          await updateListingPaymentStatus(paymentId, {
+            paystackReference: initData.reference,
+            paymentStatus: 'failed',
+          });
+        },
+        callback: async (response) => {
+          // Step 5: Verify payment and create listing
+          await verifyAndCreateListing(paymentId, response.reference, formData);
+        },
+      });
+
+      handler.openIframe();
+    } catch (err) {
+      console.error('Paystack init error:', err);
+      setError('Payment failed to start. Please try again.');
+      setSubmitting(false);
+      setPaying(false);
+    }
+  };
+
+  const verifyAndCreateListing = async (paymentId, reference, formData) => {
+    try {
+      // Verify payment via server
+      const API_BASE = import.meta.env.VITE_API_URL || '';
+      const verifyRes = await fetch(`${API_BASE}/api/paystack/verify/${reference}`);
+
+      if (!verifyRes.ok) {
+        setError('Payment verification failed. If money was deducted, contact support.');
+        setPaying(false);
+        setSubmitting(false);
+        return;
+      }
+
+      const verifyData = await verifyRes.json();
+
+      if (verifyData.success && verifyData.data?.status === 'success') {
+        // Update payment record to success
+        await updateListingPaymentStatus(paymentId, {
+          paystackReference: reference,
+          paymentStatus: 'success',
+        });
+
+        // Now create the actual listing
+        const result = await createListing(formData);
+
+        if (result.success) {
+          setSuccess(true);
+          setPaying(false);
+          setTimeout(() => { navigate('/'); }, 2000);
+        } else {
+          setError('Payment succeeded but listing creation failed: ' + (result.error || 'Unknown error') + '. Contact support for assistance.');
+          setPaying(false);
+          setSubmitting(false);
+        }
+      } else {
+        // Payment verification failed
+        await updateListingPaymentStatus(paymentId, {
+          paystackReference: reference,
+          paymentStatus: 'failed',
+        });
+        setError('Payment verification failed.');
+        setPaying(false);
+        setSubmitting(false);
+      }
+    } catch (err) {
+      console.error('verifyAndCreateListing error:', err);
+      setError('An error occurred during payment verification.');
+      setPaying(false);
       setSubmitting(false);
     }
   };
+
+  // Handle Paystack callback redirect
+  React.useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    if (params.get('payment_callback') === 'true' && params.get('payment_id')) {
+      const paymentId = params.get('payment_id');
+      const reference = params.get('reference');
+
+      if (reference && pendingListingData) {
+        verifyAndCreateListing(paymentId, reference, pendingListingData);
+      }
+
+      // Clean URL
+      window.history.replaceState({}, document.title, '/sell');
+    }
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   if (success) {
     return (
       <div className="max-w-7xl mx-auto px-4 py-20 text-center">
         <div className="bg-green-100 dark:bg-green-900/20 text-green-600 p-8 rounded-3xl inline-block mb-4">
           <h2 className="text-3xl font-black mb-2">Listing posted!</h2>
-          <p className="text-zinc-500 dark:text-zinc-400">Redirecting to homepage...</p>
+          <p className="text-zinc-500 dark:text-zinc-400">Your KES 5 listing fee was paid successfully. Redirecting to homepage...</p>
         </div>
       </div>
     );
@@ -88,9 +254,25 @@ function Sell() {
         <p className="text-zinc-500 dark:text-zinc-400">Add details and a photo to start selling.</p>
       </div>
 
+      {/* Listing Fee Notice */}
+      <div className="bg-amber-50 dark:bg-amber-900/10 border border-amber-200 dark:border-amber-800/40 rounded-2xl p-4 mb-6 flex items-start gap-3">
+        <CreditCard className="w-5 h-5 text-amber-600 mt-0.5 shrink-0" />
+        <div>
+          <p className="text-sm font-bold text-amber-700 dark:text-amber-400">Listing Fee: KES {LISTING_FEE_KES}</p>
+          <p className="text-xs text-amber-600 dark:text-amber-500 mt-0.5">A small KES {LISTING_FEE_KES} fee is required via M-Pesa or card to keep our platform spam-free and active. This is a one-time charge per listing.</p>
+        </div>
+      </div>
+
       {error && (
         <div className="bg-red-50 dark:bg-red-900/20 text-red-600 p-4 rounded-xl mb-6 text-sm font-medium border border-red-100 dark:border-red-900/50">
           {error}
+        </div>
+      )}
+
+      {paying && (
+        <div className="bg-blue-50 dark:bg-blue-900/20 text-blue-700 dark:text-blue-300 p-4 rounded-xl mb-6 text-sm font-medium border border-blue-200 dark:border-blue-800/50 flex items-center gap-2">
+          <div className="animate-spin w-4 h-4 border-2 border-blue-500 border-t-transparent rounded-full"></div>
+          Redirecting to Paystack to complete KES {LISTING_FEE_KES} payment...
         </div>
       )}
 
@@ -175,9 +357,45 @@ function Sell() {
           </div>
         </div>
 
-        <button type="submit" disabled={submitting} className="w-full bg-[#ff385c] text-white font-black py-4 rounded-2xl hover:bg-[#e03150] transition-all disabled:opacity-50 shadow-lg shadow-[#ff385c]/20">
-          {submitting ? 'Posting...' : 'Post Listing'}
+        {/* User Agreement Checkbox */}
+        <div className="pt-4 border-t border-zinc-200 dark:border-zinc-800">
+          <label className="flex items-start gap-3 cursor-pointer group">
+            <div className="relative mt-0.5">
+              <input
+                type="checkbox"
+                checked={agreed}
+                onChange={(e) => setAgreed(e.target.checked)}
+                className="sr-only peer"
+              />
+              <div className="w-5 h-5 rounded-md border-2 border-zinc-300 dark:border-zinc-600 peer-checked:border-[#ff385c] peer-checked:bg-[#ff385c] transition-all flex items-center justify-center">
+                {agreed && <CheckCircle2 className="w-3.5 h-3.5 text-white" />}
+              </div>
+            </div>
+            <span className="text-sm text-zinc-600 dark:text-zinc-400 leading-relaxed">
+              I agree to the <Link to="/terms" className="text-[#ff385c] font-semibold hover:underline" target="_blank" rel="noopener noreferrer">Terms of Service</Link> and confirm that my listing complies with Omix community guidelines.
+            </span>
+          </label>
+        </div>
+
+        <button type="submit" disabled={submitting || paying} className="w-full bg-[#ff385c] text-white font-black py-4 rounded-2xl hover:bg-[#e03150] transition-all disabled:opacity-50 shadow-lg shadow-[#ff385c]/20 flex items-center justify-center gap-2">
+          {paying ? (
+            <>
+              <div className="animate-spin w-5 h-5 border-2 border-white border-t-transparent rounded-full"></div>
+              Processing Payment...
+            </>
+          ) : submitting ? (
+            'Uploading...'
+          ) : (
+            <>
+              <CreditCard className="w-5 h-5" />
+              Pay KES {LISTING_FEE_KES} & Post Listing
+            </>
+          )}
         </button>
+
+        <p className="text-center text-xs text-zinc-400 dark:text-zinc-500 mt-2">
+          Secure payment via Paystack. Pay KES {LISTING_FEE_KES} once per listing.
+        </p>
       </form>
     </div>
   );

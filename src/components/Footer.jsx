@@ -14,6 +14,10 @@ function Footer() {
           <Link to="/about" className="text-sm text-zinc-500 dark:text-zinc-400 hover:text-[#ff385c]">About</Link>
           <Link to="/sell" className="text-sm text-zinc-500 dark:text-zinc-400 hover:text-[#ff385c]">Sell</Link>
         </div>
+        <div className="flex gap-4">
+          <Link to="/terms" className="text-sm text-zinc-500 dark:text-zinc-400 hover:text-[#ff385c]">Terms</Link>
+          <Link to="/privacy" className="text-sm text-zinc-500 dark:text-zinc-400 hover:text-[#ff385c]">Privacy</Link>
+        </div>
       </div>
     </footer>
   );

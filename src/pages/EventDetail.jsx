@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
-import { Calendar, MapPin, Clock, User, Minus, Plus, Loader2, Shield, Smartphone } from 'lucide-react';
-import { fetchEvent, createOrder, paystackInitialize, paystackPollStatus, updateOrderPayment, generateTickets } from '../utils/api';
+import { Calendar, MapPin, Clock, User, Minus, Plus, Loader2, Shield, CreditCard } from 'lucide-react';
+import { fetchEvent, createOrder, paystackInitialize } from '../utils/api';
 import { formatKES } from '../utils/constants';
 
 function EventDetail() {
@@ -14,7 +14,7 @@ function EventDetail() {
   const [buyerName, setBuyerName] = useState('');
   const [buyerEmail, setBuyerEmail] = useState('');
   const [buyerPhone, setBuyerPhone] = useState('');
-  const [step, setStep] = useState('select'); // select | details | payment | processing | confirmed
+  const [step, setStep] = useState('select'); // select | details | processing | confirmed
   const [order, setOrder] = useState(null);
   const [error, setError] = useState('');
   const [paystackRef, setPaystackRef] = useState('');
@@ -43,10 +43,6 @@ function EventDetail() {
       setError('Please fill in all fields');
       return;
     }
-    if (!buyerPhone.match(/^(07|01|\+2547|\+2541)\d{8}$/)) {
-      setError('Enter a valid Kenyan phone number (e.g. 0712345678)');
-      return;
-    }
 
     setError('');
     setStep('processing');
@@ -68,13 +64,13 @@ function EventDetail() {
 
     setOrder(result.order);
 
-    // Initialize Paystack STK push
+    // Initialize Paystack inline payment
     const payResult = await paystackInitialize({
       orderId: result.order.id,
       email: buyerEmail,
       amount: result.order.total_amount,
       phone: buyerPhone,
-      callbackUrl: `${window.location.origin}/events/order/${result.order.id}`,
+      callbackUrl: `${window.location.origin}/events/order/callback/${result.order.id}`,
     });
 
     if (!payResult.success) {
@@ -84,29 +80,9 @@ function EventDetail() {
     }
 
     setPaystackRef(payResult.reference);
-    setStep('payment');
 
-    // Poll for payment status
-    const pollResult = await paystackPollStatus(result.order.id, payResult.reference);
-
-    if (pollResult.success) {
-      // Payment confirmed
-      await updateOrderPayment(result.order.id, {
-        paystackReference: payResult.reference,
-        paymentStatus: 'completed',
-      });
-
-      // Generate tickets
-      const ticketResult = await generateTickets(result.order.id);
-
-      if (ticketResult.success) {
-        setOrder({ ...result.order, payment_status: 'completed' });
-        setStep('confirmed');
-      }
-    } else {
-      setError(pollResult.error || 'Payment not confirmed');
-      setStep('details');
-    }
+    // Redirect user to Paystack's hosted payment page
+    window.location.href = payResult.authorization_url;
   };
 
   const formatDate = (d) => new Date(d).toLocaleDateString('en-GB', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
@@ -257,7 +233,7 @@ function EventDetail() {
               <input value={buyerEmail} onChange={e => setBuyerEmail(e.target.value)} type="email" placeholder="you@example.com" className="w-full px-4 py-3 rounded-xl bg-zinc-50 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 focus:border-[#ff385c] focus:outline-none text-zinc-900 dark:text-white text-sm" />
             </div>
             <div>
-              <label className="block text-xs font-bold text-zinc-500 uppercase tracking-wider mb-1.5">M-Pesa Phone</label>
+              <label className="block text-xs font-bold text-zinc-500 uppercase tracking-wider mb-1.5">Phone Number</label>
               <input value={buyerPhone} onChange={e => setBuyerPhone(e.target.value)} type="tel" placeholder="0712345678" className="w-full px-4 py-3 rounded-xl bg-zinc-50 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 focus:border-[#ff385c] focus:outline-none text-zinc-900 dark:text-white text-sm" />
             </div>
           </div>
@@ -267,8 +243,8 @@ function EventDetail() {
           <div className="flex gap-3">
             <button onClick={() => setStep('select')} className="flex-1 bg-zinc-100 dark:bg-zinc-800 text-zinc-700 dark:text-zinc-300 font-bold py-3.5 rounded-xl hover:bg-zinc-200 dark:hover:bg-zinc-700 transition-all">Back</button>
             <button onClick={handleCreateOrder} className="flex-[2] bg-[#ff385c] text-white font-bold py-3.5 rounded-xl hover:bg-[#e03150] transition-all flex items-center justify-center gap-2">
-              <Smartphone className="w-5 h-5" />
-              Pay {formatKES(totalPrice)} via M-Pesa
+              <CreditCard className="w-5 h-5" />
+              Pay {formatKES(totalPrice)} with Paystack
             </button>
           </div>
 
@@ -281,25 +257,10 @@ function EventDetail() {
         <div className="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-2xl p-10 text-center">
           <Loader2 className="w-12 h-12 text-[#ff385c] animate-spin mx-auto mb-4" />
           <h2 className="text-xl font-black text-zinc-900 dark:text-white mb-2">Initializing Payment...</h2>
-          <p className="text-zinc-500">Please wait while we set up your M-Pesa payment.</p>
+          <p className="text-zinc-500">Please wait while we connect to Paystack.</p>
         </div>
       )}
 
-      {/* STK Push Sent */}
-      {step === 'payment' && (
-        <div className="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-2xl p-10 text-center">
-          <div className="w-16 h-16 bg-green-100 dark:bg-green-900/30 rounded-full flex items-center justify-center mx-auto mb-4">
-            <Smartphone className="w-8 h-8 text-green-600" />
-          </div>
-          <h2 className="text-xl font-black text-zinc-900 dark:text-white mb-2">Check Your Phone</h2>
-          <p className="text-zinc-500 mb-2">An M-Pesa STK push has been sent to <strong className="text-zinc-700 dark:text-zinc-300">{buyerPhone}</strong></p>
-          <p className="text-zinc-500 mb-6">Enter your M-Pesa PIN to complete payment of <strong className="text-[#ff385c]">{formatKES(totalPrice)}</strong></p>
-          <div className="flex items-center justify-center gap-2 text-sm text-zinc-400">
-            <Loader2 className="w-4 h-4 animate-spin" />
-            Waiting for confirmation...
-          </div>
-        </div>
-      )}
     </div>
   );
 }
