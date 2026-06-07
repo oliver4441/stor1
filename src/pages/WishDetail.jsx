@@ -4,6 +4,7 @@ import { ArrowLeft, Clock, AlertTriangle, CheckCircle, Send, MessageCircle, Pack
 import { fetchWish, fetchMessages, sendMessage, updateWishStatus } from '../utils/api';
 import { formatKES } from '../utils/constants';
 import { supabase } from '../utils/supabase';
+import { WhatsAppShareButton, WhatsAppChatButton } from '../components/WhatsAppButtons';
 
 function WishDetail() {
   const { id } = useParams();
@@ -163,6 +164,12 @@ function WishDetail() {
       {/* Action Buttons */}
       {wish.status === 'open' && (
         <div className="flex flex-col sm:flex-row gap-3 mb-6">
+          <WhatsAppShareButton
+            title={wish.title}
+            url={`${window.location.origin}/wishes/${wish.id}`}
+            type="wish"
+            className="flex-1 justify-center py-3.5"
+          />
           {!isOwner && (
             <button
               onClick={() => setShowChat(!showChat)}
@@ -172,7 +179,14 @@ function WishDetail() {
               I Have This — Chat
             </button>
           )}
-          {isOwner && (
+          {isOwner && wish.requester_phone && (
+            <WhatsAppChatButton
+              phone={wish.requester_phone}
+              message={`Hi! I posted a wish for "${wish.title}" on Omix. Do you have it?`}
+              className="flex-1 justify-center"
+            />
+          )}
+          {isOwner && !wish.requester_phone && (
             <button
               onClick={handleMarkFound}
               className="flex-1 bg-green-600 text-white font-bold py-3.5 rounded-xl hover:bg-green-700 transition-all flex items-center justify-center gap-2"

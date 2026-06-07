@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { Heart, Search, Clock, AlertTriangle, CheckCircle, Plus } from 'lucide-react';
+import { Heart, Search, Clock, AlertTriangle, CheckCircle, Plus, Share2 } from 'lucide-react';
 import { fetchWishes } from '../utils/api';
 import { CATEGORIES, formatKES } from '../utils/constants';
 
@@ -161,7 +161,20 @@ function Wishes() {
 
               <div className="flex items-center justify-between pt-3 border-t border-zinc-100 dark:border-zinc-800">
                 <span className="text-xs text-zinc-400 font-medium">{wish.requester_name || 'Anonymous'}</span>
-                <span className="text-xs text-zinc-400">{timeAgo(wish.created_at)}</span>
+                <div className="flex items-center gap-2">
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      const msg = `Someone is looking for "${wish.title}" on Omix!\nBudget: ${wish.budget_max > 0 ? `KES ${wish.budget_min > 0 ? `${wish.budget_min.toLocaleString()} — ` : ''}${wish.budget_max.toLocaleString()}` : 'Not specified'}\nhttps://stor1-web.onrender.com/wishes/${wish.id}`;
+                      window.open(`https://wa.me/?text=${encodeURIComponent(msg)}`, '_blank');
+                    }}
+                    className="text-zinc-400 hover:text-[#25D366] transition-colors"
+                    aria-label="Share on WhatsApp"
+                  >
+                    <Share2 className="w-3.5 h-3.5" />
+                  </button>
+                  <span className="text-xs text-zinc-400">{timeAgo(wish.created_at)}</span>
+                </div>
               </div>
             </div>
           ))}

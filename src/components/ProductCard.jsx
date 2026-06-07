@@ -1,11 +1,18 @@
-import { useState } from 'react'
-import { Link } from 'react-router-dom'
-import { Image as ImageIcon, MapPin } from 'lucide-react'
-import { formatKES } from '../utils/constants'
+import { useState } from 'react';
+import { Link } from 'react-router-dom';
+import { Image as ImageIcon, MapPin, Share2 } from 'lucide-react';
+import { formatKES } from '../utils/constants';
 
 function ProductCard({ listing }) {
   const [imgError, setImgError] = useState(false);
   const hasImage = listing.images && listing.images.length > 0 && !imgError;
+
+  const handleShare = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    const message = `Check out this ${listing.title} on Omix!\nKES ${listing.price?.toLocaleString()} — Kericho\n${window.location.origin}/listing/${listing.id}`;
+    window.open(`https://wa.me/?text=${encodeURIComponent(message)}`, '_blank');
+  };
 
   return (
     <Link to={`/listing/${listing.id}`} className="block group">
@@ -20,6 +27,13 @@ function ProductCard({ listing }) {
         <div className="absolute top-2 left-2 bg-white/90 dark:bg-black/90 text-zinc-900 dark:text-white px-2 py-1 rounded-[8px] text-xs font-bold shadow-sm capitalize">
           {listing.condition?.replace('_', ' ')}
         </div>
+        <button
+          onClick={handleShare}
+          className="absolute top-2 right-2 bg-[#25D366] text-white p-1.5 rounded-full shadow-sm hover:bg-[#20BD5A] transition-all opacity-0 group-hover:opacity-100"
+          aria-label="Share on WhatsApp"
+        >
+          <Share2 className="w-3.5 h-3.5" />
+        </button>
       </div>
       <div>
         <div className="flex justify-between items-start gap-2">

@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { Image as ImageIcon, MapPin, CheckCircle, Smartphone } from 'lucide-react';
 import ProductCard from '../components/ProductCard';
+import { WhatsAppShareButton, WhatsAppChatButton } from '../components/WhatsAppButtons';
 import { fetchListing, fetchListings } from '../utils/api';
 import { formatKES } from '../utils/constants';
 
@@ -112,6 +113,24 @@ function ListingDetails() {
               </div>
             </div>
           )}
+
+          {/* WhatsApp Actions */}
+          <div className="flex flex-wrap gap-3 mb-6">
+            <WhatsAppShareButton
+              title={listing.title}
+              price={listing.price}
+              url={`${window.location.origin}/listing/${listing.id}`}
+              type="listing"
+              className="flex-1 justify-center"
+            />
+            {listing.seller_phone && (
+              <WhatsAppChatButton
+                phone={listing.seller_phone}
+                message={`Hi! I'm interested in your ${listing.title} on Omix (KES ${listing.price?.toLocaleString()})`}
+                className="flex-1 justify-center"
+              />
+            )}
+          </div>
 
           {/* M-Pesa Section */}
           <div className="bg-white/40 dark:bg-zinc-900/40 backdrop-blur-xl rounded-3xl p-8 mt-8 border border-white/20 dark:border-zinc-800/50 shadow-2xl">
