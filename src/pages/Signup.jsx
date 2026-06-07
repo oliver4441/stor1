@@ -11,9 +11,14 @@ function Signup() {
   const [success, setSuccess] = useState(false);
   const [needsVerification, setNeedsVerification] = useState(false);
   const [registeredEmail, setRegisteredEmail] = useState('');
+  const [agreed, setAgreed] = useState(false);
 
   const handleSignup = async (e) => {
     e.preventDefault();
+    if (!agreed) {
+      setError(t('sell.errorAgree'));
+      return;
+    }
     setLoading(true);
     setError('');
 
@@ -40,7 +45,6 @@ function Signup() {
     }
   };
 
-  // Email verification required state
   if (needsVerification) {
     return (
       <div className="max-w-md mx-auto px-4 py-20 text-center" data-name="signup-verify">
@@ -96,6 +100,25 @@ function Signup() {
           <label className="block text-sm font-bold mb-2 text-zinc-700 dark:text-zinc-300">{t('auth.password')}</label>
           <input required name="password" type="password" placeholder={t('auth.passwordPlaceholder')} minLength={6} className="w-full px-4 py-3.5 rounded-xl bg-zinc-100 dark:bg-zinc-900 border border-transparent focus:border-[#ff385c] focus:bg-white dark:focus:bg-zinc-950 focus:outline-none text-zinc-900 dark:text-white transition-all shadow-sm" />
         </div>
+
+        {/* User Agreement */}
+        <label className="flex items-start gap-3 cursor-pointer group pt-2">
+          <div className="relative mt-0.5">
+            <input
+              type="checkbox"
+              checked={agreed}
+              onChange={(e) => setAgreed(e.target.checked)}
+              className="sr-only peer"
+            />
+            <div className="w-5 h-5 rounded-md border-2 border-zinc-300 dark:border-zinc-600 peer-checked:border-[#ff385c] peer-checked:bg-[#ff385c] transition-all flex items-center justify-center">
+              {agreed && <svg className="w-3.5 h-3.5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}><path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" /></svg>}
+            </div>
+          </div>
+          <span className="text-sm text-zinc-600 dark:text-zinc-400 leading-relaxed">
+            {t('sell.agreeTerms').split('Terms of Service')[0]}<Link to="/terms" className="text-[#ff385c] font-semibold hover:underline" target="_blank" rel="noopener noreferrer">Terms of Service</Link> {t('sell.agreeTerms').split('Terms of Service')[1] || ''}
+          </span>
+        </label>
+
         <button type="submit" disabled={loading} className="w-full bg-[#ff385c] text-white font-black py-4 rounded-2xl hover:bg-[#e03150] transition-all disabled:opacity-50 shadow-lg shadow-[#ff385c]/20">
           {loading ? t('auth.creatingAccount') : t('auth.createAccount')}
         </button>
