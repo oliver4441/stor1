@@ -24,6 +24,7 @@ import QRScanner from './pages/QRScanner'
 import Terms from './pages/Terms'
 import Privacy from './pages/Privacy'
 import ContactFloat from './components/ContactFloat'
+import ScrollToTop from './components/ScrollToTop'
 
 class ErrorBoundary extends React.Component {
   constructor(props) {
@@ -56,9 +57,10 @@ function App() {
   return (
     <LanguageProvider>
     <ErrorBoundary>
+      <ScrollToTop />
       <div className="min-h-screen flex flex-col bg-white dark:bg-zinc-950 text-zinc-900 dark:text-zinc-50 antialiased">
         <Navbar />
-        <main className="flex-grow">
+        <main className="flex-grow page-transition">
           <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/listing/:id" element={<ListingDetails />} />

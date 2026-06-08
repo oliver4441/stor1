@@ -4,6 +4,7 @@ import { Upload, X, Image as ImageIcon, CreditCard, CheckCircle2 } from 'lucide-
 import { CATEGORIES, LOCATIONS } from '../utils/constants'
 import { createListing, uploadImage, createListingPayment, updateListingPaymentStatus } from '../utils/api'
 import { useLang } from '../utils/lang'
+import { supabase } from '../utils/supabase'
 
 const PAYSTACK_PUBLIC_KEY = 'pk_live_27f0020f17e275660e4a92c34fb7f7a9fc36ea94';
 const LISTING_FEE_KES = 5;
@@ -11,6 +12,8 @@ const LISTING_FEE_KES = 5;
 function Sell() {
   const { t } = useLang();
   const navigate = useNavigate();
+  const [user, setUser] = useState(null);
+  const [authLoading, setAuthLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
   const [paying, setPaying] = useState(false);
   const [error, setError] = useState('');
@@ -19,6 +22,28 @@ function Sell() {
   const [pendingListingData, setPendingListingData] = useState(null);
   const [imageFile, setImageFile] = useState(null);
   const [imagePreview, setImagePreview] = useState('');
+
+  useEffect(() => {
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      if (!session?.user) {
+        navigate('/login?redirect=/sell');
+        return;
+      }
+      setUser(session.user);
+      setAuthLoading(false);
+    });
+  }, [navigate]);
+
+  if (authLoading) {
+    return (
+      <div className="max-w-7xl mx-auto px-4 py-20 text-center">
+        <div className="inline-block w-8 h-8 border-4 border-[#ff385c] border-t-transparent rounded-full animate-spin mb-4" />
+        <p className="text-zinc-500">{t('auth.checkingAuth') || 'Checking authentication...'}</p>
+      </div>
+    );
+  }
+
+  if (!user) return null;
 
   const handleImageChange = (e) => {
     const file = e.target.files[0];

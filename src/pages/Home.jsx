@@ -6,13 +6,25 @@ import InstallBanner from '../components/InstallBanner';
 import { CATEGORIES } from '../utils/constants';
 import { fetchListings } from '../utils/api';
 import { useLang } from '../utils/lang';
+import { supabase } from '../utils/supabase';
 
 function Home() {
   const { t } = useLang();
+  const [user, setUser] = useState(null);
   const [activeCategory, setActiveCategory] = useState('All');
   const [searchQuery, setSearchQuery] = useState('');
   const [listings, setListings] = useState([]);
   const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setUser(session?.user ?? null);
+    });
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      setUser(session?.user ?? null);
+    });
+    return () => subscription.unsubscribe();
+  }, []);
   const [isAiMode, setIsAiMode] = useState(false);
 
   useEffect(() => {
@@ -44,7 +56,7 @@ function Home() {
               <Link to="/" className="px-6 py-3 rounded-xl bg-white text-[#ff385c] font-bold text-sm hover:bg-zinc-100 transition-all shadow-lg">
                 {t('home.browseListings')}
               </Link>
-              <Link to="/sell" className="px-6 py-3 rounded-xl bg-white/15 backdrop-blur-sm text-white font-bold text-sm hover:bg-white/25 transition-all border border-white/20">
+              <Link to={user ? "/sell" : "/signup"} className="px-6 py-3 rounded-xl bg-white/15 backdrop-blur-sm text-white font-bold text-sm hover:bg-white/25 transition-all border border-white/20">
                 {t('home.startSelling')}
               </Link>
             </div>
@@ -129,7 +141,7 @@ function Home() {
         ) : (
           <div className="text-center py-20">
             <p className="text-zinc-500 dark:text-zinc-400 mb-4 text-lg">{t('home.noListings')}</p>
-            <Link to="/sell" className="text-[#ff385c] font-bold text-lg hover:underline underline-offset-4">
+            <Link to={user ? "/sell" : "/signup"} className="text-[#ff385c] font-bold text-lg hover:underline underline-offset-4">
               {t('home.startSelling')}
             </Link>
           </div>

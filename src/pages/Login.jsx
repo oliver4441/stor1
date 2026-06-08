@@ -23,7 +23,9 @@ function Login() {
     });
 
     if (result.success) {
-      navigate('/dashboard');
+      const params = new URLSearchParams(window.location.search);
+      const redirect = params.get('redirect') || '/dashboard';
+      navigate(redirect);
     } else {
       const msg = result.error || '';
       if (msg.toLowerCase().includes('confirm') || msg.toLowerCase().includes('verify') || msg.toLowerCase().includes('email')) {
