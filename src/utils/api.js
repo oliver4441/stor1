@@ -271,13 +271,29 @@ export async function fetchWishes(category = 'All', status = 'open') {
 }
 
 export async function fetchWish(id) {
-  const { data, error } = await supabase
+  let query = supabase
     .from('wishes')
     .select('*')
     .eq('id', id)
     .single()
+
+  const { data, error } = await query
   if (error) { console.error(error); return null }
   return data
+}
+
+export async function fetchUserWishes() {
+  const { data: { user } } = await supabase.auth.getUser()
+  const userId = user?.id
+
+  const { data, error } = await supabase
+    .from('wishes')
+    .select('*')
+    .eq('user_id', userId)
+    .order('created_at', { ascending: false })
+
+  if (error) { console.error('fetchUserWishes error:', error); return [] }
+  return data || []
 }
 
 export async function createWish(formData) {
