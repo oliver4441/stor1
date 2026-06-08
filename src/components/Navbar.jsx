@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Sun, Moon, User, Globe, Shield, Package, Sparkles, HelpCircle, Heart, Info, Store, LogIn, UserPlus, Menu, X } from 'lucide-react';
+import { Sun, Moon, User, Globe, Shield, Package, Sparkles, HelpCircle, Heart, Info, Store, LogIn, UserPlus, Menu, X, Download } from 'lucide-react';
 import { supabase } from '../utils/supabase';
 import { useLang } from '../utils/lang';
 import { isAdmin } from '../utils/api';

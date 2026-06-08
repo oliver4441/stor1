@@ -1,5 +1,5 @@
 import { Download, Share, Plus, ArrowDown, Smartphone, Monitor, ChevronDown, CheckCircle2, Star, Zap, Shield, Wifi } from 'lucide-react';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 const STEPS = {
   android: {
@@ -46,16 +46,16 @@ export default function Install() {
   const [deferredPrompt, setDeferredPrompt] = useState(null);
 
   // Detect platform for default tab
-  useState(() => {
+  useEffect(() => {
     const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
     const isAndroid = /Android/.test(navigator.userAgent);
     if (isIOS) setActiveTab('ios');
     else if (isAndroid) setActiveTab('android');
     else setActiveTab('desktop');
-  });
+  }, []);
 
   // Listen for install prompt
-  useState(() => {
+  useEffect(() => {
     const handler = (e) => {
       e.preventDefault();
       setDeferredPrompt(e);
