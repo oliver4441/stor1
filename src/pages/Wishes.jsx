@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { Heart, Search, Clock, AlertTriangle, CheckCircle, Plus, Share2 } from 'lucide-react';
+import { Heart, Search, Clock, AlertTriangle, CheckCircle, Plus, Share2, MessageCircle } from 'lucide-react';
 import { fetchWishes } from '../utils/api';
 import { CATEGORIES, formatKES } from '../utils/constants';
 
@@ -172,6 +172,16 @@ function Wishes() {
                     aria-label="Share on WhatsApp"
                   >
                     <Share2 className="w-3.5 h-3.5" />
+                  </button>
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      navigate(`/wishes/${wish.id}`);
+                    }}
+                    className="text-zinc-400 hover:text-[#ff385c] transition-colors"
+                    aria-label="Chat about this wish"
+                  >
+                    <MessageCircle className="w-3.5 h-3.5" />
                   </button>
                   <span className="text-xs text-zinc-400">{timeAgo(wish.created_at)}</span>
                 </div>
