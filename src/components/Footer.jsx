@@ -6,14 +6,18 @@ import { useState, useEffect } from 'react'
 function Footer() {
   const { t } = useLang()
   const [isUserAdmin, setIsUserAdmin] = useState(false)
+  const [checked, setChecked] = useState(false)
 
   useEffect(() => {
     const checkAdmin = async () => {
       const { data: { user } } = await supabase.auth.getUser()
       if (user) {
-        const { data: { role } } = await supabase.from('profiles').select('role').eq('id', user.id).single()
-        setIsUserAdmin(role === 'admin')
+        const { data: profile, error } = await supabase.from('profiles').select('role').eq('id', user.id).single()
+        if (!error && profile && profile.role === 'admin') {
+          setIsUserAdmin(true)
+        }
       }
+      setChecked(true)
     }
     checkAdmin()
   }, [])
