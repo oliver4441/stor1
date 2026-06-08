@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useNavigate, Link } from 'react-router-dom'
 import { Upload, X, Image as ImageIcon, CreditCard, CheckCircle2 } from 'lucide-react'
 import { CATEGORIES, LOCATIONS } from '../utils/constants'
@@ -207,7 +207,7 @@ function Sell() {
     }
   };
 
-  React.useEffect(() => {
+  useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     if (params.get('payment_callback') === 'true' && params.get('payment_id')) {
       const paymentId = params.get('payment_id');
