@@ -115,6 +115,7 @@ function Sell() {
           reference: `listing_${paymentId}_${Date.now()}`,
           email: formData.seller_name ? `${formData.seller_name.replace(/\s+/g, '.').toLowerCase()}@omix.co.ke` : 'buyer@omix.co.ke',
           amount: LISTING_FEE_KES * 100,
+          phone: formData.seller_phone || '',
           payment_id: paymentId,
           callback_url: `${window.location.origin}/sell?payment_callback=true&payment_id=${paymentId}`,
         }),

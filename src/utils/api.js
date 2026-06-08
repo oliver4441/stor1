@@ -3,11 +3,11 @@ import { supabase } from './supabase'
 import { CATEGORY_TO_ID } from './constants'
 
 // Auth
-export async function signUp({ email, password, fullName }) {
+export async function signUp({ email, password, fullName, phone }) {
   const { data, error: authError } = await supabase.auth.signUp({
     email,
     password,
-    options: { data: { full_name: fullName } }
+    options: { data: { full_name: fullName, phone } }
   });
   if (authError) return { success: false, error: authError.message };
   if (data.user) {
@@ -15,6 +15,7 @@ export async function signUp({ email, password, fullName }) {
       id: data.user.id,
       full_name: fullName,
       email,
+      phone: phone || null,
       role: 'seller',
     });
   }
@@ -250,7 +251,84 @@ export async function createListing(formData) {
   return { success: true, id: data?.id }
 }
 
-// ── Wishes ──────────────────────────────────────────────
+// Update listing
+export async function updateListing(id, formData) {
+  const { data: { user } } = await supabase.auth.getUser()
+  const catId = CATEGORY_TO_ID[formData.category] || null
+
+  const { data, error } = await supabase
+    .from('listings')
+    .update({
+      title: formData.title,
+      description: formData.description,
+      price: parseInt(formData.price) || 0,
+      condition: formData.condition,
+      category: formData.category,
+      category_id: catId,
+      location_city: formData.location,
+      location_region: 'Kericho',
+      images: formData.image_url ? [formData.image_url] : [],
+      seller_name: formData.seller_name || user?.user_metadata?.full_name,
+      seller_phone: formData.seller_phone || null,
+      updated_at: new Date().toISOString(),
+    })
+    .eq('id', id)
+    .select('id')
+    .single()
+
+  if (error) {
+    console.error('updateListing error:', error)
+    return { success: false, error: error.message }
+  }
+  return { success: true, id: data?.id }
+}
+
+// Delete listing
+export async function deleteListing(id) {
+  const { error } = await supabase
+    .from('listings')
+    .delete()
+    .eq('id', id)
+
+  if (error) {
+    console.error('deleteListing error:', error)
+    return { success: false, error: error.message }
+  }
+  return { success: true }
+}
+
+// Admin: fetch all listings
+export async function fetchAllListings() {
+  const { data, error } = await supabase
+    .from('listings')
+    .select('*')
+    .order('created_at', { ascending: false })
+
+  if (error) { console.error(error); return [] }
+  return data || []
+}
+
+// Admin: update listing status
+export async function updateListingStatus(id, status) {
+  const { error } = await supabase
+    .from('listings')
+    .update({ status, updated_at: new Date().toISOString() })
+    .eq('id', id)
+
+  if (error) return { success: false, error: error.message }
+  return { success: true }
+}
+
+// Admin: delete any listing
+export async function adminDeleteListing(id) {
+  const { error } = await supabase
+    .from('listings')
+    .delete()
+    .eq('id', id)
+
+  if (error) return { success: false, error: error.message }
+  return { success: true }
+}
 
 export async function fetchWishes(category = 'All', status = 'open') {
   let query = supabase

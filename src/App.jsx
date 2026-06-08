@@ -18,6 +18,7 @@ import Events from './pages/Events'
 import EventDetail from './pages/EventDetail'
 import CreateEvent from './pages/CreateEvent';
 import AdminEvents from './pages/AdminEvents';
+import AdminListings from './pages/AdminListings';
 import OrderCallback from './pages/PaymentCallback'
 import QRScanner from './pages/QRScanner'
 import Terms from './pages/Terms'
@@ -76,6 +77,7 @@ function App() {
             <Route path="/events/order/callback/:orderId" element={<OrderCallback />} />
             <Route path="/scanner" element={<QRScanner />} />
             <Route path="/admin/events" element={<AdminEvents />} />
+            <Route path="/admin/listings" element={<AdminListings />} />
             <Route path="/terms" element={<Terms />} />
             <Route path="/privacy" element={<Privacy />} />
           </Routes>

@@ -65,10 +65,16 @@ function Navbar() {
           </button>
 
           {isUserAdmin && (
-            <Link to="/admin/events" className="flex items-center gap-1.5 text-sm font-bold text-[#ff385c] hover:text-[#e03150] hidden sm:flex">
-              <Shield className="w-4 h-4" />
-              Admin
-            </Link>
+            <div className="hidden sm:flex items-center gap-2">
+              <Link to="/admin/events" className="flex items-center gap-1.5 text-sm font-bold text-[#ff385c] hover:text-[#e03150]">
+                <Shield className="w-4 h-4" />
+                Events
+              </Link>
+              <Link to="/admin/listings" className="flex items-center gap-1.5 text-sm font-bold text-[#ff385c] hover:text-[#e03150]">
+                <Package className="w-4 h-4" />
+                Listings
+              </Link>
+            </div>
           )}
 
           {user ? (
