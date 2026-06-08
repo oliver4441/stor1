@@ -23,6 +23,7 @@ import OrderCallback from './pages/PaymentCallback'
 import QRScanner from './pages/QRScanner'
 import Terms from './pages/Terms'
 import Privacy from './pages/Privacy'
+import Install from './pages/Install'
 import ContactFloat from './components/ContactFloat'
 import ScrollToTop from './components/ScrollToTop'
 
@@ -82,6 +83,7 @@ function App() {
             <Route path="/admin/listings" element={<AdminListings />} />
             <Route path="/terms" element={<Terms />} />
             <Route path="/privacy" element={<Privacy />} />
+            <Route path="/install" element={<Install />} />
           </Routes>
         </main>
         <Footer />

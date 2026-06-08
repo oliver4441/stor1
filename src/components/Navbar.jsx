@@ -6,10 +6,11 @@ import { useLang } from '../utils/lang';
 import { isAdmin } from '../utils/api';
 
 const FEATURE_LINKS = [
-  { to: '/events', label: 'Events', icon: Sparkles, color: 'from-violet-500 to-purple-600', glow: 'shadow-violet-500/40', pulse: 'animate-pulse-violet' },
-  { to: '/how-it-works', label: 'How It Works', icon: HelpCircle, color: 'from-amber-500 to-orange-600', glow: 'shadow-amber-500/40', pulse: 'animate-pulse-amber' },
-  { to: '/wishes', label: 'Wishes', icon: Heart, color: 'from-rose-500 to-pink-600', glow: 'shadow-rose-500/40', pulse: 'animate-pulse-rose' },
-  { to: '/about', label: 'About', icon: Info, color: 'from-cyan-500 to-teal-600', glow: 'shadow-cyan-500/40', pulse: 'animate-pulse-cyan' },
+  { to: '/events', label: 'Events', icon: Sparkles, color: 'from-violet-500 to-purple-600', glow: 'shadow-violet-500/40' },
+  { to: '/how-it-works', label: 'How It Works', icon: HelpCircle, color: 'from-amber-500 to-orange-600', glow: 'shadow-amber-500/40' },
+  { to: '/wishes', label: 'Wishes', icon: Heart, color: 'from-rose-500 to-pink-600', glow: 'shadow-rose-500/40' },
+  { to: '/about', label: 'About', icon: Info, color: 'from-cyan-500 to-teal-600', glow: 'shadow-cyan-500/40' },
+  { to: '/install', label: 'Install App', icon: Download, color: 'from-[#ff385c] to-[#e03150]', glow: 'shadow-[#ff385c]/40' },
 ];
 
 function Navbar() {
