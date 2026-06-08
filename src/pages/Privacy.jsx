@@ -240,9 +240,9 @@ function Privacy() {
           <div className="bg-zinc-50 dark:bg-zinc-900 rounded-2xl p-6 my-4 border border-zinc-200 dark:border-zinc-800">
             <p className="mb-2"><strong>Omix Marketplace — Data Protection Officer</strong></p>
             <p className="mb-2">Kericho, Kenya</p>
-            <p className="mb-2">Email: <a href="mailto:privacy@omix.co.ke" className="text-[#ff385c] hover:underline">privacy@omix.co.ke</a></p>
-            <p className="mb-2">General Inquiries: <a href="mailto:support@omix.co.ke" className="text-[#ff385c] hover:underline">support@omix.co.ke</a></p>
-            <p>Website: <a href="https://omix.co.ke" className="text-[#ff385c] hover:underline">www.omix.co.ke</a></p>
+            <p className="mb-2">Email: <a href="mailto:omixsystems@gmail.com" className="text-[#ff385c] hover:underline">omixsystems@gmail.com</a></p>
+            <p className="mb-2">General Inquiries: <a href="mailto:omixsystems@gmail.com" className="text-[#ff385c] hover:underline">omixsystems@gmail.com</a></p>
+            <p>Website: <a href="https://omixsystems.store" className="text-[#ff385c] hover:underline">www.omixsystems.store</a></p>
           </div>
           <p>
             We will respond to all privacy-related inquiries within 30 days of receipt. If you are not satisfied with our response, you have the right to lodge a complaint with the relevant data protection authority in Kenya.
