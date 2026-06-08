@@ -11,13 +11,16 @@ export async function signUp({ email, password, fullName, phone }) {
   });
   if (authError) return { success: false, error: authError.message };
   if (data.user) {
-    await supabase.from('profiles').insert({
+    const { error: profileError } = await supabase.from('profiles').insert({
       id: data.user.id,
       full_name: fullName,
       email,
       phone: phone || null,
       role: 'seller',
     });
+    if (profileError) {
+      console.warn('Profile insert failed (non-critical):', profileError.message);
+    }
   }
   // Return session if auto-signed in (email confirmation disabled), null if verification needed
   return { success: true, user: data.user, session: data.session };

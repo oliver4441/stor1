@@ -38,24 +38,29 @@ function Signup() {
     setLoading(true);
     setError('');
 
-    const result = await signUp({
-      email: formData.email,
-      password: formData.password,
-      fullName: formData.fullName,
-      phone: formData.phone,
-    });
+    try {
+      const result = await signUp({
+        email: formData.email,
+        password: formData.password,
+        fullName: formData.fullName,
+        phone: formData.phone,
+      });
 
-    if (result.success) {
-      if (result.session) {
-        setSuccess(true);
-        setTimeout(() => navigate('/dashboard'), 1500);
+      if (result.success) {
+        if (result.session) {
+          setSuccess(true);
+          setTimeout(() => navigate('/dashboard'), 1500);
+        } else {
+          setNeedsVerification(true);
+          setRegisteredEmail(formData.email);
+          setLoading(false);
+        }
       } else {
-        setNeedsVerification(true);
-        setRegisteredEmail(formData.email);
+        setError(result.error);
         setLoading(false);
       }
-    } else {
-      setError(result.error);
+    } catch (err) {
+      setError(err.message || 'Something went wrong. Please try again.');
       setLoading(false);
     }
   };
