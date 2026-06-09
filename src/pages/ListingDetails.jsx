@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { useParams, Link } from 'react-router-dom';
+import { useParams, Link, useNavigate } from 'react-router-dom';
 import { Image as ImageIcon, MapPin, CheckCircle, ShoppingCart, Minus, Plus } from 'lucide-react';
 import ProductCard from '../components/ProductCard';
 import { WhatsAppShareButton } from '../components/WhatsAppButtons';
@@ -10,6 +10,7 @@ import { supabase } from '../utils/supabase';
 
 function ListingDetails() {
   const { id } = useParams();
+  const navigate = useNavigate();
   const [listing, setListing] = useState(null);
   const [related, setRelated] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -158,9 +159,15 @@ function ListingDetails() {
                   <ShoppingCart className="w-5 h-5" />
                   {inCart ? 'Update Cart' : 'Add to Cart'} — {formatKES(listing.price * quantity)}
                 </button>
-                <Link to="/checkout" className="w-full flex items-center justify-center gap-2 bg-zinc-900 dark:bg-white text-white dark:text-zinc-900 font-bold py-4 rounded-2xl hover:opacity-90 transition-all">
+                <button
+                  onClick={() => {
+                    addItem({ id: listing.id, name: listing.title, price: listing.price, image_url: listing.images?.[0] || null, quantity });
+                    navigate('/checkout');
+                  }}
+                  className="w-full flex items-center justify-center gap-2 bg-zinc-900 dark:bg-white text-white dark:text-zinc-900 font-bold py-4 rounded-2xl hover:opacity-90 transition-all"
+                >
                   Buy Now — {formatKES(listing.price * quantity)}
-                </Link>
+                </button>
               </>
             ) : (
               <>
