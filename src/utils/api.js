@@ -346,16 +346,16 @@ export async function createOrder({ items, total, customerName, phone, email, ad
       status: 'pending',
       total_amount: total,
       customer_name: customerName,
-      email,
-      phone,
-      address,
+      email: email || null,
+      phone: phone || null,
+      address: address || null,
     })
     .select('*')
     .single()
 
   if (orderError) {
     console.error('createOrder error:', orderError)
-    return { success: false, error: orderError.message }
+    return { success: false, error: `Order creation failed: ${orderError.message}` }
   }
 
   // Create order items
@@ -370,13 +370,15 @@ export async function createOrder({ items, total, customerName, phone, email, ad
     subtotal: item.subtotal || (item.price * item.quantity),
   }))
 
-  const { error: itemsError } = await supabase
-    .from('omix_order_items')
-    .insert(orderItems)
+  if (orderItems.length > 0) {
+    const { error: itemsError } = await supabase
+      .from('omix_order_items')
+      .insert(orderItems)
 
-  if (itemsError) {
-    console.error('createOrder items error:', itemsError)
-    return { success: false, error: itemsError.message }
+    if (itemsError) {
+      console.error('createOrder items error:', itemsError)
+      return { success: false, error: `Order items failed: ${itemsError.message}` }
+    }
   }
 
   return { success: true, order }

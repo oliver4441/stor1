@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useReducer, useEffect } from 'react';
+import React, { createContext, useContext, useReducer, useEffect, useCallback, useRef } from 'react';
 
 const CART_STORAGE_KEY = 'omix_cart';
 
@@ -15,11 +15,11 @@ function cartReducer(state, action) {
       if (existing) {
         return state.map(item =>
           item.id === action.payload.id
-            ? { ...item, quantity: item.quantity + 1 }
+            ? { ...item, quantity: item.quantity + (action.payload.quantity || 1) }
             : item
         );
       }
-      return [...state, { ...action.payload, quantity: 1 }];
+      return [...state, { ...action.payload, quantity: action.payload.quantity || 1 }];
     }
 
     case 'REMOVE_ITEM':
@@ -64,6 +64,7 @@ function saveCartToStorage(cart) {
 // ── Provider ──────────────────────────────────────────────
 export function CartProvider({ children }) {
   const [cart, dispatch] = useReducer(cartReducer, [], loadCartFromStorage);
+  const onAddCallback = useRef(null);
 
   // Persist cart to localStorage whenever it changes
   useEffect(() => {
@@ -71,30 +72,35 @@ export function CartProvider({ children }) {
   }, [cart]);
 
   // ── Actions ──
-  const addItem = (product) => {
+  const addItem = useCallback((product) => {
     dispatch({ type: 'ADD_ITEM', payload: product });
-  };
+    // Trigger animation callback
+    if (onAddCallback.current) {
+      onAddCallback.current(product);
+    }
+  }, []);
 
-  const removeItem = (id) => {
+  const removeItem = useCallback((id) => {
     dispatch({ type: 'REMOVE_ITEM', payload: id });
-  };
+  }, []);
 
-  const updateQuantity = (id, quantity) => {
+  const updateQuantity = useCallback((id, quantity) => {
     dispatch({ type: 'UPDATE_QUANTITY', payload: { id, quantity } });
-  };
+  }, []);
 
-  const clearCart = () => {
+  const clearCart = useCallback(() => {
     dispatch({ type: 'CLEAR_CART' });
-  };
+  }, []);
 
   // ── Selectors ──
   const getItems = () => cart;
+  const getTotal = () => cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
+  const getItemCount = () => cart.reduce((count, item) => count + item.quantity, 0);
 
-  const getTotal = () =>
-    cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
-
-  const getItemCount = () =>
-    cart.reduce((count, item) => count + item.quantity, 0);
+  // ── Animation callback registration ──
+  const setOnAddCallback = useCallback((cb) => {
+    onAddCallback.current = cb;
+  }, []);
 
   const value = {
     cart,
@@ -105,6 +111,7 @@ export function CartProvider({ children }) {
     getItems,
     getTotal,
     getItemCount,
+    setOnAddCallback,
   };
 
   return (

@@ -105,7 +105,14 @@ export default function CheckoutPage() {
 
     } catch (err) {
       console.error('Checkout error:', err);
-      setError(err.message || 'Failed to process checkout. Please try again.');
+      const msg = err.message || 'Failed to process checkout. Please try again.';
+      if (msg.includes('auth') || msg.includes('login') || msg.includes('unauthorized')) {
+        setError('Please log in to complete your order.');
+      } else if (msg.includes('network') || msg.includes('fetch')) {
+        setError('Network error. Please check your connection and try again.');
+      } else {
+        setError(msg);
+      }
       setLoading(false);
     }
   };

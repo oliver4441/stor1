@@ -1,17 +1,47 @@
-import { useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import { MessageCircle, X, Send, CheckCircle, ShoppingCart } from 'lucide-react';
 import { useCart } from '../context/CartContext';
 
 const FORMSPREE_URL = 'https://formspree.io/f/mjgdyrrg';
 
+const FLASH_COLORS = [
+  'bg-emerald-500',
+  'bg-blue-500',
+  'bg-red-500',
+  'bg-zinc-900',
+  'bg-violet-500',
+  'bg-amber-500',
+  'bg-cyan-500',
+  'bg-rose-500',
+  'bg-indigo-500',
+  'bg-teal-500',
+];
+
 function ContactFloat() {
   const [isOpen, setIsOpen] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState('');
-  const { getItemCount } = useCart();
+  const [flash, setFlash] = useState(false);
+  const [flashColor, setFlashColor] = useState('bg-emerald-500');
+  const [bump, setBump] = useState(false);
+  const { getItemCount, setOnAddCallback } = useCart();
   const cartCount = getItemCount();
+  const prevCount = useRef(cartCount);
+
+  // Register callback for cart add events
+  useEffect(() => {
+    setOnAddCallback(() => {
+      // Pick a random non-white color
+      const color = FLASH_COLORS[Math.floor(Math.random() * FLASH_COLORS.length)];
+      setFlashColor(color);
+      setFlash(true);
+      setBump(true);
+      setTimeout(() => setFlash(false), 600);
+      setTimeout(() => setBump(false), 400);
+    });
+  }, [setOnAddCallback]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -45,12 +75,12 @@ function ContactFloat() {
       {/* Floating Cart Button — above contact */}
       <Link
         to="/cart"
-        className="fixed bottom-24 right-4 sm:right-6 z-50 w-14 h-14 rounded-full bg-zinc-900 dark:bg-white flex items-center justify-center shadow-2xl hover:scale-110 transition-all duration-300"
+        className={`fixed bottom-24 right-4 sm:right-6 z-50 w-14 h-14 rounded-full flex items-center justify-center shadow-2xl hover:scale-110 transition-all duration-300 ${bump ? 'animate-bounce-once' : ''} ${flash ? flashColor : 'bg-zinc-900 dark:bg-white'}`}
         aria-label="View cart"
       >
-        <ShoppingCart className="w-6 h-6 text-white dark:text-zinc-900" />
+        <ShoppingCart className={`w-6 h-6 transition-colors duration-300 ${flash ? 'text-white' : 'text-white dark:text-zinc-900'}`} />
         {cartCount > 0 && (
-          <span className="absolute -top-1 -right-1 w-5 h-5 bg-[#ff385c] text-white text-[10px] font-bold rounded-full flex items-center justify-center">
+          <span className={`absolute -top-1 -right-1 w-5 h-5 text-white text-[10px] font-bold rounded-full flex items-center justify-center transition-all duration-300 ${bump ? 'scale-125' : 'scale-100'} ${flash ? 'bg-white text-zinc-900' : 'bg-[#ff385c]'}`}>
             {cartCount > 9 ? '9+' : cartCount}
           </span>
         )}
@@ -151,7 +181,7 @@ function ContactFloat() {
         )}
       </div>
 
-      {/* Floating Contact Button — below cart */}
+      {/* Floating Contact Button */}
       <button
         onClick={() => { setIsOpen(!isOpen); setSuccess(false); setError(''); }}
         className={`fixed bottom-4 right-4 sm:right-6 z-50 w-14 h-14 rounded-full flex items-center justify-center shadow-2xl transition-all duration-300 ${
