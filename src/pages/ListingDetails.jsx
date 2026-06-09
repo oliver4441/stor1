@@ -104,20 +104,19 @@ function ListingDetails() {
             </div>
           )}
 
-          {listing.seller_name && (
-            <div className="border-t border-zinc-200 dark:border-zinc-800 py-6">
-              <h3 className="font-bold mb-4 text-lg">Seller Details</h3>
-              <div className="flex items-center gap-4">
-                <div className="w-12 h-12 bg-zinc-200 dark:bg-zinc-800 rounded-full flex items-center justify-center font-bold text-xl text-[#ff385c]">
-                  {listing.seller_name.charAt(0)}
-                </div>
-                <div>
-                  <p className="font-bold text-zinc-900 dark:text-white">{listing.seller_name}</p>
-                  {listing.seller_phone && <p className="text-sm text-zinc-500">{listing.seller_phone}</p>}
-                </div>
+          {/* Seller Details - Show store info */}
+          <div className="border-t border-zinc-200 dark:border-zinc-800 py-6">
+            <h3 className="font-bold mb-4 text-lg">Sold by</h3>
+            <div className="flex items-center gap-4">
+              <div className="w-12 h-12 bg-[#ff385c]/10 rounded-full flex items-center justify-center font-bold text-xl text-[#ff385c]">
+                O
+              </div>
+              <div>
+                <p className="font-bold text-zinc-900 dark:text-white">Omix Store</p>
+                <p className="text-sm text-zinc-500">Kericho, Kenya</p>
               </div>
             </div>
-          )}
+          </div>
 
           {/* Add to Cart Section */}
           <div className="mt-6 space-y-3">
