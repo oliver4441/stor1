@@ -52,14 +52,14 @@ function Home() {
             <h1 className="text-4xl md:text-6xl font-black mb-4 tracking-tighter text-white drop-shadow-lg">{t('home.heroTitle')}</h1>
             <p className="text-zinc-200 mb-8 max-w-xl mx-auto text-lg font-medium drop-shadow-md">{t('home.heroSubtitle')}</p>
             
-            <div className="flex flex-col sm:flex-row items-center justify-center gap-3 mb-8">
-              <Link to="/" className="px-6 py-3 rounded-xl bg-white text-[#ff385c] font-bold text-sm hover:bg-zinc-100 transition-all shadow-lg">
-                {t('home.browseListings')}
-              </Link>
-              <Link to={user ? "/sell" : "/signup"} className="px-6 py-3 rounded-xl bg-white/15 backdrop-blur-sm text-white font-bold text-sm hover:bg-white/25 transition-all border border-white/20">
-                {t('home.startSelling')}
-              </Link>
-            </div>
+              <div className="flex flex-col sm:flex-row items-center justify-center gap-3 mb-8">
+                <Link to="/" className="px-6 py-3 rounded-xl bg-white text-[#ff385c] font-bold text-sm hover:bg-zinc-100 transition-all shadow-lg">
+                  {t('home.browseListings') || 'Browse Products'}
+                </Link>
+                <Link to={user ? "/account" : "/signup"} className="px-6 py-3 rounded-xl bg-white/15 backdrop-blur-sm text-white font-bold text-sm hover:bg-white/25 transition-all border border-white/20">
+                  {user ? (t('nav.account') || 'My Account') : (t('auth.signUp') || 'Sign Up')}
+                </Link>
+              </div>
 
             <div className="max-w-2xl mx-auto relative group">
               <div className="absolute inset-y-0 left-4 flex items-center pointer-events-none">
@@ -141,8 +141,8 @@ function Home() {
         ) : (
           <div className="text-center py-20">
             <p className="text-zinc-500 dark:text-zinc-400 mb-4 text-lg">{t('home.noListings')}</p>
-            <Link to={user ? "/sell" : "/signup"} className="text-[#ff385c] font-bold text-lg hover:underline underline-offset-4">
-              {t('home.startSelling')}
+            <Link to="/" className="text-[#ff385c] font-bold text-lg hover:underline underline-offset-4">
+              {t('home.browseListings') || 'Browse Products'}
             </Link>
           </div>
         )}

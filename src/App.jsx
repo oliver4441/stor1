@@ -1,31 +1,25 @@
-import React from 'react'
-import { Routes, Route } from 'react-router-dom'
-import { LanguageProvider } from './utils/lang'
-import Navbar from './components/Navbar'
-import Footer from './components/Footer'
-import Home from './pages/Home'
-import ListingDetails from './pages/ListingDetails'
-import Sell from './pages/Sell'
-import About from './pages/About'
-import Login from './pages/Login'
-import Signup from './pages/Signup'
-import Dashboard from './pages/Dashboard'
-import Wishes from './pages/Wishes'
-import WishForm from './pages/WishForm'
-import WishDetail from './pages/WishDetail'
-import HowItWorks from './pages/HowItWorks'
-import Events from './pages/Events'
-import EventDetail from './pages/EventDetail'
-import CreateEvent from './pages/CreateEvent';
-import AdminEvents from './pages/AdminEvents';
-import AdminListings from './pages/AdminListings';
-import OrderCallback from './pages/PaymentCallback'
-import QRScanner from './pages/QRScanner'
-import Terms from './pages/Terms'
-import Privacy from './pages/Privacy'
-import Install from './pages/Install'
-import ContactFloat from './components/ContactFloat'
-import ScrollToTop from './components/ScrollToTop'
+import React from 'react';
+import { Routes, Route } from 'react-router-dom';
+import { LanguageProvider } from './utils/lang';
+import { CartProvider } from './context/CartContext';
+import Navbar from './components/Navbar';
+import Footer from './components/Footer';
+import Home from './pages/Home';
+import ListingDetails from './pages/ListingDetails';
+import About from './pages/About';
+import Login from './pages/Login';
+import Signup from './pages/Signup';
+import UserDashboard from './pages/UserDashboard';
+import AdminDashboard from './pages/AdminDashboard';
+import HowItWorks from './pages/HowItWorks';
+import Checkout from './pages/Checkout';
+import OrderSuccess from './pages/OrderSuccess';
+import TrackOrder from './pages/TrackOrder';
+import Terms from './pages/Terms';
+import Privacy from './pages/Privacy';
+import Install from './pages/Install';
+import ContactFloat from './components/ContactFloat';
+import ScrollToTop from './components/ScrollToTop';
 
 class ErrorBoundary extends React.Component {
   constructor(props) {
@@ -52,11 +46,12 @@ class ErrorBoundary extends React.Component {
 
 function App() {
   React.useEffect(() => {
-    console.log('Omix App Mounted');
+    console.log('Omix Store Mounted');
   }, []);
 
   return (
     <LanguageProvider>
+    <CartProvider>
     <ErrorBoundary>
       <ScrollToTop />
       <div className="min-h-screen flex flex-col bg-white dark:bg-zinc-950 text-zinc-900 dark:text-zinc-50 antialiased">
@@ -65,22 +60,15 @@ function App() {
           <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/listing/:id" element={<ListingDetails />} />
-            <Route path="/sell" element={<Sell />} />
             <Route path="/about" element={<About />} />
             <Route path="/login" element={<Login />} />
             <Route path="/signup" element={<Signup />} />
-            <Route path="/dashboard" element={<Dashboard />} />
-            <Route path="/wishes" element={<Wishes />} />
-            <Route path="/wish/new" element={<WishForm />} />
-            <Route path="/wishes/:id" element={<WishDetail />} />
+            <Route path="/account" element={<UserDashboard />} />
+            <Route path="/admin" element={<AdminDashboard />} />
             <Route path="/how-it-works" element={<HowItWorks />} />
-            <Route path="/events" element={<Events />} />
-            <Route path="/events/create" element={<CreateEvent />} />
-            <Route path="/events/:id" element={<EventDetail />} />
-            <Route path="/events/order/callback/:orderId" element={<OrderCallback />} />
-            <Route path="/scanner" element={<QRScanner />} />
-            <Route path="/admin/events" element={<AdminEvents />} />
-            <Route path="/admin/listings" element={<AdminListings />} />
+            <Route path="/checkout" element={<Checkout />} />
+            <Route path="/order-success" element={<OrderSuccess />} />
+            <Route path="/track-order" element={<TrackOrder />} />
             <Route path="/terms" element={<Terms />} />
             <Route path="/privacy" element={<Privacy />} />
             <Route path="/install" element={<Install />} />
@@ -90,6 +78,7 @@ function App() {
         <ContactFloat />
       </div>
     </ErrorBoundary>
+    </CartProvider>
     </LanguageProvider>
   )
 }

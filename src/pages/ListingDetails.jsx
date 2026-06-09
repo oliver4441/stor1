@@ -1,10 +1,11 @@
 import { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import { Image as ImageIcon, MapPin, CheckCircle, Smartphone } from 'lucide-react';
+import { Image as ImageIcon, MapPin, CheckCircle, ShoppingCart, Minus, Plus } from 'lucide-react';
 import ProductCard from '../components/ProductCard';
-import { WhatsAppShareButton, WhatsAppChatButton } from '../components/WhatsAppButtons';
+import { WhatsAppShareButton } from '../components/WhatsAppButtons';
 import { fetchListing, fetchListings } from '../utils/api';
 import { formatKES } from '../utils/constants';
+import { useCart } from '../context/CartContext';
 
 function ListingDetails() {
   const { id } = useParams();
@@ -12,6 +13,10 @@ function ListingDetails() {
   const [related, setRelated] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [quantity, setQuantity] = useState(1);
+  const { addItem, cart } = useCart();
+
+  const inCart = cart.find(item => item.id === id);
 
   useEffect(() => {
     if (!id) { setError('No listing ID'); setLoading(false); return; }
@@ -114,8 +119,39 @@ function ListingDetails() {
             </div>
           )}
 
-          {/* WhatsApp Actions */}
-          <div className="flex flex-wrap gap-3 mb-6">
+          {/* Add to Cart Section */}
+          <div className="mt-6 space-y-3">
+            {inCart && (
+              <div className="flex items-center gap-2 text-sm text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-900/20 px-4 py-2 rounded-xl font-bold border border-emerald-200 dark:border-emerald-800">
+                <ShoppingCart className="w-4 h-4" />
+                {inCart.quantity} in cart
+              </div>
+            )}
+            <div className="flex items-center gap-3">
+              <button type="button" onClick={() => setQuantity(Math.max(1, quantity - 1))}
+                className="w-12 h-12 rounded-2xl bg-zinc-100 dark:bg-zinc-800 flex items-center justify-center hover:bg-zinc-200 dark:hover:bg-zinc-700 transition-colors">
+                <Minus className="w-5 h-5" />
+              </button>
+              <span className="text-2xl font-black text-zinc-900 dark:text-white w-12 text-center">{quantity}</span>
+              <button type="button" onClick={() => setQuantity(quantity + 1)}
+                className="w-12 h-12 rounded-2xl bg-zinc-100 dark:bg-zinc-800 flex items-center justify-center hover:bg-zinc-200 dark:hover:bg-zinc-700 transition-colors">
+                <Plus className="w-5 h-5" />
+              </button>
+            </div>
+            <button
+              onClick={() => addItem({ id: listing.id, name: listing.title, price: listing.price, image_url: listing.images?.[0] || null, quantity })}
+              className="w-full flex items-center justify-center gap-2 bg-[#ff385c] text-white font-black py-4 rounded-2xl hover:bg-[#e03150] transition-all shadow-lg shadow-[#ff385c]/20 text-lg"
+            >
+              <ShoppingCart className="w-5 h-5" />
+              {inCart ? 'Update Cart' : 'Add to Cart'} — {formatKES(listing.price * quantity)}
+            </button>
+            <Link to="/checkout" className="w-full flex items-center justify-center gap-2 bg-zinc-900 dark:bg-white text-white dark:text-zinc-900 font-bold py-4 rounded-2xl hover:opacity-90 transition-all">
+              Buy Now — {formatKES(listing.price * quantity)}
+            </Link>
+          </div>
+
+          {/* Share */}
+          <div className="mt-4">
             <WhatsAppShareButton
               title={listing.title}
               price={listing.price}
@@ -123,40 +159,6 @@ function ListingDetails() {
               type="listing"
               className="flex-1 justify-center"
             />
-            {listing.seller_phone && (
-              <WhatsAppChatButton
-                phone={listing.seller_phone}
-                message={`Hi! I'm interested in your ${listing.title} on Omix (KES ${listing.price?.toLocaleString()})`}
-                className="flex-1 justify-center"
-              />
-            )}
-          </div>
-
-          {/* M-Pesa Section */}
-          <div className="bg-white/40 dark:bg-zinc-900/40 backdrop-blur-xl rounded-3xl p-8 mt-8 border border-white/20 dark:border-zinc-800/50 shadow-2xl">
-            <div className="flex items-center gap-5 mb-6">
-              <div className="w-14 h-14 bg-gradient-to-br from-green-400 to-green-600 rounded-2xl flex items-center justify-center text-white shadow-lg shadow-green-500/30">
-                <Smartphone className="w-8 h-8" />
-              </div>
-              <div>
-                <h3 className="font-black text-xl text-zinc-900 dark:text-white">Pay via M-Pesa</h3>
-                <p className="text-sm text-zinc-500 dark:text-zinc-400 font-medium">Safe & Direct Transaction</p>
-              </div>
-            </div>
-            <div className="bg-zinc-900 dark:bg-black p-6 rounded-2xl mb-6 text-center transform hover:scale-[1.02] transition-transform">
-              <p className="text-[10px] text-zinc-500 uppercase tracking-[0.2em] font-black mb-2">Buy Goods Till Number</p>
-              <p className="text-4xl font-black tracking-tighter text-green-500">9315501</p>
-            </div>
-            <div className="space-y-3">
-              <p className="text-xs text-zinc-500 dark:text-zinc-400 leading-relaxed font-medium flex gap-2">
-                <CheckCircle className="w-4 h-4 text-green-500 flex-shrink-0" />
-                Contact seller after payment to arrange pickup.
-              </p>
-              <p className="text-xs text-zinc-500 dark:text-zinc-400 leading-relaxed font-medium flex gap-2">
-                <CheckCircle className="w-4 h-4 text-[#ff385c] flex-shrink-0" />
-                Never pay in advance for items you haven't seen.
-              </p>
-            </div>
           </div>
         </div>
       </div>
