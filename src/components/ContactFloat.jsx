@@ -28,9 +28,10 @@ function ContactFloat() {
   const [flash, setFlash] = useState(false);
   const [flashColor, setFlashColor] = useState('bg-emerald-500');
   const [bump, setBump] = useState(false);
-  const { getItemCount, setOnAddCallback, items, getTotal, updateQuantity, removeItem, clearCart } = useCart();
+  const { getItemCount, setOnAddCallback, getItems, getTotal, updateQuantity, removeItem, clearCart } = useCart();
   const cartCount = getItemCount();
   const cartTotal = getTotal();
+  const items = getItems();
   const prevCount = useRef(cartCount);
 
   // Register callback for cart add events
