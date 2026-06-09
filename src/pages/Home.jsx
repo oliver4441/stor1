@@ -49,8 +49,8 @@ function Home() {
         {/* Hero Content */}
         <div className="relative z-10 py-20 md:py-28 px-4">
           <div className="max-w-7xl mx-auto text-center">
-            <h1 className="text-4xl md:text-6xl font-black mb-4 tracking-tighter text-white drop-shadow-lg">{t('home.heroTitle')}</h1>
-            <p className="text-zinc-200 mb-8 max-w-xl mx-auto text-lg font-medium drop-shadow-md">{t('home.heroSubtitle')}</p>
+            <h1 className="text-4xl md:text-6xl font-black mb-4 tracking-tighter text-white drop-shadow-lg">Your Online Store in Kericho</h1>
+            <p className="text-zinc-200 mb-8 max-w-xl mx-auto text-lg font-medium drop-shadow-md">Browse, add to cart, and pay easily via M-Pesa. Delivered to your doorstep.</p>
             
               <div className="flex flex-col sm:flex-row items-center justify-center gap-3 mb-8">
                 <Link to="/" className="px-6 py-3 rounded-xl bg-white text-[#ff385c] font-bold text-sm hover:bg-zinc-100 transition-all shadow-lg">

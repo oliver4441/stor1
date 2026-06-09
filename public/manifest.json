@@ -1,7 +1,7 @@
 {
-  "name": "Omix Store — Buy & Sell in Kericho",
+  "name": "Omix Store — Your Online Store in Kericho",
   "short_name": "Omix",
-  "description": "The cleanest P2P marketplace in Kericho, Kenya. Buy and sell electronics, furniture, vehicles, and services.",
+  "description": "Shop online in Kericho, Kenya. Browse products, add to cart, and pay via M-Pesa.",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#ffffff",
