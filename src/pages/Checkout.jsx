@@ -1,9 +1,10 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { ShoppingCart, ArrowRight, Loader2, Package, CreditCard, Trash2, Plus, Minus } from 'lucide-react';
 import { useCart } from '../context/CartContext';
 import { createOrder } from '../utils/api';
 import { formatKES } from '../utils/constants';
+import { supabase } from '../utils/supabase';
 
 const PAYSTACK_PUBLIC_KEY = 'pk_live_27f0020f17e275660e4a92c34fb7f7a9fc36ea94';
 
@@ -31,6 +32,12 @@ export default function CheckoutPage() {
   });
 
   const total = getTotal();
+
+  useEffect(() => {
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      if (!session) navigate('/login?redirect=/checkout');
+    });
+  }, [navigate]);
 
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });

@@ -6,6 +6,7 @@ import { WhatsAppShareButton } from '../components/WhatsAppButtons';
 import { fetchListing, fetchListings } from '../utils/api';
 import { formatKES } from '../utils/constants';
 import { useCart } from '../context/CartContext';
+import { supabase } from '../utils/supabase';
 
 function ListingDetails() {
   const { id } = useParams();
@@ -14,9 +15,20 @@ function ListingDetails() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [quantity, setQuantity] = useState(1);
+  const [user, setUser] = useState(null);
   const { addItem, cart } = useCart();
 
   const inCart = cart.find(item => item.id === id);
+
+  useEffect(() => {
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setUser(session?.user ?? null);
+    });
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      setUser(session?.user ?? null);
+    });
+    return () => subscription.unsubscribe();
+  }, []);
 
   useEffect(() => {
     if (!id) { setError('No listing ID'); setLoading(false); return; }
@@ -120,7 +132,7 @@ function ListingDetails() {
 
           {/* Add to Cart Section */}
           <div className="mt-6 space-y-3">
-            {inCart && (
+            {inCart && user && (
               <div className="flex items-center gap-2 text-sm text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-900/20 px-4 py-2 rounded-xl font-bold border border-emerald-200 dark:border-emerald-800">
                 <ShoppingCart className="w-4 h-4" />
                 {inCart.quantity} in cart
@@ -137,16 +149,30 @@ function ListingDetails() {
                 <Plus className="w-5 h-5" />
               </button>
             </div>
-            <button
-              onClick={() => addItem({ id: listing.id, name: listing.title, price: listing.price, image_url: listing.images?.[0] || null, quantity })}
-              className="w-full flex items-center justify-center gap-2 bg-[#ff385c] text-white font-black py-4 rounded-2xl hover:bg-[#e03150] transition-all shadow-lg shadow-[#ff385c]/20 text-lg"
-            >
-              <ShoppingCart className="w-5 h-5" />
-              {inCart ? 'Update Cart' : 'Add to Cart'} — {formatKES(listing.price * quantity)}
-            </button>
-            <Link to="/checkout" className="w-full flex items-center justify-center gap-2 bg-zinc-900 dark:bg-white text-white dark:text-zinc-900 font-bold py-4 rounded-2xl hover:opacity-90 transition-all">
-              Buy Now — {formatKES(listing.price * quantity)}
-            </Link>
+            {user ? (
+              <>
+                <button
+                  onClick={() => addItem({ id: listing.id, name: listing.title, price: listing.price, image_url: listing.images?.[0] || null, quantity })}
+                  className="w-full flex items-center justify-center gap-2 bg-[#ff385c] text-white font-black py-4 rounded-2xl hover:bg-[#e03150] transition-all shadow-lg shadow-[#ff385c]/20 text-lg"
+                >
+                  <ShoppingCart className="w-5 h-5" />
+                  {inCart ? 'Update Cart' : 'Add to Cart'} — {formatKES(listing.price * quantity)}
+                </button>
+                <Link to="/checkout" className="w-full flex items-center justify-center gap-2 bg-zinc-900 dark:bg-white text-white dark:text-zinc-900 font-bold py-4 rounded-2xl hover:opacity-90 transition-all">
+                  Buy Now — {formatKES(listing.price * quantity)}
+                </Link>
+              </>
+            ) : (
+              <>
+                <Link to={`/signup?redirect=/listing/${listing.id}`} className="w-full flex items-center justify-center gap-2 bg-[#ff385c] text-white font-black py-4 rounded-2xl hover:bg-[#e03150] transition-all shadow-lg shadow-[#ff385c]/20 text-lg">
+                  <ShoppingCart className="w-5 h-5" />
+                  Sign Up to Add to Cart
+                </Link>
+                <Link to={`/login?redirect=/listing/${listing.id}`} className="w-full flex items-center justify-center gap-2 bg-zinc-900 dark:bg-white text-white dark:text-zinc-900 font-bold py-4 rounded-2xl hover:opacity-90 transition-all">
+                  Log In to Buy Now
+                </Link>
+              </>
+            )}
           </div>
 
           {/* Share */}

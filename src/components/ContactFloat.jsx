@@ -1,5 +1,7 @@
 import { useState } from 'react';
-import { MessageCircle, X, Send, CheckCircle } from 'lucide-react';
+import { Link } from 'react-router-dom';
+import { MessageCircle, X, Send, CheckCircle, ShoppingCart } from 'lucide-react';
+import { useCart } from '../context/CartContext';
 
 const FORMSPREE_URL = 'https://formspree.io/f/mjgdyrrg';
 
@@ -8,6 +10,8 @@ function ContactFloat() {
   const [submitting, setSubmitting] = useState(false);
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState('');
+  const { getItemCount } = useCart();
+  const cartCount = getItemCount();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -38,6 +42,20 @@ function ContactFloat() {
 
   return (
     <>
+      {/* Floating Cart Button — above contact */}
+      <Link
+        to="/cart"
+        className="fixed bottom-20 right-4 sm:right-6 z-50 w-14 h-14 rounded-full bg-zinc-900 dark:bg-white flex items-center justify-center shadow-2xl hover:scale-110 transition-all duration-300"
+        aria-label="View cart"
+      >
+        <ShoppingCart className="w-6 h-6 text-white dark:text-zinc-900" />
+        {cartCount > 0 && (
+          <span className="absolute -top-1 -right-1 w-5 h-5 bg-[#ff385c] text-white text-[10px] font-bold rounded-full flex items-center justify-center">
+            {cartCount > 9 ? '9+' : cartCount}
+          </span>
+        )}
+      </Link>
+
       {/* Overlay */}
       {isOpen && (
         <div
@@ -48,7 +66,7 @@ function ContactFloat() {
 
       {/* Form Panel */}
       <div
-        className={`fixed bottom-24 right-4 sm:right-6 w-[calc(100%-2rem)] sm:w-[400px] bg-white dark:bg-zinc-900 rounded-2xl shadow-2xl border border-zinc-200 dark:border-zinc-800 z-50 transition-all duration-300 origin-bottom-right ${
+        className={`fixed bottom-36 right-4 sm:right-6 w-[calc(100%-2rem)] sm:w-[400px] bg-white dark:bg-zinc-900 rounded-2xl shadow-2xl border border-zinc-200 dark:border-zinc-800 z-50 transition-all duration-300 origin-bottom-right ${
           isOpen
             ? 'opacity-100 scale-100 translate-y-0'
             : 'opacity-0 scale-95 translate-y-4 pointer-events-none'
@@ -86,92 +104,54 @@ function ContactFloat() {
           <form onSubmit={handleSubmit} className="px-6 py-5 space-y-4">
             <div>
               <label className="block text-xs font-bold text-zinc-500 dark:text-zinc-400 uppercase tracking-wider mb-1.5">Your Name</label>
-              <input
-                required
-                name="name"
-                type="text"
-                placeholder="e.g. Kiprono Yegon"
-                className="w-full px-4 py-3 rounded-xl bg-zinc-50 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 focus:border-[#ff385c] focus:ring-2 focus:ring-[#ff385c]/10 focus:outline-none text-zinc-900 dark:text-white text-sm transition-all"
-              />
+              <input required name="name" type="text" placeholder="e.g. Kiprono Yegon"
+                className="w-full px-4 py-3 rounded-xl bg-zinc-50 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 focus:border-[#ff385c] focus:ring-2 focus:ring-[#ff385c]/10 focus:outline-none text-zinc-900 dark:text-white text-sm transition-all" />
             </div>
-
             <div>
               <label className="block text-xs font-bold text-zinc-500 dark:text-zinc-400 uppercase tracking-wider mb-1.5">Email Address</label>
-              <input
-                required
-                name="email"
-                type="email"
-                placeholder="you@example.com"
-                className="w-full px-4 py-3 rounded-xl bg-zinc-50 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 focus:border-[#ff385c] focus:ring-2 focus:ring-[#ff385c]/10 focus:outline-none text-zinc-900 dark:text-white text-sm transition-all"
-              />
+              <input required name="email" type="email" placeholder="you@example.com"
+                className="w-full px-4 py-3 rounded-xl bg-zinc-50 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 focus:border-[#ff385c] focus:ring-2 focus:ring-[#ff385c]/10 focus:outline-none text-zinc-900 dark:text-white text-sm transition-all" />
             </div>
-
             <div>
               <label className="block text-xs font-bold text-zinc-500 dark:text-zinc-400 uppercase tracking-wider mb-1.5">Phone (optional)</label>
-              <input
-                name="phone"
-                type="tel"
-                placeholder="07XXXXXXXX"
-                className="w-full px-4 py-3 rounded-xl bg-zinc-50 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 focus:border-[#ff385c] focus:ring-2 focus:ring-[#ff385c]/10 focus:outline-none text-zinc-900 dark:text-white text-sm transition-all"
-              />
+              <input name="phone" type="tel" placeholder="07XXXXXXXX"
+                className="w-full px-4 py-3 rounded-xl bg-zinc-50 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 focus:border-[#ff385c] focus:ring-2 focus:ring-[#ff385c]/10 focus:outline-none text-zinc-900 dark:text-white text-sm transition-all" />
             </div>
-
             <div>
               <label className="block text-xs font-bold text-zinc-500 dark:text-zinc-400 uppercase tracking-wider mb-1.5">Subject</label>
-              <select
-                name="subject"
+              <select name="subject"
                 className="w-full px-4 py-3 rounded-xl bg-zinc-50 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 focus:border-[#ff385c] focus:ring-2 focus:ring-[#ff385c]/10 focus:outline-none text-zinc-900 dark:text-white text-sm transition-all appearance-none"
               >
                 <option value="General Inquiry">General Inquiry</option>
-                <option value="Listing Issue">Listing Issue</option>
+                <option value="Order Issue">Order Issue</option>
                 <option value="Payment Problem">Payment Problem</option>
-                <option value="Report a User">Report a User</option>
-                <option value="Partnership / Business">Partnership / Business</option>
+                <option value="Delivery Question">Delivery Question</option>
                 <option value="Feedback / Suggestion">Feedback / Suggestion</option>
                 <option value="Other">Other</option>
               </select>
             </div>
-
             <div>
               <label className="block text-xs font-bold text-zinc-500 dark:text-zinc-400 uppercase tracking-wider mb-1.5">Message</label>
-              <textarea
-                required
-                name="message"
-                rows="3"
-                placeholder="Tell us how we can help..."
-                className="w-full px-4 py-3 rounded-xl bg-zinc-50 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 focus:border-[#ff385c] focus:ring-2 focus:ring-[#ff385c]/10 focus:outline-none text-zinc-900 dark:text-white text-sm transition-all resize-none"
-              />
+              <textarea required name="message" rows="3" placeholder="Tell us how we can help..."
+                className="w-full px-4 py-3 rounded-xl bg-zinc-50 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 focus:border-[#ff385c] focus:ring-2 focus:ring-[#ff385c]/10 focus:outline-none text-zinc-900 dark:text-white text-sm transition-all resize-none" />
             </div>
 
-            {error && (
-              <p className="text-xs text-red-500 font-medium">{error}</p>
-            )}
+            {error && <p className="text-xs text-red-500 font-medium">{error}</p>}
 
-            <button
-              type="submit"
-              disabled={submitting}
+            <button type="submit" disabled={submitting}
               className="w-full bg-[#ff385c] text-white font-bold py-3.5 rounded-xl hover:bg-[#e03150] transition-all disabled:opacity-50 flex items-center justify-center gap-2 shadow-lg shadow-[#ff385c]/20"
             >
               {submitting ? (
-                <>
-                  <svg className="animate-spin w-4 h-4" viewBox="0 0 24 24" fill="none">
-                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
-                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
-                  </svg>
-                  Sending...
-                </>
+                <><svg className="animate-spin w-4 h-4" viewBox="0 0 24 24" fill="none"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" /><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" /></svg>Sending...</>
               ) : (
-                <>
-                  <Send className="w-4 h-4" />
-                  Send Message
-                </>
+                <><Send className="w-4 h-4" />Send Message</>
               )}
             </button>
           </form>
         )}
       </div>
 
-      {/* Floating Button */}
+      {/* Floating Contact Button — below cart */}
       <button
         onClick={() => { setIsOpen(!isOpen); setSuccess(false); setError(''); }}
         className={`fixed bottom-4 right-4 sm:right-6 z-50 w-14 h-14 rounded-full flex items-center justify-center shadow-2xl transition-all duration-300 ${
