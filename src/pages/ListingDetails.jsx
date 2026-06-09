@@ -19,7 +19,9 @@ function ListingDetails() {
   const [user, setUser] = useState(null);
   const { addItem, cart } = useCart();
 
-  const inCart = cart.find(item => item.id === id);
+  // Compare as numbers to avoid string/number mismatch from useParams
+  const listingId = Number(id);
+  const inCart = cart.find(item => item.id === listingId);
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
