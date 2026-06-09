@@ -335,26 +335,42 @@ export async function adminDeleteListing(id) {
 
 // ── Orders (Online Store) ────────────────────────────────
 
-export async function createOrder({ items, total, customerName, phone, email, address }) {
+export async function createOrder({ items, total, customerName, phone, email, address, city }) {
   const { data: { user } } = await supabase.auth.getUser()
+
+  if (!user) {
+    return { success: false, error: 'You must be logged in to place an order. Please log in and try again.' }
+  }
+
+  if (!items || items.length === 0) {
+    return { success: false, error: 'Your cart is empty. Please add items before checking out.' }
+  }
 
   // Create the order
   const { data: order, error: orderError } = await supabase
     .from('omix_orders')
     .insert({
-      user_id: user?.id || null,
+      user_id: user.id,
       status: 'pending',
       total_amount: total,
       customer_name: customerName,
       email: email || null,
       phone: phone || null,
       address: address || null,
+      city: city || null,
     })
     .select('*')
     .single()
 
   if (orderError) {
     console.error('createOrder error:', orderError)
+    // Provide user-friendly error messages
+    if (orderError.code === '42501' || orderError.message?.includes('policy') || orderError.message?.includes('permission')) {
+      return { success: false, error: 'Permission denied. Please log out and log in again, then try.' }
+    }
+    if (orderError.code === '23502') {
+      return { success: false, error: 'Missing required information. Please fill in all fields.' }
+    }
     return { success: false, error: `Order creation failed: ${orderError.message}` }
   }
 
@@ -377,6 +393,8 @@ export async function createOrder({ items, total, customerName, phone, email, ad
 
     if (itemsError) {
       console.error('createOrder items error:', itemsError)
+      // Try to clean up the orphaned order
+      await supabase.from('omix_orders').delete().eq('id', order.id)
       return { success: false, error: `Order items failed: ${itemsError.message}` }
     }
   }

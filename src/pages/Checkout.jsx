@@ -29,6 +29,7 @@ export default function CheckoutPage() {
     phone: '',
     email: '',
     address: '',
+    city: '',
   });
 
   const total = getTotal();
@@ -50,6 +51,7 @@ export default function CheckoutPage() {
     if (!form.fullName.trim()) { setError('Full name is required'); return; }
     if (!form.phone.trim()) { setError('Phone number is required for M-Pesa'); return; }
     if (!form.address.trim()) { setError('Delivery address is required'); return; }
+    if (!form.city.trim()) { setError('City is required'); return; }
 
     setLoading(true);
 
@@ -71,10 +73,13 @@ export default function CheckoutPage() {
         phone: form.phone.trim(),
         email: form.email.trim(),
         address: form.address.trim(),
+        city: form.city.trim(),
       });
 
       if (!orderResult.success) {
-        throw new Error(orderResult.error || 'Failed to create order');
+        setError(orderResult.error || 'Failed to create order');
+        setLoading(false);
+        return;
       }
 
       const orderId = orderResult.order.id;
@@ -83,7 +88,7 @@ export default function CheckoutPage() {
       window.PaystackPop.setup({
         key: PAYSTACK_PUBLIC_KEY,
         email: form.email.trim() || 'customer@omix.store',
-        amount: total * 100, // Paystack uses cents
+        amount: total * 100, // Paystack uses cents (KES)
         currency: 'KES',
         ref: `omix_${orderId}_${Date.now()}`,
         metadata: {
@@ -92,27 +97,18 @@ export default function CheckoutPage() {
           phone: form.phone.trim(),
         },
         callback: function(response) {
-          // Payment successful
           clearCart();
           navigate(`/order-success?orderId=${orderId}`);
         },
         onClose: function() {
-          // User closed the popup — keep order as pending
           setLoading(false);
-          setError('Payment was not completed. You can try again or contact us.');
+          setError('Payment was not completed. Your order is saved — you can try again from My Account.');
         },
       }).openIframe();
 
     } catch (err) {
       console.error('Checkout error:', err);
-      const msg = err.message || 'Failed to process checkout. Please try again.';
-      if (msg.includes('auth') || msg.includes('login') || msg.includes('unauthorized')) {
-        setError('Please log in to complete your order.');
-      } else if (msg.includes('network') || msg.includes('fetch')) {
-        setError('Network error. Please check your connection and try again.');
-      } else {
-        setError(msg);
-      }
+      setError(err.message || 'Something went wrong during checkout. Please try again.');
       setLoading(false);
     }
   };
@@ -214,8 +210,14 @@ export default function CheckoutPage() {
             <div>
               <label className="block text-sm font-bold mb-1.5 text-zinc-700 dark:text-zinc-300">Delivery Address *</label>
               <textarea required name="address" rows="3" value={form.address} onChange={handleChange}
-                placeholder="Street, building, area in Kericho"
+                placeholder="Street, building, area"
                 className="w-full px-4 py-3 rounded-xl bg-zinc-100 dark:bg-zinc-800 border border-transparent focus:border-[#ff385c] focus:outline-none text-zinc-900 dark:text-white text-sm resize-none" />
+            </div>
+            <div>
+              <label className="block text-sm font-bold mb-1.5 text-zinc-700 dark:text-zinc-300">City *</label>
+              <input required name="city" type="text" value={form.city} onChange={handleChange}
+                placeholder="e.g. Kericho"
+                className="w-full px-4 py-3 rounded-xl bg-zinc-100 dark:bg-zinc-800 border border-transparent focus:border-[#ff385c] focus:outline-none text-zinc-900 dark:text-white text-sm" />
             </div>
 
             <button type="submit" disabled={loading}
