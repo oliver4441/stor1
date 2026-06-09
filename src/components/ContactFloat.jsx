@@ -45,7 +45,7 @@ function ContactFloat() {
       {/* Floating Cart Button — above contact */}
       <Link
         to="/cart"
-        className="fixed bottom-20 right-4 sm:right-6 z-50 w-14 h-14 rounded-full bg-zinc-900 dark:bg-white flex items-center justify-center shadow-2xl hover:scale-110 transition-all duration-300"
+        className="fixed bottom-24 right-4 sm:right-6 z-50 w-14 h-14 rounded-full bg-zinc-900 dark:bg-white flex items-center justify-center shadow-2xl hover:scale-110 transition-all duration-300"
         aria-label="View cart"
       >
         <ShoppingCart className="w-6 h-6 text-white dark:text-zinc-900" />
@@ -66,7 +66,7 @@ function ContactFloat() {
 
       {/* Form Panel */}
       <div
-        className={`fixed bottom-36 right-4 sm:right-6 w-[calc(100%-2rem)] sm:w-[400px] bg-white dark:bg-zinc-900 rounded-2xl shadow-2xl border border-zinc-200 dark:border-zinc-800 z-50 transition-all duration-300 origin-bottom-right ${
+        className={`fixed bottom-40 right-4 sm:right-6 w-[calc(100%-2rem)] sm:w-[400px] bg-white dark:bg-zinc-900 rounded-2xl shadow-2xl border border-zinc-200 dark:border-zinc-800 z-50 transition-all duration-300 origin-bottom-right ${
           isOpen
             ? 'opacity-100 scale-100 translate-y-0'
             : 'opacity-0 scale-95 translate-y-4 pointer-events-none'
