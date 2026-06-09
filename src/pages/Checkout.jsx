@@ -21,7 +21,8 @@ function loadPaystackScript() {
 
 export default function CheckoutPage() {
   const navigate = useNavigate();
-  const { items, getTotal, clearCart, updateQuantity, removeItem } = useCart();
+  const { getItems, getTotal, clearCart, updateQuantity, removeItem } = useCart();
+  const items = getItems();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [form, setForm] = useState({

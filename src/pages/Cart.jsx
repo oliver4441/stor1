@@ -4,16 +4,8 @@ import { useCart } from '../context/CartContext';
 import { formatKES } from '../utils/constants';
 
 export default function CartPage() {
-  const ctx = useCart();
-  if (!ctx || !ctx.items) {
-    return (
-      <div className="max-w-4xl mx-auto px-4 py-20 text-center">
-        <p className="text-red-500 font-mono text-sm">Cart context error: {JSON.stringify(ctx)}</p>
-        <p className="text-zinc-500 mt-2">Make sure CartProvider wraps this component.</p>
-      </div>
-    );
-  }
-  const { items, getTotal, updateQuantity, removeItem, getItemCount } = ctx;
+  const { getItems, getTotal, updateQuantity, removeItem, getItemCount } = useCart();
+  const items = getItems();
   const total = getTotal();
   const count = getItemCount();
 
