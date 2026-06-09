@@ -50,7 +50,7 @@ function Navbar() {
       <div className="max-w-7xl mx-auto px-4 h-16 flex items-center justify-between">
         {/* Logo */}
         <Link to="/" className="flex items-center gap-2 shrink-0">
-          <span className="text-2xl font-bold text-[#ff385c] tracking-tight">Omix</span>
+          <span className="text-2xl font-bold text-[#ff385c] tracking-tight">Omix Store</span>
         </Link>
 
         {/* Desktop: Feature Links */}
