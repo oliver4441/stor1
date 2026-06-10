@@ -186,14 +186,14 @@ const callOpenCodeZen = async (messages, apiKey) => {
 
 Be concise, friendly, and helpful. Use short bullet points. Never make up product info or prices. If you don't know something, say so honestly and offer to connect to human support (omixsystems@gmail.com or +254 768 213 649).
 
-Keep responses under 100 words. Use emojis sparingly.`,
+Keep responses under 80 words. Use emojis sparingly. Answer directly without lengthy reasoning.`,
           },
           ...messages.map(m => ({
             role: m.sender === 'nia' ? 'assistant' : 'user',
             content: m.text,
           })),
         ],
-        max_tokens: 500,
+        max_tokens: 800,
         temperature: 0.7,
       }),
     });
