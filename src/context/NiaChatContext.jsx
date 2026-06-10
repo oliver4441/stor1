@@ -202,8 +202,18 @@ Keep responses under 100 words. Use emojis sparingly.`,
     const data = await response.json();
     const msg = data?.choices?.[0]?.message;
     if (!msg) return null;
-    // big-pickle (deepseek) returns reasoning_content instead of content
-    return msg.content || msg.reasoning_content || null;
+    // big-pickle (deepseek) returns reasoning_content with the actual response
+    let reply = msg.content || msg.reasoning_content || null;
+    if (reply) {
+      // Strip deepseek thinking artifacts
+      reply = reply.replace(/^Thinking\.\s*/i, '').trim();
+      // Take only the first few lines if it's very long
+      const lines = reply.split('\n').filter(l => l.trim());
+      if (lines.length > 5) {
+        reply = lines.slice(0, 5).join('\n');
+      }
+    }
+    return reply;
   } catch {
     return null;
   }
