@@ -3,7 +3,7 @@ import { useNavigate, Link } from 'react-router-dom';
 import { signIn } from '../utils/api';
 import { useLang } from '../utils/lang';
 import { supabase } from '../utils/supabase';
-import { Chrome } from 'lucide-react';
+import { Chrome, Facebook } from 'lucide-react';
 
 function Login() {
   const { t } = useLang();
@@ -25,6 +25,23 @@ function Login() {
       if (error) throw error;
     } catch (err) {
       setError(err.message || 'Google sign-in failed');
+      setLoading(false);
+    }
+  };
+
+  const handleFacebookLogin = async () => {
+    setLoading(true);
+    setError('');
+    try {
+      const { error } = await supabase.auth.signInWithOAuth({
+        provider: 'facebook',
+        options: {
+          redirectTo: window.location.origin,
+        },
+      });
+      if (error) throw error;
+    } catch (err) {
+      setError(err.message || 'Facebook sign-in failed');
       setLoading(false);
     }
   };
@@ -120,6 +137,16 @@ function Login() {
         >
           <Chrome className="w-5 h-5" />
           {t('auth.signInWithGoogle') || 'Sign in with Google'}
+        </button>
+
+        <button
+          type="button"
+          onClick={handleFacebookLogin}
+          disabled={loading}
+          className="w-full flex items-center justify-center gap-2 bg-[#1877F2] text-white font-bold py-3.5 rounded-2xl hover:bg-[#166FE5] transition-all disabled:opacity-50 mt-3"
+        >
+          <Facebook className="w-5 h-5" />
+          {t('auth.signInWithFacebook') || 'Sign in with Facebook'}
         </button>
       </form>
 
