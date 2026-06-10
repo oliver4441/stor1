@@ -117,6 +117,11 @@ const translations = {
       emailNotVerifiedDesc: 'Please check your inbox and click the confirmation link we sent when you signed up.',
       emailNotVerifiedHelp: "Can't find it? Check your spam folder, or",
       createNewAccount: 'create a new account',
+      or: 'or',
+      signInWithGoogle: 'Sign in with Google',
+      signUpWithGoogle: 'Sign up with Google',
+      signInWithFacebook: 'Sign in with Facebook',
+      signUpWithFacebook: 'Sign up with Facebook',
     },
 
     // ── Events ──
@@ -401,6 +406,11 @@ const translations = {
       emailNotVerifiedDesc: 'Tafadhali angalia kikasha chako na ubofye kungoja kuthibitishi tuliyotuma ulipojisajili.',
       emailNotVerifiedHelp: 'Huwezi kuipata? Angalia folda yako ya spam, au',
       createNewAccount: 'unda akaunti mpya',
+      or: 'au',
+      signInWithGoogle: 'Ingia na Google',
+      signUpWithGoogle: 'Jisajili na Google',
+      signInWithFacebook: 'Ingia na Facebook',
+      signUpWithFacebook: 'Jisajili na Facebook',
     },
 
     // ── Events ──

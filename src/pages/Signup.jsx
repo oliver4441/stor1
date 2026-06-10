@@ -204,7 +204,7 @@ function Signup() {
             <div className="w-full border-t border-zinc-200 dark:border-zinc-700"></div>
           </div>
           <div className="relative flex justify-center text-sm">
-            <span className="px-2 bg-white dark:bg-zinc-950 text-zinc-500">or</span>
+            <span className="px-2 bg-white dark:bg-zinc-950 text-zinc-500">{t('auth.or') || 'or'}</span>
           </div>
         </div>
 
@@ -215,7 +215,7 @@ function Signup() {
           className="w-full flex items-center justify-center gap-2 bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-700 text-zinc-700 dark:text-zinc-200 font-bold py-3.5 rounded-2xl hover:bg-zinc-50 dark:hover:bg-zinc-800 transition-all disabled:opacity-50"
         >
           <Chrome className="w-5 h-5" />
-          Sign up with Google
+          {t('auth.signUpWithGoogle') || 'Sign up with Google'}
         </button>
 
         <button
@@ -225,7 +225,7 @@ function Signup() {
           className="w-full flex items-center justify-center gap-2 bg-[#1877F2] text-white font-bold py-3.5 rounded-2xl hover:bg-[#166FE5] transition-all disabled:opacity-50 mt-3"
         >
           <Facebook className="w-5 h-5" />
-          Sign up with Facebook
+          {t('auth.signUpWithFacebook') || 'Sign up with Facebook'}
         </button>
       </form>
 
