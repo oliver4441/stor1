@@ -2,6 +2,7 @@ import { Link } from 'react-router-dom';
 import { ShoppingCart, Trash2, Plus, Minus, ArrowRight, Package } from 'lucide-react';
 import { useCart } from '../context/CartContext';
 import { formatKES } from '../utils/constants';
+import NiaContextualTrigger from '../components/NiaContextualTrigger';
 
 export default function CartPage() {
   const { getItems, getTotal, updateQuantity, removeItem, getItemCount } = useCart();
@@ -18,9 +19,10 @@ export default function CartPage() {
           </div>
           <h1 className="text-2xl font-bold text-zinc-900 dark:text-white mb-3">Your cart is empty</h1>
           <p className="text-zinc-500 dark:text-zinc-400 mb-8">Browse our products and add items to your cart.</p>
-          <Link to="/" className="inline-flex items-center gap-2 bg-[#ff385c] hover:bg-[#e62e4f] text-white font-semibold px-8 py-4 rounded-xl transition-colors">
+          <Link to="/" className="inline-flex items-center gap-2 bg-[#ff385c] hover:bg-[#e62e4f] text-white font-semibold px-8 py-4 rounded-xl transition-colors mb-8">
             Browse Products
           </Link>
+          <NiaContextualTrigger page="emptyCart" />
         </div>
       </div>
     );

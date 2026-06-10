@@ -5,6 +5,7 @@ import { useCart } from '../context/CartContext';
 import { createOrder } from '../utils/api';
 import { formatKES } from '../utils/constants';
 import { supabase } from '../utils/supabase';
+import NiaContextualTrigger from '../components/NiaContextualTrigger';
 
 const PAYSTACK_PUBLIC_KEY = 'pk_live_27f0020f17e275660e4a92c34fb7f7a9fc36ea94';
 
@@ -231,6 +232,11 @@ export default function CheckoutPage() {
             </button>
           </form>
         </div>
+      </div>
+
+      {/* Nia contextual help */}
+      <div className="mt-6">
+        <NiaContextualTrigger page="checkout" />
       </div>
     </div>
   );

@@ -2,8 +2,12 @@ import React from 'react';
 import { Routes, Route } from 'react-router-dom';
 import { LanguageProvider } from './utils/lang';
 import { CartProvider } from './context/CartContext';
+import { NiaChatProvider } from './context/NiaChatContext';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
+import NiaChat from './components/NiaChat';
+import NiaFloatingButton from './components/NiaFloatingButton';
+import NiaOnboarding from './components/NiaOnboarding';
 import Home from './pages/Home';
 import ListingDetails from './pages/ListingDetails';
 import About from './pages/About';
@@ -85,6 +89,7 @@ function App() {
   return (
     <LanguageProvider>
     <CartProvider>
+    <NiaChatProvider>
     <ErrorBoundary>
       <ScrollToTop />
       <div className="min-h-screen flex flex-col bg-white dark:bg-zinc-950 text-zinc-900 dark:text-zinc-50 antialiased">
@@ -110,8 +115,12 @@ function App() {
         </main>
         <Footer />
         <ContactFloat />
+        <NiaOnboarding />
+        <NiaChat />
+        <NiaFloatingButton />
       </div>
     </ErrorBoundary>
+    </NiaChatProvider>
     </CartProvider>
     </LanguageProvider>
   )

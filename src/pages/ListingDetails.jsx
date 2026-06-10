@@ -7,6 +7,7 @@ import { fetchListing, fetchListings } from '../utils/api';
 import { formatKES } from '../utils/constants';
 import { useCart } from '../context/CartContext';
 import { supabase } from '../utils/supabase';
+import NiaContextualTrigger from '../components/NiaContextualTrigger';
 
 function ListingDetails() {
   const { id } = useParams();
@@ -157,6 +158,11 @@ function ListingDetails() {
                 <p className="text-xs text-zinc-500">Kericho, Kenya</p>
               </div>
             </div>
+          </div>
+
+          {/* Nia contextual help */}
+          <div className="mb-4">
+            <NiaContextualTrigger page="listing" />
           </div>
 
           {/* Cart Section */}

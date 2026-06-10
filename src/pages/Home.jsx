@@ -7,6 +7,7 @@ import { CATEGORIES } from '../utils/constants';
 import { fetchListings } from '../utils/api';
 import { useLang } from '../utils/lang';
 import { supabase } from '../utils/supabase';
+import NiaContextualTrigger from '../components/NiaContextualTrigger';
 
 function Home() {
   const { t } = useLang();
@@ -197,9 +198,10 @@ function Home() {
         ) : (
           <div className="text-center py-20">
             <p className="text-zinc-500 dark:text-zinc-400 mb-4 text-lg">{t('home.noListings')}</p>
-            <Link to="/" className="text-[#ff385c] font-bold text-lg hover:underline underline-offset-4">
+            <Link to="/" className="text-[#ff385c] font-bold text-lg hover:underline underline-offset-4 mb-8 block">
               {t('home.browseListings') || 'Browse Products'}
             </Link>
+            <NiaContextualTrigger page="emptyCart" />
           </div>
         )}
       </div>
