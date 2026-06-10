@@ -2,7 +2,7 @@ import { useState, useEffect, useCallback, useRef } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { Plus, Package, ShoppingBag, DollarSign, Pencil, Trash2, X, AlertTriangle, CheckCircle, Loader2, LogOut, Shield, Upload, Image as ImageIcon, Eye } from 'lucide-react';
 import { supabase } from '../utils/supabase';
-import { fetchAllListings, createListing, updateListing, deleteListing, fetchAllOrders, updateOrderStatus, isAdmin } from '../utils/api';
+import { fetchAllListings, createListing, updateListing, deleteListing, adminDeleteListing, fetchAllOrders, updateOrderStatus, isAdmin } from '../utils/api';
 import { formatKES, CATEGORIES } from '../utils/constants';
 import { uploadImage } from '../utils/api';
 
@@ -104,8 +104,19 @@ export default function AdminDashboard() {
 
   const handleDelete = async () => {
     if (!deleteTarget) return;
-    const result = await deleteListing(deleteTarget.id);
-    if (result.success) { setSuccessMsg('Product deleted!'); setDeleteTarget(null); await loadData(); setTimeout(() => setSuccessMsg(''), 3000); }
+    // Try admin delete first, then regular delete
+    let result = await adminDeleteListing(deleteTarget.id);
+    if (!result.success) {
+      result = await deleteListing(deleteTarget.id);
+    }
+    if (result.success) {
+      setSuccessMsg('Product deleted!');
+      setDeleteTarget(null);
+      await loadData();
+      setTimeout(() => setSuccessMsg(''), 3000);
+    } else {
+      alert('Delete failed: ' + (result.error || 'Unknown error. Check RLS policies in Supabase.'));
+    }
   };
 
   const handleStatusChange = async (orderId, newStatus) => {
