@@ -34,7 +34,11 @@ export default function NiaOnboarding() {
           style={{ background: `linear-gradient(135deg, ${COLORS.accent}, ${COLORS.accentDark})` }}
         >
           <div className="flex items-center gap-2 mb-1">
-            <span className="text-lg">✨</span>
+            <img
+              src="/nia-avatar.jpg"
+              alt="Nia"
+              className="w-7 h-7 rounded-full object-cover"
+            />
             <span className="font-bold text-sm">Meet Nia</span>
           </div>
           <p className="text-white/80 text-xs">Your Omix Store assistant</p>

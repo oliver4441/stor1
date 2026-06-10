@@ -50,9 +50,11 @@ export default function NiaChat() {
         style={{ background: `linear-gradient(135deg, ${COLORS.accent}, ${COLORS.accentDark})` }}
       >
         <div className="flex items-center gap-3">
-          <div className="w-9 h-9 rounded-full bg-white/20 flex items-center justify-center text-lg font-bold">
-            N
-          </div>
+          <img
+            src="/nia-avatar.jpg"
+            alt="Nia"
+            className="w-9 h-9 rounded-full object-cover border-2 border-white/30"
+          />
           <div>
             <div className="font-bold text-sm flex items-center gap-1.5">
               Nia
@@ -102,12 +104,11 @@ export default function NiaChat() {
         {messages.map((msg) => (
           <div key={msg.id} className={`flex ${msg.sender === 'user' ? 'justify-end' : 'justify-start'}`}>
             {msg.sender === 'nia' && (
-              <div
-                className="w-7 h-7 rounded-full flex items-center justify-center text-white text-xs font-bold mr-2 mt-1 flex-shrink-0"
-                style={{ background: `linear-gradient(135deg, ${COLORS.accent}, ${COLORS.accentDark})` }}
-              >
-                N
-              </div>
+              <img
+                src="/nia-avatar.jpg"
+                alt="Nia"
+                className="w-7 h-7 rounded-full object-cover mr-2 mt-1 flex-shrink-0"
+              />
             )}
             <div
               className="max-w-[80%] px-4 py-2.5 text-[13px] leading-relaxed whitespace-pre-wrap"
@@ -127,12 +128,11 @@ export default function NiaChat() {
         {/* Typing indicator — only shown during real API latency */}
         {isTyping && (
           <div className="flex justify-start">
-            <div
-              className="w-7 h-7 rounded-full flex items-center justify-center text-white text-xs font-bold mr-2 mt-1 flex-shrink-0"
-              style={{ background: `linear-gradient(135deg, ${COLORS.accent}, ${COLORS.accentDark})` }}
-            >
-              N
-            </div>
+            <img
+              src="/nia-avatar.jpg"
+              alt="Nia"
+              className="w-7 h-7 rounded-full object-cover mr-2 mt-1 flex-shrink-0"
+            />
             <div
               className="rounded-2xl rounded-bl-md px-4 py-3"
               style={{ backgroundColor: COLORS.bubbleBot, border: `1px solid ${COLORS.border}` }}

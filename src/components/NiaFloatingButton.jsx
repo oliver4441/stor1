@@ -1,4 +1,4 @@
-import { MessageCircle, X } from 'lucide-react';
+import { X } from 'lucide-react';
 import { useNiaChat } from '../context/NiaChatContext';
 
 export default function NiaFloatingButton() {
@@ -7,11 +7,11 @@ export default function NiaFloatingButton() {
   return (
     <button
       onClick={() => isOpen ? closeChat() : openChat()}
-      className={`fixed bottom-4 right-4 z-[55] w-14 h-14 rounded-full flex items-center justify-center shadow-lg transition-all duration-300 hover:scale-105 active:scale-95 ${
+      className={`fixed bottom-4 right-4 z-[55] w-14 h-14 rounded-full flex items-center justify-center shadow-lg transition-all duration-300 hover:scale-105 active:scale-95 overflow-hidden ${
         isOpen ? 'hover:opacity-90' : 'hover:shadow-xl'
       }`}
       style={{
-        backgroundColor: isOpen ? '#52525b' : COLORS.accent,
+        backgroundColor: isOpen ? '#52525b' : 'transparent',
         boxShadow: isOpen ? 'none' : `0 10px 25px -5px ${COLORS.accent}40`,
       }}
       aria-label={isOpen ? 'Close chat' : 'Ask Nia'}
@@ -19,15 +19,20 @@ export default function NiaFloatingButton() {
       {isOpen ? (
         <X className="w-6 h-6 text-white" />
       ) : (
-        <MessageCircle className="w-6 h-6 text-white" />
-      )}
-
-      {/* Pulse ring for first-time attention */}
-      {!isOpen && !hasOpened && (
-        <span
-          className="absolute inset-0 rounded-full animate-ping opacity-30"
-          style={{ backgroundColor: COLORS.accent }}
-        />
+        <>
+          <img
+            src="/nia-avatar.jpg"
+            alt="Nia"
+            className="w-full h-full object-cover"
+          />
+          {/* Pulse ring for first-time attention */}
+          {!hasOpened && (
+            <span
+              className="absolute inset-0 rounded-full animate-ping opacity-30"
+              style={{ backgroundColor: COLORS.accent }}
+            />
+          )}
+        </>
       )}
     </button>
   );
