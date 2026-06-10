@@ -11,7 +11,6 @@ function Footer() {
           <Link to="/how-it-works" className="text-sm text-zinc-500 dark:text-zinc-400 hover:text-[#ff385c]">How It Works</Link>
           <Link to="/about" className="text-sm text-zinc-500 dark:text-zinc-400 hover:text-[#ff385c]">About</Link>
           <Link to="/install" className="text-sm text-zinc-500 dark:text-zinc-400 hover:text-[#ff385c]">Install App</Link>
-          <Link to="/contact" className="text-sm text-zinc-500 dark:text-zinc-400 hover:text-[#ff385c]">Contact</Link>
         </div>
         <div className="flex gap-4">
           <Link to="/terms" className="text-sm text-zinc-500 dark:text-zinc-400 hover:text-[#ff385c]">Terms of Service</Link>

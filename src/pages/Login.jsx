@@ -3,7 +3,7 @@ import { useNavigate, Link } from 'react-router-dom';
 import { signIn } from '../utils/api';
 import { useLang } from '../utils/lang';
 import { supabase } from '../utils/supabase';
-import { Chrome, Facebook } from 'lucide-react';
+import { Chrome } from 'lucide-react';
 
 function Login() {
   const { t } = useLang();
@@ -18,30 +18,11 @@ function Login() {
     try {
       const { error } = await supabase.auth.signInWithOAuth({
         provider: 'google',
-        options: {
-          redirectTo: window.location.origin,
-        },
+        options: { redirectTo: window.location.origin },
       });
       if (error) throw error;
     } catch (err) {
       setError(err.message || 'Google sign-in failed');
-      setLoading(false);
-    }
-  };
-
-  const handleFacebookLogin = async () => {
-    setLoading(true);
-    setError('');
-    try {
-      const { error } = await supabase.auth.signInWithOAuth({
-        provider: 'facebook',
-        options: {
-          redirectTo: window.location.origin,
-        },
-      });
-      if (error) throw error;
-    } catch (err) {
-      setError(err.message || 'Facebook sign-in failed');
       setLoading(false);
     }
   };
@@ -53,29 +34,16 @@ function Login() {
     setNeedsVerification(false);
 
     const { email, password } = e.target.elements;
-    const result = await signIn({
-      email: email.value,
-      password: password.value,
-    });
+    const result = await signIn({ email: email.value, password: password.value });
 
     if (result.success) {
-      // Check if user is admin
       const { data: profile } = await supabase
-        .from('profiles')
-        .select('role')
-        .eq('id', result.user.id)
-        .single();
-
+        .from('profiles').select('role').eq('id', result.user.id).single();
       const params = new URLSearchParams(window.location.search);
       const redirect = params.get('redirect');
-
-      if (redirect) {
-        navigate(redirect);
-      } else if (profile?.role === 'admin') {
-        navigate('/admin');
-      } else {
-        navigate('/account');
-      }
+      if (redirect) navigate(redirect);
+      else if (profile?.role === 'admin') navigate('/admin');
+      else navigate('/account');
     } else {
       const msg = result.error || '';
       if (msg.toLowerCase().includes('confirm') || msg.toLowerCase().includes('verify') || msg.toLowerCase().includes('email')) {
@@ -102,9 +70,7 @@ function Login() {
       )}
 
       {error && !needsVerification && (
-        <div className="bg-red-50 dark:bg-red-900/20 text-red-600 p-4 rounded-xl mb-6 text-sm font-medium border border-red-100 dark:border-red-900/50">
-          {error}
-        </div>
+        <div className="bg-red-50 dark:bg-red-900/20 text-red-600 p-4 rounded-xl mb-6 text-sm font-medium border border-red-100 dark:border-red-900/50">{error}</div>
       )}
 
       <form onSubmit={handleLogin} className="space-y-4">
@@ -121,32 +87,14 @@ function Login() {
         </button>
 
         <div className="relative my-6">
-          <div className="absolute inset-0 flex items-center">
-            <div className="w-full border-t border-zinc-200 dark:border-zinc-700"></div>
-          </div>
-          <div className="relative flex justify-center text-sm">
-            <span className="px-2 bg-white dark:bg-zinc-950 text-zinc-500">{t('auth.or') || 'or'}</span>
-          </div>
+          <div className="absolute inset-0 flex items-center"><div className="w-full border-t border-zinc-200 dark:border-zinc-700"></div></div>
+          <div className="relative flex justify-center text-sm"><span className="px-2 bg-white dark:bg-zinc-950 text-zinc-500">{t('auth.or') || 'or'}</span></div>
         </div>
 
-        <button
-          type="button"
-          onClick={handleGoogleLogin}
-          disabled={loading}
-          className="w-full flex items-center justify-center gap-2 bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-700 text-zinc-700 dark:text-zinc-200 font-bold py-3.5 rounded-2xl hover:bg-zinc-50 dark:hover:bg-zinc-800 transition-all disabled:opacity-50"
-        >
+        <button type="button" onClick={handleGoogleLogin} disabled={loading}
+          className="w-full flex items-center justify-center gap-2 bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-700 text-zinc-700 dark:text-zinc-200 font-bold py-3.5 rounded-2xl hover:bg-zinc-50 dark:hover:bg-zinc-800 transition-all disabled:opacity-50">
           <Chrome className="w-5 h-5" />
           {t('auth.signInWithGoogle') || 'Sign in with Google'}
-        </button>
-
-        <button
-          type="button"
-          onClick={handleFacebookLogin}
-          disabled={loading}
-          className="w-full flex items-center justify-center gap-2 bg-[#1877F2] text-white font-bold py-3.5 rounded-2xl hover:bg-[#166FE5] transition-all disabled:opacity-50 mt-3"
-        >
-          <Facebook className="w-5 h-5" />
-          {t('auth.signInWithFacebook') || 'Sign in with Facebook'}
         </button>
       </form>
 

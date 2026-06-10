@@ -243,6 +243,12 @@ export async function createListing(formData) {
       seller_id: user?.id || null,
       seller_phone: formData.seller_phone || null,
       status: 'active',
+      quantity: parseInt(formData.quantity) || 1,
+      brand: formData.brand || null,
+      model: formData.model || null,
+      color: formData.color || null,
+      weight: formData.weight || null,
+      sku: formData.sku || null,
     })
     .select('id')
     .single()
@@ -274,6 +280,12 @@ export async function updateListing(id, formData) {
       seller_name: formData.seller_name || user?.user_metadata?.full_name,
       seller_phone: formData.seller_phone || null,
       updated_at: new Date().toISOString(),
+      quantity: parseInt(formData.quantity) || 1,
+      brand: formData.brand || null,
+      model: formData.model || null,
+      color: formData.color || null,
+      weight: formData.weight || null,
+      sku: formData.sku || null,
     })
     .eq('id', id)
     .select('id')

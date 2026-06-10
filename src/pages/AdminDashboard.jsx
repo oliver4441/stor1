@@ -1,11 +1,13 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import { Plus, Package, ShoppingBag, Users, DollarSign, Pencil, Trash2, X, AlertTriangle, CheckCircle, Loader2, LogOut, Shield } from 'lucide-react';
+import { Plus, Package, ShoppingBag, DollarSign, Pencil, Trash2, X, AlertTriangle, CheckCircle, Loader2, LogOut, Shield, Upload, Image as ImageIcon, Eye } from 'lucide-react';
 import { supabase } from '../utils/supabase';
-import { fetchListings, fetchAllListings, createListing, updateListing, deleteListing, fetchAllOrders, updateOrderStatus, isAdmin } from '../utils/api';
+import { fetchAllListings, createListing, updateListing, deleteListing, fetchAllOrders, updateOrderStatus, isAdmin } from '../utils/api';
 import { formatKES, CATEGORIES } from '../utils/constants';
+import { uploadImage } from '../utils/api';
 
 const ORDER_STATUSES = ['pending', 'processing', 'shipped', 'delivered', 'cancelled'];
+const CONDITIONS = ['New', 'Like New', 'Good', 'Fair', 'For Parts'];
 
 export default function AdminDashboard() {
   const navigate = useNavigate();
@@ -18,12 +20,16 @@ export default function AdminDashboard() {
   // Product form
   const [modalOpen, setModalOpen] = useState(false);
   const [editingId, setEditingId] = useState(null);
-  const [form, setForm] = useState({ title: '', price: '', description: '', category: 'Electronics', condition: 'New', location: 'CBD', image_url: '' });
+  const [form, setForm] = useState({
+    title: '', price: '', description: '', category: 'Electronics', condition: 'New', location: 'CBD',
+    image_url: '', quantity: '1', brand: '', model: '', color: '', weight: '', sku: ''
+  });
   const [submitting, setSubmitting] = useState(false);
   const [successMsg, setSuccessMsg] = useState('');
-
-  // Delete confirmation
   const [deleteTarget, setDeleteTarget] = useState(null);
+  const [imageUploading, setImageUploading] = useState(false);
+  const [imagePreview, setImagePreview] = useState(null);
+  const fileInputRef = useRef(null);
 
   const loadData = useCallback(async () => {
     const { data: { user } } = await supabase.auth.getUser();
@@ -31,11 +37,7 @@ export default function AdminDashboard() {
     const admin = await isAdmin();
     if (!admin) { navigate('/account'); return; }
     setUser(user);
-
-    const [allListings, allOrders] = await Promise.all([
-      fetchAllListings(),
-      fetchAllOrders(),
-    ]);
+    const [allListings, allOrders] = await Promise.all([fetchAllListings(), fetchAllOrders()]);
     setListings(allListings);
     setOrders(allOrders);
     setLoading(false);
@@ -43,50 +45,52 @@ export default function AdminDashboard() {
 
   useEffect(() => { loadData(); }, [loadData]);
 
-  const handleLogout = async () => {
-    await supabase.auth.signOut();
-    navigate('/login');
-  };
+  const handleLogout = async () => { await supabase.auth.signOut(); navigate('/login'); };
 
-  // ── Product CRUD ──
   const openAddModal = () => {
     setEditingId(null);
-    setForm({ title: '', price: '', description: '', category: 'Electronics', condition: 'New', location: 'CBD', image_url: '' });
+    setForm({ title: '', price: '', description: '', category: 'Electronics', condition: 'New', location: 'CBD', image_url: '', quantity: '1', brand: '', model: '', color: '', weight: '', sku: '' });
+    setImagePreview(null);
     setModalOpen(true);
   };
 
   const openEditModal = (listing) => {
     setEditingId(listing.id);
     setForm({
-      title: listing.title,
-      price: String(listing.price),
-      description: listing.description || '',
-      category: listing.category || 'Electronics',
-      condition: listing.condition || 'New',
-      location: listing.location_city || 'CBD',
-      image_url: listing.images?.[0] || '',
+      title: listing.title, price: String(listing.price), description: listing.description || '',
+      category: listing.category || 'Electronics', condition: listing.condition || 'New',
+      location: listing.location_city || 'CBD', image_url: listing.images?.[0] || '',
+      quantity: String(listing.quantity || 1), brand: listing.brand || '', model: listing.model || '',
+      color: listing.color || '', weight: listing.weight || '', sku: listing.sku || ''
     });
+    setImagePreview(listing.images?.[0] || null);
     setModalOpen(true);
+  };
+
+  const handleImageSelect = async (e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setImageUploading(true);
+    const result = await uploadImage(file);
+    if (result.success) {
+      setForm(prev => ({ ...prev, image_url: result.url }));
+      setImagePreview(result.url);
+    } else {
+      alert(result.error || 'Image upload failed');
+    }
+    setImageUploading(false);
   };
 
   const handleProductSubmit = async (e) => {
     e.preventDefault();
     setSubmitting(true);
-    let result;
     const payload = {
-      title: form.title,
-      description: form.description,
-      price: form.price,
-      category: form.category,
-      condition: form.condition,
-      location: form.location,
-      image_url: form.image_url,
+      title: form.title, description: form.description, price: form.price,
+      category: form.category, condition: form.condition, location: form.location,
+      image_url: form.image_url, quantity: form.quantity, brand: form.brand,
+      model: form.model, color: form.color, weight: form.weight, sku: form.sku,
     };
-    if (editingId) {
-      result = await updateListing(editingId, payload);
-    } else {
-      result = await createListing(payload);
-    }
+    const result = editingId ? await updateListing(editingId, payload) : await createListing(payload);
     if (result.success) {
       setSuccessMsg(editingId ? 'Product updated!' : 'Product added!');
       setModalOpen(false);
@@ -101,23 +105,14 @@ export default function AdminDashboard() {
   const handleDelete = async () => {
     if (!deleteTarget) return;
     const result = await deleteListing(deleteTarget.id);
-    if (result.success) {
-      setSuccessMsg('Product deleted!');
-      setDeleteTarget(null);
-      await loadData();
-      setTimeout(() => setSuccessMsg(''), 3000);
-    }
+    if (result.success) { setSuccessMsg('Product deleted!'); setDeleteTarget(null); await loadData(); setTimeout(() => setSuccessMsg(''), 3000); }
   };
 
-  // ── Order Management ──
   const handleStatusChange = async (orderId, newStatus) => {
     const result = await updateOrderStatus(orderId, newStatus);
-    if (result.success) {
-      setOrders(prev => prev.map(o => o.id === orderId ? { ...o, status: newStatus } : o));
-    }
+    if (result.success) setOrders(prev => prev.map(o => o.id === orderId ? { ...o, status: newStatus } : o));
   };
 
-  // ── Stats ──
   const totalRevenue = orders.reduce((sum, o) => sum + parseFloat(o.total_amount || 0), 0);
   const pendingOrders = orders.filter(o => o.status === 'pending').length;
 
@@ -132,25 +127,20 @@ export default function AdminDashboard() {
 
   return (
     <div className="max-w-7xl mx-auto px-4 py-8 w-full" data-name="admin-dashboard-page">
-      {/* Success message */}
       {successMsg && (
-        <div className="fixed top-20 right-4 z-50 bg-green-500 text-white px-6 py-3 rounded-2xl shadow-lg shadow-green-500/20 text-sm font-bold animate-slide-in">
-          {successMsg}
-        </div>
+        <div className="fixed top-20 right-4 z-50 bg-green-500 text-white px-6 py-3 rounded-2xl shadow-lg shadow-green-500/20 text-sm font-bold animate-slide-in">{successMsg}</div>
       )}
 
       {/* Header */}
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-10">
         <div>
           <h1 className="text-3xl font-black text-zinc-900 dark:text-white flex items-center gap-3">
-            <Shield className="w-8 h-8 text-[#ff385c]" />
-            Admin Dashboard
+            <Shield className="w-8 h-8 text-[#ff385c]" /> Admin Dashboard
           </h1>
           <p className="text-zinc-500 dark:text-zinc-400">Manage your store</p>
         </div>
         <button onClick={handleLogout} className="flex items-center gap-2 bg-zinc-100 dark:bg-zinc-900 text-zinc-600 dark:text-zinc-300 px-6 py-3 rounded-2xl font-bold hover:bg-zinc-200 dark:hover:bg-zinc-800 transition-all">
-          <LogOut className="w-5 h-5" />
-          Log Out
+          <LogOut className="w-5 h-5" /> Log Out
         </button>
       </div>
 
@@ -203,24 +193,29 @@ export default function AdminDashboard() {
           {listings.length > 0 ? (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
               {listings.map(listing => (
-                <div key={listing.id} className="bg-white dark:bg-zinc-900 p-4 rounded-3xl border border-zinc-200 dark:border-zinc-800 flex gap-4">
-                  <div className="w-20 h-20 rounded-2xl bg-zinc-100 dark:bg-zinc-800 overflow-hidden flex-shrink-0">
+                <div key={listing.id} className="bg-white dark:bg-zinc-900 rounded-3xl border border-zinc-200 dark:border-zinc-800 overflow-hidden">
+                  <div className="aspect-[4/3] bg-zinc-100 dark:bg-zinc-800 relative">
                     {listing.images?.[0] ? (
                       <img src={listing.images[0]} alt={listing.title} className="w-full h-full object-cover" />
                     ) : (
-                      <div className="w-full h-full flex items-center justify-center text-zinc-400"><Package className="w-6 h-6" /></div>
+                      <div className="w-full h-full flex items-center justify-center text-zinc-400"><ImageIcon className="w-12 h-12" /></div>
                     )}
+                    <div className="absolute top-2 left-2 flex gap-1.5">
+                      <span className={`text-[10px] uppercase font-bold px-2 py-0.5 rounded-full ${listing.status === 'active' ? 'bg-green-500 text-white' : 'bg-zinc-500 text-white'}`}>{listing.status}</span>
+                      {listing.quantity <= 3 && listing.quantity > 0 && <span className="text-[10px] uppercase font-bold px-2 py-0.5 rounded-full bg-amber-500 text-white">Only {listing.quantity} left</span>}
+                      {listing.quantity === 0 && <span className="text-[10px] uppercase font-bold px-2 py-0.5 rounded-full bg-red-500 text-white">Out of stock</span>}
+                    </div>
                   </div>
-                  <div className="flex-grow min-w-0">
-                    <h4 className="font-bold text-zinc-900 dark:text-white text-sm truncate">{listing.title}</h4>
+                  <div className="p-4">
+                    <h4 className="font-bold text-zinc-900 dark:text-white truncate">{listing.title}</h4>
                     <p className="text-[#ff385c] font-bold text-sm">{formatKES(listing.price)}</p>
-                    <span className={`text-[10px] uppercase font-bold px-2 py-0.5 rounded-full ${listing.status === 'active' ? 'bg-green-100 text-green-600 dark:bg-green-900/40 dark:text-green-400' : 'bg-zinc-100 text-zinc-600'}`}>{listing.status}</span>
-                    <div className="flex gap-1.5 mt-2">
-                      <button onClick={() => openEditModal(listing)} className="flex items-center gap-1 text-xs font-bold text-zinc-500 hover:text-[#ff385c] px-2 py-1 rounded-lg hover:bg-zinc-100 dark:hover:bg-zinc-800">
+                    <p className="text-xs text-zinc-500 mt-1">{listing.category} • {listing.condition} • Qty: {listing.quantity || 'N/A'}</p>
+                    <div className="flex gap-2 mt-3">
+                      <button onClick={() => openEditModal(listing)} className="flex-1 flex items-center justify-center gap-1 text-xs font-bold text-zinc-600 dark:text-zinc-300 px-3 py-2 rounded-xl bg-zinc-100 dark:bg-zinc-800 hover:bg-zinc-200 dark:hover:bg-zinc-700">
                         <Pencil className="w-3 h-3" /> Edit
                       </button>
-                      <button onClick={() => setDeleteTarget({ id: listing.id, title: listing.title })} className="flex items-center gap-1 text-xs font-bold text-zinc-500 hover:text-red-500 px-2 py-1 rounded-lg hover:bg-red-50 dark:hover:bg-red-900/20">
-                        <Trash2 className="w-3 h-3" /> Delete
+                      <button onClick={() => setDeleteTarget({ id: listing.id, title: listing.title })} className="flex items-center justify-center gap-1 text-xs font-bold text-red-500 px-3 py-2 rounded-xl bg-red-50 dark:bg-red-900/20 hover:bg-red-100 dark:hover:bg-red-900/40">
+                        <Trash2 className="w-3 h-3" />
                       </button>
                     </div>
                   </div>
@@ -251,15 +246,12 @@ export default function AdminDashboard() {
                       <p className="font-bold text-zinc-900 dark:text-white">{order.customer_name || 'Guest'}</p>
                       <p className="text-sm text-zinc-500 dark:text-zinc-400">{order.phone} • {order.email || 'No email'}</p>
                       <p className="text-xs text-zinc-400 mt-1">{new Date(order.created_at).toLocaleDateString('en-KE', { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit' })}</p>
-                      <p className="text-xs text-zinc-400">{order.address}</p>
+                      <p className="text-xs text-zinc-400">{order.address}{order.city ? `, ${order.city}` : ''}</p>
                     </div>
                     <div className="flex items-center gap-4">
                       <span className="text-xl font-black text-[#ff385c]">{formatKES(order.total_amount)}</span>
-                      <select
-                        value={order.status}
-                        onChange={(e) => handleStatusChange(order.id, e.target.value)}
-                        className="px-3 py-2 rounded-xl text-sm font-bold border border-zinc-200 dark:border-zinc-700 bg-white dark:bg-zinc-800 text-zinc-900 dark:text-white"
-                      >
+                      <select value={order.status} onChange={(e) => handleStatusChange(order.id, e.target.value)}
+                        className="px-3 py-2 rounded-xl text-sm font-bold border border-zinc-200 dark:border-zinc-700 bg-white dark:bg-zinc-800 text-zinc-900 dark:text-white">
                         {ORDER_STATUSES.map(s => <option key={s} value={s}>{s}</option>)}
                       </select>
                     </div>
@@ -289,39 +281,107 @@ export default function AdminDashboard() {
       {modalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
           <div className="absolute inset-0 bg-black/50 backdrop-blur-sm" onClick={() => setModalOpen(false)} />
-          <div className="relative bg-white dark:bg-zinc-900 rounded-3xl border border-zinc-200 dark:border-zinc-800 p-6 w-full max-w-lg shadow-2xl max-h-[90vh] overflow-y-auto">
+          <div className="relative bg-white dark:bg-zinc-900 rounded-3xl border border-zinc-200 dark:border-zinc-800 p-6 w-full max-w-2xl shadow-2xl max-h-[90vh] overflow-y-auto">
             <div className="flex items-center justify-between mb-6">
-              <h3 className="text-xl font-bold text-zinc-900 dark:text-white">{editingId ? 'Edit Product' : 'Add Product'}</h3>
+              <h3 className="text-xl font-bold text-zinc-900 dark:text-white">{editingId ? 'Edit Product' : 'Add New Product'}</h3>
               <button onClick={() => setModalOpen(false)} className="p-2 rounded-full hover:bg-zinc-100 dark:hover:bg-zinc-800 text-zinc-400"><X className="w-5 h-5" /></button>
             </div>
-            <form onSubmit={handleProductSubmit} className="space-y-4">
+            <form onSubmit={handleProductSubmit} className="space-y-5">
+              {/* Image Upload */}
               <div>
-                <label className="block text-sm font-bold mb-1.5 text-zinc-700 dark:text-zinc-300">Title *</label>
-                <input required value={form.title} onChange={e => setForm({...form, title: e.target.value})} className="w-full px-4 py-3 rounded-xl bg-zinc-100 dark:bg-zinc-800 border border-transparent focus:border-[#ff385c] focus:outline-none text-zinc-900 dark:text-white text-sm" />
+                <label className="block text-sm font-bold mb-2 text-zinc-700 dark:text-zinc-300">Product Image *</label>
+                <div className="flex items-start gap-4">
+                  <div className="w-32 h-32 rounded-2xl bg-zinc-100 dark:bg-zinc-800 overflow-hidden flex-shrink-0 border-2 border-dashed border-zinc-300 dark:border-zinc-600">
+                    {imagePreview ? (
+                      <img src={imagePreview} alt="Preview" className="w-full h-full object-cover" />
+                    ) : (
+                      <div className="w-full h-full flex flex-col items-center justify-center text-zinc-400">
+                        <ImageIcon className="w-8 h-8 mb-1" />
+                        <span className="text-[10px]">No image</span>
+                      </div>
+                    )}
+                  </div>
+                  <div className="flex-1">
+                    <input ref={fileInputRef} type="file" accept="image/*" onChange={handleImageSelect} className="hidden" />
+                    <button type="button" onClick={() => fileInputRef.current?.click()} disabled={imageUploading}
+                      className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-zinc-100 dark:bg-zinc-800 text-zinc-700 dark:text-zinc-300 font-bold text-sm hover:bg-zinc-200 dark:hover:bg-zinc-700 transition-all disabled:opacity-50">
+                      {imageUploading ? <><Loader2 className="w-4 h-4 animate-spin" />Uploading...</> : <><Upload className="w-4 h-4" />Upload Image</>}
+                    </button>
+                    <p className="text-xs text-zinc-500 mt-2">JPG, PNG or WebP. Max 5MB. Image will be compressed automatically.</p>
+                    {form.image_url && <p className="text-xs text-green-600 mt-1 font-medium">✓ Image uploaded</p>}
+                  </div>
+                </div>
               </div>
-              <div className="grid grid-cols-2 gap-4">
+
+              {/* Title & Price */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-sm font-bold mb-1.5 text-zinc-700 dark:text-zinc-300">Product Title *</label>
+                  <input required value={form.title} onChange={e => setForm({...form, title: e.target.value})} placeholder="e.g. iPhone 13 Pro 256GB" className="w-full px-4 py-3 rounded-xl bg-zinc-100 dark:bg-zinc-800 border border-transparent focus:border-[#ff385c] focus:outline-none text-zinc-900 dark:text-white text-sm" />
+                </div>
                 <div>
                   <label className="block text-sm font-bold mb-1.5 text-zinc-700 dark:text-zinc-300">Price (KES) *</label>
-                  <input required type="number" value={form.price} onChange={e => setForm({...form, price: e.target.value})} className="w-full px-4 py-3 rounded-xl bg-zinc-100 dark:bg-zinc-800 border border-transparent focus:border-[#ff385c] focus:outline-none text-zinc-900 dark:text-white text-sm" />
+                  <input required type="number" value={form.price} onChange={e => setForm({...form, price: e.target.value})} placeholder="85000" className="w-full px-4 py-3 rounded-xl bg-zinc-100 dark:bg-zinc-800 border border-transparent focus:border-[#ff385c] focus:outline-none text-zinc-900 dark:text-white text-sm" />
                 </div>
+              </div>
+
+              {/* Category, Condition, Quantity */}
+              <div className="grid grid-cols-3 gap-4">
                 <div>
                   <label className="block text-sm font-bold mb-1.5 text-zinc-700 dark:text-zinc-300">Category</label>
                   <select value={form.category} onChange={e => setForm({...form, category: e.target.value})} className="w-full px-4 py-3 rounded-xl bg-zinc-100 dark:bg-zinc-800 border border-transparent focus:border-[#ff385c] focus:outline-none text-zinc-900 dark:text-white text-sm appearance-none">
                     {CATEGORIES.filter(c => c !== 'All').map(c => <option key={c} value={c}>{c}</option>)}
                   </select>
                 </div>
+                <div>
+                  <label className="block text-sm font-bold mb-1.5 text-zinc-700 dark:text-zinc-300">Condition</label>
+                  <select value={form.condition} onChange={e => setForm({...form, condition: e.target.value})} className="w-full px-4 py-3 rounded-xl bg-zinc-100 dark:bg-zinc-800 border border-transparent focus:border-[#ff385c] focus:outline-none text-zinc-900 dark:text-white text-sm appearance-none">
+                    {CONDITIONS.map(c => <option key={c} value={c}>{c}</option>)}
+                  </select>
+                </div>
+                <div>
+                  <label className="block text-sm font-bold mb-1.5 text-zinc-700 dark:text-zinc-300">Quantity *</label>
+                  <input required type="number" min="0" value={form.quantity} onChange={e => setForm({...form, quantity: e.target.value})} placeholder="1" className="w-full px-4 py-3 rounded-xl bg-zinc-100 dark:bg-zinc-800 border border-transparent focus:border-[#ff385c] focus:outline-none text-zinc-900 dark:text-white text-sm" />
+                </div>
               </div>
-              <div>
-                <label className="block text-sm font-bold mb-1.5 text-zinc-700 dark:text-zinc-300">Image URL</label>
-                <input value={form.image_url} onChange={e => setForm({...form, image_url: e.target.value})} placeholder="https://..." className="w-full px-4 py-3 rounded-xl bg-zinc-100 dark:bg-zinc-800 border border-transparent focus:border-[#ff385c] focus:outline-none text-zinc-900 dark:text-white text-sm" />
+
+              {/* Brand, Model, Color */}
+              <div className="grid grid-cols-3 gap-4">
+                <div>
+                  <label className="block text-sm font-bold mb-1.5 text-zinc-700 dark:text-zinc-300">Brand</label>
+                  <input value={form.brand} onChange={e => setForm({...form, brand: e.target.value})} placeholder="e.g. Apple" className="w-full px-4 py-3 rounded-xl bg-zinc-100 dark:bg-zinc-800 border border-transparent focus:border-[#ff385c] focus:outline-none text-zinc-900 dark:text-white text-sm" />
+                </div>
+                <div>
+                  <label className="block text-sm font-bold mb-1.5 text-zinc-700 dark:text-zinc-300">Model</label>
+                  <input value={form.model} onChange={e => setForm({...form, model: e.target.value})} placeholder="e.g. iPhone 13 Pro" className="w-full px-4 py-3 rounded-xl bg-zinc-100 dark:bg-zinc-800 border border-transparent focus:border-[#ff385c] focus:outline-none text-zinc-900 dark:text-white text-sm" />
+                </div>
+                <div>
+                  <label className="block text-sm font-bold mb-1.5 text-zinc-700 dark:text-zinc-300">Color</label>
+                  <input value={form.color} onChange={e => setForm({...form, color: e.target.value})} placeholder="e.g. Pacific Blue" className="w-full px-4 py-3 rounded-xl bg-zinc-100 dark:bg-zinc-800 border border-transparent focus:border-[#ff385c] focus:outline-none text-zinc-900 dark:text-white text-sm" />
+                </div>
               </div>
+
+              {/* Weight & SKU */}
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-sm font-bold mb-1.5 text-zinc-700 dark:text-zinc-300">Weight</label>
+                  <input value={form.weight} onChange={e => setForm({...form, weight: e.target.value})} placeholder="e.g. 0.5kg" className="w-full px-4 py-3 rounded-xl bg-zinc-100 dark:bg-zinc-800 border border-transparent focus:border-[#ff385c] focus:outline-none text-zinc-900 dark:text-white text-sm" />
+                </div>
+                <div>
+                  <label className="block text-sm font-bold mb-1.5 text-zinc-700 dark:text-zinc-300">SKU / Item Code</label>
+                  <input value={form.sku} onChange={e => setForm({...form, sku: e.target.value})} placeholder="e.g. IP13P-256-BLU" className="w-full px-4 py-3 rounded-xl bg-zinc-100 dark:bg-zinc-800 border border-transparent focus:border-[#ff385c] focus:outline-none text-zinc-900 dark:text-white text-sm" />
+                </div>
+              </div>
+
+              {/* Description */}
               <div>
                 <label className="block text-sm font-bold mb-1.5 text-zinc-700 dark:text-zinc-300">Description</label>
-                <textarea rows="3" value={form.description} onChange={e => setForm({...form, description: e.target.value})} className="w-full px-4 py-3 rounded-xl bg-zinc-100 dark:bg-zinc-800 border border-transparent focus:border-[#ff385c] focus:outline-none text-zinc-900 dark:text-white text-sm resize-none" />
+                <textarea rows="3" value={form.description} onChange={e => setForm({...form, description: e.target.value})} placeholder="Describe the product in detail..." className="w-full px-4 py-3 rounded-xl bg-zinc-100 dark:bg-zinc-800 border border-transparent focus:border-[#ff385c] focus:outline-none text-zinc-900 dark:text-white text-sm resize-none" />
               </div>
+
               <div className="flex gap-3 pt-2">
                 <button type="button" onClick={() => setModalOpen(false)} className="flex-1 bg-zinc-100 dark:bg-zinc-800 text-zinc-700 dark:text-zinc-300 font-bold py-3 rounded-xl">Cancel</button>
-                <button type="submit" disabled={submitting} className="flex-1 bg-[#ff385c] text-white font-bold py-3 rounded-xl disabled:opacity-50">
+                <button type="submit" disabled={submitting || !form.image_url} className="flex-1 bg-[#ff385c] text-white font-bold py-3 rounded-xl disabled:opacity-50">
                   {submitting ? <><Loader2 className="w-4 h-4 animate-spin inline mr-2" />Saving...</> : (editingId ? 'Save Changes' : 'Add Product')}
                 </button>
               </div>
@@ -335,9 +395,7 @@ export default function AdminDashboard() {
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
           <div className="absolute inset-0 bg-black/50 backdrop-blur-sm" onClick={() => setDeleteTarget(null)} />
           <div className="relative bg-white dark:bg-zinc-900 rounded-3xl border border-zinc-200 dark:border-zinc-800 p-6 w-full max-w-sm shadow-2xl text-center">
-            <div className="w-14 h-14 bg-red-100 dark:bg-red-900/40 rounded-full flex items-center justify-center mx-auto mb-4">
-              <AlertTriangle className="w-7 h-7 text-red-600" />
-            </div>
+            <div className="w-14 h-14 bg-red-100 dark:bg-red-900/40 rounded-full flex items-center justify-center mx-auto mb-4"><AlertTriangle className="w-7 h-7 text-red-600" /></div>
             <h3 className="text-lg font-bold text-zinc-900 dark:text-white mb-2">Delete Product?</h3>
             <p className="text-sm text-zinc-500 dark:text-zinc-400 mb-6">This will permanently delete "{deleteTarget.title}".</p>
             <div className="flex gap-3">
