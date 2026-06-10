@@ -247,7 +247,7 @@ export default function AdminDashboard() {
                 <div key={order.id} className="bg-white dark:bg-zinc-900 rounded-3xl border border-zinc-200 dark:border-zinc-800 p-6">
                   <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
                     <div>
-                      <p className="font-mono text-sm text-zinc-500 dark:text-zinc-400">#{order.id.slice(0, 8).toUpperCase()}</p>
+                      <p className="font-mono text-sm text-zinc-500 dark:text-zinc-400">#{String(order.id).slice(0, 8).toUpperCase()}</p>
                       <p className="font-bold text-zinc-900 dark:text-white">{order.customer_name || 'Guest'}</p>
                       <p className="text-sm text-zinc-500 dark:text-zinc-400">{order.phone} • {order.email || 'No email'}</p>
                       <p className="text-xs text-zinc-400 mt-1">{new Date(order.created_at).toLocaleDateString('en-KE', { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit' })}</p>

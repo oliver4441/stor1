@@ -82,7 +82,7 @@ export default function TrackOrder() {
             <div className="mt-4 grid grid-cols-2 gap-4 text-sm">
               <div>
                 <p className="text-zinc-500 dark:text-zinc-400">Order ID</p>
-                <p className="font-mono font-bold text-zinc-900 dark:text-white">{order.id.slice(0, 8).toUpperCase()}</p>
+                <p className="font-mono font-bold text-zinc-900 dark:text-white">{String(order.id).slice(0, 8).toUpperCase()}</p>
               </div>
               <div>
                 <p className="text-zinc-500 dark:text-zinc-400">Date</p>

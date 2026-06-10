@@ -79,7 +79,7 @@ export default function UserDashboard() {
                 <div>
                   <div className="flex items-center gap-3 mb-2">
                     <span className="font-mono text-sm text-zinc-500 dark:text-zinc-400">
-                      #{order.id.slice(0, 8).toUpperCase()}
+                      #{String(order.id).slice(0, 8).toUpperCase()}
                     </span>
                     <span className={`text-xs font-bold px-3 py-1 rounded-full ${
                       order.status === 'delivered' ? 'bg-green-100 text-green-600 dark:bg-green-900/40 dark:text-green-400' :

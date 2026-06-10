@@ -2,7 +2,8 @@ import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { signUp } from '../utils/api';
 import { useLang } from '../utils/lang';
-import { User, Mail, Lock, CheckCircle2, ShoppingBag } from 'lucide-react';
+import { User, Mail, Lock, CheckCircle2, ShoppingBag, Chrome } from 'lucide-react';
+import { supabase } from '../utils/supabase';
 
 function Signup() {
   const { t } = useLang();
@@ -20,6 +21,23 @@ function Signup() {
   });
 
   const updateField = (field, value) => setFormData(prev => ({ ...prev, [field]: value }));
+
+  const handleGoogleSignup = async () => {
+    setLoading(true);
+    setError('');
+    try {
+      const { error } = await supabase.auth.signInWithOAuth({
+        provider: 'google',
+        options: {
+          redirectTo: window.location.origin,
+        },
+      });
+      if (error) throw error;
+    } catch (err) {
+      setError(err.message || 'Google sign-up failed');
+      setLoading(false);
+    }
+  };
 
   const handleSignup = async (e) => {
     e.preventDefault();
@@ -162,6 +180,25 @@ function Signup() {
 
         <button type="submit" disabled={loading} className="w-full bg-[#ff385c] text-white font-black py-4 rounded-2xl hover:bg-[#e03150] transition-all disabled:opacity-50 shadow-lg shadow-[#ff385c]/20">
           {loading ? 'Creating Account...' : 'Create Account'}
+        </button>
+
+        <div className="relative my-6">
+          <div className="absolute inset-0 flex items-center">
+            <div className="w-full border-t border-zinc-200 dark:border-zinc-700"></div>
+          </div>
+          <div className="relative flex justify-center text-sm">
+            <span className="px-2 bg-white dark:bg-zinc-950 text-zinc-500">or</span>
+          </div>
+        </div>
+
+        <button
+          type="button"
+          onClick={handleGoogleSignup}
+          disabled={loading}
+          className="w-full flex items-center justify-center gap-2 bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-700 text-zinc-700 dark:text-zinc-200 font-bold py-3.5 rounded-2xl hover:bg-zinc-50 dark:hover:bg-zinc-800 transition-all disabled:opacity-50"
+        >
+          <Chrome className="w-5 h-5" />
+          Sign up with Google
         </button>
       </form>
 

@@ -17,7 +17,7 @@ export default function OrderSuccess() {
         <div className="bg-white dark:bg-zinc-900 rounded-3xl border border-zinc-200 dark:border-zinc-800 p-6 mt-8 inline-block">
           <div className="flex items-center gap-3 text-sm text-zinc-600 dark:text-zinc-400">
             <Package className="w-5 h-5 text-[#ff385c]" />
-            <span>Order ID: <strong className="text-zinc-900 dark:text-white font-mono">{orderId.slice(0, 8).toUpperCase()}</strong></span>
+            <span>Order ID: <strong className="text-zinc-900 dark:text-white font-mono">{String(orderId).slice(0, 8).toUpperCase()}</strong></span>
           </div>
           <p className="text-xs text-zinc-500 mt-2">Estimated delivery: 2-5 business days</p>
         </div>

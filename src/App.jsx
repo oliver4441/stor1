@@ -22,6 +22,8 @@ import Cart from './pages/Cart';
 import ContactFloat from './components/ContactFloat';
 import ScrollToTop from './components/ScrollToTop';
 
+import { supabase } from './utils/supabase';
+
 class ErrorBoundary extends React.Component {
   constructor(props) {
     super(props);
@@ -54,6 +56,30 @@ class ErrorBoundary extends React.Component {
 function App() {
   React.useEffect(() => {
     console.log('Omix Store Mounted');
+
+    // Listen for auth state changes (OAuth login/signup)
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
+      if (event === 'SIGNED_IN' && session?.user) {
+        // Check if profile exists, create if not (for OAuth users)
+        const { data: existing } = await supabase
+          .from('profiles')
+          .select('id')
+          .eq('id', session.user.id)
+          .single();
+
+        if (!existing) {
+          await supabase.from('profiles').insert({
+            id: session.user.id,
+            full_name: session.user.user_metadata?.full_name || session.user.user_metadata?.name || 'Google User',
+            email: session.user.email,
+            phone: session.user.user_metadata?.phone || null,
+            role: 'customer',
+          });
+        }
+      }
+    });
+
+    return () => subscription?.unsubscribe();
   }, []);
 
   return (
