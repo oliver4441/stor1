@@ -159,7 +159,8 @@ const getContextualChips = (baseChips, pageContext, conversationHistory) => {
 };
 
 // ── OpenCode Zen API Integration ──────────────────────────────────
-const OPENCODE_API_URL = 'https://api.opencode.ai/v1/chat/completions';
+const OPENCODE_API_URL = 'https://opencode.ai/zen/v1/chat/completions';
+const OPENCODE_MODEL = 'big-pickle'; // DeepSeek V4 Flash via Zen
 
 const callOpenCodeZen = async (messages, apiKey) => {
   if (!apiKey) return null;
@@ -172,14 +173,14 @@ const callOpenCodeZen = async (messages, apiKey) => {
         'Authorization': `Bearer ${apiKey}`,
       },
       body: JSON.stringify({
-        model: 'zen',
+        model: OPENCODE_MODEL,
         messages: [
           {
             role: 'system',
             content: `You are Nia, the Omix Store assistant. You help customers with:
 - Browsing products on the marketplace
 - Tracking orders
-- Payment questions (M-Pesa via Paystack)
+- Payment questions (M-Pesa via Paystack STK Push)
 - Delivery information (Kericho, Kenya)
 - General app guidance
 
@@ -192,14 +193,17 @@ Keep responses under 100 words. Use emojis sparingly.`,
             content: m.text,
           })),
         ],
-        max_tokens: 200,
+        max_tokens: 300,
         temperature: 0.7,
       }),
     });
     
     if (!response.ok) return null;
     const data = await response.json();
-    return data.choices?.[0]?.message?.content || null;
+    const msg = data?.choices?.[0]?.message;
+    if (!msg) return null;
+    // big-pickle (deepseek) returns reasoning_content instead of content
+    return msg.content || msg.reasoning_content || null;
   } catch {
     return null;
   }
@@ -323,30 +327,28 @@ export function NiaChatProvider({ children }) {
       return;
     }
 
-    // If AI mode is enabled, try OpenCode Zen
-    if (useAI) {
-      const apiKey = import.meta.env?.VITE_OPENCODE_API_KEY || '';
-      if (apiKey) {
-        setIsTyping(true);
-        const aiResponse = await callOpenCodeZen(
-          conversationHistoryRef.current.slice(-10),
-          apiKey
-        );
-        setIsTyping(false);
-        if (aiResponse) {
-          const botMsg = { id: Date.now(), sender: 'nia', text: aiResponse, timestamp: new Date() };
-          setMessages(prev => [...prev, botMsg]);
-          conversationHistoryRef.current.push(botMsg);
-          setCurrentChips(FLOWS.honestUnknown.chips);
-          scrollToBottom();
-          return;
-        }
+    // If we have an AI key, try it for unmatched queries
+    const apiKey = import.meta.env?.VITE_OPENCODE_API_KEY || '';
+    if (apiKey) {
+      setIsTyping(true);
+      const aiResponse = await callOpenCodeZen(
+        conversationHistoryRef.current.slice(-10),
+        apiKey
+      );
+      setIsTyping(false);
+      if (aiResponse) {
+        const botMsg = { id: Date.now(), sender: 'nia', text: aiResponse, timestamp: new Date() };
+        setMessages(prev => [...prev, botMsg]);
+        conversationHistoryRef.current.push(botMsg);
+        setCurrentChips(FLOWS.honestUnknown.chips);
+        scrollToBottom();
+        return;
       }
     }
 
     // Fallback: honest uncertainty
     addBotMessage(FLOWS.honestUnknown.message, FLOWS.honestUnknown.chips, 0);
-  }, [addBotMessage, pageContext, useAI, scrollToBottom]);
+  }, [addBotMessage, pageContext, scrollToBottom]);
 
   const dismissOnboarding = useCallback(() => {
     setShowOnboarding(false);
