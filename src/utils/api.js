@@ -375,10 +375,8 @@ export async function createOrder({ items, total, customerName, phone, email, ad
   }
 
   // Create order items
-  // Safely handle order.id - convert to string if needed
-  const orderId = typeof order.id === 'object' ? order.id : String(order.id);
   const orderItems = items.map(item => ({
-    order_id: orderId,
+    order_id: order.id,
     product_id: item.product_id || null,
     product_name: item.product_name,
     product_sku: item.product_sku || null,
@@ -395,9 +393,8 @@ export async function createOrder({ items, total, customerName, phone, email, ad
 
     if (itemsError) {
       console.error('createOrder items error:', itemsError)
-      // Try to clean up the orphaned order - use the same orderId for cleanup
-      const orderId = typeof order.id === 'object' ? order.id : String(order.id);
-      await supabase.from('omix_orders').delete().eq('id', orderId)
+      // Try to clean up the orphaned order
+      await supabase.from('omix_orders').delete().eq('id', order.id)
       return { success: false, error: `Order items failed: ${itemsError.message}` }
     }
   }
