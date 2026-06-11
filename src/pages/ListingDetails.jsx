@@ -1,13 +1,14 @@
 import { useState, useEffect } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
-import { Image as ImageIcon, MapPin, CheckCircle, ShoppingCart, Minus, Plus, Package, Truck, Shield, Tag } from 'lucide-react';
+import { MapPin, CheckCircle, ShoppingCart, Minus, Plus, Package, Truck, Shield, Tag, Cpu, HardDrive, Monitor, Battery, Camera, Wifi } from 'lucide-react';
 import ProductCard from '../components/ProductCard';
 import { WhatsAppShareButton } from '../components/WhatsAppButtons';
 import { fetchListing, fetchListings } from '../utils/api';
 import { formatKES } from '../utils/constants';
 import { useCart } from '../context/CartContext';
 import { supabase } from '../utils/supabase';
-import NiaContextualTrigger from '../components/NiaContextualTrigger';
+import ImageGallery from '../components/ImageGallery';
+import StickyMobileCart from '../components/StickyMobileCart';
 
 function ListingDetails() {
   const { id } = useParams();
@@ -79,22 +80,23 @@ function ListingDetails() {
   const stockStatus = listing.quantity === 0 ? 'Out of stock' : listing.quantity <= 3 ? `Only ${listing.quantity} left` : 'In stock';
   const stockColor = listing.quantity === 0 ? 'text-red-500' : listing.quantity <= 3 ? 'text-amber-500' : 'text-green-500';
 
+  // Key specs to show as icon highlights above the fold
+  const keySpecs = [
+    ...(listing.ram ? [{ icon: Cpu, label: 'RAM', value: listing.ram }] : []),
+    ...(listing.storage ? [{ icon: HardDrive, label: 'Storage', value: listing.storage }] : []),
+    ...(listing.screen_size ? [{ icon: Monitor, label: 'Display', value: listing.screen_size }] : []),
+    ...(listing.battery ? [{ icon: Battery, label: 'Battery', value: listing.battery }] : []),
+    ...(listing.camera ? [{ icon: Camera, label: 'Camera', value: listing.camera }] : []),
+    ...(listing.connectivity ? [{ icon: Wifi, label: 'Network', value: listing.connectivity }] : []),
+    ...(listing.brand ? [{ icon: Tag, label: 'Brand', value: listing.brand }] : []),
+    ...(listing.model ? [{ icon: Cpu, label: 'Model', value: listing.model }] : []),
+  ].slice(0, 6);
+
   return (
     <div className="max-w-7xl mx-auto px-4 py-8 w-full" data-name="listing-details">
       <div className="flex flex-col lg:flex-row gap-8 lg:gap-12">
         {/* Images */}
-        <div className="w-full lg:w-1/2">
-          <div className="bg-zinc-100 dark:bg-zinc-900 rounded-3xl overflow-hidden aspect-square group relative">
-            {listing.images && listing.images.length > 0 && listing.images[0] ? (
-              <img src={listing.images[0]} alt={listing.title} className="w-full h-full object-cover" />
-            ) : (
-              <div className="w-full h-full flex items-center justify-center text-zinc-400"><ImageIcon className="w-16 h-16" /></div>
-            )}
-            <div className="absolute top-4 left-4 bg-white/90 dark:bg-black/90 text-zinc-900 dark:text-white px-3 py-1.5 rounded-full text-sm font-bold shadow-sm capitalize">
-              {listing.condition?.replace('_', ' ')}
-            </div>
-          </div>
-        </div>
+        <ImageGallery images={listing.images} title={listing.title} condition={listing.condition} />
 
         {/* Details */}
         <div className="w-full lg:w-1/2 flex flex-col">
@@ -114,6 +116,26 @@ function ListingDetails() {
               </span>
             )}
           </div>
+
+          {/* Key Specs Highlight Strip */}
+          {keySpecs.length > 0 && (
+            <div className="mb-6 overflow-x-auto scrollbar-hide -mx-1 px-1">
+              <div className="flex gap-2 min-w-max">
+                {keySpecs.map((spec, i) => {
+                  const Icon = spec.icon;
+                  return (
+                    <div key={i} className="flex items-center gap-2 bg-zinc-50 dark:bg-zinc-900/60 border border-zinc-200 dark:border-zinc-800 rounded-xl px-3 py-2.5 flex-shrink-0">
+                      <Icon className="w-4 h-4 text-[#ff385c]" />
+                      <div className="leading-tight">
+                        <p className="text-[10px] text-zinc-400 dark:text-zinc-500 uppercase tracking-wider">{spec.label}</p>
+                        <p className="text-xs font-bold text-zinc-900 dark:text-white">{spec.value}</p>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+          )}
 
           {/* Specs Table */}
           {specs.length > 0 && (
@@ -215,13 +237,23 @@ function ListingDetails() {
 
       {/* Related */}
       {related.length > 0 && (
-        <div className="mt-16 pt-8 border-t border-zinc-200 dark:border-zinc-800">
+        <div className="mt-16 pt-8 border-t border-zinc-200 dark:border-zinc-800 pb-24 md:pb-0">
           <h2 className="text-2xl font-bold mb-8">Similar in {listing.category}</h2>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
             {related.map(l => (<ProductCard key={l.id} listing={l} />))}
           </div>
         </div>
       )}
+
+      {/* Sticky mobile cart bar */}
+      <StickyMobileCart
+        listing={listing}
+        quantity={quantity}
+        onAddToCart={() => addItem({ id: listing.id, name: listing.title, price: listing.price, image_url: listing.images?.[0] || null, quantity })}
+        onBuyNow={() => { addItem({ id: listing.id, name: listing.title, price: listing.price, image_url: listing.images?.[0] || null, quantity }); navigate('/checkout'); }}
+        inCart={inCart}
+        user={user}
+      />
     </div>
   );
 }
