@@ -158,53 +158,31 @@ const getContextualChips = (baseChips, pageContext, conversationHistory) => {
   return chips.slice(0, 5); // max 5 chips
 };
 
-// ── OpenCode Zen API Integration ──────────────────────────────────
-const OPENCODE_API_URL = 'https://opencode.ai/zen/v1/chat/completions';
-const OPENCODE_MODEL = 'mimo-v2.5-free'; // Clean output, no reasoning overhead — free tier
+// ── Nia AI Chat (via server proxy) ─────────────────────────────────
+const NIA_PROXY_URL = '/api/nia/chat';
 
-const callOpenCodeZen = async (messages, apiKey) => {
-  if (!apiKey) return null;
-  
+const callNiaAI = async (messages) => {
   try {
-    const response = await fetch(OPENCODE_API_URL, {
+    const response = await fetch(NIA_PROXY_URL, {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${apiKey}`,
-      },
+      headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        model: OPENCODE_MODEL,
-        messages: [
-          {
-            role: 'system',
-            content: `You are Nia, the Omix Store assistant. You help customers with:
-- Browsing products on the marketplace
-- Tracking orders
-- Payment questions (M-Pesa via Paystack STK Push)
-- Delivery information (Kericho, Kenya)
-- General app guidance
-
-Be concise, friendly, and helpful. Use short bullet points. Never make up product info or prices. If you don't know something, say so honestly and offer to connect to human support (omixsystems@gmail.com or +254 768 213 649).
-
-Keep responses under 80 words. Answer directly without any reasoning or thinking process. Just give the answer.`,
-          },
-          ...messages.map(m => ({
-            role: m.sender === 'nia' ? 'assistant' : 'user',
-            content: m.text,
-          })),
-        ],
-        max_tokens: 500,
-        temperature: 0.7,
+        messages: messages.map(m => ({
+          role: m.sender === 'nia' ? 'assistant' : 'user',
+          content: m.text,
+        })),
       }),
     });
-    
-    if (!response.ok) return null;
+
+    if (!response.ok) {
+      console.log('[Nia] Proxy error:', response.status);
+      return null;
+    }
+
     const data = await response.json();
-    const msg = data?.choices?.[0]?.message;
-    if (!msg) return null;
-    // deepseek-v4-flash-free returns clean content (no reasoning_content issues)
-    return msg.content?.trim() || null;
-  } catch {
+    return data?.content?.trim() || null;
+  } catch (err) {
+    console.log('[Nia] Proxy call failed:', err.message);
     return null;
   }
 };
@@ -327,20 +305,14 @@ export function NiaChatProvider({ children }) {
       return;
     }
 
-    // If we have an AI key, try it for unmatched queries
-    const apiKey = import.meta.env?.VITE_OPENCODE_API_KEY || '';
-    console.log('[Nia] AI key present:', !!apiKey, 'length:', apiKey.length);
-    if (apiKey) {
-      setIsTyping(true);
-      console.log('[Nia] Calling OpenCode Zen API...');
-      const aiResponse = await callOpenCodeZen(
-        conversationHistoryRef.current.slice(-10),
-        apiKey
-      );
-      setIsTyping(false);
-      console.log('[Nia] AI response:', aiResponse ? 'received' : 'null');
-      if (aiResponse) {
-        const botMsg = { id: Date.now(), sender: 'nia', text: aiResponse, timestamp: new Date() };
+    // Try AI for unmatched queries (via server proxy)
+    setIsTyping(true);
+    console.log('[Nia] Calling Nia AI proxy...');
+    const aiResponse = await callNiaAI(conversationHistoryRef.current.slice(-10));
+    setIsTyping(false);
+    console.log('[Nia] AI response:', aiResponse ? 'received' : 'null');
+    if (aiResponse) {
+      const botMsg = { id: Date.now(), sender: 'nia', text: aiResponse, timestamp: new Date() };
         setMessages(prev => [...prev, botMsg]);
         conversationHistoryRef.current.push(botMsg);
         setCurrentChips(FLOWS.honestUnknown.chips);

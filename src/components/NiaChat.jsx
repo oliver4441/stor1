@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from 'react';
-import { X, Send, RotateCcw, MoreHorizontal, Wifi, WifiOff } from 'lucide-react';
+import { X, Send, RotateCcw, MoreHorizontal } from 'lucide-react';
 import { useNiaChat } from '../context/NiaChatContext';
 
 export default function NiaChat() {
@@ -13,7 +13,6 @@ export default function NiaChat() {
   const [input, setInput] = useState('');
   const [showMenu, setShowMenu] = useState(false);
   const inputRef = useRef(null);
-  const hasAI = !!import.meta.env?.VITE_OPENCODE_API_KEY;
 
   useEffect(() => {
     if (isOpen) setTimeout(() => inputRef.current?.focus(), 200);
@@ -61,10 +60,7 @@ export default function NiaChat() {
               Nia
               <span className="w-2 h-2 bg-green-400 rounded-full inline-block" />
             </div>
-            <div className="text-[11px] text-white/70 flex items-center gap-1">
-              {hasAI ? <Wifi className="w-3 h-3" /> : <WifiOff className="w-3 h-3" />}
-              {hasAI ? 'AI Enhanced' : 'Quick Help'}
-            </div>
+            <div className="text-[11px] text-white/70">Omix Store Assistant</div>
           </div>
         </div>
         <div className="flex items-center gap-1">
