@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import { ShoppingCart, ArrowRight, Loader2, Package, CreditCard, Trash2, Plus, Minus } from 'lucide-react';
+import { ShoppingCart, ArrowRight, Loader2, Package, CreditCard, Trash2, Plus, Minus, Shield, Truck, CheckCircle, MapPin, Phone, User, Mail } from 'lucide-react';
 import { useCart } from '../context/CartContext';
 import { createOrder } from '../utils/api';
 import { formatKES } from '../utils/constants';
@@ -20,12 +20,155 @@ function loadPaystackScript() {
   });
 }
 
+// ── Design Tokens (matching Nia chat) ──────────────────────────────
+const C = {
+  accent: '#ff385c',
+  accentDark: '#e03150',
+  bg: '#ffffff',
+  bgDark: '#18181b',
+  bgGray: '#f9fafb',
+  bgGrayDark: '#27272a',
+  text: '#27272a',
+  textDark: '#e4e4e7',
+  textMuted: '#71717a',
+  textMutedDark: '#a1a1aa',
+  border: '#e4e4e7',
+  borderDark: '#3f3f46',
+  success: '#10b981',
+  warning: '#f59e0b',
+};
+
+// ── Step Indicator ──────────────────────────────────────────────────
+function StepIndicator({ step }) {
+  const steps = [
+    { n: 1, label: 'Cart', icon: ShoppingCart },
+    { n: 2, label: 'Details', icon: User },
+    { n: 3, label: 'Payment', icon: CreditCard },
+  ];
+  return (
+    <div className="flex items-center justify-center gap-2 mb-8">
+      {steps.map((s, i) => {
+        const Icon = s.icon;
+        const active = step >= s.n;
+        const current = step === s.n;
+        return (
+          <div key={s.n} className="flex items-center gap-2">
+            {i > 0 && (
+              <div className="w-8 sm:w-12 h-0.5 rounded-full transition-colors" style={{ backgroundColor: active ? C.accent : C.border }} />
+            )}
+            <div className="flex items-center gap-1.5">
+              <div
+                className="w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold transition-all"
+                style={{
+                  backgroundColor: active ? C.accent : 'transparent',
+                  color: active ? '#fff' : C.textMuted,
+                  border: `2px solid ${active ? C.accent : C.border}`,
+                  transform: current ? 'scale(1.1)' : 'scale(1)',
+                }}
+              >
+                {active && step > s.n ? <CheckCircle className="w-4 h-4" /> : <Icon className="w-4 h-4" />}
+              </div>
+              <span className="text-xs font-semibold hidden sm:inline" style={{ color: active ? C.text : C.textMuted }}>
+                {s.label}
+              </span>
+            </div>
+          </div>
+        );
+      })}
+    </div>
+  );
+}
+
+// ── Input Field ─────────────────────────────────────────────────────
+function Field({ icon: Icon, label, error, dark, ...props }) {
+  return (
+    <div>
+      <label className="block text-xs font-bold mb-1.5 uppercase tracking-wider" style={{ color: dark ? C.textMutedDark : C.textMuted }}>
+        {label}
+      </label>
+      <div className="relative">
+        {Icon && (
+          <Icon className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4" style={{ color: dark ? C.textMutedDark : C.textMuted }} />
+        )}
+        <input
+          {...props}
+          className="w-full text-sm focus:outline-none transition-all"
+          style={{
+            backgroundColor: dark ? C.bgGrayDark : C.bgGray,
+            color: dark ? C.textDark : C.text,
+            border: `1px solid ${error ? '#ef4444' : dark ? C.borderDark : C.border}`,
+            borderRadius: '12px',
+            paddingLeft: Icon ? '2.5rem' : '1rem',
+            paddingRight: '1rem',
+            paddingTop: '0.75rem',
+            paddingBottom: '0.75rem',
+          }}
+        />
+      </div>
+      {error && <p className="text-xs mt-1" style={{ color: '#ef4444' }}>{error}</p>}
+    </div>
+  );
+}
+
+// ── TextArea Field ──────────────────────────────────────────────────
+function TextAreaField({ icon: Icon, label, error, dark, ...props }) {
+  return (
+    <div>
+      <label className="block text-xs font-bold mb-1.5 uppercase tracking-wider" style={{ color: dark ? C.textMutedDark : C.textMuted }}>
+        {label}
+      </label>
+      <div className="relative">
+        {Icon && (
+          <MapPin className="absolute left-3 top-3 w-4 h-4" style={{ color: dark ? C.textMutedDark : C.textMuted }} />
+        )}
+        <textarea
+          {...props}
+          className="w-full text-sm focus:outline-none transition-all resize-none"
+          style={{
+            backgroundColor: dark ? C.bgGrayDark : C.bgGray,
+            color: dark ? C.textDark : C.text,
+            border: `1px solid ${error ? '#ef4444' : dark ? C.borderDark : C.border}`,
+            borderRadius: '12px',
+            paddingLeft: Icon ? '2.5rem' : '1rem',
+            paddingRight: '1rem',
+            paddingTop: '0.75rem',
+            paddingBottom: '0.75rem',
+          }}
+        />
+      </div>
+      {error && <p className="text-xs mt-1" style={{ color: '#ef4444' }}>{error}</p>}
+    </div>
+  );
+}
+
+// ── Trust Badges ───────────────────────────────────────────────────
+function TrustBadges() {
+  return (
+    <div className="flex items-center justify-center gap-4 py-4 border-t" style={{ borderColor: C.border }}>
+      <div className="flex items-center gap-1.5 text-xs" style={{ color: C.textMuted }}>
+        <Shield className="w-3.5 h-3.5" />
+        <span>Secure Payment</span>
+      </div>
+      <div className="flex items-center gap-1.5 text-xs" style={{ color: C.textMuted }}>
+        <Truck className="w-3.5 h-3.5" />
+        <span>Fast Delivery</span>
+      </div>
+      <div className="flex items-center gap-1.5 text-xs" style={{ color: C.textMuted }}>
+        <CheckCircle className="w-3.5 h-3.5" />
+        <span>Verified Store</span>
+      </div>
+    </div>
+  );
+}
+
+// ── Main Checkout Page ─────────────────────────────────────────────
 export default function CheckoutPage() {
   const navigate = useNavigate();
   const { getItems, getTotal, clearCart, updateQuantity, removeItem } = useCart();
   const items = getItems();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const [fieldErrors, setFieldErrors] = useState({});
   const [form, setForm] = useState({
     fullName: '',
     phone: '',
@@ -44,23 +187,32 @@ export default function CheckoutPage() {
 
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
+    if (fieldErrors[e.target.name]) {
+      setFieldErrors({ ...fieldErrors, [e.target.name]: '' });
+    }
+  };
+
+  const validate = () => {
+    const errs = {};
+    if (!form.fullName.trim()) errs.fullName = 'Required';
+    if (!form.phone.trim()) errs.phone = 'Required for M-Pesa';
+    if (!form.address.trim()) errs.address = 'Required';
+    if (!form.city.trim()) errs.city = 'Required';
+    setFieldErrors(errs);
+    return Object.keys(errs).length === 0;
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
 
-    if (!form.fullName.trim()) { setError('Full name is required'); return; }
-    if (!form.phone.trim()) { setError('Phone number is required for M-Pesa'); return; }
-    if (!form.address.trim()) { setError('Delivery address is required'); return; }
-    if (!form.city.trim()) { setError('City is required'); return; }
+    if (!validate()) return;
 
     setLoading(true);
 
     try {
       await loadPaystackScript();
 
-      // Create order in Supabase first (pending payment)
       const orderResult = await createOrder({
         items: items.map(item => ({
           product_id: item.id,
@@ -86,11 +238,10 @@ export default function CheckoutPage() {
 
       const orderId = orderResult.order.id;
 
-      // Initialize Paystack STK push
       window.PaystackPop.setup({
         key: PAYSTACK_PUBLIC_KEY,
         email: form.email.trim() || 'customer@omix.store',
-        amount: total * 100, // Paystack uses cents (KES)
+        amount: total * 100,
         currency: 'KES',
         ref: `omix_${orderId}_${Date.now()}`,
         metadata: {
@@ -115,128 +266,215 @@ export default function CheckoutPage() {
     }
   };
 
+  // ── Empty Cart ──────────────────────────────────────────────────
   if (items.length === 0) {
     return (
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
-        <div className="text-center py-20">
-          <div className="w-24 h-24 mx-auto mb-6 rounded-full bg-[#1a1a2e] flex items-center justify-center">
-            <ShoppingCart className="w-12 h-12 text-gray-600" />
+      <div className="max-w-lg mx-auto px-4 py-16">
+        <div className="text-center py-12 rounded-2xl border" style={{ borderColor: C.border, backgroundColor: C.bg }}>
+          <div className="w-20 h-20 mx-auto mb-5 rounded-full flex items-center justify-center" style={{ backgroundColor: C.bgGray }}>
+            <ShoppingCart className="w-10 h-10" style={{ color: C.textMuted }} />
           </div>
-          <h1 className="text-2xl font-bold text-white mb-3">Your cart is empty</h1>
-          <p className="text-gray-400 mb-8">Add some items before checking out.</p>
-          <Link to="/" className="inline-flex items-center gap-2 bg-[#ff385c] hover:bg-[#e62e4f] text-white font-semibold px-8 py-4 rounded-xl transition-colors">
-            Browse Products
+          <h1 className="text-2xl font-black mb-2" style={{ color: C.text }}>Your cart is empty</h1>
+          <p className="text-sm mb-8" style={{ color: C.textMuted }}>Add some items before checking out.</p>
+          <Link
+            to="/"
+            className="inline-flex items-center gap-2 text-white font-bold px-8 py-3.5 rounded-xl transition-all hover:opacity-90 active:scale-95"
+            style={{ backgroundColor: C.accent }}
+          >
+            Browse Products <ArrowRight className="w-4 h-4" />
           </Link>
         </div>
       </div>
     );
   }
 
+  // ── Checkout Form ───────────────────────────────────────────────
   return (
-    <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8" data-name="checkout-page">
-      <h1 className="text-3xl font-black text-zinc-900 dark:text-white mb-8">Checkout</h1>
+    <div className="max-w-5xl mx-auto px-4 sm:px-6 py-6 sm:py-8" data-name="checkout-page">
+      {/* Step Indicator */}
+      <StepIndicator step={2} />
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-        {/* Order Summary */}
-        <div className="bg-white dark:bg-zinc-900 rounded-3xl border border-zinc-200 dark:border-zinc-800 p-6 h-fit">
-          <h2 className="text-xl font-bold text-zinc-900 dark:text-white mb-4">Order Summary</h2>
-          <div className="space-y-4">
-            {items.map(item => (
-              <div key={item.id} className="flex gap-4 items-center">
-                <div className="w-16 h-16 rounded-xl bg-zinc-100 dark:bg-zinc-800 overflow-hidden flex-shrink-0">
-                  {item.image_url ? (
-                    <img src={item.image_url} alt={item.name} className="w-full h-full object-cover" />
-                  ) : (
-                    <div className="w-full h-full flex items-center justify-center text-zinc-400">
-                      <Package className="w-6 h-6" />
-                    </div>
-                  )}
-                </div>
-                <div className="flex-grow min-w-0">
-                  <h4 className="font-bold text-zinc-900 dark:text-white text-sm truncate">{item.name}</h4>
-                  <p className="text-[#ff385c] font-bold text-sm">{formatKES(item.price)}</p>
-                </div>
-                <div className="flex items-center gap-2">
-                  <button onClick={() => updateQuantity(item.id, item.quantity - 1)} className="w-7 h-7 rounded-lg bg-zinc-100 dark:bg-zinc-800 flex items-center justify-center hover:bg-zinc-200 dark:hover:bg-zinc-700">
-                    <Minus className="w-3 h-3" />
-                  </button>
-                  <span className="text-sm font-bold w-6 text-center">{item.quantity}</span>
-                  <button onClick={() => updateQuantity(item.id, item.quantity + 1)} className="w-7 h-7 rounded-lg bg-zinc-100 dark:bg-zinc-800 flex items-center justify-center hover:bg-zinc-200 dark:hover:bg-zinc-700">
-                    <Plus className="w-3 h-3" />
-                  </button>
-                </div>
-                <button onClick={() => removeItem(item.id)} className="text-zinc-400 hover:text-red-500 p-1">
-                  <Trash2 className="w-4 h-4" />
-                </button>
+      <div className="grid grid-cols-1 lg:grid-cols-5 gap-6">
+        {/* ── Order Summary (left, 2 cols) ──────────────────────── */}
+        <div className="lg:col-span-2 order-2 lg:order-1">
+          <div className="rounded-2xl border overflow-hidden sticky top-4" style={{ borderColor: C.border, backgroundColor: C.bg }}>
+            {/* Header */}
+            <div className="px-5 py-4 border-b" style={{ borderColor: C.border, background: `linear-gradient(135deg, ${C.accent}08, ${C.accent}03)` }}>
+              <div className="flex items-center justify-between">
+                <h2 className="text-base font-bold" style={{ color: C.text }}>Order Summary</h2>
+                <span className="text-xs font-bold px-2.5 py-1 rounded-full" style={{ backgroundColor: `${C.accent}15`, color: C.accent }}>
+                  {items.length} item{items.length > 1 ? 's' : ''}
+                </span>
               </div>
-            ))}
-          </div>
-          <div className="border-t border-zinc-200 dark:border-zinc-700 mt-4 pt-4">
-            <div className="flex justify-between items-center">
-              <span className="text-lg font-bold text-zinc-900 dark:text-white">Total</span>
-              <span className="text-2xl font-black text-[#ff385c]">{formatKES(total)}</span>
             </div>
+
+            {/* Items */}
+            <div className="p-4 space-y-3 max-h-[320px] overflow-y-auto">
+              {items.map(item => (
+                <div key={item.id} className="flex gap-3 items-center p-2 rounded-xl transition-colors" style={{ backgroundColor: C.bgGray }}>
+                  <div className="w-14 h-14 rounded-xl overflow-hidden flex-shrink-0" style={{ backgroundColor: C.bg }}>
+                    {item.image_url ? (
+                      <img src={item.image_url} alt={item.name} className="w-full h-full object-cover" />
+                    ) : (
+                      <div className="w-full h-full flex items-center justify-center">
+                        <Package className="w-5 h-5" style={{ color: C.textMuted }} />
+                      </div>
+                    )}
+                  </div>
+                  <div className="flex-grow min-w-0">
+                    <h4 className="font-bold text-sm truncate" style={{ color: C.text }}>{item.name}</h4>
+                    <p className="text-xs font-bold" style={{ color: C.accent }}>{formatKES(item.price)}</p>
+                  </div>
+                  <div className="flex items-center gap-1.5 flex-shrink-0">
+                    <button
+                      onClick={() => updateQuantity(item.id, item.quantity - 1)}
+                      className="w-6 h-6 rounded-lg flex items-center justify-center transition-colors hover:opacity-80"
+                      style={{ backgroundColor: C.bg, border: `1px solid ${C.border}` }}
+                    >
+                      <Minus className="w-3 h-3" />
+                    </button>
+                    <span className="text-xs font-bold w-5 text-center" style={{ color: C.text }}>{item.quantity}</span>
+                    <button
+                      onClick={() => updateQuantity(item.id, item.quantity + 1)}
+                      className="w-6 h-6 rounded-lg flex items-center justify-center transition-colors hover:opacity-80"
+                      style={{ backgroundColor: C.bg, border: `1px solid ${C.border}` }}
+                    >
+                      <Plus className="w-3 h-3" />
+                    </button>
+                  </div>
+                  <button onClick={() => removeItem(item.id)} className="p-1.5 rounded-lg transition-colors hover:bg-red-50 dark:hover:bg-red-900/20">
+                    <Trash2 className="w-3.5 h-3.5" style={{ color: C.textMuted }} />
+                  </button>
+                </div>
+              ))}
+            </div>
+
+            {/* Total */}
+            <div className="px-5 py-4 border-t" style={{ borderColor: C.border }}>
+              <div className="flex justify-between items-center mb-2">
+                <span className="text-sm" style={{ color: C.textMuted }}>Subtotal</span>
+                <span className="text-sm font-semibold" style={{ color: C.text }}>{formatKES(total)}</span>
+              </div>
+              <div className="flex justify-between items-center mb-3">
+                <span className="text-sm" style={{ color: C.textMuted }}>Delivery</span>
+                <span className="text-sm font-semibold" style={{ color: C.success }}>Calculated at delivery</span>
+              </div>
+              <div className="flex justify-between items-center pt-3 border-t" style={{ borderColor: C.border }}>
+                <span className="text-base font-bold" style={{ color: C.text }}>Total</span>
+                <span className="text-xl font-black" style={{ color: C.accent }}>{formatKES(total)}</span>
+              </div>
+            </div>
+
+            {/* Trust Badges */}
+            <TrustBadges />
           </div>
         </div>
 
-        {/* Checkout Form */}
-        <div className="bg-white dark:bg-zinc-900 rounded-3xl border border-zinc-200 dark:border-zinc-800 p-6">
-          <h2 className="text-xl font-bold text-zinc-900 dark:text-white mb-4">Delivery Details</h2>
-
-          {error && (
-            <div className="bg-red-50 dark:bg-red-900/20 text-red-600 p-4 rounded-xl mb-4 text-sm font-medium border border-red-100 dark:border-red-900/50">
-              {error}
+        {/* ── Delivery Form (right, 3 cols) ─────────────────────── */}
+        <div className="lg:col-span-3 order-1 lg:order-2">
+          <div className="rounded-2xl border overflow-hidden" style={{ borderColor: C.border, backgroundColor: C.bg }}>
+            {/* Header */}
+            <div className="px-5 py-4 border-b" style={{ borderColor: C.border, background: `linear-gradient(135deg, ${C.accent}, ${C.accentDark})` }}>
+              <h2 className="text-base font-bold text-white flex items-center gap-2">
+                <MapPin className="w-4 h-4" />
+                Delivery Details
+              </h2>
+              <p className="text-xs text-white/70 mt-0.5">Where should we deliver your order?</p>
             </div>
-          )}
 
-          <form onSubmit={handleSubmit} className="space-y-4">
-            <div>
-              <label className="block text-sm font-bold mb-1.5 text-zinc-700 dark:text-zinc-300">Full Name *</label>
-              <input required name="fullName" type="text" value={form.fullName} onChange={handleChange}
+            {/* Error */}
+            {error && (
+              <div className="mx-5 mt-4 p-3 rounded-xl text-sm font-medium border" style={{ backgroundColor: '#fef2f2', borderColor: '#fecaca', color: '#dc2626' }}>
+                {error}
+              </div>
+            )}
+
+            {/* Form */}
+            <form onSubmit={handleSubmit} className="p-5 space-y-4">
+              <Field
+                icon={User}
+                label="Full Name *"
+                name="fullName"
+                type="text"
+                value={form.fullName}
+                onChange={handleChange}
                 placeholder="Your full name"
-                className="w-full px-4 py-3 rounded-xl bg-zinc-100 dark:bg-zinc-800 border border-transparent focus:border-[#ff385c] focus:outline-none text-zinc-900 dark:text-white text-sm" />
-            </div>
-            <div>
-              <label className="block text-sm font-bold mb-1.5 text-zinc-700 dark:text-zinc-300">M-Pesa Phone *</label>
-              <input required name="phone" type="tel" value={form.phone} onChange={handleChange}
+                error={fieldErrors.fullName}
+              />
+
+              <Field
+                icon={Phone}
+                label="M-Pesa Phone *"
+                name="phone"
+                type="tel"
+                value={form.phone}
+                onChange={handleChange}
                 placeholder="07XXXXXXXX"
-                className="w-full px-4 py-3 rounded-xl bg-zinc-100 dark:bg-zinc-800 border border-transparent focus:border-[#ff385c] focus:outline-none text-zinc-900 dark:text-white text-sm" />
-              <p className="text-xs text-zinc-500 mt-1">M-Pesa STK push will be sent to this number</p>
-            </div>
-            <div>
-              <label className="block text-sm font-bold mb-1.5 text-zinc-700 dark:text-zinc-300">Email</label>
-              <input name="email" type="email" value={form.email} onChange={handleChange}
+                error={fieldErrors.phone}
+              />
+              <p className="text-xs -mt-2" style={{ color: C.textMuted }}>📱 M-Pesa STK push will be sent to this number</p>
+
+              <Field
+                icon={Mail}
+                label="Email (optional)"
+                name="email"
+                type="email"
+                value={form.email}
+                onChange={handleChange}
                 placeholder="your@email.com"
-                className="w-full px-4 py-3 rounded-xl bg-zinc-100 dark:bg-zinc-800 border border-transparent focus:border-[#ff385c] focus:outline-none text-zinc-900 dark:text-white text-sm" />
-            </div>
-            <div>
-              <label className="block text-sm font-bold mb-1.5 text-zinc-700 dark:text-zinc-300">Delivery Address *</label>
-              <textarea required name="address" rows="3" value={form.address} onChange={handleChange}
+                error={fieldErrors.email}
+              />
+
+              <TextAreaField
+                icon={MapPin}
+                label="Delivery Address *"
+                name="address"
+                rows="3"
+                value={form.address}
+                onChange={handleChange}
                 placeholder="Street, building, area"
-                className="w-full px-4 py-3 rounded-xl bg-zinc-100 dark:bg-zinc-800 border border-transparent focus:border-[#ff385c] focus:outline-none text-zinc-900 dark:text-white text-sm resize-none" />
-            </div>
-            <div>
-              <label className="block text-sm font-bold mb-1.5 text-zinc-700 dark:text-zinc-300">City *</label>
-              <input required name="city" type="text" value={form.city} onChange={handleChange}
+                error={fieldErrors.address}
+              />
+
+              <Field
+                icon={MapPin}
+                label="City / Town *"
+                name="city"
+                type="text"
+                value={form.city}
+                onChange={handleChange}
                 placeholder="e.g. Kericho"
-                className="w-full px-4 py-3 rounded-xl bg-zinc-100 dark:bg-zinc-800 border border-transparent focus:border-[#ff385c] focus:outline-none text-zinc-900 dark:text-white text-sm" />
-            </div>
+                error={fieldErrors.city}
+              />
 
-            <button type="submit" disabled={loading}
-              className="w-full bg-[#ff385c] text-white font-black py-4 rounded-2xl hover:bg-[#e03150] transition-all disabled:opacity-50 shadow-lg shadow-[#ff385c]/20 flex items-center justify-center gap-2">
-              {loading ? (
-                <><Loader2 className="w-5 h-5 animate-spin" /> Processing...</>
-              ) : (
-                <><CreditCard className="w-5 h-5" /> Pay {formatKES(total)} via M-Pesa</>
-              )}
-            </button>
-          </form>
+              {/* Submit */}
+              <button
+                type="submit"
+                disabled={loading}
+                className="w-full text-white font-black py-4 rounded-xl transition-all disabled:opacity-50 flex items-center justify-center gap-2 text-base hover:opacity-90 active:scale-[0.98]"
+                style={{
+                  background: `linear-gradient(135deg, ${C.accent}, ${C.accentDark})`,
+                  boxShadow: `0 8px 24px ${C.accent}30`,
+                }}
+              >
+                {loading ? (
+                  <><Loader2 className="w-5 h-5 animate-spin" /> Processing...</>
+                ) : (
+                  <><CreditCard className="w-5 h-5" /> Pay {formatKES(total)} via M-Pesa</>
+                )}
+              </button>
+
+              <p className="text-center text-xs" style={{ color: C.textMuted }}>
+                🔒 Powered by Paystack. Your payment is secure and encrypted.
+              </p>
+            </form>
+          </div>
+
+          {/* Nia contextual help */}
+          <div className="mt-4">
+            <NiaContextualTrigger page="checkout" />
+          </div>
         </div>
-      </div>
-
-      {/* Nia contextual help */}
-      <div className="mt-6">
-        <NiaContextualTrigger page="checkout" />
       </div>
     </div>
   );
