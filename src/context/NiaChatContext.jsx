@@ -158,8 +158,8 @@ const getContextualChips = (baseChips, pageContext, conversationHistory) => {
   return chips.slice(0, 5); // max 5 chips
 };
 
-// ── Nia AI Chat (via server proxy) ─────────────────────────────────
-const NIA_PROXY_URL = '/api/nia/chat';
+// ── Nia AI Chat (via API server) ────────────────────────────────────
+const NIA_PROXY_URL = 'https://stor1-api.onrender.com/api/nia/chat';
 
 const callNiaAI = async (messages) => {
   try {

@@ -1,14 +1,12 @@
 services:
   - type: web
-    name: stor1-web
+    name: stor1-app
     repo: https://github.com/oliver4441/stor1
     branch: main
     plan: free
-    rootDir: .
     buildCommand: npm install && npm run build
     startCommand: node server.js
     healthCheckPath: /health
-    pullRequestPreviewsEnabled: false
     envVars:
       - key: NODE_ENV
         value: production
