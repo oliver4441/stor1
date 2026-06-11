@@ -160,7 +160,7 @@ const getContextualChips = (baseChips, pageContext, conversationHistory) => {
 
 // ── OpenCode Zen API Integration ──────────────────────────────────
 const OPENCODE_API_URL = 'https://opencode.ai/zen/v1/chat/completions';
-const OPENCODE_MODEL = 'big-pickle'; // DeepSeek V4 Flash via Zen
+const OPENCODE_MODEL = 'deepseek-v4-flash-free'; // DeepSeek V4 Flash via Zen
 
 const callOpenCodeZen = async (messages, apiKey) => {
   if (!apiKey) return null;
@@ -193,7 +193,7 @@ Keep responses under 80 words. Answer directly without any reasoning or thinking
             content: m.text,
           })),
         ],
-        max_tokens: 3000,
+        max_tokens: 500,
         temperature: 0.7,
       }),
     });
@@ -202,11 +202,8 @@ Keep responses under 80 words. Answer directly without any reasoning or thinking
     const data = await response.json();
     const msg = data?.choices?.[0]?.message;
     if (!msg) return null;
-    // big-pickle (deepseek) returns both content and reasoning_content
-    // With sufficient max_tokens, content has the actual answer
-    // Fallback to reasoning_content if content is empty (strip thinking prefix)
-    const aiText = msg.content?.trim() || msg.reasoning_content?.replace(/^(Thinking\.?\s*)/i, '').trim() || null;
-    return aiText;
+    // deepseek-v4-flash-free returns clean content (no reasoning_content issues)
+    return msg.content?.trim() || null;
   } catch {
     return null;
   }
