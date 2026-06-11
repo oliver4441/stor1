@@ -9,6 +9,7 @@ import { useCart } from '../context/CartContext';
 import { supabase } from '../utils/supabase';
 import ImageGallery from '../components/ImageGallery';
 import StickyMobileCart from '../components/StickyMobileCart';
+import NiaContextualTrigger from '../components/NiaContextualTrigger';
 
 function ListingDetails() {
   const { id } = useParams();
