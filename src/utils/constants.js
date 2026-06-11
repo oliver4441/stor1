@@ -21,6 +21,6 @@ export const ID_TO_CATEGORY = {};
 Object.entries(CATEGORY_TO_ID).forEach(([name, id]) => { ID_TO_CATEGORY[id] = name; });
 
 // Helper to format currency
-export const formatKES = (amount) => {
+export function formatKES(amount) {
   return new Intl.NumberFormat('en-KE', { style: 'currency', currency: 'KES', maximumFractionDigits: 0 }).format(amount);
-};
+}
