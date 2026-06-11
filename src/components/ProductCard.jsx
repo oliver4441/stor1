@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Image as ImageIcon, MapPin, Share2, Package, ShoppingCart } from 'lucide-react';
 import { ProductSocialBadge } from '../components/SocialProof';
+import { formatKES } from '../utils/constants';
 import { useCart } from '../context/CartContext';
 import { supabase } from '../utils/supabase';
 
