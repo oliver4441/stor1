@@ -186,14 +186,14 @@ const callOpenCodeZen = async (messages, apiKey) => {
 
 Be concise, friendly, and helpful. Use short bullet points. Never make up product info or prices. If you don't know something, say so honestly and offer to connect to human support (omixsystems@gmail.com or +254 768 213 649).
 
-Keep responses under 80 words. Use emojis sparingly. Answer directly without lengthy reasoning.`,
+Keep responses under 80 words. Answer directly without any reasoning or thinking process. Just give the answer.`,
           },
           ...messages.map(m => ({
             role: m.sender === 'nia' ? 'assistant' : 'user',
             content: m.text,
           })),
         ],
-        max_tokens: 800,
+        max_tokens: 3000,
         temperature: 0.7,
       }),
     });
@@ -204,7 +204,9 @@ Keep responses under 80 words. Use emojis sparingly. Answer directly without len
     if (!msg) return null;
     // big-pickle (deepseek) returns both content and reasoning_content
     // With sufficient max_tokens, content has the actual answer
-    return msg.content || msg.reasoning_content || null;
+    // Fallback to reasoning_content if content is empty (strip thinking prefix)
+    const aiText = msg.content?.trim() || msg.reasoning_content?.replace(/^(Thinking\.?\s*)/i, '').trim() || null;
+    return aiText;
   } catch {
     return null;
   }
