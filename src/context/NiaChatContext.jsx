@@ -160,7 +160,7 @@ const getContextualChips = (baseChips, pageContext, conversationHistory) => {
 
 // ── OpenCode Zen API Integration ──────────────────────────────────
 const OPENCODE_API_URL = 'https://opencode.ai/zen/v1/chat/completions';
-const OPENCODE_MODEL = 'deepseek-v4-flash-free'; // DeepSeek V4 Flash via Zen
+const OPENCODE_MODEL = 'deepseek-v4-flash-free'; // DeepSeek V4 Flash (free tier)
 
 const callOpenCodeZen = async (messages, apiKey) => {
   if (!apiKey) return null;
