@@ -313,12 +313,11 @@ export function NiaChatProvider({ children }) {
     console.log('[Nia] AI response:', aiResponse ? 'received' : 'null');
     if (aiResponse) {
       const botMsg = { id: Date.now(), sender: 'nia', text: aiResponse, timestamp: new Date() };
-        setMessages(prev => [...prev, botMsg]);
-        conversationHistoryRef.current.push(botMsg);
-        setCurrentChips(FLOWS.honestUnknown.chips);
-        scrollToBottom();
-        return;
-      }
+      setMessages(prev => [...prev, botMsg]);
+      conversationHistoryRef.current.push(botMsg);
+      setCurrentChips(FLOWS.honestUnknown.chips);
+      scrollToBottom();
+      return;
     }
 
     // Fallback: honest uncertainty
