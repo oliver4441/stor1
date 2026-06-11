@@ -160,7 +160,7 @@ const getContextualChips = (baseChips, pageContext, conversationHistory) => {
 
 // ── OpenCode Zen API Integration ──────────────────────────────────
 const OPENCODE_API_URL = 'https://opencode.ai/zen/v1/chat/completions';
-const OPENCODE_MODEL = 'deepseek-v4-flash-free'; // DeepSeek V4 Flash (free tier)
+const OPENCODE_MODEL = 'mimo-v2.5-free'; // Clean output, no reasoning overhead — free tier
 
 const callOpenCodeZen = async (messages, apiKey) => {
   if (!apiKey) return null;
@@ -329,13 +329,16 @@ export function NiaChatProvider({ children }) {
 
     // If we have an AI key, try it for unmatched queries
     const apiKey = import.meta.env?.VITE_OPENCODE_API_KEY || '';
+    console.log('[Nia] AI key present:', !!apiKey, 'length:', apiKey.length);
     if (apiKey) {
       setIsTyping(true);
+      console.log('[Nia] Calling OpenCode Zen API...');
       const aiResponse = await callOpenCodeZen(
         conversationHistoryRef.current.slice(-10),
         apiKey
       );
       setIsTyping(false);
+      console.log('[Nia] AI response:', aiResponse ? 'received' : 'null');
       if (aiResponse) {
         const botMsg = { id: Date.now(), sender: 'nia', text: aiResponse, timestamp: new Date() };
         setMessages(prev => [...prev, botMsg]);
