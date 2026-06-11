@@ -10,7 +10,7 @@ function copyPublicAssets() {
     name: 'copy-public-assets',
     closeBundle() {
       const publicDir = resolve(__dirname, 'public')
-      const distDir = resolve(__dirname, 'dist')
+      const distDir = resolve(__dirname, 'build')
       if (fs.existsSync(publicDir)) {
         fs.readdirSync(publicDir).forEach(item => {
           const src = resolve(publicDir, item)
@@ -29,6 +29,9 @@ function copyPublicAssets() {
 
 export default defineConfig({
   base: '/',
+  build: {
+    outDir: 'build',
+  },
   plugins: [
     react(),
     VitePWA({

@@ -83,12 +83,12 @@ Keep responses under 80 words. Answer directly without any reasoning or thinking
   }
 });
 
-// Serve static files from the dist directory
-app.use(express.static(path.join(__dirname, 'dist'), { index: false }));
+// Serve static files from the build directory
+app.use(express.static(path.join(__dirname, 'build'), { index: false }));
 
 // SPA fallback — serve index.html for all non-API, non-file routes
 app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname, 'dist', 'index.html'));
+  res.sendFile(path.join(__dirname, 'build', 'index.html'));
 });
 
 app.listen(port, () => {
