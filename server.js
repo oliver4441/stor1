@@ -10,16 +10,15 @@ const __dirname = path.dirname(__filename);
 const app = express();
 const port = process.env.PORT || 3000;
 
-// Health check endpoint (must be before static middleware)
+// Health check endpoint
 app.get('/health', (req, res) => {
   res.json({ status: 'ok', service: 'stor1-frontend', timestamp: new Date().toISOString() });
 });
 
 // ── Nia AI Chat Proxy ──────────────────────────────────────────────
 // Proxies OpenCode Zen API calls so the API key stays server-side
-app.use('/api/nia', express.json());
 
-app.post('/api/nia/chat', async (req, res) => {
+app.post('/api/nia/chat', express.json(), async (req, res) => {
   const apiKey = process.env.VITE_OPENCODE_API_KEY;
   
   if (!apiKey) {
@@ -87,12 +86,8 @@ Keep responses under 80 words. Answer directly without any reasoning or thinking
 // Serve static files from the dist directory
 app.use(express.static(path.join(__dirname, 'dist'), { index: false }));
 
-// For client-side routing, serve index.html for all non-file routes
-app.use((req, res, next) => {
-  // Skip API-like paths and files with extensions
-  if (req.path.includes('.') || req.path.startsWith('/api')) {
-    return next();
-  }
+// SPA fallback — serve index.html for all non-API, non-file routes
+app.get('*', (req, res) => {
   res.sendFile(path.join(__dirname, 'dist', 'index.html'));
 });
 
