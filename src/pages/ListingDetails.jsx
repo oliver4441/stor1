@@ -9,6 +9,8 @@ import { useCart } from '../context/CartContext';
 import { supabase } from '../utils/supabase';
 import ImageGallery from '../components/ImageGallery';
 import StickyMobileCart from '../components/StickyMobileCart';
+import RecentlyViewed from '../components/RecentlyViewed';
+import { ListingSocialProof } from '../components/SocialProof';
 import NiaContextualTrigger from '../components/NiaContextualTrigger';
 
 function ListingDetails() {
@@ -68,15 +70,64 @@ function ListingDetails() {
     );
   }
 
-  const specs = [
-    ...(listing.brand ? [{ label: 'Brand', value: listing.brand }] : []),
-    ...(listing.model ? [{ label: 'Model', value: listing.model }] : []),
-    ...(listing.color ? [{ label: 'Color', value: listing.color }] : []),
-    ...(listing.weight ? [{ label: 'Weight', value: listing.weight }] : []),
-    ...(listing.sku ? [{ label: 'SKU', value: listing.sku }] : []),
-    { label: 'Condition', value: listing.condition },
-    { label: 'Category', value: listing.category },
-  ];
+  // Group specs into categories (Jumia-style collapsible sections)
+  const specCategories = [
+    {
+      title: 'General',
+      specs: [
+        ...(listing.brand ? [{ label: 'Brand', value: listing.brand }] : []),
+        ...(listing.model ? [{ label: 'Model', value: listing.model }] : []),
+        ...(listing.color ? [{ label: 'Color', value: listing.color }] : []),
+        ...(listing.weight ? [{ label: 'Weight', value: listing.weight }] : []),
+        ...(listing.sku ? [{ label: 'SKU', value: listing.sku }] : []),
+        { label: 'Condition', value: listing.condition },
+        { label: 'Category', value: listing.category },
+      ],
+    },
+    ...(listing.ram || listing.storage ? [{
+      title: 'Performance',
+      specs: [
+        ...(listing.ram ? [{ label: 'RAM', value: listing.ram }] : []),
+        ...(listing.storage ? [{ label: 'Storage', value: listing.storage }] : []),
+        ...(listing.processor ? [{ label: 'Processor', value: listing.processor }] : []),
+        ...(listing.os ? [{ label: 'Operating System', value: listing.os }] : []),
+      ],
+    }] : []),
+    ...(listing.screen_size || listing.screen_type ? [{
+      title: 'Display',
+      specs: [
+        ...(listing.screen_size ? [{ label: 'Screen Size', value: listing.screen_size }] : []),
+        ...(listing.screen_type ? [{ label: 'Display Type', value: listing.screen_type }] : []),
+        ...(listing.resolution ? [{ label: 'Resolution', value: listing.resolution }] : []),
+      ],
+    }] : []),
+    ...(listing.camera || listing.front_camera ? [{
+      title: 'Camera',
+      specs: [
+        ...(listing.camera ? [{ label: 'Main Camera', value: listing.camera }] : []),
+        ...(listing.front_camera ? [{ label: 'Front Camera', value: listing.front_camera }] : []),
+      ],
+    }] : []),
+    ...(listing.battery ? [{
+      title: 'Battery',
+      specs: [
+        ...(listing.battery ? [{ label: 'Battery', value: listing.battery }] : []),
+        ...(listing.charging ? [{ label: 'Charging', value: listing.charging }] : []),
+      ],
+    }] : []),
+    ...(listing.connectivity || listing.wifi || listing.bluetooth ? [{
+      title: 'Connectivity',
+      specs: [
+        ...(listing.connectivity ? [{ label: 'Network', value: listing.connectivity }] : []),
+        ...(listing.wifi ? [{ label: 'Wi-Fi', value: listing.wifi }] : []),
+        ...(listing.bluetooth ? [{ label: 'Bluetooth', value: listing.bluetooth }] : []),
+        ...(listing.nfc ? [{ label: 'NFC', value: listing.nfc === 'Yes' ? 'Yes' : 'No' }] : []),
+      ],
+    }] : []),
+  ].filter(cat => cat.specs.length > 0);
+
+  // Flat list for backward compat (key specs strip)
+  const allSpecs = specCategories.flatMap(c => c.specs);
 
   const stockStatus = listing.quantity === 0 ? 'Out of stock' : listing.quantity <= 3 ? `Only ${listing.quantity} left` : 'In stock';
   const stockColor = listing.quantity === 0 ? 'text-red-500' : listing.quantity <= 3 ? 'text-amber-500' : 'text-green-500';
@@ -103,8 +154,31 @@ function ListingDetails() {
         <div className="w-full lg:w-1/2 flex flex-col">
           <div className="mb-4">
             <h1 className="text-2xl md:text-3xl font-bold mb-2 text-zinc-900 dark:text-white leading-tight">{listing.title}</h1>
-            <p className="text-3xl font-black text-[#ff385c]">{formatKES(listing.price)}</p>
+            <div className="flex items-center gap-3 flex-wrap">
+              <p className="text-3xl font-black text-[#ff385c]">{formatKES(listing.price)}</p>
+              {listing.compare_at_price && listing.compare_at_price > listing.price && (
+                <>
+                  <p className="text-lg font-bold text-zinc-400 line-through">{formatKES(listing.compare_at_price)}</p>
+                  <span className="bg-red-100 dark:bg-red-900/30 text-red-600 dark:text-red-400 text-xs font-bold px-2 py-1 rounded-full">
+                    -{Math.round((1 - listing.price / listing.compare_at_price) * 100)}%
+                  </span>
+                </>
+              )}
+            </div>
           </div>
+
+          {/* Delivery Info */}
+          <div className="flex flex-wrap gap-2 mb-6">
+            <span className="flex items-center gap-1.5 bg-blue-50 dark:bg-blue-900/20 text-blue-700 dark:text-blue-400 px-3 py-1.5 rounded-xl text-xs font-bold border border-blue-200 dark:border-blue-800">
+              <Truck className="w-3.5 h-3.5" /> Free delivery in Kericho
+            </span>
+            <span className="flex items-center gap-1.5 bg-purple-50 dark:bg-purple-900/20 text-purple-700 dark:text-purple-400 px-3 py-1.5 rounded-xl text-xs font-bold border border-purple-200 dark:border-purple-800">
+              <Package className="w-3.5 h-3.5" /> Delivery by tomorrow
+            </span>
+          </div>
+
+          {/* Social Proof */}
+          <ListingSocialProof listing={listing} />
 
           {/* Stock & Location */}
           <div className="flex flex-wrap gap-3 mb-6">
@@ -138,19 +212,26 @@ function ListingDetails() {
             </div>
           )}
 
-          {/* Specs Table */}
-          {specs.length > 0 && (
-            <div className="bg-zinc-50 dark:bg-zinc-900/50 rounded-2xl p-4 mb-6">
-              <h3 className="font-bold text-sm text-zinc-500 dark:text-zinc-400 uppercase tracking-wider mb-3">Product Details</h3>
-              <div className="grid grid-cols-2 gap-x-4 gap-y-2">
-                {specs.map((spec, i) => (
-                  <div key={i} className="flex items-center gap-2 py-1.5 border-b border-zinc-200 dark:border-zinc-800 last:border-0">
-                    <Tag className="w-3 h-3 text-zinc-400 flex-shrink-0" />
-                    <span className="text-xs text-zinc-500 dark:text-zinc-400">{spec.label}</span>
-                    <span className="text-xs font-bold text-zinc-900 dark:text-white ml-auto">{spec.value}</span>
+          {/* Specs Categories */}
+          {specCategories.length > 0 && (
+            <div className="mb-6 space-y-3">
+              <h3 className="font-bold text-sm text-zinc-500 dark:text-zinc-400 uppercase tracking-wider">Specifications</h3>
+              {specCategories.map((cat, ci) => (
+                <div key={ci} className="bg-zinc-50 dark:bg-zinc-900/50 rounded-2xl border border-zinc-200 dark:border-zinc-800 overflow-hidden">
+                  <div className="px-4 py-3 bg-zinc-100 dark:bg-zinc-800/50">
+                    <h4 className="font-bold text-xs text-zinc-700 dark:text-zinc-300 uppercase tracking-wider">{cat.title}</h4>
                   </div>
-                ))}
-              </div>
+                  <div className="divide-y divide-zinc-200 dark:divide-zinc-800">
+                    {cat.specs.map((spec, si) => (
+                      <div key={si} className="flex items-center gap-3 px-4 py-2.5">
+                        <Tag className="w-3 h-3 text-zinc-400 flex-shrink-0" />
+                        <span className="text-xs text-zinc-500 dark:text-zinc-400 w-28 flex-shrink-0">{spec.label}</span>
+                        <span className="text-xs font-bold text-zinc-900 dark:text-white">{spec.value}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              ))}
             </div>
           )}
 
@@ -172,13 +253,28 @@ function ListingDetails() {
             </div>
           </div>
 
-          {/* Seller */}
-          <div className="border-t border-zinc-200 dark:border-zinc-800 py-4 mb-4">
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 bg-[#ff385c]/10 rounded-full flex items-center justify-center font-bold text-lg text-[#ff385c]">O</div>
-              <div>
+          {/* Seller / About the Store */}
+          <div className="bg-zinc-50 dark:bg-zinc-900/50 rounded-2xl p-4 mb-4 border border-zinc-200 dark:border-zinc-800">
+            <div className="flex items-center gap-3 mb-3">
+              <div className="w-11 h-11 bg-gradient-to-br from-[#ff385c] to-[#ff6b8a] rounded-full flex items-center justify-center font-black text-lg text-white shadow-md shadow-[#ff385c]/20">O</div>
+              <div className="flex-1">
                 <p className="font-bold text-sm text-zinc-900 dark:text-white">Omix Store</p>
-                <p className="text-xs text-zinc-500">Kericho, Kenya</p>
+                <p className="text-xs text-zinc-500 dark:text-zinc-400">Kericho, Kenya • Official Store</p>
+              </div>
+              <span className="bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400 text-[10px] font-bold px-2 py-1 rounded-full">Verified</span>
+            </div>
+            <div className="grid grid-cols-3 gap-2">
+              <div className="text-center bg-white dark:bg-zinc-800 rounded-xl py-2 px-1">
+                <p className="text-sm font-black text-[#ff385c]">100%</p>
+                <p className="text-[9px] text-zinc-500 dark:text-zinc-400 uppercase tracking-wider">Quality</p>
+              </div>
+              <div className="text-center bg-white dark:bg-zinc-800 rounded-xl py-2 px-1">
+                <p className="text-sm font-black text-[#ff385c]">Fast</p>
+                <p className="text-[9px] text-zinc-500 dark:text-zinc-400 uppercase tracking-wider">Shipping</p>
+              </div>
+              <div className="text-center bg-white dark:bg-zinc-800 rounded-xl py-2 px-1">
+                <p className="text-sm font-black text-[#ff385c]">24/7</p>
+                <p className="text-[9px] text-zinc-500 dark:text-zinc-400 uppercase tracking-wider">Support</p>
               </div>
             </div>
           </div>
@@ -245,6 +341,9 @@ function ListingDetails() {
           </div>
         </div>
       )}
+
+      {/* Recently Viewed */}
+      <RecentlyViewed currentListing={listing} allListings={related} />
 
       {/* Sticky mobile cart bar */}
       <StickyMobileCart

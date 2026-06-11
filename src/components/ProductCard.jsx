@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Image as ImageIcon, MapPin, Share2, Package, ShoppingCart } from 'lucide-react';
-import { formatKES } from '../utils/constants';
+import { ProductSocialBadge } from '../components/SocialProof';
 import { useCart } from '../context/CartContext';
 import { supabase } from '../utils/supabase';
 
@@ -76,6 +76,13 @@ function ProductCard({ listing }) {
           <div className="absolute bottom-0 left-0 right-0 bg-amber-500/90 text-white text-[10px] font-bold text-center py-1">Only {listing.quantity} left</div>
         )}
 
+        {/* Discount badge on image */}
+        {listing.compare_at_price && listing.compare_at_price > listing.price && (
+          <div className="absolute top-2 right-12 bg-red-500 text-white px-2 py-1 rounded-lg text-[10px] font-bold shadow-sm">
+            -{Math.round((1 - listing.price / listing.compare_at_price) * 100)}%
+          </div>
+        )}
+
         {/* Share button */}
         <button onClick={handleShare}
           className="absolute top-2 right-2 bg-[#25D366] text-white p-1.5 rounded-full shadow-sm hover:bg-[#20BD5A] transition-all opacity-0 group-hover:opacity-100"
@@ -103,10 +110,18 @@ function ProductCard({ listing }) {
       </div>
 
       <div>
-        <h3 className="font-bold text-zinc-900 dark:text-white text-sm truncate">{listing.title}</h3>
+        <div className="flex items-center gap-2 mb-1">
+          <h3 className="font-bold text-zinc-900 dark:text-white text-sm truncate flex-1">{listing.title}</h3>
+          <ProductSocialBadge listing={listing} />
+        </div>
         <p className="text-zinc-500 dark:text-zinc-400 text-xs">{listing.category}{listing.brand ? ` - ${listing.brand}` : ''}</p>
         <div className="flex items-center justify-between mt-1">
-          <p className="font-bold text-[#ff385c] text-sm">{formatKES(listing.price)}</p>
+          <div className="flex items-center gap-2">
+            <p className="font-bold text-[#ff385c] text-sm">{formatKES(listing.price)}</p>
+            {listing.compare_at_price && listing.compare_at_price > listing.price && (
+              <p className="text-xs text-zinc-400 line-through">{formatKES(listing.compare_at_price)}</p>
+            )}
+          </div>
           {listing.location && (
             <span className="text-zinc-400 text-[10px] flex items-center gap-0.5">
               <MapPin className="w-2.5 h-2.5" />{listing.location}
