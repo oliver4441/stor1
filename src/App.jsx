@@ -1,5 +1,5 @@
 import React from 'react';
-import { Routes, Route } from 'react-router-dom';
+import { Routes, Route, Navigate } from 'react-router-dom';
 import { LanguageProvider } from './utils/lang';
 import { CartProvider } from './context/CartContext';
 import { NiaChatProvider } from './context/NiaChatContext';
