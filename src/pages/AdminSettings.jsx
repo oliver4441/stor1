@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Save, Store, Truck, CreditCard, Bell, Globe } from 'lucide-react';
+import { Save, Store, Truck, Bell, Globe } from 'lucide-react';
 
 export default function AdminSettings() {
   const [saved, setSaved] = useState(false);

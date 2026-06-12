@@ -85,7 +85,7 @@ export default function AdminOrders() {
     if (!selectedOrder) return;
     const result = await updateOrderNotes(selectedOrder.id, notesValue);
     if (result.success) {
-      setSelectedOrder(prev => ({ ...prev, admin_notes: notesValue }));
+      setSelectedOrder(prev => ({ ...prev, notes: notesValue }));
       setEditingNotes(false);
       setSuccessMsg('Notes saved');
       setTimeout(() => setSuccessMsg(''), 3000);
@@ -116,7 +116,7 @@ export default function AdminOrders() {
 
   const openOrderDetail = (order) => {
     setSelectedOrder(order);
-    setNotesValue(order.admin_notes || '');
+    setNotesValue(order.notes || '');
     setEditingNotes(false);
   };
 
@@ -344,7 +344,7 @@ export default function AdminOrders() {
                 </h4>
                 {!editingNotes && (
                   <button onClick={() => setEditingNotes(true)} className="text-xs font-semibold text-[#ff385c] hover:underline">
-                    {selectedOrder.admin_notes ? 'Edit' : 'Add'}
+                    {selectedOrder.notes ? 'Edit' : 'Add'}
                   </button>
                 )}
               </div>
@@ -354,7 +354,7 @@ export default function AdminOrders() {
                     placeholder="Add internal notes about this order..."
                     className="w-full px-3 py-2 rounded-xl bg-zinc-100 dark:bg-zinc-800 border border-transparent focus:border-[#ff385c] focus:outline-none text-sm text-zinc-900 dark:text-white resize-none" />
                   <div className="flex gap-2 justify-end">
-                    <button onClick={() => { setEditingNotes(false); setNotesValue(selectedOrder.admin_notes || ''); }}
+                    <button onClick={() => { setEditingNotes(false); setNotesValue(selectedOrder.notes || ''); }}
                       className="px-3 py-1.5 rounded-lg text-xs font-bold text-zinc-600 dark:text-zinc-400 hover:bg-zinc-100 dark:hover:bg-zinc-800">Cancel</button>
                     <button onClick={handleSaveNotes}
                       className="px-3 py-1.5 rounded-lg text-xs font-bold bg-[#ff385c] text-white hover:bg-[#e03150]">Save</button>
@@ -362,7 +362,7 @@ export default function AdminOrders() {
                 </div>
               ) : (
                 <p className="text-sm text-zinc-500 dark:text-zinc-400 p-3 rounded-xl bg-zinc-50 dark:bg-zinc-800/50 min-h-[40px]">
-                  {selectedOrder.admin_notes || <span className="text-zinc-400 italic">No notes</span>}
+                  {selectedOrder.notes || <span className="text-zinc-400 italic">No notes</span>}
                 </p>
               )}
             </div>

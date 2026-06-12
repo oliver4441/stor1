@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
-import { Package, ShoppingBag, DollarSign, AlertTriangle, TrendingUp, Eye, ArrowUpRight, ArrowDownRight } from 'lucide-react';
+import { Package, ShoppingBag, DollarSign, AlertTriangle, TrendingUp, Eye } from 'lucide-react';
 import { supabase } from '../utils/supabase';
 import { formatKES } from '../utils/constants';
 import { fetchAllListings, fetchAllOrders } from '../utils/api';
