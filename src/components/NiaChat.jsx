@@ -1,37 +1,16 @@
-import { useState, useRef, useEffect } from 'react';
-import { X, Send, RotateCcw, MoreHorizontal } from 'lucide-react';
+import { useState } from 'react';
+import { X, RotateCcw, MoreHorizontal, Sparkles } from 'lucide-react';
 import { useNiaChat } from '../context/NiaChatContext';
 
 export default function NiaChat() {
   const {
     isOpen, closeChat, resetChat,
     messages, isTyping, currentChips,
-    handleChipClick, handleUserMessage,
+    handleChipClick,
     messagesEndRef, COLORS,
   } = useNiaChat();
 
-  const [input, setInput] = useState('');
   const [showMenu, setShowMenu] = useState(false);
-  const inputRef = useRef(null);
-
-  useEffect(() => {
-    if (isOpen) setTimeout(() => inputRef.current?.focus(), 200);
-  }, [isOpen]);
-
-  const handleSend = (e) => {
-    e.preventDefault();
-    const text = input.trim();
-    if (!text) return;
-    handleUserMessage(text);
-    setInput('');
-  };
-
-  const handleKeyDown = (e) => {
-    if (e.key === 'Enter' && !e.shiftKey) {
-      e.preventDefault();
-      handleSend(e);
-    }
-  };
 
   if (!isOpen) return null;
 
@@ -96,6 +75,17 @@ export default function NiaChat() {
         )}
       </div>
 
+      {/* Chat with AI coming soon banner */}
+      <div
+        className="flex items-center gap-2.5 px-4 py-3 flex-shrink-0 border-b"
+        style={{ backgroundColor: `${COLORS.accent}10`, borderColor: COLORS.border }}
+      >
+        <Sparkles className="w-4 h-4 flex-shrink-0" style={{ color: COLORS.accent }} />
+        <p className="text-xs font-medium" style={{ color: COLORS.textBot }}>
+          Chat with AI coming soon ✨ For now, use the quick options below to navigate the store.
+        </p>
+      </div>
+
       {/* Messages */}
       <div
         className="flex-1 overflow-y-auto px-4 py-4 space-y-3"
@@ -125,7 +115,6 @@ export default function NiaChat() {
           </div>
         ))}
 
-        {/* Typing indicator — only shown during real API latency */}
         {isTyping && (
           <div className="flex justify-start">
             <img
@@ -146,7 +135,6 @@ export default function NiaChat() {
           </div>
         )}
 
-        {/* Quick reply chips — dynamic, contextual */}
         {currentChips.length > 0 && !isTyping && (
           <div className="flex flex-wrap gap-2 pt-1">
             {currentChips.map((chip) => (
@@ -176,37 +164,6 @@ export default function NiaChat() {
 
         <div ref={messagesEndRef} />
       </div>
-
-      {/* Input */}
-      <form
-        onSubmit={handleSend}
-        className="flex items-center gap-2 px-3 py-3 flex-shrink-0"
-        style={{ backgroundColor: COLORS.bg, borderTop: `1px solid ${COLORS.border}` }}
-      >
-        <input
-          ref={inputRef}
-          type="text"
-          value={input}
-          onChange={(e) => setInput(e.target.value)}
-          onKeyDown={handleKeyDown}
-          placeholder="Type a message..."
-          className="flex-1 px-4 py-2.5 rounded-full text-sm focus:outline-none focus:ring-2"
-          style={{
-            backgroundColor: COLORS.bgGray,
-            color: COLORS.textBot,
-            border: `1px solid ${COLORS.border}`,
-            focusRingColor: `${COLORS.accent}30`,
-          }}
-        />
-        <button
-          type="submit"
-          disabled={!input.trim()}
-          className="w-10 h-10 rounded-full text-white flex items-center justify-center disabled:opacity-30 disabled:cursor-not-allowed transition-all flex-shrink-0 hover:opacity-90"
-          style={{ backgroundColor: COLORS.accent }}
-        >
-          <Send className="w-4 h-4" />
-        </button>
-      </form>
     </div>
   );
 }

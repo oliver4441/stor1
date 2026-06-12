@@ -6,6 +6,7 @@ const translations = {
     // ── Navigation ──
     nav: {
       home: 'Home',
+      account: 'Account',
       sell: 'Sell',
       events: 'Events',
       wishes: 'Wishes',
@@ -89,18 +90,18 @@ const translations = {
 
     // ── Auth ──
     auth: {
-      welcomeBack: 'Welcome back',
-      loginSubtitle: 'Log in to manage your listings',
+      welcomeBack: 'Welcome Back',
+      loginSubtitle: 'Sign in to your account',
       email: 'Email Address',
       emailPlaceholder: 'you@example.com',
       password: 'Password',
       passwordPlaceholder: '........',
       login: 'Log In',
       loggingIn: 'Logging in...',
-      noAccount: "Don't have a seller account?",
-      signUp: 'Sign up',
+      noAccount: "Don't have an account?",
+      signUp: 'Sign Up',
       startSelling: 'Start selling',
-      signupSubtitle: 'Create your seller account in seconds',
+      signupSubtitle: 'Create an account in seconds',
       fullName: 'Full Name',
       fullNamePlaceholder: 'e.g. Kiprono Yegon',
       createAccount: 'Create Account',
@@ -379,17 +380,17 @@ const translations = {
     // ── Auth ──
     auth: {
       welcomeBack: 'Karibu tena',
-      loginSubtitle: 'Ingia kudhibiti orodha zako',
+      loginSubtitle: 'Ingia kwenye akaunti yako',
       email: 'Barua Pepe',
       emailPlaceholder: 'wewe@mfano.com',
       password: 'Nenosiri',
       passwordPlaceholder: '........',
       login: 'Ingia',
       loggingIn: 'Inaingia...',
-      noAccount: 'Huna akaunti ya muuzaji?',
+      noAccount: 'Huna akaunti?',
       signUp: 'Jisajili',
       startSelling: 'Anza kuuza',
-      signupSubtitle: 'Unda akaunti yako ya muuzaji kwa sekunde',
+      signupSubtitle: 'Unda akaunti kwa sekunde',
       fullName: 'Jina Kamili',
       fullNamePlaceholder: 'mf. Kiprono Yegon',
       createAccount: 'Unda Akaunti',

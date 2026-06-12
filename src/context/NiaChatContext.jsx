@@ -158,35 +158,6 @@ const getContextualChips = (baseChips, pageContext, conversationHistory) => {
   return chips.slice(0, 5); // max 5 chips
 };
 
-// ── Nia AI Chat (via API server) ────────────────────────────────────
-const NIA_PROXY_URL = 'https://stor1-api.onrender.com/api/nia/chat';
-
-const callNiaAI = async (messages) => {
-  try {
-    const response = await fetch(NIA_PROXY_URL, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        messages: messages.map(m => ({
-          role: m.sender === 'nia' ? 'assistant' : 'user',
-          content: m.text,
-        })),
-      }),
-    });
-
-    if (!response.ok) {
-      console.log('[Nia] Proxy error:', response.status);
-      return null;
-    }
-
-    const data = await response.json();
-    return data?.content?.trim() || null;
-  } catch (err) {
-    console.log('[Nia] Proxy call failed:', err.message);
-    return null;
-  }
-};
-
 // ── Provider ──────────────────────────────────────────────────────
 export function NiaChatProvider({ children }) {
   const [isOpen, setIsOpen] = useState(false);
@@ -200,9 +171,6 @@ export function NiaChatProvider({ children }) {
     try { return localStorage.getItem('nia-onboarding-shown') !== 'true'; } catch { return true; }
   });
   const [pageContext, setPageContext] = useState('home');
-  const [useAI, setUseAI] = useState(() => {
-    try { return localStorage.getItem('nia-use-ai') === 'true'; } catch { return false; }
-  });
   const messagesEndRef = useRef(null);
   const conversationHistoryRef = useRef([]);
 
@@ -291,39 +259,6 @@ export function NiaChatProvider({ children }) {
     }
   }, [addBotMessage, closeChat, pageContext]);
 
-  const handleUserMessage = useCallback(async (text) => {
-    const userMsg = { id: Date.now(), sender: 'user', text, timestamp: new Date() };
-    setMessages(prev => [...prev, userMsg]);
-    conversationHistoryRef.current.push(userMsg);
-    setCurrentChips([]);
-
-    // Try rule-based matching first (instant)
-    const flow = matchFlow(text);
-    if (flow) {
-      const contextualChips = getContextualChips(flow.chips, pageContext, conversationHistoryRef.current);
-      addBotMessage(flow.message, contextualChips, 0);
-      return;
-    }
-
-    // Try AI for unmatched queries (via server proxy)
-    setIsTyping(true);
-    console.log('[Nia] Calling Nia AI proxy...');
-    const aiResponse = await callNiaAI(conversationHistoryRef.current.slice(-10));
-    setIsTyping(false);
-    console.log('[Nia] AI response:', aiResponse ? 'received' : 'null');
-    if (aiResponse) {
-      const botMsg = { id: Date.now(), sender: 'nia', text: aiResponse, timestamp: new Date() };
-      setMessages(prev => [...prev, botMsg]);
-      conversationHistoryRef.current.push(botMsg);
-      setCurrentChips(FLOWS.honestUnknown.chips);
-      scrollToBottom();
-      return;
-    }
-
-    // Fallback: honest uncertainty
-    addBotMessage(FLOWS.honestUnknown.message, FLOWS.honestUnknown.chips, 0);
-  }, [addBotMessage, pageContext, scrollToBottom]);
-
   const dismissOnboarding = useCallback(() => {
     setShowOnboarding(false);
     try { localStorage.setItem('nia-onboarding-shown', 'true'); } catch {}
@@ -336,10 +271,9 @@ export function NiaChatProvider({ children }) {
   const value = {
     isOpen, openChat, closeChat, resetChat,
     messages, isTyping, currentChips,
-    handleChipClick, handleUserMessage,
+    handleChipClick,
     hasOpened, showOnboarding, dismissOnboarding,
     pageContext, setPageContext,
-    useAI, setUseAI,
     messagesEndRef,
     FLOWS, COLORS,
   };
