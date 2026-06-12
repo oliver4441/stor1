@@ -79,7 +79,7 @@ function ContactFloat() {
       {/* Floating Cart Button — above contact */}
       <button
         onClick={() => setCartOpen(!cartOpen)}
-        className={`fixed bottom-24 right-4 sm:right-6 z-50 w-14 h-14 rounded-full flex items-center justify-center shadow-2xl hover:scale-110 transition-all duration-300 ${bump ? 'animate-bounce-once' : ''} ${flash ? flashColor : 'bg-zinc-900 dark:bg-white'}`}
+        className={`fixed bottom-32 right-4 sm:right-6 z-50 w-14 h-14 rounded-full flex items-center justify-center shadow-2xl hover:scale-110 transition-all duration-300 ${bump ? 'animate-bounce-once' : ''} ${flash ? flashColor : 'bg-zinc-900 dark:bg-white'}`}
         aria-label="View cart"
       >
         <ShoppingCart className={`w-6 h-6 transition-colors duration-300 ${flash ? 'text-white' : 'text-white dark:text-zinc-900'}`} />
@@ -94,7 +94,7 @@ function ContactFloat() {
       {cartOpen && (
         <>
           <div className="fixed inset-0 z-40" onClick={() => setCartOpen(false)} />
-          <div className="fixed bottom-44 right-4 sm:right-6 w-[calc(100%-2rem)] sm:w-[380px] bg-white dark:bg-zinc-900 rounded-2xl shadow-2xl border border-zinc-200 dark:border-zinc-800 z-50 overflow-hidden" key="mini-cart">
+          <div className="fixed bottom-52 right-4 sm:right-6 w-[calc(100%-2rem)] sm:w-[380px] bg-white dark:bg-zinc-900 rounded-2xl shadow-2xl border border-zinc-200 dark:border-zinc-800 z-50 overflow-hidden" key="mini-cart">
             <div className="flex items-center justify-between px-5 py-4 border-b border-zinc-100 dark:border-zinc-800">
               <h3 className="font-black text-lg text-zinc-900 dark:text-white">Cart ({cartCount})</h3>
               <button onClick={() => setCartOpen(false)} className="p-1.5 rounded-lg hover:bg-zinc-100 dark:hover:bg-zinc-800 text-zinc-400">
@@ -271,7 +271,7 @@ function ContactFloat() {
       {/* Floating Contact Button */}
       <button
         onClick={() => { setIsOpen(!isOpen); setSuccess(false); setError(''); }}
-        className={`fixed bottom-4 right-4 sm:right-6 z-50 w-14 h-14 rounded-full flex items-center justify-center shadow-2xl transition-all duration-300 ${
+        className={`fixed bottom-16 right-4 sm:right-6 z-50 w-14 h-14 rounded-full flex items-center justify-center shadow-2xl transition-all duration-300 ${
           isOpen
             ? 'bg-zinc-900 dark:bg-white rotate-0 scale-90'
             : 'bg-[#ff385c] hover:bg-[#e03150] hover:scale-110'
@@ -287,7 +287,7 @@ function ContactFloat() {
 
       {/* Tooltip */}
       {!isOpen && (
-        <div className="fixed bottom-[4.5rem] right-4 sm:right-6 z-40 pointer-events-none">
+        <div className="fixed bottom-[7rem] right-4 sm:right-6 z-40 pointer-events-none">
           <div className="bg-zinc-900 dark:bg-white text-white dark:text-zinc-900 text-xs font-bold px-3 py-1.5 shadow-lg animate-[fadeIn_0.3s_ease_1s_forwards] opacity-0">
             Need help?
             <div className="absolute -bottom-1 right-4 w-2 h-2 bg-zinc-900 dark:bg-white rotate-45" />
