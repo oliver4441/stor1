@@ -238,11 +238,11 @@ export async function createListing(formData) {
       category_id: catId,
       location_city: formData.location,
       location_region: 'Kericho',
-      images: formData.image_url ? [formData.image_url] : [],
+      images: formData.images && formData.images.length > 0 ? formData.images : (formData.image_url ? [formData.image_url] : []),
       seller_name: formData.seller_name || user?.user_metadata?.full_name,
       seller_id: user?.id || null,
       seller_phone: formData.seller_phone || null,
-      status: 'active',
+      status: formData.status || 'active',
       quantity: parseInt(formData.quantity) || 1,
       brand: formData.brand || null,
       model: formData.model || null,
@@ -276,10 +276,11 @@ export async function updateListing(id, formData) {
       category_id: catId,
       location_city: formData.location,
       location_region: 'Kericho',
-      images: formData.image_url ? [formData.image_url] : [],
+      images: formData.images && formData.images.length > 0 ? formData.images : (formData.image_url ? [formData.image_url] : []),
       seller_name: formData.seller_name || user?.user_metadata?.full_name,
       seller_phone: formData.seller_phone || null,
       updated_at: new Date().toISOString(),
+      status: formData.status || 'active',
       quantity: parseInt(formData.quantity) || 1,
       brand: formData.brand || null,
       model: formData.model || null,
@@ -296,6 +297,28 @@ export async function updateListing(id, formData) {
     return { success: false, error: error.message }
   }
   return { success: true, id: data?.id }
+}
+
+// Bulk update listing status
+export async function bulkUpdateListingStatus(ids, status) {
+  const { error } = await supabase
+    .from('listings')
+    .update({ status, updated_at: new Date().toISOString() })
+    .in('id', ids)
+
+  if (error) return { success: false, error: error.message }
+  return { success: true }
+}
+
+// Bulk delete listings
+export async function bulkDeleteListings(ids) {
+  const { error } = await supabase
+    .from('listings')
+    .delete()
+    .in('id', ids)
+
+  if (error) return { success: false, error: error.message }
+  return { success: true }
 }
 
 // Delete listing

@@ -1,11 +1,12 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
-import { Plus, Pencil, Trash2, X, AlertTriangle, CheckCircle, Loader2, Upload, Image as ImageIcon, Search, Filter, Eye } from 'lucide-react';
+import { Plus, Pencil, Trash2, X, AlertTriangle, Loader2, Upload, Image as ImageIcon, Search, Eye, CheckSquare, Square, Tag, GripVertical, Star } from 'lucide-react';
 import { supabase } from '../utils/supabase';
-import { fetchAllListings, createListing, updateListing, deleteListing, adminDeleteListing } from '../utils/api';
+import { fetchAllListings, createListing, updateListing, deleteListing, adminDeleteListing, bulkUpdateListingStatus, bulkDeleteListings } from '../utils/api';
 import { formatKES, CATEGORIES } from '../utils/constants';
 import { uploadImage } from '../utils/api';
 
 const CONDITIONS = ['New', 'Like New', 'Good', 'Fair', 'For Parts'];
+const MAX_IMAGES = 5;
 
 export default function AdminProducts() {
   const [listings, setListings] = useState([]);
@@ -14,19 +15,27 @@ export default function AdminProducts() {
   const [filterCategory, setFilterCategory] = useState('All');
   const [filterStatus, setFilterStatus] = useState('All');
 
+  // Selection
+  const [selectedIds, setSelectedIds] = useState([]);
+  const [bulkAction, setBulkAction] = useState('');
+
   // Modal state
   const [modalOpen, setModalOpen] = useState(false);
   const [editingId, setEditingId] = useState(null);
   const [form, setForm] = useState({
     title: '', price: '', description: '', category: 'Electronics', condition: 'New', location: 'CBD',
-    image_url: '', quantity: '1', brand: '', model: '', color: '', weight: '', sku: ''
+    images: [], quantity: '1', brand: '', model: '', color: '', weight: '', sku: '', status: 'active', tags: ''
   });
   const [submitting, setSubmitting] = useState(false);
   const [successMsg, setSuccessMsg] = useState('');
   const [deleteTarget, setDeleteTarget] = useState(null);
   const [imageUploading, setImageUploading] = useState(false);
-  const [imagePreview, setImagePreview] = useState(null);
   const fileInputRef = useRef(null);
+
+  // Quick edit state
+  const [quickEditId, setQuickEditId] = useState(null);
+  const [quickEditField, setQuickEditField] = useState(null);
+  const [quickEditValue, setQuickEditValue] = useState('');
 
   const loadData = useCallback(async () => {
     setLoading(true);
@@ -45,10 +54,50 @@ export default function AdminProducts() {
     return matchSearch && matchCategory && matchStatus;
   });
 
+  const allFilteredSelected = filteredListings.length > 0 && filteredListings.every(l => selectedIds.includes(l.id));
+
+  const toggleSelect = (id) => {
+    setSelectedIds(prev => prev.includes(id) ? prev.filter(i => i !== id) : [...prev, id]);
+  };
+
+  const toggleSelectAll = () => {
+    if (allFilteredSelected) {
+      setSelectedIds([]);
+    } else {
+      setSelectedIds(filteredListings.map(l => l.id));
+    }
+  };
+
+  const handleBulkAction = async () => {
+    if (!bulkAction || selectedIds.length === 0) return;
+    if (bulkAction === 'delete') {
+      if (!confirm(`Delete ${selectedIds.length} products? This cannot be undone.`)) return;
+      const result = await bulkDeleteListings(selectedIds);
+      if (result.success) {
+        setSuccessMsg(`${selectedIds.length} products deleted`);
+        setSelectedIds([]);
+        await loadData();
+        setTimeout(() => setSuccessMsg(''), 3000);
+      } else {
+        alert('Bulk delete failed: ' + result.error);
+      }
+    } else {
+      const result = await bulkUpdateListingStatus(selectedIds, bulkAction);
+      if (result.success) {
+        setSuccessMsg(`${selectedIds.length} products updated to "${bulkAction}"`);
+        setSelectedIds([]);
+        setBulkAction('');
+        await loadData();
+        setTimeout(() => setSuccessMsg(''), 3000);
+      } else {
+        alert('Bulk update failed: ' + result.error);
+      }
+    }
+  };
+
   const openAddModal = () => {
     setEditingId(null);
-    setForm({ title: '', price: '', description: '', category: 'Electronics', condition: 'New', location: 'CBD', image_url: '', quantity: '1', brand: '', model: '', color: '', weight: '', sku: '' });
-    setImagePreview(null);
+    setForm({ title: '', price: '', description: '', category: 'Electronics', condition: 'New', location: 'CBD', images: [], quantity: '1', brand: '', model: '', color: '', weight: '', sku: '', status: 'active', tags: '' });
     setModalOpen(true);
   };
 
@@ -57,26 +106,41 @@ export default function AdminProducts() {
     setForm({
       title: listing.title, price: String(listing.price), description: listing.description || '',
       category: listing.category || 'Electronics', condition: listing.condition || 'New',
-      location: listing.location_city || 'CBD', image_url: listing.images?.[0] || '',
+      location: listing.location_city || 'CBD', images: listing.images || [],
       quantity: String(listing.quantity || 1), brand: listing.brand || '', model: listing.model || '',
-      color: listing.color || '', weight: listing.weight || '', sku: listing.sku || ''
+      color: listing.color || '', weight: listing.weight || '', sku: listing.sku || '',
+      status: listing.status || 'active', tags: listing.tags || ''
     });
-    setImagePreview(listing.images?.[0] || null);
     setModalOpen(true);
   };
 
   const handleImageSelect = async (e) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
+    const files = Array.from(e.target.files || []);
+    if (files.length === 0) return;
+    const remaining = MAX_IMAGES - form.images.length;
+    if (remaining <= 0) { alert(`Maximum ${MAX_IMAGES} images allowed`); return; }
+    const toUpload = files.slice(0, remaining);
     setImageUploading(true);
-    const result = await uploadImage(file);
-    if (result.success) {
-      setForm(prev => ({ ...prev, image_url: result.url }));
-      setImagePreview(result.url);
-    } else {
-      alert(result.error || 'Image upload failed');
+    const newUrls = [];
+    for (const file of toUpload) {
+      const result = await uploadImage(file);
+      if (result.success) newUrls.push(result.url);
     }
+    setForm(prev => ({ ...prev, images: [...prev.images, ...newUrls] }));
     setImageUploading(false);
+    if (files.length > remaining) alert(`Only ${remaining} images added (max ${MAX_IMAGES})`);
+  };
+
+  const removeImage = (index) => {
+    setForm(prev => ({ ...prev, images: prev.images.filter((_, i) => i !== index) }));
+  };
+
+  const moveImage = (index, direction) => {
+    const newImages = [...form.images];
+    const target = index + direction;
+    if (target < 0 || target >= newImages.length) return;
+    [newImages[index], newImages[target]] = [newImages[target], newImages[index]];
+    setForm(prev => ({ ...prev, images: newImages }));
   };
 
   const handleSubmit = async (e) => {
@@ -85,8 +149,9 @@ export default function AdminProducts() {
     const payload = {
       title: form.title, description: form.description, price: form.price,
       category: form.category, condition: form.condition, location: form.location,
-      image_url: form.image_url, quantity: form.quantity, brand: form.brand,
+      images: form.images, quantity: form.quantity, brand: form.brand,
       model: form.model, color: form.color, weight: form.weight, sku: form.sku,
+      status: form.status, tags: form.tags,
     };
     const result = editingId ? await updateListing(editingId, payload) : await createListing(payload);
     if (result.success) {
@@ -114,10 +179,36 @@ export default function AdminProducts() {
     }
   };
 
+  // Quick edit handlers
+  const startQuickEdit = (id, field, value) => {
+    setQuickEditId(id);
+    setQuickEditField(field);
+    setQuickEditValue(value);
+  };
+
+  const saveQuickEdit = async () => {
+    if (!quickEditId || !quickEditField) return;
+    const updateData = { [quickEditField]: quickEditValue };
+    if (quickEditField === 'price') updateData.price = parseInt(quickEditValue) || 0;
+    if (quickEditField === 'quantity') updateData.quantity = parseInt(quickEditValue) || 0;
+
+    const { error } = await supabase
+      .from('listings')
+      .update({ ...updateData, updated_at: new Date().toISOString() })
+      .eq('id', quickEditId);
+
+    if (!error) {
+      setListings(prev => prev.map(l => l.id === quickEditId ? { ...l, [quickEditField]: quickEditValue } : l));
+    }
+    setQuickEditId(null);
+    setQuickEditField(null);
+    setQuickEditValue('');
+  };
+
   return (
     <div className="space-y-6 max-w-7xl">
       {successMsg && (
-        <div className="fixed top-20 right-4 z-50 bg-green-500 text-white px-6 py-3 rounded-2xl shadow-lg shadow-green-500/20 text-sm font-bold animate-slide-in">{successMsg}</div>
+        <div className="fixed top-20 right-4 z-50 bg-green-500 text-white px-6 py-3 rounded-2xl shadow-lg shadow-green-500/20 text-sm font-bold">{successMsg}</div>
       )}
 
       {/* Header */}
@@ -131,8 +222,8 @@ export default function AdminProducts() {
         </button>
       </div>
 
-      {/* Filters */}
-      <div className="flex flex-col sm:flex-row gap-3">
+      {/* Filters + Bulk Actions */}
+      <div className="flex flex-col lg:flex-row gap-3">
         <div className="relative flex-1">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-zinc-400" />
           <input
@@ -154,6 +245,25 @@ export default function AdminProducts() {
         </select>
       </div>
 
+      {/* Bulk Actions Bar */}
+      {selectedIds.length > 0 && (
+        <div className="flex items-center gap-3 p-3 bg-[#ff385c]/5 border border-[#ff385c]/20 rounded-xl">
+          <span className="text-sm font-bold text-[#ff385c]">{selectedIds.length} selected</span>
+          <select value={bulkAction} onChange={e => setBulkAction(e.target.value)}
+            className="px-3 py-1.5 rounded-lg bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 text-sm text-zinc-900 dark:text-white">
+            <option value="">Bulk action...</option>
+            <option value="active">Set Active</option>
+            <option value="draft">Set Draft</option>
+            <option value="delete">Delete</option>
+          </select>
+          <button onClick={handleBulkAction} disabled={!bulkAction}
+            className="px-4 py-1.5 bg-[#ff385c] text-white rounded-lg text-sm font-bold disabled:opacity-50 hover:bg-[#e03150]">
+            Apply
+          </button>
+          <button onClick={() => setSelectedIds([])} className="text-xs text-zinc-500 hover:text-zinc-700 ml-auto">Clear selection</button>
+        </div>
+      )}
+
       {/* Table */}
       {loading ? (
         <div className="flex items-center justify-center h-40">
@@ -165,6 +275,11 @@ export default function AdminProducts() {
             <table className="w-full">
               <thead>
                 <tr className="border-b border-zinc-200 dark:border-zinc-800">
+                  <th className="px-4 py-3 w-10">
+                    <button onClick={toggleSelectAll} className="text-zinc-400 hover:text-[#ff385c]">
+                      {allFilteredSelected ? <CheckSquare className="w-4 h-4" /> : <Square className="w-4 h-4" />}
+                    </button>
+                  </th>
                   <th className="text-left text-xs font-bold text-zinc-500 uppercase px-4 py-3">Product</th>
                   <th className="text-left text-xs font-bold text-zinc-500 uppercase px-4 py-3 hidden md:table-cell">Category</th>
                   <th className="text-left text-xs font-bold text-zinc-500 uppercase px-4 py-3">Price</th>
@@ -175,18 +290,35 @@ export default function AdminProducts() {
               </thead>
               <tbody>
                 {filteredListings.map(listing => (
-                  <tr key={listing.id} className="border-b border-zinc-100 dark:border-zinc-800 last:border-0 hover:bg-zinc-50 dark:hover:bg-zinc-800/50">
+                  <tr key={listing.id} className={`border-b border-zinc-100 dark:border-zinc-800 last:border-0 hover:bg-zinc-50 dark:hover:bg-zinc-800/50 ${selectedIds.includes(listing.id) ? 'bg-[#ff385c]/5' : ''}`}>
+                    <td className="px-4 py-3">
+                      <button onClick={() => toggleSelect(listing.id)} className="text-zinc-400 hover:text-[#ff385c]">
+                        {selectedIds.includes(listing.id) ? <CheckSquare className="w-4 h-4 text-[#ff385c]" /> : <Square className="w-4 h-4" />}
+                      </button>
+                    </td>
                     <td className="px-4 py-3">
                       <div className="flex items-center gap-3">
-                        <div className="w-10 h-10 rounded-xl bg-zinc-100 dark:bg-zinc-800 overflow-hidden flex-shrink-0">
+                        <div className="w-12 h-12 rounded-xl bg-zinc-100 dark:bg-zinc-800 overflow-hidden flex-shrink-0 relative">
                           {listing.images?.[0] ? (
                             <img src={listing.images[0]} alt="" className="w-full h-full object-cover" />
                           ) : (
                             <div className="w-full h-full flex items-center justify-center"><ImageIcon className="w-4 h-4 text-zinc-400" /></div>
                           )}
+                          {listing.images?.length > 1 && (
+                            <span className="absolute bottom-0 right-0 bg-black/60 text-white text-[8px] font-bold px-1 rounded-tl-lg">
+                              +{listing.images.length - 1}
+                            </span>
+                          )}
                         </div>
                         <div className="min-w-0">
-                          <p className="text-sm font-semibold text-zinc-900 dark:text-white truncate max-w-[200px]">{listing.title}</p>
+                          {quickEditId === listing.id && quickEditField === 'title' ? (
+                            <input autoFocus value={quickEditValue} onChange={e => setQuickEditValue(e.target.value)}
+                              onBlur={saveQuickEdit} onKeyDown={e => e.key === 'Enter' && saveQuickEdit()}
+                              className="text-sm font-semibold text-zinc-900 dark:text-white bg-white dark:bg-zinc-800 border border-[#ff385c] rounded px-1 py-0.5 w-full max-w-[200px]" />
+                          ) : (
+                            <p className="text-sm font-semibold text-zinc-900 dark:text-white truncate max-w-[200px] cursor-pointer hover:text-[#ff385c]"
+                              onDoubleClick={() => startQuickEdit(listing.id, 'title', listing.title)} title="Double-click to edit">{listing.title}</p>
+                          )}
                           {listing.sku && <p className="text-xs text-zinc-400 font-mono">{listing.sku}</p>}
                         </div>
                       </div>
@@ -195,12 +327,29 @@ export default function AdminProducts() {
                       <span className="text-xs font-medium text-zinc-600 dark:text-zinc-400 bg-zinc-100 dark:bg-zinc-800 px-2 py-1 rounded-lg">{listing.category}</span>
                     </td>
                     <td className="px-4 py-3">
-                      <span className="text-sm font-bold text-zinc-900 dark:text-white">{formatKES(listing.price)}</span>
+                      {quickEditId === listing.id && quickEditField === 'price' ? (
+                        <input autoFocus type="number" value={quickEditValue} onChange={e => setQuickEditValue(e.target.value)}
+                          onBlur={saveQuickEdit} onKeyDown={e => e.key === 'Enter' && saveQuickEdit()}
+                          className="text-sm font-bold text-zinc-900 dark:text-white bg-white dark:bg-zinc-800 border border-[#ff385c] rounded px-1 py-0.5 w-24" />
+                      ) : (
+                        <span className="text-sm font-bold text-zinc-900 dark:text-white cursor-pointer hover:text-[#ff385c]"
+                          onDoubleClick={() => startQuickEdit(listing.id, 'price', String(listing.price))} title="Double-click to edit">
+                          {formatKES(listing.price)}
+                        </span>
+                      )}
                     </td>
                     <td className="px-4 py-3 hidden sm:table-cell">
-                      <span className={`text-sm font-semibold ${listing.quantity === 0 ? 'text-red-500' : listing.quantity <= 3 ? 'text-amber-500' : 'text-zinc-700 dark:text-zinc-300'}`}>
-                        {listing.quantity || 0}
-                      </span>
+                      {quickEditId === listing.id && quickEditField === 'quantity' ? (
+                        <input autoFocus type="number" value={quickEditValue} onChange={e => setQuickEditValue(e.target.value)}
+                          onBlur={saveQuickEdit} onKeyDown={e => e.key === 'Enter' && saveQuickEdit()}
+                          className="text-sm font-semibold bg-white dark:bg-zinc-800 border border-[#ff385c] rounded px-1 py-0.5 w-16" />
+                      ) : (
+                        <span
+                          className={`text-sm font-semibold cursor-pointer hover:text-[#ff385c] ${listing.quantity === 0 ? 'text-red-500' : listing.quantity <= 3 ? 'text-amber-500' : 'text-zinc-700 dark:text-zinc-300'}`}
+                          onDoubleClick={() => startQuickEdit(listing.id, 'quantity', String(listing.quantity || 0))} title="Double-click to edit">
+                          {listing.quantity || 0}
+                        </span>
+                      )}
                     </td>
                     <td className="px-4 py-3 hidden lg:table-cell">
                       <span className={`text-[10px] uppercase font-bold px-2 py-0.5 rounded-full ${
@@ -228,7 +377,7 @@ export default function AdminProducts() {
         </div>
       ) : (
         <div className="bg-white dark:bg-zinc-900 rounded-2xl border-2 border-dashed border-zinc-200 dark:border-zinc-800 p-12 text-center">
-          <Package className="w-10 h-10 text-zinc-300 mx-auto mb-3" />
+          <ImageIcon className="w-10 h-10 text-zinc-300 mx-auto mb-3" />
           <h3 className="text-lg font-bold text-zinc-900 dark:text-white mb-1">No products found</h3>
           <p className="text-sm text-zinc-500 mb-4">{searchQuery || filterCategory !== 'All' || filterStatus !== 'All' ? 'Try adjusting your filters' : 'Get started by adding your first product'}</p>
           {!searchQuery && filterCategory === 'All' && filterStatus === 'All' && (
@@ -247,30 +396,51 @@ export default function AdminProducts() {
               <button onClick={() => setModalOpen(false)} className="p-2 rounded-full hover:bg-zinc-100 dark:hover:bg-zinc-800 text-zinc-400"><X className="w-5 h-5" /></button>
             </div>
             <form onSubmit={handleSubmit} className="space-y-4">
-              {/* Image Upload */}
+              {/* Multi-Image Upload */}
               <div>
-                <label className="block text-sm font-bold mb-2 text-zinc-700 dark:text-zinc-300">Product Image *</label>
-                <div className="flex items-start gap-4">
-                  <div className="w-28 h-28 rounded-xl bg-zinc-100 dark:bg-zinc-800 overflow-hidden flex-shrink-0 border-2 border-dashed border-zinc-300 dark:border-zinc-600">
-                    {imagePreview ? (
-                      <img src={imagePreview} alt="Preview" className="w-full h-full object-cover" />
-                    ) : (
-                      <div className="w-full h-full flex flex-col items-center justify-center text-zinc-400">
-                        <ImageIcon className="w-6 h-6 mb-1" />
-                        <span className="text-[10px]">No image</span>
+                <label className="block text-sm font-bold mb-2 text-zinc-700 dark:text-zinc-300">Product Images * <span className="font-normal text-zinc-400">(up to {MAX_IMAGES}, drag to reorder)</span></label>
+                <div className="flex flex-wrap gap-3">
+                  {form.images.map((url, i) => (
+                    <div key={i} className="relative group">
+                      <div className="w-24 h-24 rounded-xl bg-zinc-100 dark:bg-zinc-800 overflow-hidden border-2 border-zinc-200 dark:border-zinc-700">
+                        <img src={url} alt="" className="w-full h-full object-cover" />
                       </div>
-                    )}
-                  </div>
-                  <div className="flex-1">
-                    <input ref={fileInputRef} type="file" accept="image/*" onChange={handleImageSelect} className="hidden" />
-                    <button type="button" onClick={() => fileInputRef.current?.click()} disabled={imageUploading}
-                      className="flex items-center gap-2 px-4 py-2 rounded-xl bg-zinc-100 dark:bg-zinc-800 text-zinc-700 dark:text-zinc-300 font-bold text-sm hover:bg-zinc-200 dark:hover:bg-zinc-700 transition-all disabled:opacity-50">
-                      {imageUploading ? <><Loader2 className="w-4 h-4 animate-spin" />Uploading...</> : <><Upload className="w-4 h-4" />Upload Image</>}
-                    </button>
-                    <p className="text-xs text-zinc-500 mt-2">JPG, PNG or WebP. Max 5MB.</p>
-                    {form.image_url && <p className="text-xs text-green-600 mt-1 font-medium">✓ Image uploaded</p>}
-                  </div>
+                      {i === 0 && (
+                        <span className="absolute top-1 left-1 bg-[#ff385c] text-white text-[8px] font-bold px-1.5 py-0.5 rounded-full">Cover</span>
+                      )}
+                      <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity rounded-xl flex items-center justify-center gap-1">
+                        {i > 0 && (
+                          <button type="button" onClick={() => moveImage(i, -1)} className="p-1 bg-white/80 rounded-lg hover:bg-white text-zinc-700" title="Move left">
+                            <GripVertical className="w-3 h-3" />
+                          </button>
+                        )}
+                        {i < form.images.length - 1 && (
+                          <button type="button" onClick={() => moveImage(i, 1)} className="p-1 bg-white/80 rounded-lg hover:bg-white text-zinc-700" title="Move right">
+                            <GripVertical className="w-3 h-3 rotate-180" />
+                          </button>
+                        )}
+                        <button type="button" onClick={() => removeImage(i)} className="p-1 bg-red-500/80 rounded-lg hover:bg-red-500 text-white" title="Remove">
+                          <X className="w-3 h-3" />
+                        </button>
+                      </div>
+                    </div>
+                  ))}
+                  {form.images.length < MAX_IMAGES && (
+                    <div className="w-24 h-24 rounded-xl bg-zinc-100 dark:bg-zinc-800 border-2 border-dashed border-zinc-300 dark:border-zinc-600 flex flex-col items-center justify-center cursor-pointer hover:border-[#ff385c] transition-colors"
+                      onClick={() => fileInputRef.current?.click()}>
+                      {imageUploading ? (
+                        <Loader2 className="w-5 h-5 text-zinc-400 animate-spin" />
+                      ) : (
+                        <>
+                          <Upload className="w-5 h-5 text-zinc-400 mb-1" />
+                          <span className="text-[9px] text-zinc-400">Add</span>
+                        </>
+                      )}
+                    </div>
+                  )}
                 </div>
+                <input ref={fileInputRef} type="file" accept="image/*" multiple onChange={handleImageSelect} className="hidden" />
+                <p className="text-xs text-zinc-500 mt-2">JPG, PNG or WebP. Max 5MB each. First image is the cover.</p>
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -284,7 +454,7 @@ export default function AdminProducts() {
                 </div>
               </div>
 
-              <div className="grid grid-cols-3 gap-4">
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                 <div>
                   <label className="block text-sm font-bold mb-1.5 text-zinc-700 dark:text-zinc-300">Category</label>
                   <select value={form.category} onChange={e => setForm({...form, category: e.target.value})} className="w-full px-4 py-2.5 rounded-xl bg-zinc-100 dark:bg-zinc-800 border border-transparent focus:border-[#ff385c] focus:outline-none text-zinc-900 dark:text-white text-sm appearance-none">
@@ -300,6 +470,13 @@ export default function AdminProducts() {
                 <div>
                   <label className="block text-sm font-bold mb-1.5 text-zinc-700 dark:text-zinc-300">Quantity *</label>
                   <input required type="number" min="0" value={form.quantity} onChange={e => setForm({...form, quantity: e.target.value})} placeholder="1" className="w-full px-4 py-2.5 rounded-xl bg-zinc-100 dark:bg-zinc-800 border border-transparent focus:border-[#ff385c] focus:outline-none text-zinc-900 dark:text-white text-sm" />
+                </div>
+                <div>
+                  <label className="block text-sm font-bold mb-1.5 text-zinc-700 dark:text-zinc-300">Status</label>
+                  <select value={form.status} onChange={e => setForm({...form, status: e.target.value})} className="w-full px-4 py-2.5 rounded-xl bg-zinc-100 dark:bg-zinc-800 border border-transparent focus:border-[#ff385c] focus:outline-none text-zinc-900 dark:text-white text-sm appearance-none">
+                    <option value="active">Active</option>
+                    <option value="draft">Draft</option>
+                  </select>
                 </div>
               </div>
 
@@ -318,7 +495,7 @@ export default function AdminProducts() {
                 </div>
               </div>
 
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-3 gap-4">
                 <div>
                   <label className="block text-sm font-bold mb-1.5 text-zinc-700 dark:text-zinc-300">Weight</label>
                   <input value={form.weight} onChange={e => setForm({...form, weight: e.target.value})} placeholder="e.g. 0.5kg" className="w-full px-4 py-2.5 rounded-xl bg-zinc-100 dark:bg-zinc-800 border border-transparent focus:border-[#ff385c] focus:outline-none text-zinc-900 dark:text-white text-sm" />
@@ -326,6 +503,10 @@ export default function AdminProducts() {
                 <div>
                   <label className="block text-sm font-bold mb-1.5 text-zinc-700 dark:text-zinc-300">SKU</label>
                   <input value={form.sku} onChange={e => setForm({...form, sku: e.target.value})} placeholder="e.g. IP13P-256-BLU" className="w-full px-4 py-2.5 rounded-xl bg-zinc-100 dark:bg-zinc-800 border border-transparent focus:border-[#ff385c] focus:outline-none text-zinc-900 dark:text-white text-sm" />
+                </div>
+                <div>
+                  <label className="block text-sm font-bold mb-1.5 text-zinc-700 dark:text-zinc-300">Tags</label>
+                  <input value={form.tags} onChange={e => setForm({...form, tags: e.target.value})} placeholder="e.g. iphone, apple, phone" className="w-full px-4 py-2.5 rounded-xl bg-zinc-100 dark:bg-zinc-800 border border-transparent focus:border-[#ff385c] focus:outline-none text-zinc-900 dark:text-white text-sm" />
                 </div>
               </div>
 
@@ -336,7 +517,7 @@ export default function AdminProducts() {
 
               <div className="flex gap-3 pt-2">
                 <button type="button" onClick={() => setModalOpen(false)} className="flex-1 bg-zinc-100 dark:bg-zinc-800 text-zinc-700 dark:text-zinc-300 font-bold py-2.5 rounded-xl text-sm">Cancel</button>
-                <button type="submit" disabled={submitting || !form.image_url} className="flex-1 bg-[#ff385c] text-white font-bold py-2.5 rounded-xl text-sm disabled:opacity-50">
+                <button type="submit" disabled={submitting || form.images.length === 0} className="flex-1 bg-[#ff385c] text-white font-bold py-2.5 rounded-xl text-sm disabled:opacity-50">
                   {submitting ? <><Loader2 className="w-4 h-4 animate-spin inline mr-2" />Saving...</> : (editingId ? 'Save Changes' : 'Add Product')}
                 </button>
               </div>
