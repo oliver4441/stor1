@@ -1,4 +1,10 @@
--- Add admin_notes column to omix_orders if it doesn't exist
+-- Phase 5: Admin Dashboard Settings + Final Polish
+-- Adds admin policies for notes, preparation for settings table
+
+-- Ensure admin role can manage all orders (notes was already in schema)
+-- This migration is idempotent — safe to run multiple times
+
+-- Add admin_notes column if not exists (for future use, separate from customer notes)
 DO $$
 BEGIN
   IF NOT EXISTS (
@@ -9,47 +15,35 @@ BEGIN
   END IF;
 END $$;
 
--- Add admin policy to view all orders (if not exists)
+-- Admin policies for orders
 DROP POLICY IF EXISTS "Admins can view all orders" ON omix_orders;
 CREATE POLICY "Admins can view all orders" ON omix_orders
   FOR SELECT USING (
-    auth.uid() IN (
-      SELECT id FROM profiles WHERE role = 'admin'
-    )
+    auth.uid() IN (SELECT id FROM profiles WHERE role = 'admin')
   );
 
--- Add admin policy to update all orders (if not exists)
 DROP POLICY IF EXISTS "Admins can update all orders" ON omix_orders;
 CREATE POLICY "Admins can update all orders" ON omix_orders
   FOR UPDATE USING (
-    auth.uid() IN (
-      SELECT id FROM profiles WHERE role = 'admin'
-    )
+    auth.uid() IN (SELECT id FROM profiles WHERE role = 'admin')
   );
 
--- Add admin policy to delete all orders (if not exists)
 DROP POLICY IF EXISTS "Admins can delete all orders" ON omix_orders;
 CREATE POLICY "Admins can delete all orders" ON omix_orders
   FOR DELETE USING (
-    auth.uid() IN (
-      SELECT id FROM profiles WHERE role = 'admin'
-    )
+    auth.uid() IN (SELECT id FROM profiles WHERE role = 'admin')
   );
 
--- Add admin policy to view all order items (if not exists)
+-- Admin policies for order items
 DROP POLICY IF EXISTS "Admins can view all order items" ON omix_order_items;
 CREATE POLICY "Admins can view all order items" ON omix_order_items
   FOR SELECT USING (
-    auth.uid() IN (
-      SELECT id FROM profiles WHERE role = 'admin'
-    )
+    auth.uid() IN (SELECT id FROM profiles WHERE role = 'admin')
   );
 
--- Grant full access to authenticated for listings (admin needs this)
+-- Admin policies for listings (full CRUD)
 DROP POLICY IF EXISTS "Admins can manage all listings" ON listings;
 CREATE POLICY "Admins can manage all listings" ON listings
   FOR ALL USING (
-    auth.uid() IN (
-      SELECT id FROM profiles WHERE role = 'admin'
-    )
+    auth.uid() IN (SELECT id FROM profiles WHERE role = 'admin')
   );

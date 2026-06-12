@@ -472,7 +472,7 @@ export async function fetchAllOrders() {
 export async function updateOrderNotes(orderId, notes) {
   const { error } = await supabase
     .from('omix_orders')
-    .update({ notes, updated_at: new Date().toISOString() })
+    .update({ admin_notes: notes, updated_at: new Date().toISOString() })
     .eq('id', orderId);
   if (error) return { success: false, error: error.message };
   return { success: true };

@@ -85,7 +85,7 @@ export default function AdminOrders() {
     if (!selectedOrder) return;
     const result = await updateOrderNotes(selectedOrder.id, notesValue);
     if (result.success) {
-      setSelectedOrder(prev => ({ ...prev, notes: notesValue }));
+      setSelectedOrder(prev => ({ ...prev, admin_notes: notesValue }));
       setEditingNotes(false);
       setSuccessMsg('Notes saved');
       setTimeout(() => setSuccessMsg(''), 3000);
@@ -116,7 +116,7 @@ export default function AdminOrders() {
 
   const openOrderDetail = (order) => {
     setSelectedOrder(order);
-    setNotesValue(order.notes || '');
+    setNotesValue(order.admin_notes || '');
     setEditingNotes(false);
   };
 
@@ -340,21 +340,21 @@ export default function AdminOrders() {
             <div className="mb-5">
               <div className="flex items-center justify-between mb-2">
                 <h4 className="text-sm font-bold text-zinc-700 dark:text-zinc-300 flex items-center gap-2">
-                  <MessageSquare className="w-4 h-4" /> Admin Notes
+                  <MessageSquare className="w-4 h-4" /> Internal Notes
                 </h4>
                 {!editingNotes && (
                   <button onClick={() => setEditingNotes(true)} className="text-xs font-semibold text-[#ff385c] hover:underline">
-                    {selectedOrder.notes ? 'Edit' : 'Add'}
+                    {selectedOrder.admin_notes ? 'Edit' : 'Add'}
                   </button>
                 )}
               </div>
               {editingNotes ? (
                 <div className="space-y-2">
                   <textarea rows="3" value={notesValue} onChange={e => setNotesValue(e.target.value)}
-                    placeholder="Add internal notes about this order..."
+                    placeholder="Add internal notes (only visible to admins)..."
                     className="w-full px-3 py-2 rounded-xl bg-zinc-100 dark:bg-zinc-800 border border-transparent focus:border-[#ff385c] focus:outline-none text-sm text-zinc-900 dark:text-white resize-none" />
                   <div className="flex gap-2 justify-end">
-                    <button onClick={() => { setEditingNotes(false); setNotesValue(selectedOrder.notes || ''); }}
+                    <button onClick={() => { setEditingNotes(false); setNotesValue(selectedOrder.admin_notes || ''); }}
                       className="px-3 py-1.5 rounded-lg text-xs font-bold text-zinc-600 dark:text-zinc-400 hover:bg-zinc-100 dark:hover:bg-zinc-800">Cancel</button>
                     <button onClick={handleSaveNotes}
                       className="px-3 py-1.5 rounded-lg text-xs font-bold bg-[#ff385c] text-white hover:bg-[#e03150]">Save</button>
@@ -362,7 +362,7 @@ export default function AdminOrders() {
                 </div>
               ) : (
                 <p className="text-sm text-zinc-500 dark:text-zinc-400 p-3 rounded-xl bg-zinc-50 dark:bg-zinc-800/50 min-h-[40px]">
-                  {selectedOrder.notes || <span className="text-zinc-400 italic">No notes</span>}
+                  {selectedOrder.admin_notes || <span className="text-zinc-400 italic">No internal notes</span>}
                 </p>
               )}
             </div>
