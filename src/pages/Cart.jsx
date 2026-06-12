@@ -3,6 +3,7 @@ import { ShoppingCart, Trash2, Plus, Minus, ArrowRight, Package } from 'lucide-r
 import { useCart } from '../context/CartContext';
 import { formatKES } from '../utils/constants';
 import NiaContextualTrigger from '../components/NiaContextualTrigger';
+import Breadcrumb from '../components/Breadcrumb';
 
 export default function CartPage() {
   const { getItems, getTotal, updateQuantity, removeItem, getItemCount } = useCart();
@@ -30,6 +31,7 @@ export default function CartPage() {
 
   return (
     <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8" data-name="cart-page">
+      <Breadcrumb />
       <h1 className="text-3xl font-black text-zinc-900 dark:text-white mb-8">Shopping Cart ({count} items)</h1>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">

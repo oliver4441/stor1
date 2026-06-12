@@ -31,6 +31,8 @@ import Install from './pages/Install';
 import Cart from './pages/Cart';
 import ContactFloat from './components/ContactFloat';
 import ScrollToTop from './components/ScrollToTop';
+import BackToTop from './components/BackToTop';
+import CartMiniPopup from './components/CartMiniPopup';
 
 import { supabase } from './utils/supabase';
 
@@ -128,6 +130,8 @@ function App() {
           </Routes>
         </main>
         <Footer />
+        <BackToTop />
+        <CartMiniPopup />
         <ContactFloat />
         <NiaOnboarding />
         <NiaChat />

@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { Image as ImageIcon, MapPin, Share2, Package, ShoppingCart } from 'lucide-react';
+import { Image as ImageIcon, MapPin, Share2, Package, ShoppingCart, Eye } from 'lucide-react';
 import { ProductSocialBadge } from '../components/SocialProof';
 import { formatKES } from '../utils/constants';
 import { useCart } from '../context/CartContext';
@@ -91,7 +91,14 @@ function ProductCard({ listing }) {
           <Share2 className="w-3 h-3" />
         </button>
 
-        {/* Quick Add to Cart button (bottom-right, on hover) */}
+        {/* Quick View button */}
+        <button
+          onClick={(e) => { e.preventDefault(); e.stopPropagation(); }}
+          className="absolute top-10 right-2 bg-white/90 dark:bg-black/90 text-zinc-900 dark:text-white p-1.5 rounded-full shadow-sm hover:bg-[#ff385c] hover:text-white transition-all opacity-0 group-hover:opacity-100"
+          aria-label="Quick view"
+        >
+          <Eye className="w-3 h-3" />
+        </button>
         {listing.quantity > 0 && (
           <button
             onClick={handleAddToCart}

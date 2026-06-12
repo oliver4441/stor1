@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Search, Package, CheckCircle, Clock, Truck, MapPin, AlertTriangle } from 'lucide-react';
 import { fetchOrder } from '../utils/api';
 import { formatKES } from '../utils/constants';
+import Breadcrumb from '../components/Breadcrumb';
 
 const STATUS_CONFIG = {
   pending: { icon: Clock, color: 'text-amber-500', bg: 'bg-amber-50 dark:bg-amber-900/20', label: 'Pending' },
@@ -42,6 +43,7 @@ export default function TrackOrder() {
 
   return (
     <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-8" data-name="track-order-page">
+      <Breadcrumb />
       <h1 className="text-3xl font-black text-zinc-900 dark:text-white mb-8">Track Your Order</h1>
 
       {/* Search */}

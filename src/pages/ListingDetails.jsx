@@ -9,9 +9,9 @@ import { useCart } from '../context/CartContext';
 import { supabase } from '../utils/supabase';
 import ImageGallery from '../components/ImageGallery';
 import StickyMobileCart from '../components/StickyMobileCart';
-import RecentlyViewed from '../components/RecentlyViewed';
+import RecentlyViewed, { trackViewedProduct } from '../components/RecentlyViewed';
 import { ListingSocialProof } from '../components/SocialProof';
-import NiaContextualTrigger from '../components/NiaContextualTrigger';
+import Breadcrumb from '../components/Breadcrumb';
 
 function ListingDetails() {
   const { id } = useParams();
@@ -40,6 +40,7 @@ function ListingDetails() {
       if (!data) { setError('Listing not found'); setLoading(false); return; }
       setListing(data);
       setLoading(false);
+      trackViewedProduct(data);
       fetchListings(data.category, '').then(all => {
         setRelated(all.filter(l => l.id !== data.id).slice(0, 4));
       });
@@ -146,7 +147,8 @@ function ListingDetails() {
 
   return (
     <div className="max-w-7xl mx-auto px-4 py-8 w-full" data-name="listing-details">
-      <div className="flex flex-col lg:flex-row gap-8 lg:gap-12">
+      <Breadcrumb customLabel={listing.title} />
+      <div className="flex flex-col lg:flex-row gap-8 lg:gap-12 mt-6">
         {/* Images */}
         <ImageGallery images={listing.images} title={listing.title} condition={listing.condition} />
 

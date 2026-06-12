@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
-import { Search, Sparkles, X, ChevronLeft, ChevronRight } from 'lucide-react';
+import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import ProductCard from '../components/ProductCard';
 import InstallBanner from '../components/InstallBanner';
@@ -8,6 +8,9 @@ import { fetchListings } from '../utils/api';
 import { useLang } from '../utils/lang';
 import { supabase } from '../utils/supabase';
 import NiaContextualTrigger from '../components/NiaContextualTrigger';
+import SearchBar from '../components/SearchBar';
+import RecentlyViewed from '../components/RecentlyViewed';
+import QuickViewModal from '../components/QuickViewModal';
 
 function Home() {
   const { t } = useLang();
@@ -28,6 +31,7 @@ function Home() {
   }, []);
   const [isAiMode, setIsAiMode] = useState(false);
   const [featuredIndex, setFeaturedIndex] = useState(0);
+  const [quickViewListing, setQuickViewListing] = useState(null);
   const featuredRef = useRef(null);
   const featuredIntervalRef = useRef(null);
 
@@ -82,25 +86,7 @@ function Home() {
                 </Link>
               </div>
 
-            <div className="max-w-2xl mx-auto relative group">
-              <div className="absolute inset-y-0 left-4 flex items-center pointer-events-none">
-                {isAiMode ? <Sparkles className="w-5 h-5 text-[#ff385c]" /> : <Search className="w-5 h-5 text-zinc-400 group-focus-within:text-[#ff385c]" />}
-              </div>
-              <input 
-                type="text" 
-                placeholder={isAiMode ? "Describe what you're looking for (AI)..." : "Search for anything..."}
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className={`w-full pl-12 pr-24 py-4 rounded-2xl bg-white/95 dark:bg-zinc-900/95 backdrop-blur-sm border transition-all focus:outline-none focus:ring-4 focus:ring-[#ff385c]/20 shadow-xl text-lg ${isAiMode ? 'border-[#ff385c] ring-2 ring-[#ff385c]/10' : 'border-zinc-200 dark:border-zinc-800'}`}
-              />
-              <button 
-                onClick={() => setIsAiMode(!isAiMode)}
-                className={`absolute inset-y-2 right-2 px-4 rounded-xl flex items-center gap-2 font-bold text-sm transition-all ${isAiMode ? 'bg-[#ff385c] text-white shadow-lg' : 'bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-400 hover:bg-zinc-200 dark:hover:bg-zinc-700'}`}
-              >
-                {isAiMode ? <X className="w-4 h-4" /> : <Sparkles className="w-4 h-4" />}
-                {isAiMode ? t('common.cancel') : 'Ask AI'}
-              </button>
-            </div>
+            <SearchBar onSearch={(q) => { setSearchQuery(q); setIsAiMode(false); }} initialValue={searchQuery} />
           </div>
         </div>
       </div>
@@ -206,6 +192,16 @@ function Home() {
         )}
       </div>
       <InstallBanner />
+
+      {/* Recently Viewed */}
+      <div className="max-w-7xl mx-auto px-4 mt-12">
+        <RecentlyViewed allListings={[]} />
+      </div>
+
+      {/* Quick View Modal */}
+      {quickViewListing && (
+        <QuickViewModal listing={quickViewListing} onClose={() => setQuickViewListing(null)} />
+      )}
     </div>
   );
 }

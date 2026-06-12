@@ -1,68 +1,52 @@
 import { useState, useEffect } from 'react';
 import ProductCard from './ProductCard';
 
-/**
- * Recently Viewed products section.
- * Tracks viewed product IDs in localStorage (max 10).
- * Shows a horizontal carousel of product cards.
- * Only renders if there are viewed products other than the current one.
- */
+const RECENTLY_VIEWED_KEY = 'omix_recently_viewed';
+const MAX_RECENT = 10;
+
+export function trackViewedProduct(listing) {
+  if (!listing) return;
+  try {
+    const stored = localStorage.getItem(RECENTLY_VIEWED_KEY);
+    let viewed = stored ? JSON.parse(stored) : [];
+    viewed = viewed.filter(p => p.id !== listing.id);
+    viewed.unshift({
+      id: listing.id,
+      title: listing.title,
+      price: listing.price,
+      images: listing.images,
+      category: listing.category,
+      brand: listing.brand,
+      condition: listing.condition,
+      quantity: listing.quantity,
+      location: listing.location,
+    });
+    viewed = viewed.slice(0, MAX_RECENT);
+    localStorage.setItem(RECENTLY_VIEWED_KEY, JSON.stringify(viewed));
+  } catch {}
+}
+
 export default function RecentlyViewed({ currentListing, allListings }) {
   const [viewedProducts, setViewedProducts] = useState([]);
 
   useEffect(() => {
-    if (!currentListing) return;
-
-    // Get existing viewed products from localStorage
-    let viewed = [];
     try {
-      const stored = localStorage.getItem('omix_recently_viewed');
-      viewed = stored ? JSON.parse(stored) : [];
+      const stored = localStorage.getItem(RECENTLY_VIEWED_KEY);
+      const viewed = stored ? JSON.parse(stored) : [];
+      const filtered = currentListing
+        ? viewed.filter(p => p.id !== currentListing.id)
+        : viewed;
+      setViewedProducts(filtered.slice(0, 8));
     } catch {
-      viewed = [];
+      setViewedProducts([]);
     }
-
-    // Remove current product if already in list
-    viewed = viewed.filter(p => p.id !== currentListing.id);
-
-    // Add current product to front
-    viewed.unshift({
-      id: currentListing.id,
-      title: currentListing.title,
-      price: currentListing.price,
-      images: currentListing.images,
-      category: currentListing.category,
-      brand: currentListing.brand,
-      condition: currentListing.condition,
-      quantity: currentListing.quantity,
-      location: currentListing.location,
-    });
-
-    // Keep max 10
-    viewed = viewed.slice(0, 10);
-
-    // Save back
-    localStorage.setItem('omix_recently_viewed', JSON.stringify(viewed));
   }, [currentListing?.id]);
-
-  // Fetch full product data for viewed IDs (to get fresh data)
-  useEffect(() => {
-    if (!allListings || allListings.length === 0) return;
-
-    // Filter out current product and get matching listings
-    const currentId = currentListing?.id;
-    const related = allListings
-      .filter(l => l.id !== currentId)
-      .slice(0, 8);
-
-    setViewedProducts(related);
-  }, [allListings, currentListing?.id]);
 
   if (viewedProducts.length === 0) return null;
 
   return (
     <div className="mt-12 pt-8 border-t border-zinc-200 dark:border-zinc-800">
-      <h2 className="text-xl font-bold mb-6 text-zinc-900 dark:text-white">You May Also Like</h2>
+      <h2 className="text-xl font-bold mb-6 text-zinc-900 dark:text-white">Recently Viewed</h2>
       <div className="flex gap-4 overflow-x-auto scrollbar-hide pb-2 -mx-1 px-1">
         {viewedProducts.map(product => (
           <div key={product.id} className="flex-shrink-0 w-44">

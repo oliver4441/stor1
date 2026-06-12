@@ -1,11 +1,13 @@
 import { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import { ShoppingCart, ArrowRight, Loader2, Package, CreditCard, Trash2, Plus, Minus, Shield, Truck, CheckCircle, MapPin, Phone, User, Mail } from 'lucide-react';
+import { ShoppingCart, ArrowRight, Loader2, Package, CreditCard, Trash2, Plus, Minus, CheckCircle, MapPin, Phone, User, Mail } from 'lucide-react';
 import { useCart } from '../context/CartContext';
 import { createOrder } from '../utils/api';
 import { formatKES } from '../utils/constants';
 import { supabase } from '../utils/supabase';
 import NiaContextualTrigger from '../components/NiaContextualTrigger';
+import Breadcrumb from '../components/Breadcrumb';
+import TrustBadges from '../components/TrustBadges';
 
 const PAYSTACK_PUBLIC_KEY = 'pk_live_27f0020f17e275660e4a92c34fb7f7a9fc36ea94';
 
@@ -141,26 +143,6 @@ function TextAreaField({ icon: Icon, label, error, dark, ...props }) {
   );
 }
 
-// ── Trust Badges ───────────────────────────────────────────────────
-function TrustBadges() {
-  return (
-    <div className="flex items-center justify-center gap-4 py-4 border-t" style={{ borderColor: C.border }}>
-      <div className="flex items-center gap-1.5 text-xs" style={{ color: C.textMuted }}>
-        <Shield className="w-3.5 h-3.5" />
-        <span>Secure Payment</span>
-      </div>
-      <div className="flex items-center gap-1.5 text-xs" style={{ color: C.textMuted }}>
-        <Truck className="w-3.5 h-3.5" />
-        <span>Fast Delivery</span>
-      </div>
-      <div className="flex items-center gap-1.5 text-xs" style={{ color: C.textMuted }}>
-        <CheckCircle className="w-3.5 h-3.5" />
-        <span>Verified Store</span>
-      </div>
-    </div>
-  );
-}
-
 // ── Main Checkout Page ─────────────────────────────────────────────
 export default function CheckoutPage() {
   const navigate = useNavigate();
@@ -291,8 +273,14 @@ export default function CheckoutPage() {
   // ── Checkout Form ───────────────────────────────────────────────
   return (
     <div className="max-w-5xl mx-auto px-4 sm:px-6 py-6 sm:py-8" data-name="checkout-page">
+      <Breadcrumb compact />
       {/* Step Indicator */}
       <StepIndicator step={2} />
+
+      {/* Trust Badges */}
+      <div className="mt-4">
+        <TrustBadges />
+      </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-5 gap-6">
         {/* ── Order Summary (left, 2 cols) ──────────────────────── */}

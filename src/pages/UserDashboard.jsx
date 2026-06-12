@@ -5,6 +5,7 @@ import { supabase } from '../utils/supabase';
 import { fetchOrders, fetchListings } from '../utils/api';
 import { formatKES, CATEGORIES } from '../utils/constants';
 import ProductCard from '../components/ProductCard';
+import Breadcrumb from '../components/Breadcrumb';
 
 function UserDashboard() {
   const navigate = useNavigate();
@@ -47,6 +48,7 @@ function UserDashboard() {
 
   return (
     <div className="max-w-7xl mx-auto px-4 py-8 w-full" data-name="user-dashboard-page">
+      <Breadcrumb />
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-8">
         <div>
           <h1 className="text-3xl font-black text-zinc-900 dark:text-white">My Account</h1>
