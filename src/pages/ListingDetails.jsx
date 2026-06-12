@@ -12,6 +12,7 @@ import StickyMobileCart from '../components/StickyMobileCart';
 import RecentlyViewed, { trackViewedProduct } from '../components/RecentlyViewed';
 import { ListingSocialProof } from '../components/SocialProof';
 import Breadcrumb from '../components/Breadcrumb';
+import NiaContextualTrigger from '../components/NiaContextualTrigger';
 
 function ListingDetails() {
   const { id } = useParams();
