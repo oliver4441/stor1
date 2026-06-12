@@ -521,3 +521,183 @@ export async function isAdmin() {
     return false;
   }
 }
+
+// ── Listing Payment (Paystack) ──────────────────────────────────────
+export async function createListingPayment(formData) {
+  try {
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) return { success: false, error: 'Not authenticated' };
+
+    const { data, error } = await supabase
+      .from('listing_payments')
+      .insert({
+        user_id: user.id,
+        amount: 500, // KES 5.00 in cents
+        currency: 'KES',
+        status: 'pending',
+        listing_data: formData,
+      })
+      .select()
+      .single();
+
+    if (error) return { success: false, error: error.message };
+    return { success: true, payment: data };
+  } catch (err) {
+    return { success: false, error: err.message };
+  }
+}
+
+export async function updateListingPaymentStatus(paymentId, updates) {
+  try {
+    const { error } = await supabase
+      .from('listing_payments')
+      .update({ ...updates, updated_at: new Date().toISOString() })
+      .eq('id', paymentId);
+    if (error) return { success: false, error: error.message };
+    return { success: true };
+  } catch (err) {
+    return { success: false, error: err.message };
+  }
+}
+
+// ── Events ──────────────────────────────────────────────────────────
+export async function fetchEvents() {
+  try {
+    const { data, error } = await supabase.from('events').select('*').eq('status', 'published').order('created_at', { ascending: false });
+    if (error) return [];
+    return data || [];
+  } catch { return []; }
+}
+
+export async function fetchEvent(id) {
+  try {
+    const { data, error } = await supabase.from('events').select('*, ticket_types(*)').eq('id', id).single();
+    if (error) return null;
+    return data;
+  } catch { return null; }
+}
+
+export async function createEvent(formData) {
+  try {
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) return { success: false, error: 'Not authenticated' };
+    const { data, error } = await supabase.from('events').insert({ ...formData, user_id: user.id, status: 'draft' }).select().single();
+    if (error) return { success: false, error: error.message };
+    return { success: true, event: data };
+  } catch (err) { return { success: false, error: err.message }; }
+}
+
+export async function createTicketType(eventId, ticketData) {
+  try {
+    const { data, error } = await supabase.from('ticket_types').insert({ ...ticketData, event_id: eventId }).select().single();
+    if (error) return { success: false, error: error.message };
+    return { success: true, ticket: data };
+  } catch (err) { return { success: false, error: err.message }; }
+}
+
+export async function paystackInitialize({ email, amount, reference, callbackUrl }) {
+  try {
+    const res = await fetch('/api/paystack/initialize', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email, amount, reference, callback_url: callbackUrl }),
+    });
+    const data = await res.json();
+    if (data.status) return { success: true, authorization_url: data.data.authorization_url, reference: data.data.reference };
+    return { success: false, error: data.message || 'Paystack init failed' };
+  } catch (err) { return { success: false, error: err.message }; }
+}
+
+export async function paystackVerify(reference) {
+  try {
+    const res = await fetch(`/api/paystack/verify/${reference}`);
+    const data = await res.json();
+    if (data.status && data.data.status === 'success') return { success: true, data: data.data };
+    return { success: false, error: 'Payment not verified' };
+  } catch (err) { return { success: false, error: err.message }; }
+}
+
+// ── Wishes ──────────────────────────────────────────────────────────
+export async function fetchWishes(searchQuery = '') {
+  try {
+    let query = supabase.from('wishes').select('*').order('created_at', { ascending: false });
+    if (searchQuery) query = query.ilike('title', `%${searchQuery}%`);
+    const { data, error } = await query;
+    if (error) return [];
+    return data || [];
+  } catch { return []; }
+}
+
+export async function fetchWish(id) {
+  try {
+    const { data, error } = await supabase.from('wishes').select('*').eq('id', id).single();
+    if (error) return null;
+    return data;
+  } catch { return null; }
+}
+
+export async function createWish(formData) {
+  try {
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) return { success: false, error: 'Not authenticated' };
+    const { data, error } = await supabase.from('wishes').insert({ ...formData, user_id: user.id }).select().single();
+    if (error) return { success: false, error: error.message };
+    return { success: true, wish: data };
+  } catch (err) { return { success: false, error: err.message }; }
+}
+
+export async function fetchMessages(wishId) {
+  try {
+    const { data, error } = await supabase.from('wish_messages').select('*').eq('wish_id', wishId).order('created_at', { ascending: true });
+    if (error) return [];
+    return data || [];
+  } catch { return []; }
+}
+
+export async function sendMessage(wishId, message) {
+  try {
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) return { success: false, error: 'Not authenticated' };
+    const { data, error } = await supabase.from('wish_messages').insert({ wish_id: wishId, user_id: user.id, message }).select().single();
+    if (error) return { success: false, error: error.message };
+    return { success: true, message: data };
+  } catch (err) { return { success: false, error: err.message }; }
+}
+
+export async function updateWishStatus(id, status) {
+  try {
+    const { error } = await supabase.from('wishes').update({ status }).eq('id', id);
+    if (error) return { success: false, error: error.message };
+    return { success: true };
+  } catch (err) { return { success: false, error: err.message }; }
+}
+
+// ── Orders / Tickets ────────────────────────────────────────────────
+export async function updateOrderPayment(orderId, paymentData) {
+  try {
+    const { error } = await supabase.from('orders').update({ ...paymentData, status: 'paid' }).eq('id', orderId);
+    if (error) return { success: false, error: error.message };
+    return { success: true };
+  } catch (err) { return { success: false, error: err.message }; }
+}
+
+export async function generateTickets(orderId) {
+  try {
+    const { data: order, error: orderErr } = await supabase.from('orders').select('*, ticket_types(*)').eq('id', orderId).single();
+    if (orderErr || !order) return { success: false, error: 'Order not found' };
+
+    const tickets = Array.from({ order: order.quantity || 1 }, (_, i) => ({
+      order_id: orderId,
+      ticket_type_id: order.ticket_type_id,
+      event_id: order.event_id,
+      user_id: order.user_id,
+      ticket_number: `${orderId}-${String(i + 1).padStart(3, '0')}`,
+      qr_code: `${orderId}-${i + 1}-${Date.now()}`,
+      status: 'valid',
+    }));
+
+    const { error } = await supabase.from('tickets').insert(tickets);
+    if (error) return { success: false, error: error.message };
+    return { success: true };
+  } catch (err) { return { success: false, error: err.message }; }
+}

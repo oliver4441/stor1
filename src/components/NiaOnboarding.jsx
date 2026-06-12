@@ -12,7 +12,7 @@ export default function NiaOnboarding() {
   };
 
   return (
-    <div className="fixed bottom-20 right-4 z-[58] w-[320px] max-w-[calc(100vw-2rem)] animate-in slide-in-from-bottom-4 fade-in duration-300">
+    <div className="fixed bottom-40 right-4 z-[58] w-[320px] max-w-[calc(100vw-2rem)] animate-in slide-in-from-bottom-4 fade-in duration-300">
       <div
         className="rounded-2xl shadow-2xl overflow-hidden"
         style={{

@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { Image as ImageIcon, MapPin, Share2, Package, ShoppingCart, Eye } from 'lucide-react';
+import { Image as ImageIcon, MapPin, Share2, Package, ShoppingCart, Eye, X, ShoppingBag } from 'lucide-react';
 import { ProductSocialBadge } from '../components/SocialProof';
 import { formatKES } from '../utils/constants';
 import { useCart } from '../context/CartContext';
@@ -10,6 +10,7 @@ function ProductCard({ listing }) {
   const [imgError, setImgError] = useState(false);
   const [user, setUser] = useState(null);
   const [justAdded, setJustAdded] = useState(false);
+  const [quickView, setQuickView] = useState(false);
   const { addItem, cart } = useCart();
   const navigate = useNavigate();
   const hasImage = listing.images && listing.images.length > 0 && !imgError;
@@ -54,6 +55,7 @@ function ProductCard({ listing }) {
   };
 
   return (
+    <>
     <Link to={`/listing/${listing.id}`} className="block group">
       <div className="bg-zinc-100 dark:bg-zinc-900 rounded-2xl overflow-hidden aspect-[4/5] mb-3 relative">
         {hasImage ? (
@@ -93,7 +95,7 @@ function ProductCard({ listing }) {
 
         {/* Quick View button */}
         <button
-          onClick={(e) => { e.preventDefault(); e.stopPropagation(); }}
+          onClick={(e) => { e.preventDefault(); e.stopPropagation(); setQuickView(true); }}
           className="absolute top-10 right-2 bg-white/90 dark:bg-black/90 text-zinc-900 dark:text-white p-1.5 rounded-full shadow-sm hover:bg-[#ff385c] hover:text-white transition-all opacity-0 group-hover:opacity-100"
           aria-label="Quick view"
         >
@@ -138,6 +140,102 @@ function ProductCard({ listing }) {
         </div>
       </div>
     </Link>
+
+    {/* Quick View Modal */}
+    {quickView && (
+      <div className="fixed inset-0 z-[100] flex items-center justify-center p-4" onClick={() => setQuickView(false)}>
+        <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" />
+        <div
+          className="relative bg-white dark:bg-zinc-900 rounded-3xl shadow-2xl max-w-lg w-full max-h-[90vh] overflow-y-auto"
+          onClick={(e) => e.stopPropagation()}
+        >
+          {/* Close button */}
+          <button
+            onClick={() => setQuickView(false)}
+            className="absolute top-4 right-4 z-10 w-8 h-8 rounded-full bg-zinc-100 dark:bg-zinc-800 flex items-center justify-center text-zinc-500 hover:bg-zinc-200 dark:hover:bg-zinc-700 transition-colors"
+          >
+            <X className="w-4 h-4" />
+          </button>
+
+          {/* Image */}
+          <div className="aspect-[4/3] bg-zinc-100 dark:bg-zinc-800 rounded-t-3xl overflow-hidden">
+            {hasImage ? (
+              <img src={listing.images[0]} alt={listing.title} className="w-full h-full object-cover" />
+            ) : (
+              <div className="w-full h-full flex items-center justify-center text-zinc-400">
+                <ImageIcon className="w-16 h-16" />
+              </div>
+            )}
+          </div>
+
+          {/* Content */}
+          <div className="p-6">
+            <div className="flex items-center gap-2 mb-2">
+              <span className="bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-300 px-2.5 py-1 rounded-lg text-xs font-bold capitalize">
+                {listing.condition?.replace('_', ' ')}
+              </span>
+              <span className="text-xs text-zinc-500">{listing.category}</span>
+            </div>
+
+            <h2 className="text-xl font-bold text-zinc-900 dark:text-white mb-1">{listing.title}</h2>
+
+            <p className="text-2xl font-black text-[#ff385c] mb-4">
+              {formatKES(listing.price)}
+              {listing.compare_at_price && listing.compare_at_price > listing.price && (
+                <span className="text-sm font-normal text-zinc-400 line-through ml-2">
+                  {formatKES(listing.compare_at_price)}
+                </span>
+              )}
+            </p>
+
+            {listing.description && (
+              <p className="text-sm text-zinc-600 dark:text-zinc-300 mb-4 line-clamp-3">{listing.description}</p>
+            )}
+
+            <div className="flex items-center gap-2 mb-4 text-xs text-zinc-500">
+              {listing.location && (
+                <span className="flex items-center gap-1"><MapPin className="w-3 h-3" />{listing.location}</span>
+              )}
+              {listing.quantity > 0 && listing.quantity <= 3 && (
+                <span className="text-amber-500 font-bold">Only {listing.quantity} left</span>
+              )}
+              {listing.quantity === 0 && (
+                <span className="text-red-500 font-bold">Out of stock</span>
+              )}
+            </div>
+
+            <div className="flex gap-3">
+              {listing.quantity > 0 && (
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    if (!user) { navigate(`/login?redirect=/listing/${listing.id}`); return; }
+                    addItem({ id: listing.id, name: listing.title, price: listing.price, image_url: listing.images?.[0] || null, quantity: 1 });
+                    setJustAdded(true);
+                    setTimeout(() => setJustAdded(false), 1500);
+                  }}
+                  className={`flex-1 flex items-center justify-center gap-2 py-3 rounded-xl font-bold text-sm transition-all ${
+                    justAdded ? 'bg-green-500 text-white' : inCart ? 'bg-[#ff385c]/90 text-white' : 'bg-[#ff385c] text-white hover:bg-[#e03150]'
+                  }`}
+                >
+                  <ShoppingCart className="w-4 h-4" />
+                  {justAdded ? 'Added!' : inCart ? `In Cart (${inCart.quantity})` : 'Add to Cart'}
+                </button>
+              )}
+              <Link
+                to={`/listing/${listing.id}`}
+                onClick={() => setQuickView(false)}
+                className="flex-1 flex items-center justify-center gap-2 py-3 rounded-xl font-bold text-sm border border-zinc-200 dark:border-zinc-700 text-zinc-700 dark:text-zinc-300 hover:bg-zinc-50 dark:hover:bg-zinc-800 transition-all"
+              >
+                <ShoppingBag className="w-4 h-4" />
+                View Details
+              </Link>
+            </div>
+          </div>
+        </div>
+      </div>
+    )}
+    </>
   );
 }
 
