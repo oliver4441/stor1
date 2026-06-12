@@ -469,17 +469,42 @@ export async function fetchAllOrders() {
   return data || []
 }
 
+export async function updateOrderNotes(orderId, notes) {
+  const { error } = await supabase
+    .from('omix_orders')
+    .update({ admin_notes: notes, updated_at: new Date().toISOString() })
+    .eq('id', orderId);
+  if (error) return { success: false, error: error.message };
+  return { success: true };
+}
+
+export async function cancelOrder(orderId) {
+  const { error } = await supabase
+    .from('omix_orders')
+    .update({ status: 'cancelled', updated_at: new Date().toISOString() })
+    .eq('id', orderId);
+  if (error) return { success: false, error: error.message };
+  return { success: true };
+}
+
+export async function fetchOrderStats() {
+  const { data, error } = await supabase
+    .from('omix_orders')
+    .select('status, total_amount, created_at');
+  if (error) return { success: false, error: error.message };
+  return { success: true, data };
+}
+// ── Admin ────────────────────────────────────────────────
+
 export async function updateOrderStatus(orderId, status) {
   const { error } = await supabase
     .from('omix_orders')
     .update({ status, updated_at: new Date().toISOString() })
-    .eq('id', orderId)
+    .eq('id', orderId);
 
-  if (error) return { success: false, error: error.message }
-  return { success: true }
+  if (error) return { success: false, error: error.message };
+  return { success: true };
 }
-
-// ── Admin ────────────────────────────────────────────────
 
 export async function isAdmin() {
   try {
