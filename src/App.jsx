@@ -14,7 +14,13 @@ import About from './pages/About';
 import Login from './pages/Login';
 import Signup from './pages/Signup';
 import UserDashboard from './pages/UserDashboard';
-import AdminDashboard from './pages/AdminDashboard';
+import AdminLayout from './pages/AdminLayout';
+import AdminOverview from './pages/AdminOverview';
+import AdminProducts from './pages/AdminProducts';
+import AdminOrders from './pages/AdminOrders';
+import AdminCustomers from './pages/AdminCustomers';
+import AdminAnalytics from './pages/AdminAnalytics';
+import AdminSettings from './pages/AdminSettings';
 import HowItWorks from './pages/HowItWorks';
 import Checkout from './pages/Checkout';
 import OrderSuccess from './pages/OrderSuccess';
@@ -102,7 +108,15 @@ function App() {
             <Route path="/login" element={<Login />} />
             <Route path="/signup" element={<Signup />} />
             <Route path="/account" element={<UserDashboard />} />
-            <Route path="/admin" element={<AdminDashboard />} />
+            <Route path="/admin" element={<AdminLayout />}>
+              <Route index element={<Navigate to="/admin/dashboard" replace />} />
+              <Route path="dashboard" element={<AdminOverview />} />
+              <Route path="products" element={<AdminProducts />} />
+              <Route path="orders" element={<AdminOrders />} />
+              <Route path="customers" element={<AdminCustomers />} />
+              <Route path="analytics" element={<AdminAnalytics />} />
+              <Route path="settings" element={<AdminSettings />} />
+            </Route>
             <Route path="/how-it-works" element={<HowItWorks />} />
             <Route path="/checkout" element={<Checkout />} />
             <Route path="/order-success" element={<OrderSuccess />} />
