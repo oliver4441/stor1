@@ -1,7 +1,8 @@
 import { useState, useEffect, useCallback } from 'react';
-import { TrendingUp, ShoppingBag, DollarSign, Package, Calendar } from 'lucide-react';
+import { DollarSign, ShoppingBag, TrendingUp, Package, Calendar } from 'lucide-react';
 import { fetchAllOrders, fetchAllListings } from '../utils/api';
 import { formatKES } from '../utils/constants';
+import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, AreaChart, Area } from 'recharts';
 
 export default function AdminAnalytics() {
   const [orders, setOrders] = useState([]);
@@ -19,14 +20,12 @@ export default function AdminAnalytics() {
 
   useEffect(() => { loadData(); }, [loadData]);
 
-  // Filter orders by date range
   const daysAgo = parseInt(dateRange);
   const cutoffDate = new Date();
   cutoffDate.setDate(cutoffDate.getDate() - daysAgo);
 
   const filteredOrders = orders.filter(o => new Date(o.created_at) >= cutoffDate);
 
-  // Revenue stats
   const totalRevenue = filteredOrders.reduce((sum, o) => sum + parseFloat(o.total_amount || 0), 0);
   const avgOrderValue = filteredOrders.length > 0 ? totalRevenue / filteredOrders.length : 0;
 
@@ -36,14 +35,27 @@ export default function AdminAnalytics() {
     ordersByStatus[o.status] = (ordersByStatus[o.status] || 0) + 1;
   });
 
-  // Revenue by day (last N days)
+  // Revenue by day for chart
   const revenueByDay = {};
+  const ordersByDay = {};
   filteredOrders.forEach(o => {
     const day = new Date(o.created_at).toLocaleDateString('en-KE', { month: 'short', day: 'numeric' });
     revenueByDay[day] = (revenueByDay[day] || 0) + parseFloat(o.total_amount || 0);
+    ordersByDay[day] = (ordersByDay[day] || 0) + 1;
   });
-  const chartData = Object.entries(revenueByDay).slice(-14);
-  const maxRevenue = Math.max(...chartData.map(([, v]) => v), 1);
+
+  // Build chart data - fill in missing days with 0
+  const chartDays = [];
+  for (let i = daysAgo - 1; i >= 0; i--) {
+    const d = new Date();
+    d.setDate(d.getDate() - i);
+    chartDays.push(d.toLocaleDateString('en-KE', { month: 'short', day: 'numeric' }));
+  }
+  const chartData = chartDays.map(day => ({
+    day,
+    revenue: Math.round(revenueByDay[day] || 0),
+    orders: ordersByDay[day] || 0,
+  }));
 
   // Top products
   const productSales = {};
@@ -62,12 +74,31 @@ export default function AdminAnalytics() {
   const categoryBreakdown = {};
   filteredOrders.forEach(order => {
     (order.omix_order_items || []).forEach(item => {
-      // Find the listing to get category
       const listing = listings.find(l => l.id === item.product_id);
       const cat = listing?.category || 'Other';
       categoryBreakdown[cat] = (categoryBreakdown[cat] || 0) + (item.price * item.quantity);
     });
   });
+  const categoryData = Object.entries(categoryBreakdown)
+    .sort(([, a], [, b]) => b - a)
+    .map(([name, value]) => ({ name, value: Math.round(value) }));
+
+  const CHART_COLORS = ['#ff385c', '#3b82f6', '#10b981', '#f59e0b', '#8b5cf6', '#ec4899', '#06b6d4'];
+
+  // Custom tooltip
+  const CustomTooltip = ({ active, payload, label }) => {
+    if (!active || !payload) return null;
+    return (
+      <div className="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-700 rounded-xl p-3 shadow-lg">
+        <p className="text-xs font-bold text-zinc-900 dark:text-white mb-1">{label}</p>
+        {payload.map((p, i) => (
+          <p key={i} className="text-xs text-zinc-600 dark:text-zinc-400">
+            {p.name === 'revenue' ? 'Revenue' : 'Orders'}: <span className="font-bold">{p.name === 'revenue' ? formatKES(p.value) : p.value}</span>
+          </p>
+        ))}
+      </div>
+    );
+  };
 
   if (loading) {
     return (
@@ -84,13 +115,15 @@ export default function AdminAnalytics() {
           <h2 className="text-xl font-bold text-zinc-900 dark:text-white">Analytics</h2>
           <p className="text-sm text-zinc-500">Sales performance overview</p>
         </div>
-        <select value={dateRange} onChange={e => setDateRange(e.target.value)}
-          className="px-4 py-2 rounded-xl bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 text-sm text-zinc-900 dark:text-white appearance-none">
-          <option value="7">Last 7 days</option>
-          <option value="30">Last 30 days</option>
-          <option value="90">Last 90 days</option>
-          <option value="365">Last year</option>
-        </select>
+        <div className="flex items-center gap-3">
+          <select value={dateRange} onChange={e => setDateRange(e.target.value)}
+            className="px-4 py-2 rounded-xl bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 text-sm text-zinc-900 dark:text-white appearance-none">
+            <option value="7">Last 7 days</option>
+            <option value="30">Last 30 days</option>
+            <option value="90">Last 90 days</option>
+            <option value="365">Last year</option>
+          </select>
+        </div>
       </div>
 
       {/* Stats */}
@@ -117,24 +150,47 @@ export default function AdminAnalytics() {
         </div>
       </div>
 
-      {/* Revenue Chart (simple bar chart) */}
+      {/* Revenue Chart */}
       <div className="bg-white dark:bg-zinc-900 rounded-2xl border border-zinc-200 dark:border-zinc-800 p-5">
         <h3 className="text-base font-bold text-zinc-900 dark:text-white mb-4">Revenue Trend</h3>
-        {chartData.length > 0 ? (
-          <div className="flex items-end gap-2 h-40">
-            {chartData.map(([day, revenue]) => (
-              <div key={day} className="flex-1 flex flex-col items-center gap-1">
-                <div className="w-full bg-[#ff385c]/20 rounded-t-lg relative group" style={{ height: `${Math.max((revenue / maxRevenue) * 100, 5)}%` }}>
-                  <div className="absolute -top-8 left-1/2 -translate-x-1/2 bg-zinc-900 text-white text-[10px] font-bold px-2 py-1 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">
-                    {formatKES(revenue)}
-                  </div>
-                </div>
-                <span className="text-[9px] text-zinc-400 rotate-45 origin-left mt-2">{day}</span>
-              </div>
-            ))}
+        {chartData.length > 0 && chartData.some(d => d.revenue > 0) ? (
+          <div className="h-64">
+            <ResponsiveContainer width="100%" height="100%">
+              <AreaChart data={chartData} margin={{ top: 5, right: 5, bottom: 5, left: 5 }}>
+                <defs>
+                  <linearGradient id="colorRevenue" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="5%" stopColor="#ff385c" stopOpacity={0.3} />
+                    <stop offset="95%" stopColor="#ff385c" stopOpacity={0} />
+                  </linearGradient>
+                </defs>
+                <XAxis dataKey="day" tick={{ fontSize: 10, fill: '#71717a' }} tickLine={false} axisLine={false} />
+                <YAxis tick={{ fontSize: 10, fill: '#71717a' }} tickLine={false} axisLine={false} width={60} tickFormatter={v => v >= 1000 ? `${(v/1000).toFixed(0)}k` : v} />
+                <Tooltip content={<CustomTooltip />} />
+                <Area type="monotone" dataKey="revenue" stroke="#ff385c" strokeWidth={2} fill="url(#colorRevenue)" />
+              </AreaChart>
+            </ResponsiveContainer>
           </div>
         ) : (
-          <div className="flex items-center justify-center h-40 text-zinc-400 text-sm">No data for this period</div>
+          <div className="flex items-center justify-center h-64 text-zinc-400 text-sm">No revenue data for this period</div>
+        )}
+      </div>
+
+      {/* Orders Chart */}
+      <div className="bg-white dark:bg-zinc-900 rounded-2xl border border-zinc-200 dark:border-zinc-800 p-5">
+        <h3 className="text-base font-bold text-zinc-900 dark:text-white mb-4">Orders Over Time</h3>
+        {chartData.length > 0 && chartData.some(d => d.orders > 0) ? (
+          <div className="h-56">
+            <ResponsiveContainer width="100%" height="100%">
+              <BarChart data={chartData} margin={{ top: 5, right: 5, bottom: 5, left: 5 }}>
+                <XAxis dataKey="day" tick={{ fontSize: 10, fill: '#71717a' }} tickLine={false} axisLine={false} />
+                <YAxis tick={{ fontSize: 10, fill: '#71717a' }} tickLine={false} axisLine={false} allowDecimals={false} />
+                <Tooltip content={<CustomTooltip />} />
+                <Bar dataKey="orders" fill="#3b82f6" radius={[4, 4, 0, 0]} />
+              </BarChart>
+            </ResponsiveContainer>
+          </div>
+        ) : (
+          <div className="flex items-center justify-center h-56 text-zinc-400 text-sm">No order data for this period</div>
         )}
       </div>
 
@@ -147,7 +203,7 @@ export default function AdminAnalytics() {
               {topProducts.map((product, i) => (
                 <div key={product.name} className="flex items-center justify-between py-2 border-b border-zinc-100 dark:border-zinc-800 last:border-0">
                   <div className="flex items-center gap-3">
-                    <span className="w-6 h-6 rounded-lg bg-zinc-100 dark:bg-zinc-800 flex items-center justify-center text-xs font-bold text-zinc-500">{i + 1}</span>
+                    <span className="w-6 h-6 rounded-lg flex items-center justify-center text-xs font-bold" style={{ backgroundColor: `${CHART_COLORS[i]}20`, color: CHART_COLORS[i] }}>{i + 1}</span>
                     <div>
                       <p className="text-sm font-semibold text-zinc-900 dark:text-white truncate max-w-[180px]">{product.name}</p>
                       <p className="text-xs text-zinc-500">{product.count} sold</p>
@@ -165,18 +221,18 @@ export default function AdminAnalytics() {
         {/* Category Breakdown */}
         <div className="bg-white dark:bg-zinc-900 rounded-2xl border border-zinc-200 dark:border-zinc-800 p-5">
           <h3 className="text-base font-bold text-zinc-900 dark:text-white mb-4">Sales by Category</h3>
-          {Object.keys(categoryBreakdown).length > 0 ? (
-            <div className="space-y-3">
-              {Object.entries(categoryBreakdown).sort(([, a], [, b]) => b - a).map(([cat, revenue]) => {
-                const pct = totalRevenue > 0 ? (revenue / totalRevenue * 100).toFixed(0) : 0;
+          {categoryData.length > 0 ? (
+            <div className="space-y-4">
+              {categoryData.map((cat, i) => {
+                const pct = totalRevenue > 0 ? (cat.value / totalRevenue * 100).toFixed(0) : 0;
                 return (
-                  <div key={cat}>
-                    <div className="flex items-center justify-between mb-1">
-                      <span className="text-sm font-semibold text-zinc-700 dark:text-zinc-300">{cat}</span>
-                      <span className="text-sm font-bold text-zinc-900 dark:text-white">{formatKES(revenue)} ({pct}%)</span>
+                  <div key={cat.name}>
+                    <div className="flex items-center justify-between mb-1.5">
+                      <span className="text-sm font-semibold text-zinc-700 dark:text-zinc-300">{cat.name}</span>
+                      <span className="text-sm font-bold text-zinc-900 dark:text-white">{formatKES(cat.value)} ({pct}%)</span>
                     </div>
-                    <div className="w-full h-2 bg-zinc-100 dark:bg-zinc-800 rounded-full overflow-hidden">
-                      <div className="h-full bg-[#ff385c] rounded-full" style={{ width: `${pct}%` }} />
+                    <div className="w-full h-2.5 bg-zinc-100 dark:bg-zinc-800 rounded-full overflow-hidden">
+                      <div className="h-full rounded-full transition-all" style={{ width: `${pct}%`, backgroundColor: CHART_COLORS[i % CHART_COLORS.length] }} />
                     </div>
                   </div>
                 );
