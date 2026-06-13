@@ -301,3 +301,9 @@
 .animate-bounce-once {
   animation: bounce-once 0.4s ease-out;
 }
+
+/* Auto-scroll carousel - infinite right-to-left */
+@keyframes carousel-scroll {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}

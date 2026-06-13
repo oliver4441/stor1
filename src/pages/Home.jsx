@@ -1,5 +1,4 @@
-import { useState, useEffect, useRef } from 'react';
-import { ChevronLeft, ChevronRight } from 'lucide-react';
+import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import ProductCard from '../components/ProductCard';
 import InstallBanner from '../components/InstallBanner';
@@ -13,6 +12,7 @@ import RecentlyViewed from '../components/RecentlyViewed';
 import QuickViewModal from '../components/QuickViewModal';
 import SeasonalParticles from '../components/SeasonalParticles';
 import { useActiveTheme } from '../context/SeasonalContext';
+import AutoScrollCarousel from '../components/AutoScrollCarousel';
 
 function Home() {
   const { t } = useLang();
@@ -33,10 +33,7 @@ function Home() {
     return () => subscription.unsubscribe();
   }, []);
   const [isAiMode, setIsAiMode] = useState(false);
-  const [featuredIndex, setFeaturedIndex] = useState(0);
   const [quickViewListing, setQuickViewListing] = useState(null);
-  const featuredRef = useRef(null);
-  const featuredIntervalRef = useRef(null);
 
   useEffect(() => {
     setLoading(true);
@@ -48,22 +45,7 @@ function Home() {
     fetch();
   }, [activeCategory, searchQuery, isAiMode]);
 
-  // Auto-slide featured products
-  useEffect(() => {
-    if (listings.length <= 1) return;
-    featuredIntervalRef.current = setInterval(() => {
-      setFeaturedIndex(prev => (prev + 1) % Math.min(listings.length, 10));
-    }, 4000);
-    return () => clearInterval(featuredIntervalRef.current);
-  }, [listings.length]);
-
   const featuredProducts = listings.slice(0, 8);
-
-  const scrollFeatured = (dir) => {
-    if (!featuredRef.current) return;
-    const cardWidth = 280;
-    featuredRef.current.scrollBy({ left: dir * cardWidth, behavior: 'smooth' });
-  };
 
   // Theme-aware hero colors
   const heroFrom = theme?.colors?.heroFrom || '#ff385c';
@@ -175,39 +157,17 @@ function Home() {
       </div>
 
       <div className="max-w-7xl mx-auto px-4">
-        {/* Featured Products Carousel */}
+        {/* Featured Products - Auto Scroll Carousel */}
         {featuredProducts.length > 0 && activeCategory === 'All' && !searchQuery && (
           <div className="mb-10">
             <div className="flex items-center justify-between mb-4">
               <h2 className="text-xl font-bold text-zinc-900 dark:text-white">Featured Products</h2>
-              <div className="flex gap-2">
-                <button onClick={() => scrollFeatured(-1)} className="w-9 h-9 rounded-full bg-zinc-100 dark:bg-zinc-800 flex items-center justify-center hover:bg-zinc-200 dark:hover:bg-zinc-700 transition-colors">
-                  <ChevronLeft className="w-5 h-5 text-zinc-600 dark:text-zinc-300" />
-                </button>
-                <button onClick={() => scrollFeatured(1)} className="w-9 h-9 rounded-full bg-zinc-100 dark:bg-zinc-800 flex items-center justify-center hover:bg-zinc-200 dark:hover:bg-zinc-700 transition-colors">
-                  <ChevronRight className="w-5 h-5 text-zinc-600 dark:text-zinc-300" />
-                </button>
-              </div>
             </div>
-            <div ref={featuredRef} className="flex gap-4 overflow-x-auto scrollbar-hide snap-x snap-mandatory pb-2">
-              {featuredProducts.map((product, idx) => (
-                <div key={product.id} className="flex-shrink-0 w-[260px] snap-start">
-                  <div className={`relative rounded-2xl overflow-hidden ${featuredIndex === idx ? 'ring-2 ring-[#ff385c]' : ''}`}>
-                    <ProductCard listing={product} />
-                    {featuredIndex === idx && (
-                      <div className="absolute top-2 right-2 bg-[#ff385c] text-white text-[10px] font-bold px-2 py-0.5 rounded-full">Featured</div>
-                    )}
-                  </div>
-                </div>
+            <AutoScrollCarousel itemMinWidth={260} gap={16} speed={35}>
+              {featuredProducts.map((product) => (
+                <ProductCard key={product.id} listing={product} />
               ))}
-            </div>
-            {/* Dots */}
-            <div className="flex justify-center gap-1.5 mt-4">
-              {featuredProducts.map((_, idx) => (
-                <button key={idx} onClick={() => setFeaturedIndex(idx)}
-                  className={`w-2 h-2 rounded-full transition-all ${featuredIndex === idx ? 'bg-[#ff385c] w-6' : 'bg-zinc-300 dark:bg-zinc-600'}`} />
-              ))}
-            </div>
+            </AutoScrollCarousel>
           </div>
         )}
 

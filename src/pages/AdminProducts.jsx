@@ -24,7 +24,7 @@ export default function AdminProducts() {
   const [editingId, setEditingId] = useState(null);
   const [form, setForm] = useState({
     title: '', price: '', description: '', category: 'Electronics', condition: 'New', location: 'CBD',
-    images: [], quantity: '1', brand: '', model: '', color: '', weight: '', sku: '', status: 'active', tags: ''
+    images: [], brand: '', model: '', color: '', weight: '', sku: '', status: 'active', tags: ''
   });
   const [submitting, setSubmitting] = useState(false);
   const [successMsg, setSuccessMsg] = useState('');
@@ -100,7 +100,7 @@ export default function AdminProducts() {
     setEditingId(null);
     setForm({
       title: '', price: '', description: '', category: cat, condition: 'New', location: 'CBD',
-      images: [], quantity: '1', brand: '', model: '', color: '', weight: '',
+      images: [], brand: '', model: '', color: '', weight: '',
       sku: generateSKU(cat), status: 'active', tags: ''
     });
     setModalOpen(true);
@@ -112,7 +112,7 @@ export default function AdminProducts() {
       title: listing.title, price: String(listing.price), description: listing.description || '',
       category: listing.category || 'Electronics', condition: listing.condition || 'New',
       location: listing.location_city || 'CBD', images: listing.images || [],
-      quantity: String(listing.quantity || 1), brand: listing.brand || '', model: listing.model || '',
+      brand: listing.brand || '', model: listing.model || '',
       color: listing.color || '', weight: listing.weight || '', sku: listing.sku || '',
       status: listing.status || 'active', tags: listing.tags || ''
     });
@@ -154,7 +154,7 @@ export default function AdminProducts() {
     const payload = {
       title: form.title, description: form.description, price: form.price,
       category: form.category, condition: form.condition, location: form.location,
-      images: form.images, quantity: form.quantity, brand: form.brand,
+      images: form.images, brand: form.brand,
       model: form.model, color: form.color, weight: form.weight, sku: form.sku,
       status: form.status, tags: form.tags,
     };
@@ -195,7 +195,6 @@ export default function AdminProducts() {
     if (!quickEditId || !quickEditField) return;
     const updateData = { [quickEditField]: quickEditValue };
     if (quickEditField === 'price') updateData.price = parseInt(quickEditValue) || 0;
-    if (quickEditField === 'quantity') updateData.quantity = parseInt(quickEditValue) || 0;
 
     const { error } = await supabase
       .from('listings')
@@ -288,7 +287,6 @@ export default function AdminProducts() {
                   <th className="text-left text-xs font-bold text-zinc-500 uppercase px-4 py-3">Product</th>
                   <th className="text-left text-xs font-bold text-zinc-500 uppercase px-4 py-3 hidden md:table-cell">Category</th>
                   <th className="text-left text-xs font-bold text-zinc-500 uppercase px-4 py-3">Price</th>
-                  <th className="text-left text-xs font-bold text-zinc-500 uppercase px-4 py-3 hidden sm:table-cell">Stock</th>
                   <th className="text-left text-xs font-bold text-zinc-500 uppercase px-4 py-3 hidden lg:table-cell">Status</th>
                   <th className="text-right text-xs font-bold text-zinc-500 uppercase px-4 py-3">Actions</th>
                 </tr>
@@ -340,19 +338,6 @@ export default function AdminProducts() {
                         <span className="text-sm font-bold text-zinc-900 dark:text-white cursor-pointer hover:text-[#ff385c]"
                           onDoubleClick={() => startQuickEdit(listing.id, 'price', String(listing.price))} title="Double-click to edit">
                           {formatKES(listing.price)}
-                        </span>
-                      )}
-                    </td>
-                    <td className="px-4 py-3 hidden sm:table-cell">
-                      {quickEditId === listing.id && quickEditField === 'quantity' ? (
-                        <input autoFocus type="number" value={quickEditValue} onChange={e => setQuickEditValue(e.target.value)}
-                          onBlur={saveQuickEdit} onKeyDown={e => e.key === 'Enter' && saveQuickEdit()}
-                          className="text-sm font-semibold bg-white dark:bg-zinc-800 border border-[#ff385c] rounded px-1 py-0.5 w-16" />
-                      ) : (
-                        <span
-                          className={`text-sm font-semibold cursor-pointer hover:text-[#ff385c] ${listing.quantity === 0 ? 'text-red-500' : listing.quantity <= 3 ? 'text-amber-500' : 'text-zinc-700 dark:text-zinc-300'}`}
-                          onDoubleClick={() => startQuickEdit(listing.id, 'quantity', String(listing.quantity || 0))} title="Double-click to edit">
-                          {listing.quantity || 0}
                         </span>
                       )}
                     </td>
@@ -479,10 +464,6 @@ export default function AdminProducts() {
                   <select value={form.condition} onChange={e => setForm({...form, condition: e.target.value})} className="w-full px-4 py-2.5 rounded-xl bg-zinc-100 dark:bg-zinc-800 border border-transparent focus:border-[#ff385c] focus:outline-none text-zinc-900 dark:text-white text-sm appearance-none">
                     {CONDITIONS.map(c => <option key={c} value={c}>{c}</option>)}
                   </select>
-                </div>
-                <div>
-                  <label className="block text-sm font-bold mb-1.5 text-zinc-700 dark:text-zinc-300">Quantity *</label>
-                  <input required type="number" min="0" value={form.quantity} onChange={e => setForm({...form, quantity: e.target.value})} placeholder="1" className="w-full px-4 py-2.5 rounded-xl bg-zinc-100 dark:bg-zinc-800 border border-transparent focus:border-[#ff385c] focus:outline-none text-zinc-900 dark:text-white text-sm" />
                 </div>
                 <div>
                   <label className="block text-sm font-bold mb-1.5 text-zinc-700 dark:text-zinc-300">Status</label>

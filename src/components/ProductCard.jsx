@@ -39,8 +39,6 @@ function ProductCard({ listing }) {
       return;
     }
 
-    if (listing.quantity === 0) return;
-
     addItem({
       id: listing.id,
       name: listing.title,
@@ -69,14 +67,6 @@ function ProductCard({ listing }) {
           {listing.condition?.replace('_', ' ')}
         </div>
 
-        {/* Stock badge */}
-        {listing.quantity === 0 && (
-          <div className="absolute bottom-0 left-0 right-0 bg-red-500/90 text-white text-[10px] font-bold text-center py-1">Out of stock</div>
-        )}
-        {listing.quantity > 0 && listing.quantity <= 3 && (
-          <div className="absolute bottom-0 left-0 right-0 bg-amber-500/90 text-white text-[10px] font-bold text-center py-1">Only {listing.quantity} left</div>
-        )}
-
         {/* Discount badge on image */}
         {listing.compare_at_price && listing.compare_at_price > listing.price && (
           <div className="absolute top-2 right-12 bg-red-500 text-white px-2 py-1 rounded-lg text-[10px] font-bold shadow-sm">
@@ -99,8 +89,7 @@ function ProductCard({ listing }) {
         >
           <Eye className="w-3 h-3" />
         </button>
-        {listing.quantity > 0 && (
-          <button
+        <button
             onClick={handleAddToCart}
             className={`absolute bottom-2 right-2 flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-[10px] font-bold shadow-sm transition-all opacity-0 group-hover:opacity-100 ${
               justAdded
@@ -114,7 +103,6 @@ function ProductCard({ listing }) {
             <ShoppingCart className="w-3 h-3" />
             {justAdded ? 'Added!' : inCart ? `In Cart (${inCart.quantity})` : 'Add to Cart'}
           </button>
-        )}
       </div>
 
       <div>

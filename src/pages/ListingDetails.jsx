@@ -13,6 +13,7 @@ import RecentlyViewed, { trackViewedProduct } from '../components/RecentlyViewed
 import { ListingSocialProof } from '../components/SocialProof';
 import Breadcrumb from '../components/Breadcrumb';
 import NiaContextualTrigger from '../components/NiaContextualTrigger';
+import AutoScrollCarousel from '../components/AutoScrollCarousel';
 
 function ListingDetails() {
   const { id } = useParams();
@@ -131,9 +132,6 @@ function ListingDetails() {
   // Flat list for backward compat (key specs strip)
   const allSpecs = specCategories.flatMap(c => c.specs);
 
-  const stockStatus = listing.quantity === 0 ? 'Out of stock' : listing.quantity <= 3 ? `Only ${listing.quantity} left` : 'In stock';
-  const stockColor = listing.quantity === 0 ? 'text-red-500' : listing.quantity <= 3 ? 'text-amber-500' : 'text-green-500';
-
   // Key specs to show as icon highlights above the fold
   const keySpecs = [
     ...(listing.ram ? [{ icon: Cpu, label: 'RAM', value: listing.ram }] : []),
@@ -182,18 +180,6 @@ function ListingDetails() {
 
           {/* Social Proof */}
           <ListingSocialProof listing={listing} />
-
-          {/* Stock & Location */}
-          <div className="flex flex-wrap gap-3 mb-6">
-            <span className={`flex items-center gap-1.5 text-sm font-bold ${stockColor}`}>
-              <Package className="w-4 h-4" /> {stockStatus}
-            </span>
-            {listing.location && (
-              <span className="flex items-center gap-1.5 text-sm text-zinc-600 dark:text-zinc-300">
-                <MapPin className="w-4 h-4 text-[#ff385c]" /> {listing.location}
-              </span>
-            )}
-          </div>
 
           {/* Key Specs Highlight Strip */}
           {keySpecs.length > 0 && (
@@ -338,10 +324,12 @@ function ListingDetails() {
       {/* Related */}
       {related.length > 0 && (
         <div className="mt-16 pt-8 border-t border-zinc-200 dark:border-zinc-800 pb-24 md:pb-0">
-          <h2 className="text-2xl font-bold mb-8">Similar in {listing.category}</h2>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
-            {related.map(l => (<ProductCard key={l.id} listing={l} />))}
-          </div>
+          <h2 className="text-2xl font-bold mb-6">You May Also Like</h2>
+          <AutoScrollCarousel itemMinWidth={260} gap={16} speed={40}>
+            {related.map(l => (
+              <ProductCard key={l.id} listing={l} />
+            ))}
+          </AutoScrollCarousel>
         </div>
       )}
 
