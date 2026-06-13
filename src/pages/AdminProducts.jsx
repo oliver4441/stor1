@@ -2,7 +2,7 @@ import { useState, useEffect, useCallback, useRef } from 'react';
 import { Plus, Pencil, Trash2, X, AlertTriangle, Loader2, Upload, Image as ImageIcon, Search, Eye, CheckSquare, Square, Tag, GripVertical, Star } from 'lucide-react';
 import { supabase } from '../utils/supabase';
 import { fetchAllListings, createListing, updateListing, deleteListing, adminDeleteListing, bulkUpdateListingStatus, bulkDeleteListings } from '../utils/api';
-import { formatKES, CATEGORIES } from '../utils/constants';
+import { formatKES, CATEGORIES, generateSKU } from '../utils/constants';
 import { uploadImage } from '../utils/api';
 
 const CONDITIONS = ['New', 'Like New', 'Good', 'Fair', 'For Parts'];
@@ -96,8 +96,13 @@ export default function AdminProducts() {
   };
 
   const openAddModal = () => {
+    const cat = 'Electronics';
     setEditingId(null);
-    setForm({ title: '', price: '', description: '', category: 'Electronics', condition: 'New', location: 'CBD', images: [], quantity: '1', brand: '', model: '', color: '', weight: '', sku: '', status: 'active', tags: '' });
+    setForm({
+      title: '', price: '', description: '', category: cat, condition: 'New', location: 'CBD',
+      images: [], quantity: '1', brand: '', model: '', color: '', weight: '',
+      sku: generateSKU(cat), status: 'active', tags: ''
+    });
     setModalOpen(true);
   };
 
@@ -457,7 +462,15 @@ export default function AdminProducts() {
               <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                 <div>
                   <label className="block text-sm font-bold mb-1.5 text-zinc-700 dark:text-zinc-300">Category</label>
-                  <select value={form.category} onChange={e => setForm({...form, category: e.target.value})} className="w-full px-4 py-2.5 rounded-xl bg-zinc-100 dark:bg-zinc-800 border border-transparent focus:border-[#ff385c] focus:outline-none text-zinc-900 dark:text-white text-sm appearance-none">
+                  <select value={form.category} onChange={e => {
+                    const newCat = e.target.value;
+                    setForm(prev => ({
+                      ...prev,
+                      category: newCat,
+                      // Auto-regenerate SKU when category changes (only for new products)
+                      sku: editingId ? prev.sku : generateSKU(newCat),
+                    }));
+                  }} className="w-full px-4 py-2.5 rounded-xl bg-zinc-100 dark:bg-zinc-800 border border-transparent focus:border-[#ff385c] focus:outline-none text-zinc-900 dark:text-white text-sm appearance-none">
                     {CATEGORIES.filter(c => c !== 'All').map(c => <option key={c} value={c}>{c}</option>)}
                   </select>
                 </div>
@@ -501,8 +514,23 @@ export default function AdminProducts() {
                   <input value={form.weight} onChange={e => setForm({...form, weight: e.target.value})} placeholder="e.g. 0.5kg" className="w-full px-4 py-2.5 rounded-xl bg-zinc-100 dark:bg-zinc-800 border border-transparent focus:border-[#ff385c] focus:outline-none text-zinc-900 dark:text-white text-sm" />
                 </div>
                 <div>
-                  <label className="block text-sm font-bold mb-1.5 text-zinc-700 dark:text-zinc-300">SKU</label>
-                  <input value={form.sku} onChange={e => setForm({...form, sku: e.target.value})} placeholder="e.g. IP13P-256-BLU" className="w-full px-4 py-2.5 rounded-xl bg-zinc-100 dark:bg-zinc-800 border border-transparent focus:border-[#ff385c] focus:outline-none text-zinc-900 dark:text-white text-sm" />
+                  <label className="block text-sm font-bold mb-1.5 text-zinc-700 dark:text-zinc-300">SKU <span className="font-normal text-zinc-400">(auto-generated)</span></label>
+                  <div className="flex gap-2">
+                    <input
+                      value={form.sku}
+                      onChange={e => setForm({...form, sku: e.target.value})}
+                      placeholder="Auto-generated"
+                      className="flex-1 px-4 py-2.5 rounded-xl bg-zinc-100 dark:bg-zinc-800 border border-transparent focus:border-[#ff385c] focus:outline-none text-zinc-900 dark:text-white text-sm font-mono"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => setForm(prev => ({ ...prev, sku: generateSKU(form.category) }))}
+                      className="px-3 py-2.5 rounded-xl bg-zinc-100 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 text-zinc-500 hover:text-[#ff385c] hover:border-[#ff385c] transition-colors text-sm font-bold"
+                      title="Regenerate SKU"
+                    >
+                      Refresh
+                    </button>
+                  </div>
                 </div>
                 <div>
                   <label className="block text-sm font-bold mb-1.5 text-zinc-700 dark:text-zinc-300">Tags</label>

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
 import { LanguageProvider } from './utils/lang';
 import { CartProvider } from './context/CartContext';
@@ -36,7 +36,6 @@ import PWAUpdateChecker from './components/PWAUpdateChecker';
 import FloatingCartButton from './components/FloatingCartButton';
 import { SeasonalProvider } from './context/SeasonalContext';
 import { supabase } from './utils/supabase';
-import { WelcomeScreen } from './components/WelcomeScreen';
 
 class ErrorBoundary extends React.Component {
   constructor(props) {
@@ -68,31 +67,6 @@ class ErrorBoundary extends React.Component {
 }
 
 function App() {
-  const [showWelcome, setShowWelcome] = useState(false);
-  const [welcomeTriggered, setWelcomeTriggered] = useState(false);
-
-  // Show welcome screen only after PWA is installed (not on every visit)
-  React.useEffect(() => {
-    const handler = () => {
-      // PWA was just installed — show welcome on next page load
-      localStorage.setItem('omix_pending_welcome', 'true');
-      setShowWelcome(true);
-    };
-    window.addEventListener('appinstalled', handler);
-
-    // On load, check if we should show welcome (flag set by install event)
-    if (localStorage.getItem('omix_pending_welcome') === 'true') {
-      localStorage.removeItem('omix_pending_welcome');
-      setShowWelcome(true);
-    }
-
-    return () => window.removeEventListener('appinstalled', handler);
-  }, []);
-
-  const handleWelcomeFinish = () => {
-    setShowWelcome(false);
-  };
-
   React.useEffect(() => {
     console.log('Omix Store Mounted');
 
@@ -127,7 +101,6 @@ function App() {
     <CartProvider>
     <NiaChatProvider>
     <ErrorBoundary>
-      {showWelcome && <WelcomeScreen onFinish={handleWelcomeFinish} />}
       <ScrollToTop />
       <div className="min-h-screen flex flex-col bg-white dark:bg-zinc-950 text-zinc-900 dark:text-zinc-50 antialiased">
         <Navbar />
