@@ -51,7 +51,10 @@ function Navbar() {
 
   useEffect(() => { setMobileOpen(false); }, [location.pathname]);
 
-  const toggleTheme = () => document.documentElement.classList.toggle('dark');
+  const toggleTheme = () => {
+    const isDark = document.documentElement.classList.toggle('dark');
+    localStorage.setItem('theme', isDark ? 'dark' : 'light');
+  };
 
   return (
     <nav className="border-b border-zinc-200/50 dark:border-zinc-800/50 bg-white/80 dark:bg-zinc-950/80 backdrop-blur-xl sticky top-0 z-50 transition-all" style={{ paddingTop: 'env(safe-area-inset-top)' }}>

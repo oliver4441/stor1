@@ -13,6 +13,20 @@ if ('serviceWorker' in navigator) {
   });
 }
 
+// Apply theme before React renders to prevent flash
+(function() {
+  const stored = localStorage.getItem('theme');
+  if (stored === 'dark' || stored === 'light') {
+    if (stored === 'dark') document.documentElement.classList.add('dark');
+    else document.documentElement.classList.remove('dark');
+  } else {
+    // No stored preference — follow system
+    if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+      document.documentElement.classList.add('dark');
+    }
+  }
+})();
+
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
     <BrowserRouter>
