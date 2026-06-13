@@ -30,17 +30,9 @@ import Terms from './pages/Terms';
 import Privacy from './pages/Privacy';
 import Install from './pages/Install';
 import Cart from './pages/Cart';
-import Sell from './pages/Sell';
-import Events from './pages/Events';
-import EventDetail from './pages/EventDetail';
-import CreateEvent from './pages/CreateEvent';
-import Wishes from './pages/Wishes';
-import WishDetail from './pages/WishDetail';
-import WishForm from './pages/WishForm';
-import PaymentCallback from './pages/PaymentCallback';
-import ContactFloat from './components/ContactFloat';
 import ScrollToTop from './components/ScrollToTop';
 import BackToTop from './components/BackToTop';
+import ContactFloat from './components/ContactFloat';
 
 import { supabase } from './utils/supabase';
 
@@ -136,15 +128,6 @@ function App() {
             <Route path="/privacy" element={<Privacy />} />
             <Route path="/install" element={<Install />} />
             <Route path="/cart" element={<Cart />} />
-            <Route path="/sell" element={<Sell />} />
-            <Route path="/events" element={<Events />} />
-            <Route path="/events/:id" element={<EventDetail />} />
-            <Route path="/events/create" element={<CreateEvent />} />
-            <Route path="/wishes" element={<Wishes />} />
-            <Route path="/wish/new" element={<WishForm />} />
-            <Route path="/wishes/:id" element={<WishDetail />} />
-            <Route path="/payment-callback" element={<PaymentCallback />} />
-            <Route path="/events/order/callback/:id" element={<PaymentCallback />} />
           </Routes>
         </main>
         <Footer />
