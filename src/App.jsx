@@ -34,6 +34,7 @@ import ScrollToTop from './components/ScrollToTop';
 import BackToTop from './components/BackToTop';
 import PWAUpdateChecker from './components/PWAUpdateChecker';
 import { SeasonalProvider } from './context/SeasonalContext';
+import { supabase } from './utils/supabase';
 
 class ErrorBoundary extends React.Component {
   constructor(props) {
@@ -132,7 +133,6 @@ function App() {
         </main>
         <Footer />
         <BackToTop />
-        <ContactFloat />
         <NiaOnboarding />
         <NiaChat />
         <NiaFloatingButton />
