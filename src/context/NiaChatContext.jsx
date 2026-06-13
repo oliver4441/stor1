@@ -27,7 +27,7 @@ const COLORS = {
 const FLOWS = {
   greeting: {
     id: 'greeting',
-    message: "Hi, I'm Nia 👋\nI'm your Omix Store assistant. I can help you find products, track orders, and answer questions about buying and selling.\n\nWhat would you like to do?",
+    message: "Hi, I'm Nia\nI'm your Omix Store assistant. I can help you find products, track orders, and answer questions about buying and selling.\n\nWhat would you like to do?",
     chips: ['Browse products', 'Track my order', 'How it works', 'Talk to support'],
   },
   browse: {
@@ -37,52 +37,52 @@ const FLOWS = {
   },
   track: {
     id: 'track',
-    message: "I can help you track your order! 🕵️\n\nYou'll need your order ID — find it in your account dashboard or confirmation email.\n\nWant to go to the track order page?",
+    message: "I can help you track your order!\n\nYou'll need your order ID — find it in your account dashboard or confirmation email.\n\nWant to go to the track order page?",
     chips: ['Track my order', 'Go to my account', 'I need more help'],
   },
   howItWorks: {
     id: 'howItWorks',
-    message: "Here's how Omix Store works:\n\n1️⃣ Browse products\n2️⃣ Add to cart\n3️⃣ Checkout with M-Pesa\n4️⃣ Get delivered!\n\nWhat would you like to know more about?",
+    message: "Here's how Omix Store works:\n\n1. Browse products\n2. Add to cart\n3. Checkout with M-Pesa\n4. Get delivered!\n\nWhat would you like to know more about?",
     chips: ['How to pay', 'Delivery info', 'Return policy'],
   },
   payment: {
     id: 'payment',
-    message: "We accept M-Pesa via Paystack STK Push.\n\nAt checkout, enter your phone number. You'll receive a payment prompt on your phone within 30 seconds.\n\nIt's secure and instant! 🔒",
+    message: "We accept M-Pesa via Paystack STK Push.\n\nAt checkout, enter your phone number. You'll receive a payment prompt on your phone within 30 seconds.\n\nIt's secure and instant!",
     chips: ['Browse products', 'Track my order', 'I need help'],
   },
   delivery: {
     id: 'delivery',
-    message: "We deliver within Kericho and surrounding areas.\n\n📦 CBD: Same day\n🏙️ Kericho town: 1-2 days\n🚚 Outside Kericho: 2-3 days\n\nNeed anything else?",
+    message: "We deliver within Kericho and surrounding areas.\n\nCBD: Same day\nKericho town: 1-2 days\nOutside Kericho: 2-3 days\n\nNeed anything else?",
     chips: ['Browse products', 'Track my order', 'Contact support'],
   },
   returnPolicy: {
     id: 'returnPolicy',
-    message: "Our return policy:\n\n• Electronics: 7 days if defective\n• Clothing: 3 days with tags\n• Furniture: No returns (inspect on delivery)\n\nFor issues, contact support.",
+    message: "Our return policy:\n\n- Electronics: 7 days if defective\n- Clothing: 3 days with tags\n- Furniture: No returns (inspect on delivery)\n\nFor issues, contact support.",
     chips: ['Contact support', 'Browse products', 'Track my order'],
   },
   support: {
     id: 'support',
-    message: "I'll connect you to our support team.\n\n📧 omixsystems@gmail.com\n📱 +254 768 213 649\n\nOr use the contact button at the bottom right of the page.\n\nIs there anything specific I can help with first?",
+    message: "I'll connect you to our support team.\n\nomixsystems@gmail.com\n+254 768 213 649\n\nOr use the contact button at the bottom right of the page.\n\nIs there anything specific I can help with first?",
     chips: ['Browse products', 'Track my order', 'Close'],
   },
   listingHelp: {
     id: 'listingHelp',
-    message: "Here's what I can help with on this page:\n\n🛒 How to buy this item\n📦 Delivery information\n💳 Payment options\n📞 Contact support\n\nWhat do you need?",
+    message: "Here's what I can help with on this page:\n\nHow to buy this item\nDelivery information\nPayment options\nContact support\n\nWhat do you need?",
     chips: ['How to buy', 'Delivery info', 'Payment options', 'Contact support'],
   },
   checkoutHelp: {
     id: 'checkoutHelp',
-    message: "Having trouble at checkout? Let's fix it:\n\n✅ Make sure you're logged in\n✅ Phone number is correct (for M-Pesa)\n✅ Wait 30 seconds for the STK push\n\nWhat's the issue?",
+    message: "Having trouble at checkout? Let's fix it:\n\nMake sure you're logged in\nPhone number is correct (for M-Pesa)\nWait 30 seconds for the STK push\n\nWhat's the issue?",
     chips: ['Payment not working', 'Edit my order', 'Contact support'],
   },
   paymentIssue: {
     id: 'paymentIssue',
-    message: "Sorry about that! Let's troubleshoot:\n\n1️⃣ Check your internet connection\n2️⃣ Verify your phone number\n3️⃣ Wait 30 seconds for the STK push\n4️⃣ Check your phone for the M-Pesa prompt\n\nStill not working? I'd recommend contacting support directly.",
+    message: "Sorry about that! Let's troubleshoot:\n\n1. Check your internet connection\n2. Verify your phone number\n3. Wait 30 seconds for the STK push\n4. Check your phone for the M-Pesa prompt\n\nStill not working? I'd recommend contacting support directly.",
     chips: ['Try again', 'Contact support', 'Browse products'],
   },
   emptyCart: {
     id: 'emptyCart',
-    message: "Your cart is empty! 🛒\n\nI can help you find great items. What are you looking for?",
+    message: "Your cart is empty!\n\nI can help you find great items. What are you looking for?",
     chips: ['Browse products', 'Search items', 'Featured items'],
   },
   honestUnknown: {

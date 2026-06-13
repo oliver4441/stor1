@@ -81,7 +81,7 @@ export default function AdminOverview() {
         <div className="bg-white dark:bg-zinc-900 rounded-2xl border border-zinc-200 dark:border-zinc-800 p-5">
           <div className="flex items-center justify-between mb-4">
             <h3 className="text-base font-bold text-zinc-900 dark:text-white">Recent Orders</h3>
-            <a href="/admin/orders" className="text-xs font-semibold text-[#ff385c] hover:underline">View all →</a>
+            <a href="/admin/orders" className="text-xs font-semibold text-[#ff385c] hover:underline">View all orders</a>
           </div>
           {recentOrders.length > 0 ? (
             <div className="space-y-3">
@@ -117,7 +117,7 @@ export default function AdminOverview() {
         <div className="bg-white dark:bg-zinc-900 rounded-2xl border border-zinc-200 dark:border-zinc-800 p-5">
           <div className="flex items-center justify-between mb-4">
             <h3 className="text-base font-bold text-zinc-900 dark:text-white">Top Products</h3>
-            <a href="/admin/products" className="text-xs font-semibold text-[#ff385c] hover:underline">View all →</a>
+            <a href="/admin/products" className="text-xs font-semibold text-[#ff385c] hover:underline">View all products</a>
           </div>
           {topProducts.length > 0 ? (
             <div className="space-y-3">

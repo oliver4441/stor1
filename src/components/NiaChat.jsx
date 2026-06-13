@@ -69,7 +69,7 @@ export default function NiaChat() {
               style={{ color: COLORS.textBot }}
               onClick={() => setShowMenu(false)}
             >
-              📧 Email support
+              Email support
             </a>
           </div>
         )}
@@ -82,7 +82,7 @@ export default function NiaChat() {
       >
         <Sparkles className="w-4 h-4 flex-shrink-0" style={{ color: COLORS.accent }} />
         <p className="text-xs font-medium" style={{ color: COLORS.textBot }}>
-          Chat with AI coming soon ✨ For now, use the quick options below to navigate the store.
+          Chat with AI coming soon. For now, use the quick options below to navigate the store.
         </p>
       </div>
 

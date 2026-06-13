@@ -319,7 +319,7 @@ export default function AdminDashboard() {
                       {imageUploading ? <><Loader2 className="w-4 h-4 animate-spin" />Uploading...</> : <><Upload className="w-4 h-4" />Upload Image</>}
                     </button>
                     <p className="text-xs text-zinc-500 mt-2">JPG, PNG or WebP. Max 5MB. Image will be compressed automatically.</p>
-                    {form.image_url && <p className="text-xs text-green-600 mt-1 font-medium">✓ Image uploaded</p>}
+                    {form.image_url && <p className="text-xs text-green-600 mt-1 font-medium">Image uploaded</p>}
                   </div>
                 </div>
               </div>

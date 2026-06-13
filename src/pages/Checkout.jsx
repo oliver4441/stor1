@@ -405,7 +405,7 @@ export default function CheckoutPage() {
                     <div>
                       <span className="text-sm font-bold text-green-700">{promoApplied.code}</span>
                       <p className="text-[11px] text-green-600">
-                        {promoApplied.discount_type === 'free_delivery' ? '✓ Free delivery applied' : 'Discount applied'}
+                        {promoApplied.discount_type === 'free_delivery' ? 'Free delivery applied' : 'Discount applied'}
                       </p>
                     </div>
                   </div>
@@ -515,7 +515,7 @@ export default function CheckoutPage() {
                 placeholder="07XXXXXXXX"
                 error={fieldErrors.phone}
               />
-              <p className="text-xs -mt-2" style={{ color: C.textMuted }}>📱 M-Pesa STK push will be sent to this number</p>
+              <p className="text-xs -mt-2" style={{ color: C.textMuted }}>M-Pesa STK push will be sent to this number</p>
 
               <Field
                 icon={Mail}
@@ -568,7 +568,7 @@ export default function CheckoutPage() {
               </button>
 
               <p className="text-center text-xs" style={{ color: C.textMuted }}>
-                🔒 Powered by Paystack. Your payment is secure and encrypted.
+                Powered by Paystack. Your payment is secure and encrypted.
               </p>
             </form>
           </div>

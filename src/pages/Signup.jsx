@@ -53,7 +53,7 @@ function Signup() {
     return (
       <div className="max-w-md mx-auto px-4 py-20 text-center" data-name="signup-verify">
         <div className="bg-blue-50 dark:bg-blue-900/20 text-blue-600 p-8 rounded-3xl mb-6">
-          <div className="w-16 h-16 bg-blue-100 dark:bg-blue-900/40 rounded-full flex items-center justify-center mx-auto mb-4"><span className="text-3xl">📧</span></div>
+          <div className="w-16 h-16 bg-blue-100 dark:bg-blue-900/40 rounded-full flex items-center justify-center mx-auto mb-4"><span className="text-2xl font-black text-blue-500">@</span></div>
           <h2 className="text-2xl font-black mb-2">Check Your Email</h2>
           <p className="text-zinc-500 dark:text-zinc-400 mb-2">We sent a verification link to <strong className="text-zinc-700 dark:text-zinc-300">{registeredEmail}</strong></p>
           <p className="text-sm text-zinc-400">Click the link to activate your account.</p>

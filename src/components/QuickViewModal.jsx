@@ -192,7 +192,7 @@ export default function QuickViewModal({ listing, onClose }) {
               onClick={onClose}
               className="mt-3 text-center text-xs font-bold text-[#ff385c] hover:underline"
             >
-              View full details →
+              View full details
             </Link>
           </div>
         </div>

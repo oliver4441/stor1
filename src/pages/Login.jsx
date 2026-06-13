@@ -63,7 +63,7 @@ function Login() {
 
       {needsVerification && (
         <div className="bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-900/50 text-amber-700 dark:text-amber-400 p-4 rounded-xl mb-4 text-sm">
-          <p className="font-bold mb-1">📧 {t('auth.emailNotVerified') || 'Email not verified'}</p>
+          <p className="font-bold mb-1">{t('auth.emailNotVerified') || 'Email not verified'}</p>
           <p className="text-zinc-500 dark:text-zinc-400 text-xs mb-2">{t('auth.emailNotVerifiedDesc') || 'Please check your email for a verification link.'}</p>
           <p className="text-xs text-zinc-400">{t('auth.emailNotVerifiedHelp') || 'Need help?'} <Link to="/signup" className="text-[#ff385c] font-bold hover:underline">{t('auth.createNewAccount') || 'Create new account'}</Link>.</p>
         </div>

@@ -5,9 +5,10 @@ const STEPS = {
   android: {
     title: 'Android (Chrome)',
     color: 'from-green-500 to-emerald-600',
-    icon: '🤖',
+    iconLabel: 'Android',
+    iconColor: 'text-green-500',
     steps: [
-      { text: 'Tap the menu button (⋮) in the top-right corner', hint: 'Three vertical dots' },
+      { text: 'Tap the menu button (...) in the top-right corner', hint: 'Three vertical dots' },
       { text: 'Tap "Install app" or "Add to Home Screen"', hint: 'Look for the download icon' },
       { text: 'Tap "Install" to confirm', hint: 'The app will be added to your home screen' },
     ],
@@ -15,7 +16,8 @@ const STEPS = {
   ios: {
     title: 'iPhone / iPad (Safari)',
     color: 'from-blue-500 to-indigo-600',
-    icon: '🍎',
+    iconLabel: 'iOS',
+    iconColor: 'text-blue-500',
     steps: [
       { text: 'Tap the Share button at the bottom of the screen', hint: 'Square with an arrow pointing up' },
       { text: 'Scroll down and tap "Add to Home Screen"', hint: 'Icon with a plus sign' },
@@ -25,9 +27,10 @@ const STEPS = {
   desktop: {
     title: 'Desktop (Chrome/Edge)',
     color: 'from-purple-500 to-violet-600',
-    icon: '💻',
+    iconLabel: 'Desktop',
+    iconColor: 'text-purple-500',
     steps: [
-      { text: 'Look for the install icon (⊕) in the address bar', hint: 'Right side of the URL bar' },
+      { text: 'Look for the install icon in the address bar', hint: 'Right side of the URL bar' },
       { text: 'Click "Install Omix"', hint: 'A prompt will appear' },
       { text: 'Click "Install" to confirm', hint: 'Omix will open in its own window' },
     ],
@@ -54,7 +57,7 @@ function IOSInstallModal({ onClose }) {
           <button onClick={onClose} className="absolute top-3 right-3 w-8 h-8 rounded-full bg-white/20 flex items-center justify-center hover:bg-white/30 transition-colors">
             <X className="w-4 h-4" />
           </button>
-          <div className="text-3xl mb-2">🍎</div>
+          <div className="text-3xl mb-2 font-black text-white/90">iOS</div>
           <h3 className="text-lg font-black">Install on iPhone / iPad</h3>
           <p className="text-white/80 text-sm">Follow these 3 steps</p>
         </div>
@@ -70,7 +73,7 @@ function IOSInstallModal({ onClose }) {
                 <div className="w-10 h-10 rounded-lg bg-zinc-200 dark:bg-zinc-700 flex items-center justify-center">
                   <Share className="w-5 h-5 text-blue-500" />
                 </div>
-                <span className="text-xs text-zinc-500">← Look for this icon at the bottom</span>
+                <span className="text-xs text-zinc-500">Look for this icon at the bottom</span>
               </div>
             </div>
           </div>
@@ -84,7 +87,7 @@ function IOSInstallModal({ onClose }) {
                 <div className="w-10 h-10 rounded-lg bg-zinc-200 dark:bg-zinc-700 flex items-center justify-center">
                   <Plus className="w-5 h-5 text-green-500" />
                 </div>
-                <span className="text-xs text-zinc-500">← Tap this option</span>
+                <span className="text-xs text-zinc-500">Tap this option</span>
               </div>
             </div>
           </div>
@@ -266,10 +269,10 @@ export default function Install() {
             {/* Platform hint */}
             <p className="text-xs text-zinc-400 dark:text-zinc-500">
               {isIOS
-                ? '🍎 You\'re on iPhone — tap above for easy install steps'
+                ? "You're on iPhone — tap above for easy install steps"
                 : isAndroid
-                ? '🤖 You\'re on Android — tap above to install'
-                : '💻 You\'re on desktop — tap above to install'}
+                ? "You're on Android — tap above to install"
+                : "You're on desktop — tap above to install"}
             </p>
           </div>
 
@@ -328,9 +331,9 @@ export default function Install() {
                   : 'bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-300 hover:bg-zinc-200 dark:hover:bg-zinc-700'
               }`}
             >
-              <span className="text-lg">{val.icon}</span>
+              <span className="text-lg font-bold">{val.iconLabel}</span>
               <span className="hidden sm:inline">{val.title}</span>
-              <span className="sm:hidden">{val.icon}</span>
+              <span className="sm:hidden font-bold">{val.iconLabel}</span>
             </button>
           ))}
         </div>
@@ -339,7 +342,7 @@ export default function Install() {
         <div className="bg-white dark:bg-zinc-900 rounded-3xl border border-zinc-200 dark:border-zinc-800 overflow-hidden shadow-xl shadow-zinc-200/50 dark:shadow-none">
           <div className={`bg-gradient-to-r ${STEPS[activeTab].color} p-6 text-white`}>
             <div className="flex items-center gap-3">
-              <span className="text-3xl">{STEPS[activeTab].icon}</span>
+              <span className="text-3xl font-black text-white/90">{STEPS[activeTab].iconLabel}</span>
               <div>
                 <h3 className="text-xl font-black">{STEPS[activeTab].title}</h3>
                 <p className="text-white/80 text-sm">3 easy steps</p>

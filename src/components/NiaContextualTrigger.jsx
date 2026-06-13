@@ -10,15 +10,15 @@ export default function NiaContextualTrigger({ page, className = '' }) {
 
   const config = {
     listing: {
-      message: "Need help with this listing? Ask Nia 💬",
+      message: "Need help with this listing? Ask Nia",
       flow: FLOWS.listingHelp,
     },
     checkout: {
-      message: "Stuck at checkout? Ask Nia 🛒",
+      message: "Stuck at checkout? Ask Nia",
       flow: FLOWS.checkoutHelp,
     },
     emptyCart: {
-      message: "Nia can help you find items nearby 🔍",
+      message: "Nia can help you find items nearby",
       flow: FLOWS.emptyCart,
     },
   }[page];

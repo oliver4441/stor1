@@ -381,7 +381,7 @@ export default function AdminProducts() {
           <h3 className="text-lg font-bold text-zinc-900 dark:text-white mb-1">No products found</h3>
           <p className="text-sm text-zinc-500 mb-4">{searchQuery || filterCategory !== 'All' || filterStatus !== 'All' ? 'Try adjusting your filters' : 'Get started by adding your first product'}</p>
           {!searchQuery && filterCategory === 'All' && filterStatus === 'All' && (
-            <button onClick={openAddModal} className="text-[#ff385c] font-bold text-sm hover:underline">Add Product →</button>
+            <button onClick={openAddModal} className="text-[#ff385c] font-bold text-sm hover:underline">Add Product</button>
           )}
         </div>
       )}

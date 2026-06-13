@@ -135,7 +135,7 @@ export default function AdminLayout() {
           </div>
           <div className="flex items-center gap-2">
             <Link to="/" className="text-xs font-semibold text-zinc-500 hover:text-[#ff385c] transition-colors hidden sm:block">
-              ← View Store
+              View Store
             </Link>
           </div>
         </header>

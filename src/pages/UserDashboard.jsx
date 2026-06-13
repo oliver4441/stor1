@@ -85,7 +85,7 @@ function UserDashboard() {
                 </div>
                 <span className={`text-xs font-bold px-2 py-1 rounded-full ${order.status === 'delivered' ? 'bg-green-100 text-green-600' : order.status === 'shipped' ? 'bg-purple-100 text-purple-600' : 'bg-amber-100 text-amber-600'}`}>{order.status}</span>
                 <span className="font-bold text-[#ff385c]">{formatKES(order.total_amount)}</span>
-                <Link to={`/track-order?orderId=${order.id}`} className="text-[#ff385c] font-bold text-sm hover:underline">Track →</Link>
+                <Link to={`/track-order?orderId=${order.id}`} className="text-[#ff385c] font-bold text-sm hover:underline">Track Order</Link>
               </div>
             ))}
           </div>
