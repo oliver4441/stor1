@@ -19,6 +19,7 @@
     "lucide-react": "^0.312.0",
     "node-fetch": "^3.3.2",
     "postcss": "^8.4.33",
+    "qrcode": "^1.5.4",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-router-dom": "^6.21.3",

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
 import { LanguageProvider } from './utils/lang';
 import { CartProvider } from './context/CartContext';
@@ -30,11 +30,14 @@ import Terms from './pages/Terms';
 import Privacy from './pages/Privacy';
 import Install from './pages/Install';
 import Cart from './pages/Cart';
+import QRCodePage from './pages/QRCodePage';
 import ScrollToTop from './components/ScrollToTop';
 import BackToTop from './components/BackToTop';
 import PWAUpdateChecker from './components/PWAUpdateChecker';
+import FloatingCartButton from './components/FloatingCartButton';
 import { SeasonalProvider } from './context/SeasonalContext';
 import { supabase } from './utils/supabase';
+import { WelcomeScreen, hasSeenWelcome } from './components/WelcomeScreen';
 
 class ErrorBoundary extends React.Component {
   constructor(props) {
@@ -66,6 +69,12 @@ class ErrorBoundary extends React.Component {
 }
 
 function App() {
+  const [showWelcome, setShowWelcome] = useState(!hasSeenWelcome());
+
+  const handleWelcomeFinish = () => {
+    setShowWelcome(false);
+  };
+
   React.useEffect(() => {
     console.log('Omix Store Mounted');
 
@@ -100,6 +109,7 @@ function App() {
     <CartProvider>
     <NiaChatProvider>
     <ErrorBoundary>
+      {showWelcome && <WelcomeScreen onFinish={handleWelcomeFinish} />}
       <ScrollToTop />
       <div className="min-h-screen flex flex-col bg-white dark:bg-zinc-950 text-zinc-900 dark:text-zinc-50 antialiased">
         <Navbar />
@@ -129,10 +139,12 @@ function App() {
             <Route path="/privacy" element={<Privacy />} />
             <Route path="/install" element={<Install />} />
             <Route path="/cart" element={<Cart />} />
+            <Route path="/qr" element={<QRCodePage />} />
           </Routes>
         </main>
         <Footer />
         <BackToTop />
+        <FloatingCartButton />
         <NiaOnboarding />
         <NiaChat />
         <NiaFloatingButton />
