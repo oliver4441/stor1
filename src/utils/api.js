@@ -370,7 +370,7 @@ export async function adminDeleteListing(id) {
 
 // ── Orders (Online Store) ────────────────────────────────
 
-export async function createOrder({ items, total, customerName, phone, email, address, city }) {
+export async function createOrder({ items, total, customerName, phone, email, address, city, promoCode, promoCodeId, isFreeDelivery }) {
   const { data: { user } } = await supabase.auth.getUser()
 
   if (!user) {
@@ -393,6 +393,9 @@ export async function createOrder({ items, total, customerName, phone, email, ad
       phone: phone || null,
       address: address || null,
       city: city || null,
+      promo_code_id: promoCodeId || null,
+      promo_code_text: promoCode || null,
+      delivery_discount: isFreeDelivery ? 1 : 0,
     })
     .select('*')
     .single()
@@ -431,6 +434,20 @@ export async function createOrder({ items, total, customerName, phone, email, ad
       // Try to clean up the orphaned order
       await supabase.from('omix_orders').delete().eq('id', order.id)
       return { success: false, error: `Order items failed: ${itemsError.message}` }
+    }
+  }
+
+  // Increment promo code usage
+  if (promoCodeId) {
+    // Use raw increment via rpc or fallback to select+update
+    try {
+      const { data: current } = await supabase.from('promo_codes').select('times_used').eq('id', promoCodeId).single();
+      if (current) {
+        await supabase.from('promo_codes').update({ times_used: (current.times_used || 0) + 1 }).eq('id', promoCodeId);
+      }
+    } catch (e) {
+      // Non-critical: log but don't fail the order
+      console.warn('Failed to increment promo usage:', e.message);
     }
   }
 

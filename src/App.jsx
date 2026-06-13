@@ -21,6 +21,7 @@ import AdminOrders from './pages/AdminOrders';
 import AdminCustomers from './pages/AdminCustomers';
 import AdminAnalytics from './pages/AdminAnalytics';
 import AdminSettings from './pages/AdminSettings';
+import AdminPromoCodes from './pages/AdminPromoCodes';
 import HowItWorks from './pages/HowItWorks';
 import Checkout from './pages/Checkout';
 import OrderSuccess from './pages/OrderSuccess';
@@ -125,6 +126,7 @@ function App() {
               <Route path="customers" element={<AdminCustomers />} />
               <Route path="analytics" element={<AdminAnalytics />} />
               <Route path="settings" element={<AdminSettings />} />
+              <Route path="promo-codes" element={<AdminPromoCodes />} />
             </Route>
             <Route path="/how-it-works" element={<HowItWorks />} />
             <Route path="/checkout" element={<Checkout />} />

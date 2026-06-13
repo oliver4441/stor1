@@ -160,6 +160,62 @@ export default function CheckoutPage() {
   });
 
   const total = getTotal();
+  const [promoCode, setPromoCode] = useState('');
+  const [promoApplied, setPromoApplied] = useState(null);
+  const [promoError, setPromoError] = useState('');
+  const [promoLoading, setPromoLoading] = useState(false);
+  const [deliveryFee, setDeliveryFee] = useState(0); // base delivery fee
+
+  // Apply promo code
+  const applyPromoCode = async () => {
+    if (!promoCode.trim()) return;
+    setPromoLoading(true);
+    setPromoError('');
+    setPromoApplied(null);
+
+    try {
+      const { data, error } = await supabase
+        .from('promo_codes')
+        .select('*')
+        .eq('code', promoCode.trim().toUpperCase())
+        .eq('is_active', true)
+        .single();
+
+      if (error || !data) {
+        setPromoError('Invalid promo code');
+        setPromoLoading(false);
+        return;
+      }
+
+      // Check expiry
+      if (data.expires_at && new Date(data.expires_at) < new Date()) {
+        setPromoError('This promo code has expired');
+        setPromoLoading(false);
+        return;
+      }
+
+      // Check usage limit
+      if (data.max_uses && data.times_used >= data.max_uses) {
+        setPromoError('This promo code has reached its usage limit');
+        setPromoLoading(false);
+        return;
+      }
+
+      setPromoApplied(data);
+      setPromoError('');
+    } catch {
+      setPromoError('Could not validate promo code');
+    }
+    setPromoLoading(false);
+  };
+
+  const removePromo = () => {
+    setPromoApplied(null);
+    setPromoCode('');
+    setPromoError('');
+  };
+
+  const isFreeDelivery = promoApplied && promoApplied.discount_type === 'free_delivery';
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
@@ -210,6 +266,9 @@ export default function CheckoutPage() {
         email: form.email.trim(),
         address: form.address.trim(),
         city: form.city.trim(),
+        promoCode: promoApplied ? promoApplied.code : null,
+        promoCodeId: promoApplied ? promoApplied.id : null,
+        isFreeDelivery,
       });
 
       if (!orderResult.success) {
@@ -337,16 +396,72 @@ export default function CheckoutPage() {
               ))}
             </div>
 
+            {/* Promo Code */}
+            <div className="px-5 py-4 border-t" style={{ borderColor: C.border }}>
+              {promoApplied ? (
+                <div className="flex items-center justify-between p-3 rounded-xl" style={{ backgroundColor: '#f0fdf4', border: '1px solid #bbf7d0' }}>
+                  <div className="flex items-center gap-2">
+                    <CheckCircle className="w-4 h-4 text-green-600" />
+                    <div>
+                      <span className="text-sm font-bold text-green-700">{promoApplied.code}</span>
+                      <p className="text-[11px] text-green-600">
+                        {promoApplied.discount_type === 'free_delivery' ? '✓ Free delivery applied' : 'Discount applied'}
+                      </p>
+                    </div>
+                  </div>
+                  <button onClick={removePromo} className="text-xs font-semibold text-green-700 hover:text-green-900 underline">
+                    Remove
+                  </button>
+                </div>
+              ) : (
+                <div>
+                  <label className="text-xs font-semibold mb-1.5 block" style={{ color: C.textMuted }}>Promo Code</label>
+                  <div className="flex gap-2">
+                    <input
+                      type="text"
+                      value={promoCode}
+                      onChange={(e) => { setPromoCode(e.target.value.toUpperCase()); setPromoError(''); }}
+                      onKeyDown={(e) => e.key === 'Enter' && (e.preventDefault(), applyPromoCode())}
+                      placeholder="Enter code"
+                      className="flex-1 px-3 py-2 rounded-lg border text-sm font-mono tracking-wider uppercase"
+                      style={{ borderColor: promoError ? '#ef4444' : C.border }}
+                    />
+                    <button
+                      onClick={applyPromoCode}
+                      disabled={promoLoading || !promoCode.trim()}
+                      className="px-4 py-2 rounded-lg text-white text-xs font-bold transition-all hover:opacity-90 disabled:opacity-50"
+                      style={{ backgroundColor: C.accent }}
+                    >
+                      {promoLoading ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : 'Apply'}
+                    </button>
+                  </div>
+                  {promoError && (
+                    <p className="text-[11px] mt-1 font-medium" style={{ color: '#ef4444' }}>{promoError}</p>
+                  )}
+                </div>
+              )}
+            </div>
+
             {/* Total */}
             <div className="px-5 py-4 border-t" style={{ borderColor: C.border }}>
               <div className="flex justify-between items-center mb-2">
                 <span className="text-sm" style={{ color: C.textMuted }}>Subtotal</span>
                 <span className="text-sm font-semibold" style={{ color: C.text }}>{formatKES(total)}</span>
               </div>
-              <div className="flex justify-between items-center mb-3">
+              <div className="flex justify-between items-center mb-2">
                 <span className="text-sm" style={{ color: C.textMuted }}>Delivery</span>
-                <span className="text-sm font-semibold" style={{ color: C.success }}>Calculated at delivery</span>
+                {isFreeDelivery ? (
+                  <span className="text-sm font-semibold" style={{ color: C.success }}>FREE</span>
+                ) : (
+                  <span className="text-sm font-semibold" style={{ color: C.success }}>Calculated at delivery</span>
+                )}
               </div>
+              {promoApplied && promoApplied.discount_type === 'free_delivery' && (
+                <div className="flex justify-between items-center mb-2">
+                  <span className="text-sm" style={{ color: C.success }}>Promo Discount</span>
+                  <span className="text-sm font-semibold" style={{ color: C.success }}>- Delivery Fee</span>
+                </div>
+              )}
               <div className="flex justify-between items-center pt-3 border-t" style={{ borderColor: C.border }}>
                 <span className="text-base font-bold" style={{ color: C.text }}>Total</span>
                 <span className="text-xl font-black" style={{ color: C.accent }}>{formatKES(total)}</span>
