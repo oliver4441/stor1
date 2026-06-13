@@ -26,7 +26,12 @@
       "heroSubtitle": "Celebrate the beautiful game with special offers. Browse, buy, and get delivered.",
       "badgeText": "WORLD CUP",
       "particleType": "confetti",
-      "enabledFeatures": ["particles", "heroOverride", "colorShift", "badge"]
+      "heroImages": [
+        "/worldcup-1.jpg",
+        "/worldcup-2.jpg",
+        "/worldcup-3.jpg"
+      ],
+      "enabledFeatures": ["particles", "heroOverride", "colorShift", "badge", "heroImages"]
     },
     {
       "id": "christmas",

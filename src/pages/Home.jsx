@@ -76,6 +76,8 @@ function Home() {
   const heroTitle = theme?.heroTitle || 'Your Online Store in Kericho';
   const heroSubtitle = theme?.heroSubtitle || 'Browse, add to cart, and pay easily via M-Pesa. Delivered to your doorstep.';
   const particleType = theme?.particleType || 'none';
+  const heroImages = theme?.heroImages || [];
+  const hasHeroImages = heroImages.length > 0;
 
   return (
     <div data-name="home-page">
@@ -127,6 +129,28 @@ function Home() {
             </div>
 
             <SearchBar onSearch={(q) => { setSearchQuery(q); setIsAiMode(false); }} initialValue={searchQuery} />
+
+            {/* World Cup Hero Images */}
+            {hasHeroImages && (
+              <div className="mt-10 max-w-4xl mx-auto">
+                <div className="grid grid-cols-3 gap-3 md:gap-5">
+                  {heroImages.map((img, idx) => (
+                    <div
+                      key={idx}
+                      className="relative rounded-2xl overflow-hidden shadow-2xl border-2 border-white/20 hover:border-white/50 transition-all duration-500 hover:scale-[1.03] hover:-translate-y-1 group"
+                      style={{ animationDelay: `${idx * 150}ms` }}
+                    >
+                      <img
+                        src={img}
+                        alt={`World Cup ${idx + 1}`}
+                        className="w-full aspect-[4/3] object-cover group-hover:scale-110 transition-transform duration-700"
+                      />
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent"></div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
           </div>
         </div>
       </div>
