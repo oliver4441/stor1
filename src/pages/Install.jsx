@@ -219,7 +219,7 @@ export default function Install() {
           <div className="relative inline-block mb-8 group">
             <div className="absolute -inset-4 bg-gradient-to-r from-[#ff385c]/30 via-purple-500/30 to-blue-500/30 rounded-full blur-2xl opacity-75 group-hover:opacity-100 transition-opacity duration-700 animate-pulse-slow" />
             <div className="relative w-24 h-24 rounded-full backdrop-blur-xl bg-white/60 dark:bg-zinc-800/60 border border-white/50 dark:border-zinc-700/50 shadow-2xl flex items-center justify-center overflow-hidden group-hover:scale-110 transition-transform duration-500">
-              <img src="/logo.svg" alt="Omix Store" className="w-full h-full object-cover" />
+              <img src="/logo.jpg" alt="Omix Store" className="w-full h-full object-cover" />
             </div>
           </div>
 

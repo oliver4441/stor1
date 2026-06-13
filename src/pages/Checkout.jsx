@@ -143,6 +143,34 @@ function TextAreaField({ icon: Icon, label, error, dark, ...props }) {
   );
 }
 
+// ── Kericho Area / Landmark Data ────────────────────────────────────
+const AREA_LANDMARKS = {
+  "Kericho CBD":      ["Kericho Town Hall", "Nakumatt / Former Superstore", "Kericho Bus Park", "Kericho Post Office", "Barclays / Absa Bank Junction"],
+  "Moi Junction":     ["Moi Junction Roundabout", "Equity Bank Moi", "Shell Petrol Station", "Kericho Stadium Gate"],
+  "Kericho Stage":    ["Kericho Main Stage", "Eldoret Road Turnoff", "Tuk-Tuk Stage"],
+  "Litein Road":      ["Litein Rd Junction", "Tea Board Offices", "AIC Church Litein Rd"],
+  "Hospital Area":    ["Kericho County Hospital Gate", "Kericho District Hospital", "Red Cross Offices"],
+  "Chepseon":         ["Chepseon Market", "Chepseon Primary School", "Chepseon Chief's Office", "ACK Chepseon"],
+  "Kipkelion":        ["Kipkelion Market", "Kipkelion Stage", "Kipkelion Chief's Camp", "Kipkelion Hospital"],
+  "Ainamoi":          ["Ainamoi Market", "Ainamoi Tea Factory", "Ainamoi Primary School"],
+  "Kabianga":         ["Kabianga University Gate", "Kabianga Market", "Kabianga Stage"],
+  "Kapkugerwet":      ["Kapkugerwet Market", "Kapkugerwet Stage", "KTDA Factory Kapkugerwet"],
+  "Londiani":         ["Londiani Town Center", "Londiani Stage", "Londiani Police Station"],
+  "Kedowa":           ["Kedowa Market", "Kedowa Stage", "Kedowa Chief's Office"],
+  "Brooke":           ["Brooke Market", "Brooke Tea Factory", "Brooke Stage"],
+  "Sosiot":           ["Sosiot Market", "Sosiot Stage", "Sosiot Chief's Camp"],
+  "Roret":            ["Roret Market", "Roret Stage", "Roret Girls High School"],
+  "Fort Ternan":      ["Fort Ternan Market", "Fort Ternan Stage", "Fort Ternan Hospital"],
+  "Cheborge":         ["Cheborge Market", "Cheborge Stage", "Cheborge Tea Factory"],
+  "Sigowet":          ["Sigowet Market", "Sigowet Stage", "Sigowet Chief's Office"],
+};
+
+const AREA_GROUPS = [
+  { label: "Kericho Town", areas: ["Kericho CBD", "Moi Junction", "Kericho Stage", "Litein Road", "Hospital Area"] },
+  { label: "Residential", areas: ["Chepseon", "Kipkelion", "Ainamoi", "Kabianga", "Kapkugerwet", "Londiani", "Kedowa"] },
+  { label: "Outskirts / Towns", areas: ["Brooke", "Sosiot", "Roret", "Fort Ternan", "Cheborge", "Sigowet"] },
+];
+
 // ── Main Checkout Page ─────────────────────────────────────────────
 export default function CheckoutPage() {
   const navigate = useNavigate();
@@ -157,6 +185,8 @@ export default function CheckoutPage() {
     email: '',
     address: '',
     city: '',
+    area: '',
+    landmark: '',
   });
 
   const total = getTotal();
@@ -234,8 +264,8 @@ export default function CheckoutPage() {
     const errs = {};
     if (!form.fullName.trim()) errs.fullName = 'Required';
     if (!form.phone.trim()) errs.phone = 'Required for M-Pesa';
-    if (!form.address.trim()) errs.address = 'Required';
-    if (!form.city.trim()) errs.city = 'Required';
+    if (!form.area) errs.area = 'Please select your area';
+    if (!form.landmark) errs.landmark = 'Please select a landmark';
     setFieldErrors(errs);
     return Object.keys(errs).length === 0;
   };
@@ -264,8 +294,10 @@ export default function CheckoutPage() {
         customerName: form.fullName.trim(),
         phone: form.phone.trim(),
         email: form.email.trim(),
-        address: form.address.trim(),
-        city: form.city.trim(),
+        address: `${form.landmark}, ${form.area}, Kericho`,
+        city: 'Kericho',
+        area: form.area,
+        landmark: form.landmark,
         promoCode: promoApplied ? promoApplied.code : null,
         promoCodeId: promoApplied ? promoApplied.id : null,
         isFreeDelivery,
@@ -528,27 +560,90 @@ export default function CheckoutPage() {
                 error={fieldErrors.email}
               />
 
-              <TextAreaField
-                icon={MapPin}
-                label="Delivery Address *"
-                name="address"
-                rows="3"
-                value={form.address}
-                onChange={handleChange}
-                placeholder="Street, building, area"
-                error={fieldErrors.address}
-              />
+              {/* ── Kericho Location Selector ── */}
+              <div>
+                <label className="block text-xs font-bold mb-1.5 uppercase tracking-wider" style={{ color: C.textMuted }}>
+                  Location <span style={{ color: '#ef4444' }}>*</span>
+                </label>
+                <div className="space-y-2">
+                  {/* City - locked */}
+                  <div className="flex items-center justify-between rounded-xl px-3.5 py-3" style={{ backgroundColor: C.bgGray, border: `1px solid ${C.border}` }}>
+                    <div className="flex items-center gap-2">
+                      <MapPin className="w-4 h-4" style={{ color: C.accent }} />
+                      <span className="text-sm font-semibold" style={{ color: C.text }}>Kericho</span>
+                    </div>
+                    <span className="flex items-center gap-1 text-[11px]" style={{ color: C.textMuted }}>
+                      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                        <rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+                      </svg>
+                      Fixed
+                    </span>
+                  </div>
 
-              <Field
-                icon={MapPin}
-                label="City / Town *"
-                name="city"
-                type="text"
-                value={form.city}
-                onChange={handleChange}
-                placeholder="e.g. Kericho"
-                error={fieldErrors.city}
-              />
+                  {/* Area dropdown */}
+                  <div className="relative">
+                    <select
+                      value={form.area}
+                      onChange={(e) => setForm({ ...form, area: e.target.value, landmark: '' })}
+                      className="w-full text-sm rounded-xl px-3.5 py-3 appearance-none cursor-pointer focus:outline-none transition-all"
+                      style={{
+                        backgroundColor: C.bgGray,
+                        color: form.area ? C.text : C.textMuted,
+                        border: `1.5px solid ${fieldErrors.area ? '#ef4444' : C.border}`,
+                      }}
+                    >
+                      <option value="">Select your area...</option>
+                      {AREA_GROUPS.map((group) => (
+                        <optgroup key={group.label} label={group.label}>
+                          {group.areas.map((area) => (
+                            <option key={area} value={area}>{area}</option>
+                          ))}
+                        </optgroup>
+                      ))}
+                    </select>
+                    <div className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none" style={{ color: C.textMuted }}>
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                        <path d="m6 9 6 6 6-6"/>
+                      </svg>
+                    </div>
+                  </div>
+                  {fieldErrors.area && <p className="text-xs mt-1" style={{ color: '#ef4444' }}>{fieldErrors.area}</p>}
+
+                  {/* Landmark dropdown */}
+                  <div className="relative">
+                    <select
+                      value={form.landmark}
+                      onChange={(e) => setForm({ ...form, landmark: e.target.value })}
+                      disabled={!form.area}
+                      className="w-full text-sm rounded-xl px-3.5 py-3 appearance-none cursor-pointer focus:outline-none transition-all disabled:opacity-50"
+                      style={{
+                        backgroundColor: C.bgGray,
+                        color: form.landmark ? C.text : C.textMuted,
+                        border: `1.5px solid ${fieldErrors.landmark ? '#ef4444' : C.border}`,
+                      }}
+                    >
+                      <option value="">{form.area ? 'Select a landmark...' : 'Select area first...'}</option>
+                      {form.area && AREA_LANDMARKS[form.area]?.map((lm) => (
+                        <option key={lm} value={lm}>{lm}</option>
+                      ))}
+                    </select>
+                    <div className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none" style={{ color: C.textMuted }}>
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                        <path d="m6 9 6 6 6-6"/>
+                      </svg>
+                    </div>
+                  </div>
+                  {fieldErrors.landmark && <p className="text-xs mt-1" style={{ color: '#ef4444' }}>{fieldErrors.landmark}</p>}
+
+                  {/* Selected location chip */}
+                  {form.area && form.landmark && (
+                    <div className="flex items-center gap-1.5 px-3 py-2 rounded-lg text-xs font-semibold" style={{ backgroundColor: '#fff0f2', border: '1px solid #fecdd3', color: '#c41f3a' }}>
+                      <MapPin className="w-3.5 h-3.5" />
+                      <span>{form.landmark}, {form.area}, Kericho</span>
+                    </div>
+                  )}
+                </div>
+              </div>
 
               {/* Submit */}
               <button

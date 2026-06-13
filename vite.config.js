@@ -38,7 +38,7 @@ export default defineConfig({
     react(),
     VitePWA({
       registerType: 'autoUpdate',
-      includeAssets: ['favicon.svg', 'logo.svg', 'favicon-32.png', 'favicon-16.png'],
+      includeAssets: ['logo.jpg', 'logo.svg'],
       manifest: {
         name: 'Omix Store',
         short_name: 'Omix',
@@ -60,9 +60,9 @@ export default defineConfig({
             type: 'image/png'
           },
           {
-            src: 'apple-touch-icon.png',
+            src: 'logo.jpg',
             sizes: '180x180',
-            type: 'image/png'
+            type: 'image/jpeg'
           }
         ]
       }
