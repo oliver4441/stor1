@@ -307,3 +307,52 @@
   0% { transform: translateX(0); }
   100% { transform: translateX(-50%); }
 }
+
+/* Glassmorphism Install Page Animations */
+@keyframes float {
+  0%, 100% { transform: translateY(0px) scale(1); }
+  50% { transform: translateY(-20px) scale(1.05); }
+}
+@keyframes float-slow {
+  0%, 100% { transform: translateY(0px) scale(1); }
+  50% { transform: translateY(-14px) scale(1.03); }
+}
+@keyframes float-slower {
+  0%, 100% { transform: translateY(0px) scale(1); }
+  50% { transform: translateY(-10px) scale(1.02); }
+}
+@keyframes gradient-x {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+@keyframes pulse-slow {
+  0%, 100% { opacity: 0.75; }
+  50% { opacity: 1; }
+}
+@keyframes scroll-dot {
+  0% { transform: translateY(0); opacity: 1; }
+  100% { transform: translateY(12px); opacity: 0; }
+}
+@keyframes fade-in-up {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@keyframes scale-in {
+  from { opacity: 0; transform: scale(0.95); }
+  to { opacity: 1; transform: scale(1); }
+}
+@keyframes fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.animate-float { animation: float 6s ease-in-out infinite; }
+.animate-float-slow { animation: float-slow 8s ease-in-out infinite; }
+.animate-float-slower { animation: float-slower 10s ease-in-out infinite; }
+.animate-gradient-x { background-size: 200% 200%; animation: gradient-x 4s ease infinite; }
+.animate-pulse-slow { animation: pulse-slow 3s ease-in-out infinite; }
+.animate-scroll-dot { animation: scroll-dot 2s ease-in-out infinite; }
+.animate-fade-in-up { animation: fade-in-up 0.6s ease-out both; }
+.animate-scale-in { animation: scale-in 0.3s ease-out; }
+.animate-fade-in { animation: fade-in 0.3s ease-out; }

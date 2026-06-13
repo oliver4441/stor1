@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import { Package, LogOut, ShoppingBag, ArrowRight, Search, Grid3X3, List } from 'lucide-react';
+import { Package, LogOut, ShoppingBag, ArrowRight, Search, Grid3X3, List, ChevronDown, ChevronUp, Clock } from 'lucide-react';
 import { supabase } from '../utils/supabase';
 import { fetchOrders, fetchListings } from '../utils/api';
 import { formatKES, CATEGORIES } from '../utils/constants';
@@ -11,6 +11,7 @@ function UserDashboard() {
   const navigate = useNavigate();
   const [user, setUser] = useState(null);
   const [orders, setOrders] = useState([]);
+  const [expandedOrders, setExpandedOrders] = useState({});
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [activeCategory, setActiveCategory] = useState('All');
@@ -75,19 +76,112 @@ function UserDashboard() {
 
       {orders.length > 0 && (
         <div className="mb-12">
-          <h2 className="text-xl font-bold mb-4 text-zinc-900 dark:text-white">Recent Orders</h2>
+          <div className="flex items-center justify-between mb-4">
+            <h2 className="text-xl font-bold text-zinc-900 dark:text-white">Recent Orders</h2>
+            <button
+              onClick={() => setExpandedOrders(
+                Object.keys(expandedOrders).length === orders.slice(0, 3).length ? {} :
+                Object.fromEntries(orders.slice(0, 3).map(o => [o.id, true]))
+              )}
+              className="text-xs font-bold text-[#ff385c] hover:underline"
+            >
+              {Object.keys(expandedOrders).length === orders.slice(0, 3).length ? 'Collapse all' : 'Expand all'}
+            </button>
+          </div>
           <div className="space-y-3">
-            {orders.slice(0, 3).map(order => (
-              <div key={order.id} className="bg-white dark:bg-zinc-900 rounded-2xl border border-zinc-200 dark:border-zinc-800 p-4 flex items-center justify-between">
-                <div>
-                  <span className="font-mono text-xs text-zinc-500">#{String(order.id).slice(0, 8).toUpperCase()}</span>
-                  <p className="text-sm text-zinc-500">{new Date(order.created_at).toLocaleDateString('en-KE', { month: 'short', day: 'numeric' })}</p>
+            {orders.slice(0, 3).map(order => {
+              const isExpanded = !!expandedOrders[order.id];
+              return (
+                <div key={order.id} className="bg-white dark:bg-zinc-900 rounded-2xl border border-zinc-200 dark:border-zinc-800 overflow-hidden transition-all duration-200">
+                  {/* Header - always visible */}
+                  <button
+                    onClick={() => setExpandedOrders(prev => ({ ...prev, [order.id]: !prev[order.id] }))}
+                    className="w-full flex items-center justify-between p-4 hover:bg-zinc-50 dark:hover:bg-zinc-800/50 transition-colors text-left"
+                  >
+                    <div className="flex items-center gap-3">
+                      <div className={`w-9 h-9 rounded-xl flex items-center justify-center ${
+                        order.status === 'delivered' ? 'bg-green-100 dark:bg-green-900/30' :
+                        order.status === 'shipped' ? 'bg-purple-100 dark:bg-purple-900/30' :
+                        'bg-amber-100 dark:bg-amber-900/30'
+                      }`}>
+                        <Package className={`w-4 h-4 ${
+                          order.status === 'delivered' ? 'text-green-600' :
+                          order.status === 'shipped' ? 'text-purple-600' :
+                          'text-amber-600'
+                        }`} />
+                      </div>
+                      <div>
+                        <span className="font-mono text-xs text-zinc-400">#{String(order.id).slice(0, 8).toUpperCase()}</span>
+                        <div className="flex items-center gap-2 mt-0.5">
+                          <Clock className="w-3 h-3 text-zinc-400" />
+                          <p className="text-xs text-zinc-500">{new Date(order.created_at).toLocaleDateString('en-KE', { month: 'short', day: 'numeric', year: 'numeric' })}</p>
+                        </div>
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-3">
+                      <span className={`text-xs font-bold px-2.5 py-1 rounded-full capitalize ${
+                        order.status === 'delivered' ? 'bg-green-100 text-green-600 dark:bg-green-900/30 dark:text-green-400' :
+                        order.status === 'shipped' ? 'bg-purple-100 text-purple-600 dark:bg-purple-900/30 dark:text-purple-400' :
+                        order.status === 'cancelled' ? 'bg-red-100 text-red-600 dark:bg-red-900/30 dark:text-red-400' :
+                        'bg-amber-100 text-amber-600 dark:bg-amber-900/30 dark:text-amber-400'
+                      }`}>{order.status}</span>
+                      <span className="font-bold text-[#ff385c] text-sm">{formatKES(order.total_amount)}</span>
+                      {isExpanded ? <ChevronUp className="w-4 h-4 text-zinc-400" /> : <ChevronDown className="w-4 h-4 text-zinc-400" />}
+                    </div>
+                  </button>
+
+                  {/* Expanded details */}
+                  {isExpanded && (
+                    <div className="border-t border-zinc-100 dark:border-zinc-800 px-4 py-3 space-y-3 animate-slide-down">
+                      {/* Order items from the items JSON */}
+                      {order.items && Array.isArray(order.items) && order.items.length > 0 ? (
+                        <div className="space-y-2">
+                          <p className="text-xs font-bold text-zinc-500 dark:text-zinc-400 uppercase tracking-wider">Items</p>
+                          {order.items.map((item, i) => (
+                            <div key={i} className="flex items-center gap-3 bg-zinc-50 dark:bg-zinc-800/50 rounded-xl p-2.5">
+                              {item.image_url ? (
+                                <img src={item.image_url} alt={item.name} className="w-10 h-10 rounded-lg object-cover bg-zinc-200 dark:bg-zinc-700" />
+                              ) : (
+                                <div className="w-10 h-10 rounded-lg bg-zinc-200 dark:bg-zinc-700 flex items-center justify-center">
+                                  <Package className="w-4 h-4 text-zinc-400" />
+                                </div>
+                              )}
+                              <div className="flex-1 min-w-0">
+                                <p className="text-sm font-bold text-zinc-900 dark:text-white truncate">{item.name || item.title}</p>
+                                <p className="text-xs text-zinc-500">Qty: {item.quantity || 1}</p>
+                              </div>
+                              {item.price && <span className="text-sm font-bold text-zinc-900 dark:text-white">{formatKES(item.price * (item.quantity || 1))}</span>}
+                            </div>
+                          ))}
+                        </div>
+                      ) : null}
+
+                      {/* Contact info */}
+                      <div className="grid grid-cols-2 gap-2 text-xs">
+                        {order.customer_name && (
+                          <div className="bg-zinc-50 dark:bg-zinc-800/50 rounded-xl p-2.5">
+                            <span className="text-zinc-400 block">Customer</span>
+                            <span className="font-bold text-zinc-900 dark:text-white">{order.customer_name}</span>
+                          </div>
+                        )}
+                        {order.phone && (
+                          <div className="bg-zinc-50 dark:bg-zinc-800/50 rounded-xl p-2.5">
+                            <span className="text-zinc-400 block">Phone</span>
+                            <span className="font-bold text-zinc-900 dark:text-white">{order.phone}</span>
+                          </div>
+                        )}
+                      </div>
+
+                      {/* Action */}
+                      <Link to={`/track-order?orderId=${order.id}`} className="flex items-center justify-center gap-2 w-full py-2.5 rounded-xl bg-[#ff385c]/10 text-[#ff385c] font-bold text-sm hover:bg-[#ff385c]/20 transition-colors">
+                        Track Order
+                        <ArrowRight className="w-4 h-4" />
+                      </Link>
+                    </div>
+                  )}
                 </div>
-                <span className={`text-xs font-bold px-2 py-1 rounded-full ${order.status === 'delivered' ? 'bg-green-100 text-green-600' : order.status === 'shipped' ? 'bg-purple-100 text-purple-600' : 'bg-amber-100 text-amber-600'}`}>{order.status}</span>
-                <span className="font-bold text-[#ff385c]">{formatKES(order.total_amount)}</span>
-                <Link to={`/track-order?orderId=${order.id}`} className="text-[#ff385c] font-bold text-sm hover:underline">Track Order</Link>
-              </div>
-            ))}
+              );
+            })}
           </div>
         </div>
       )}
