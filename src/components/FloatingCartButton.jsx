@@ -33,7 +33,7 @@ export default function FloatingCartButton() {
       {/* Floating Cart Button */}
       <button
         onClick={() => setCartOpen(!cartOpen)}
-        className={`fixed bottom-16 right-4 sm:right-6 z-50 w-14 h-14 rounded-full flex items-center justify-center shadow-2xl hover:scale-110 transition-all duration-300 bg-zinc-900 dark:bg-white ${bump ? 'animate-bounce-once' : ''}`}
+        className={`fixed bottom-32 right-4 sm:right-6 z-50 w-14 h-14 rounded-full flex items-center justify-center shadow-2xl hover:scale-110 transition-all duration-300 bg-zinc-900 dark:bg-white ${bump ? 'animate-bounce-once' : ''}`}
         aria-label="View cart"
       >
         <ShoppingCart className="w-6 h-6 text-white dark:text-zinc-900" />

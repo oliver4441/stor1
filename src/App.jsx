@@ -30,14 +30,13 @@ import Terms from './pages/Terms';
 import Privacy from './pages/Privacy';
 import Install from './pages/Install';
 import Cart from './pages/Cart';
-import QRCodePage from './pages/QRCodePage';
 import ScrollToTop from './components/ScrollToTop';
 import BackToTop from './components/BackToTop';
 import PWAUpdateChecker from './components/PWAUpdateChecker';
 import FloatingCartButton from './components/FloatingCartButton';
 import { SeasonalProvider } from './context/SeasonalContext';
 import { supabase } from './utils/supabase';
-import { WelcomeScreen, hasSeenWelcome } from './components/WelcomeScreen';
+import { WelcomeScreen } from './components/WelcomeScreen';
 
 class ErrorBoundary extends React.Component {
   constructor(props) {
@@ -69,7 +68,26 @@ class ErrorBoundary extends React.Component {
 }
 
 function App() {
-  const [showWelcome, setShowWelcome] = useState(!hasSeenWelcome());
+  const [showWelcome, setShowWelcome] = useState(false);
+  const [welcomeTriggered, setWelcomeTriggered] = useState(false);
+
+  // Show welcome screen only after PWA is installed (not on every visit)
+  React.useEffect(() => {
+    const handler = () => {
+      // PWA was just installed — show welcome on next page load
+      localStorage.setItem('omix_pending_welcome', 'true');
+      setShowWelcome(true);
+    };
+    window.addEventListener('appinstalled', handler);
+
+    // On load, check if we should show welcome (flag set by install event)
+    if (localStorage.getItem('omix_pending_welcome') === 'true') {
+      localStorage.removeItem('omix_pending_welcome');
+      setShowWelcome(true);
+    }
+
+    return () => window.removeEventListener('appinstalled', handler);
+  }, []);
 
   const handleWelcomeFinish = () => {
     setShowWelcome(false);
@@ -139,7 +157,6 @@ function App() {
             <Route path="/privacy" element={<Privacy />} />
             <Route path="/install" element={<Install />} />
             <Route path="/cart" element={<Cart />} />
-            <Route path="/qr" element={<QRCodePage />} />
           </Routes>
         </main>
         <Footer />

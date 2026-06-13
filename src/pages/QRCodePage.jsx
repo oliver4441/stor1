@@ -152,7 +152,7 @@ export default function QRCodePage() {
       </head>
       <body>
         <div class="flyer">
-          <div class="logo"><span>O</span></div>
+          <div class="logo"><img src="${APP_URL}/logo.svg" alt="Omix" width="80" height="80" /></div>
           <h1>Install Omix Store</h1>
           <p class="subtitle">Your Online Store in Kericho. Browse products, add to cart, and pay via M-Pesa.</p>
           <div class="qr-container">
@@ -203,8 +203,8 @@ export default function QRCodePage() {
   return (
     <div className="min-h-screen bg-gradient-to-b from-zinc-50 to-white dark:from-zinc-950 dark:to-zinc-900 flex flex-col items-center justify-center px-4 py-12">
       {/* Logo */}
-      <div className="w-20 h-20 rounded-3xl bg-gradient-to-br from-[#ff385c] to-[#ff6b8a] flex items-center justify-center mb-6 shadow-2xl shadow-[#ff385c]/30">
-        <span className="text-white font-black text-3xl">O</span>
+      <div className="w-20 h-20 rounded-3xl overflow-hidden mb-6 shadow-2xl shadow-[#ff385c]/30">
+        <img src="/logo.svg" alt="Omix" className="w-full h-full" />
       </div>
 
       <h1 className="text-3xl md:text-4xl font-black text-zinc-900 dark:text-white mb-2 tracking-tight text-center">
