@@ -198,7 +198,7 @@ export default function AdminProducts() {
 
     const { error } = await supabase
       .from('listings')
-      .update({ ...updateData, updated_at: new Date().toISOString() })
+      .update({ ...updateData })
       .eq('id', quickEditId);
 
     if (!error) {

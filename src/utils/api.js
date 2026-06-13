@@ -279,7 +279,6 @@ export async function updateListing(id, formData) {
       images: formData.images && formData.images.length > 0 ? formData.images : (formData.image_url ? [formData.image_url] : []),
       seller_name: formData.seller_name || user?.user_metadata?.full_name,
       seller_phone: formData.seller_phone || null,
-      updated_at: new Date().toISOString(),
       status: formData.status || 'active',
       quantity: parseInt(formData.quantity) || 1,
       brand: formData.brand || null,
@@ -303,7 +302,7 @@ export async function updateListing(id, formData) {
 export async function bulkUpdateListingStatus(ids, status) {
   const { error } = await supabase
     .from('listings')
-    .update({ status, updated_at: new Date().toISOString() })
+    .update({ status })
     .in('id', ids)
 
   if (error) return { success: false, error: error.message }
@@ -350,7 +349,7 @@ export async function fetchAllListings() {
 export async function updateListingStatus(id, status) {
   const { error } = await supabase
     .from('listings')
-    .update({ status, updated_at: new Date().toISOString() })
+    .update({ status })
     .eq('id', id)
 
   if (error) return { success: false, error: error.message }
@@ -489,7 +488,7 @@ export async function fetchAllOrders() {
 export async function updateOrderNotes(orderId, notes) {
   const { error } = await supabase
     .from('omix_orders')
-    .update({ admin_notes: notes, updated_at: new Date().toISOString() })
+    .update({ admin_notes: notes })
     .eq('id', orderId);
   if (error) return { success: false, error: error.message };
   return { success: true };
@@ -498,7 +497,7 @@ export async function updateOrderNotes(orderId, notes) {
 export async function cancelOrder(orderId) {
   const { error } = await supabase
     .from('omix_orders')
-    .update({ status: 'cancelled', updated_at: new Date().toISOString() })
+    .update({ status: 'cancelled' })
     .eq('id', orderId);
   if (error) return { success: false, error: error.message };
   return { success: true };
@@ -516,7 +515,7 @@ export async function fetchOrderStats() {
 export async function updateOrderStatus(orderId, status) {
   const { error } = await supabase
     .from('omix_orders')
-    .update({ status, updated_at: new Date().toISOString() })
+    .update({ status })
     .eq('id', orderId);
 
   if (error) return { success: false, error: error.message };
@@ -568,7 +567,7 @@ export async function updateListingPaymentStatus(paymentId, updates) {
   try {
     const { error } = await supabase
       .from('listing_payments')
-      .update({ ...updates, updated_at: new Date().toISOString() })
+      .update({ ...updates })
       .eq('id', paymentId);
     if (error) return { success: false, error: error.message };
     return { success: true };
