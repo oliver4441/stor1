@@ -11,6 +11,8 @@ import NiaContextualTrigger from '../components/NiaContextualTrigger';
 import SearchBar from '../components/SearchBar';
 import RecentlyViewed from '../components/RecentlyViewed';
 import QuickViewModal from '../components/QuickViewModal';
+import SeasonalParticles from '../components/SeasonalParticles';
+import { useActiveTheme } from '../context/SeasonalContext';
 
 function Home() {
   const { t } = useLang();
@@ -19,6 +21,7 @@ function Home() {
   const [searchQuery, setSearchQuery] = useState('');
   const [listings, setListings] = useState([]);
   const [loading, setLoading] = useState(true);
+  const theme = useActiveTheme();
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
@@ -62,29 +65,66 @@ function Home() {
     featuredRef.current.scrollBy({ left: dir * cardWidth, behavior: 'smooth' });
   };
 
+  // Theme-aware hero colors
+  const heroFrom = theme?.colors?.heroFrom || '#ff385c';
+  const heroVia = theme?.colors?.heroVia || '#e03150';
+  const heroTo = theme?.colors?.heroTo || '#c02040';
+  const heroText = theme?.colors?.heroText || '#ffffff';
+  const heroSubtext = theme?.colors?.heroSubtext || '#e0e0e0';
+  const ctaBg = theme?.colors?.ctaBg || '#ffffff';
+  const ctaText = theme?.colors?.ctaText || '#ff385c';
+  const heroTitle = theme?.heroTitle || 'Your Online Store in Kericho';
+  const heroSubtitle = theme?.heroSubtitle || 'Browse, add to cart, and pay easily via M-Pesa. Delivered to your doorstep.';
+  const particleType = theme?.particleType || 'none';
+
   return (
     <div data-name="home-page">
+      {/* Seasonal Particles */}
+      <SeasonalParticles type={particleType} count={25} />
+
       {/* Hero Section */}
       <div className="relative overflow-hidden mb-8">
-        {/* Gradient Background */}
-        <div className="absolute inset-0 bg-gradient-to-br from-[#ff385c] via-[#e03150] to-[#c02040]"></div>
+        {/* Gradient Background — theme-aware */}
+        <div
+          className="absolute inset-0 seasonal-hero-gradient"
+          style={{
+            background: `linear-gradient(135deg, ${heroFrom}, ${heroVia}, ${heroTo})`,
+          }}
+        ></div>
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,rgba(255,255,255,0.15),transparent_50%)]"></div>
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_bottom_left,rgba(0,0,0,0.1),transparent_50%)]"></div>
 
         {/* Hero Content */}
         <div className="relative z-10 py-20 md:py-28 px-4">
           <div className="max-w-7xl mx-auto text-center">
-            <h1 className="text-4xl md:text-6xl font-black mb-4 tracking-tighter text-white drop-shadow-lg">Your Online Store in Kericho</h1>
-            <p className="text-zinc-200 mb-8 max-w-xl mx-auto text-lg font-medium drop-shadow-md">Browse, add to cart, and pay easily via M-Pesa. Delivered to your doorstep.</p>
-            
-              <div className="flex flex-col sm:flex-row items-center justify-center gap-3 mb-8">
-                <Link to="/" className="px-6 py-3 rounded-xl bg-white text-[#ff385c] font-bold text-sm hover:bg-zinc-100 transition-all shadow-lg">
-                  {t('home.browseListings') || 'Browse Products'}
-                </Link>
-                <Link to={user ? "/account" : "/signup"} className="px-6 py-3 rounded-xl bg-white/15 backdrop-blur-sm text-white font-bold text-sm hover:bg-white/25 transition-all border border-white/20">
-                  {user ? (t('nav.account') || 'My Account') : (t('auth.signUp') || 'Sign Up')}
-                </Link>
-              </div>
+            <h1
+              className="text-4xl md:text-6xl font-black mb-4 tracking-tighter drop-shadow-lg"
+              style={{ color: heroText }}
+            >
+              {heroTitle}
+            </h1>
+            <p
+              className="mb-8 max-w-xl mx-auto text-lg font-medium drop-shadow-md"
+              style={{ color: heroSubtext }}
+            >
+              {heroSubtitle}
+            </p>
+
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-3 mb-8">
+              <Link
+                to="/"
+                className="px-6 py-3 rounded-xl font-bold text-sm transition-all shadow-lg"
+                style={{ backgroundColor: ctaBg, color: ctaText }}
+              >
+                {t('home.browseListings') || 'Browse Products'}
+              </Link>
+              <Link
+                to={user ? '/account' : '/signup'}
+                className="px-6 py-3 rounded-xl bg-white/15 backdrop-blur-sm text-white font-bold text-sm hover:bg-white/25 transition-all border border-white/20"
+              >
+                {user ? (t('nav.account') || 'My Account') : (t('auth.signUp') || 'Sign Up')}
+              </Link>
+            </div>
 
             <SearchBar onSearch={(q) => { setSearchQuery(q); setIsAiMode(false); }} initialValue={searchQuery} />
           </div>

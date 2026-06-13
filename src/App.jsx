@@ -32,9 +32,8 @@ import Install from './pages/Install';
 import Cart from './pages/Cart';
 import ScrollToTop from './components/ScrollToTop';
 import BackToTop from './components/BackToTop';
-import ContactFloat from './components/ContactFloat';
-
-import { supabase } from './utils/supabase';
+import PWAUpdateChecker from './components/PWAUpdateChecker';
+import { SeasonalProvider } from './context/SeasonalContext';
 
 class ErrorBoundary extends React.Component {
   constructor(props) {
@@ -95,6 +94,7 @@ function App() {
   }, []);
 
   return (
+    <SeasonalProvider>
     <LanguageProvider>
     <CartProvider>
     <NiaChatProvider>
@@ -136,11 +136,13 @@ function App() {
         <NiaOnboarding />
         <NiaChat />
         <NiaFloatingButton />
+        <PWAUpdateChecker />
       </div>
     </ErrorBoundary>
     </NiaChatProvider>
     </CartProvider>
     </LanguageProvider>
+    </SeasonalProvider>
   )
 }
 

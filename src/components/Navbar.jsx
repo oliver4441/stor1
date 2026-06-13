@@ -5,6 +5,7 @@ import { supabase } from '../utils/supabase';
 import { useLang } from '../utils/lang';
 import { isAdmin } from '../utils/api';
 import { useCart } from '../context/CartContext';
+import { useActiveTheme } from '../context/SeasonalContext';
 
 const FEATURE_LINKS = [
   { to: '/how-it-works', label: 'How It Works', icon: HelpCircle, color: 'from-amber-500 to-orange-600', glow: 'shadow-amber-500/40' },
@@ -20,6 +21,13 @@ function Navbar() {
   const location = useLocation();
   const { getItemCount } = useCart();
   const cartCount = getItemCount();
+  const theme = useActiveTheme();
+
+  const navAccentColor = theme?.colors?.navAccent || '#ff385c';
+  const navAccentText = theme?.colors?.navAccentText || '#ffffff';
+  const badgeText = theme?.badgeText;
+  const badgeBg = theme?.colors?.badgeBg || '#ff385c';
+  const badgeTextColor = theme?.colors?.badgeText || '#ffffff';
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
@@ -50,7 +58,17 @@ function Navbar() {
       <div className="max-w-7xl mx-auto px-4 h-16 flex items-center justify-between">
         {/* Logo */}
         <Link to="/" className="flex items-center gap-2 shrink-0">
-          <span className="text-2xl font-bold text-[#ff385c] tracking-tight">Omix Store</span>
+          <span className="text-2xl font-bold tracking-tight" style={{ color: navAccentColor }}>
+            Omix Store
+          </span>
+          {badgeText && (
+            <span
+              className="seasonal-badge text-[9px] font-black px-1.5 py-0.5 rounded-full leading-none"
+              style={{ backgroundColor: badgeBg, color: badgeTextColor }}
+            >
+              {badgeText}
+            </span>
+          )}
         </Link>
 
         {/* Desktop: Feature Links */}
@@ -92,14 +110,18 @@ function Navbar() {
           <Link to="/cart" className="relative p-2 rounded-full hover:bg-zinc-100 dark:hover:bg-zinc-800 text-zinc-600 dark:text-zinc-300 transition-colors">
             <ShoppingCart className="w-5 h-5" />
             {cartCount > 0 && (
-              <span className="absolute -top-1 -right-1 w-5 h-5 bg-[#ff385c] text-white text-[10px] font-bold rounded-full flex items-center justify-center">
+              <span className="absolute -top-1 -right-1 w-5 h-5 text-white text-[10px] font-bold rounded-full flex items-center justify-center"
+                style={{ backgroundColor: navAccentColor }}
+              >
                 {cartCount > 9 ? '9+' : cartCount}
               </span>
             )}
           </Link>
 
           {isUserAdmin && (
-            <Link to="/admin" className="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold text-[#ff385c] hover:bg-[#ff385c]/10 transition-all border border-[#ff385c]/20">
+            <Link to="/admin" className="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold transition-all border"
+              style={{ color: navAccentColor, borderColor: navAccentColor + '33' }}
+            >
               <Shield className="w-3.5 h-3.5" />
               Admin
             </Link>
@@ -116,7 +138,14 @@ function Navbar() {
                 <LogIn className="w-4 h-4" />
                 Log In
               </Link>
-              <Link to="/signup" className="flex items-center gap-1.5 bg-gradient-to-r from-[#ff385c] to-[#e03150] text-white px-5 py-2.5 rounded-full text-sm font-bold shadow-lg shadow-[#ff385c]/25 hover:shadow-[#ff385c]/40 transition-all hover:scale-105 active:scale-95">
+              <Link
+                to="/signup"
+                className="flex items-center gap-1.5 text-white px-5 py-2.5 rounded-full text-sm font-bold shadow-lg transition-all hover:scale-105 active:scale-95"
+                style={{
+                  background: `linear-gradient(135deg, ${navAccentColor}, ${theme?.colors?.secondary || '#e03150'})`,
+                  boxShadow: `0 4px 14px ${navAccentColor}40`,
+                }}
+              >
                 <UserPlus className="w-4 h-4" />
                 Sign Up
               </Link>

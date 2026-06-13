@@ -5,6 +5,23 @@
 @layer base {
   :root {
     --font-sans: 'DM Sans', sans-serif;
+    
+    /* Seasonal theme variables — defaults */
+    --seasonal-primary: #ff385c;
+    --seasonal-secondary: #e03150;
+    --seasonal-accent: #ff385c;
+    --seasonal-hero-from: #ff385c;
+    --seasonal-hero-via: #e03150;
+    --seasonal-hero-to: #c02040;
+    --seasonal-hero-text: #ffffff;
+    --seasonal-hero-subtext: #e0e0e0;
+    --seasonal-cta-bg: #ffffff;
+    --seasonal-cta-text: #ff385c;
+    --seasonal-cta-hover: #f0f0f0;
+    --seasonal-badge-bg: #ff385c;
+    --seasonal-badge-text: #ffffff;
+    --seasonal-nav-accent: #ff385c;
+    --seasonal-nav-accent-text: #ffffff;
   }
   
   html {
@@ -148,4 +165,127 @@
 /* Safe area padding for bottom banners on notched phones */
 .safe-area-bottom {
   padding-bottom: max(0.75rem, env(safe-area-inset-bottom));
+}
+
+/* PWA Update banner animation */
+@keyframes slide-up {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.animate-slide-up {
+  animation: slide-up 0.3s ease-out;
+}
+
+@keyframes progress-bar {
+  from { width: 0%; }
+  to { width: 100%; }
+}
+
+.animate-progress-bar {
+  animation: progress-bar 2s ease-out forwards;
+}
+
+/* =============================================
+   SEASONAL PARTICLE ANIMATIONS (CSS-only)
+   ============================================= */
+
+/* Confetti particles — World Cup / celebrations */
+@keyframes confetti-fall {
+  0% { transform: translateY(-10vh) rotate(0deg); opacity: 1; }
+  100% { transform: translateY(100vh) rotate(720deg); opacity: 0; }
+}
+
+@keyframes confetti-sway {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(15px); }
+  75% { transform: translateX(-15px); }
+}
+
+.particle-confetti {
+  position: fixed;
+  top: -10px;
+  width: 8px;
+  height: 8px;
+  border-radius: 1px;
+  animation: confetti-fall linear forwards, confetti-sway ease-in-out infinite;
+  pointer-events: none;
+  z-index: 9999;
+}
+
+/* Snow particles — Christmas */
+@keyframes snow-fall {
+  0% { transform: translateY(-10vh) translateX(0); opacity: 1; }
+  50% { transform: translateY(50vh) translateX(20px); opacity: 0.8; }
+  100% { transform: translateY(100vh) translateX(-10px); opacity: 0; }
+}
+
+.particle-snow {
+  position: fixed;
+  top: -10px;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: white;
+  box-shadow: 0 0 4px rgba(255,255,255,0.8);
+  animation: snow-fall linear infinite;
+  pointer-events: none;
+  z-index: 9999;
+}
+
+/* Heart particles — Valentine's */
+@keyframes heart-float {
+  0% { transform: translateY(100vh) scale(0); opacity: 0; }
+  10% { opacity: 1; transform: translateY(80vh) scale(1); }
+  90% { opacity: 0.8; }
+  100% { transform: translateY(-10vh) scale(0.5); opacity: 0; }
+}
+
+.particle-heart {
+  position: fixed;
+  bottom: -10px;
+  width: 12px;
+  height: 12px;
+  animation: heart-float linear infinite;
+  pointer-events: none;
+  z-index: 9999;
+  opacity: 0.7;
+}
+
+/* Firework particles — New Year */
+@keyframes firework-burst {
+  0% { transform: translateY(0) scale(1); opacity: 1; }
+  50% { opacity: 1; }
+  100% { transform: translateY(-80px) scale(0); opacity: 0; }
+}
+
+.particle-firework {
+  position: fixed;
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  animation: firework-burst ease-out forwards;
+  pointer-events: none;
+  z-index: 9999;
+}
+
+/* Seasonal badge pulse */
+@keyframes badge-pulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+}
+
+.seasonal-badge {
+  animation: badge-pulse 2s ease-in-out infinite;
+}
+
+/* Hero gradient transition */
+@keyframes hero-gradient-shift {
+  0%, 100% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+}
+
+.seasonal-hero-gradient {
+  background-size: 200% 200%;
+  animation: hero-gradient-shift 8s ease infinite;
 }
