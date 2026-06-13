@@ -99,12 +99,12 @@ function Navbar() {
 
         {/* Desktop: Right side */}
         <div className="hidden md:flex items-center gap-2.5">
-          <button onClick={toggleTheme} className="p-2 rounded-full hover:bg-zinc-100 dark:hover:bg-zinc-800 text-zinc-600 dark:text-zinc-300 transition-colors" aria-label="Toggle theme">
+          <button onClick={toggleTheme} className="p-2 rounded-full hover:bg-zinc-100 dark:hover:bg-zinc-800 text-zinc-600 dark:text-zinc-300 transition-colors" aria-label={t('common.toggleTheme')}>
             <Sun className="w-5 h-5 hidden dark:block" />
             <Moon className="w-5 h-5 block dark:hidden" />
           </button>
 
-          <button onClick={toggleLang} className="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold border border-zinc-200 dark:border-zinc-700 bg-white dark:bg-zinc-900 text-zinc-700 dark:text-zinc-300 hover:border-[#ff385c] hover:text-[#ff385c] transition-all" aria-label="Toggle language">
+          <button onClick={toggleLang} className="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold border border-zinc-200 dark:border-zinc-700 bg-white dark:bg-zinc-900 text-zinc-700 dark:text-zinc-300 hover:border-[#ff385c] hover:text-[#ff385c] transition-all" aria-label={t('common.toggleLanguage')}>
             <Globe className="w-3.5 h-3.5" />
             {lang === 'en' ? 'EN' : 'SW'}
           </button>
@@ -222,8 +222,8 @@ function Navbar() {
               <button onClick={toggleTheme} className="flex-1 flex items-center justify-center gap-2 px-4 py-3 rounded-2xl text-sm font-bold border border-zinc-200 dark:border-zinc-700 text-zinc-600 dark:text-zinc-300">
                 <Sun className="w-4 h-4 hidden dark:block" />
                 <Moon className="w-4 h-4 block dark:hidden" />
-                <span className="hidden dark:inline">Light</span>
-                <span className="dark:hidden">Dark</span>
+                <span className="hidden dark:inline">{t('common.dark')}</span>
+                <span className="dark:hidden">{t('common.light')}</span>
               </button>
               <button onClick={toggleLang} className="flex-1 flex items-center justify-center gap-2 px-4 py-3 rounded-2xl text-sm font-bold border border-zinc-200 dark:border-zinc-700 text-zinc-600 dark:text-zinc-300">
                 <Globe className="w-4 h-4" />

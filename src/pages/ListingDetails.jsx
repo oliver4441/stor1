@@ -14,8 +14,10 @@ import { ListingSocialProof } from '../components/SocialProof';
 import Breadcrumb from '../components/Breadcrumb';
 import NiaContextualTrigger from '../components/NiaContextualTrigger';
 import AutoScrollCarousel from '../components/AutoScrollCarousel';
+import { useLang } from '../utils/lang';
 
 function ListingDetails() {
+  const { t } = useLang();
   const { id } = useParams();
   const navigate = useNavigate();
   const [listing, setListing] = useState(null);
@@ -39,7 +41,7 @@ function ListingDetails() {
     if (!id) { setError('No listing ID'); setLoading(false); return; }
     setLoading(true);
     fetchListing(id).then(data => {
-      if (!data) { setError('Listing not found'); setLoading(false); return; }
+      if (!data) { setError(t('listing.listingNotFound')); setLoading(false); return; }
       setListing(data);
       setLoading(false);
       trackViewedProduct(data);
@@ -67,8 +69,8 @@ function ListingDetails() {
   if (error || !listing) {
     return (
       <div className="max-w-7xl mx-auto px-4 py-20 text-center">
-        <h2 className="text-3xl font-bold mb-4 text-zinc-900 dark:text-white">{error || 'Listing not found'}</h2>
-        <Link to="/" className="text-[#ff385c] font-bold hover:underline">Go back home</Link>
+        <h2 className="text-3xl font-bold mb-4 text-zinc-900 dark:text-white">{error || t('listing.listingNotFound')}</h2>
+        <Link to="/" className="text-[#ff385c] font-bold hover:underline">{t('listing.goBackHome')}</Link>
       </div>
     );
   }
@@ -171,10 +173,10 @@ function ListingDetails() {
           {/* Delivery Info */}
           <div className="flex flex-wrap gap-2 mb-6">
             <span className="flex items-center gap-1.5 bg-blue-50 dark:bg-blue-900/20 text-blue-700 dark:text-blue-400 px-3 py-1.5 rounded-xl text-xs font-bold border border-blue-200 dark:border-blue-800">
-              <Truck className="w-3.5 h-3.5" /> Free delivery in Kericho
+              <Truck className="w-3.5 h-3.5" /> {t('listing.freeDeliveryInKericho')}
             </span>
             <span className="flex items-center gap-1.5 bg-purple-50 dark:bg-purple-900/20 text-purple-700 dark:text-purple-400 px-3 py-1.5 rounded-xl text-xs font-bold border border-purple-200 dark:border-purple-800">
-              <Package className="w-3.5 h-3.5" /> Delivery by tomorrow
+              <Package className="w-3.5 h-3.5" /> {t('listing.deliveryByTomorrow')}
             </span>
           </div>
 
@@ -204,7 +206,7 @@ function ListingDetails() {
           {/* Specs Categories */}
           {specCategories.length > 0 && (
             <div className="mb-6 space-y-3">
-              <h3 className="font-bold text-sm text-zinc-500 dark:text-zinc-400 uppercase tracking-wider">Specifications</h3>
+              <h3 className="font-bold text-sm text-zinc-500 dark:text-zinc-400 uppercase tracking-wider">{t('listing.specifications')}</h3>
               {specCategories.map((cat, ci) => (
                 <div key={ci} className="bg-zinc-50 dark:bg-zinc-900/50 rounded-2xl border border-zinc-200 dark:border-zinc-800 overflow-hidden">
                   <div className="px-4 py-3 bg-zinc-100 dark:bg-zinc-800/50">
@@ -227,7 +229,7 @@ function ListingDetails() {
           {/* Description */}
           {listing.description && (
             <div className="mb-6">
-              <h3 className="font-bold mb-2 text-lg">Description</h3>
+              <h3 className="font-bold mb-2 text-lg">{t('listing.description')}</h3>
               <p className="text-zinc-600 dark:text-zinc-300 whitespace-pre-line leading-relaxed text-sm">{listing.description}</p>
             </div>
           )}
@@ -235,10 +237,10 @@ function ListingDetails() {
           {/* Trust badges */}
           <div className="flex flex-wrap gap-3 mb-6">
             <div className="flex items-center gap-1.5 text-xs text-zinc-500 dark:text-zinc-400">
-              <Truck className="w-3.5 h-3.5" /> Delivery available
+              <Truck className="w-3.5 h-3.5" /> {t('listing.delivery')}
             </div>
             <div className="flex items-center gap-1.5 text-xs text-zinc-500 dark:text-zinc-400">
-              <Shield className="w-3.5 h-3.5" /> Secure payment
+              <Shield className="w-3.5 h-3.5" /> {t('checkout.securePayment')}
             </div>
           </div>
 
@@ -247,23 +249,23 @@ function ListingDetails() {
             <div className="flex items-center gap-3 mb-3">
               <div className="w-11 h-11 bg-gradient-to-br from-[#ff385c] to-[#ff6b8a] rounded-full flex items-center justify-center font-black text-lg text-white shadow-md shadow-[#ff385c]/20">O</div>
               <div className="flex-1">
-                <p className="font-bold text-sm text-zinc-900 dark:text-white">Omix Store</p>
-                <p className="text-xs text-zinc-500 dark:text-zinc-400">Kericho, Kenya • Official Store</p>
+                <p className="font-bold text-sm text-zinc-900 dark:text-white">{t('listing.omixStore')}</p>
+                <p className="text-xs text-zinc-500 dark:text-zinc-400">{t('listing.kerichoKenya')} &bull; {t('listing.officialStore')}</p>
               </div>
-              <span className="bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400 text-[10px] font-bold px-2 py-1 rounded-full">Verified</span>
+              <span className="bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400 text-[10px] font-bold px-2 py-1 rounded-full">{t('listing.verified')}</span>
             </div>
             <div className="grid grid-cols-3 gap-2">
               <div className="text-center bg-white dark:bg-zinc-800 rounded-xl py-2 px-1">
                 <p className="text-sm font-black text-[#ff385c]">100%</p>
-                <p className="text-[9px] text-zinc-500 dark:text-zinc-400 uppercase tracking-wider">Quality</p>
+                <p className="text-[9px] text-zinc-500 dark:text-zinc-400 uppercase tracking-wider">{t('listing.quality')}</p>
               </div>
               <div className="text-center bg-white dark:bg-zinc-800 rounded-xl py-2 px-1">
-                <p className="text-sm font-black text-[#ff385c]">Fast</p>
-                <p className="text-[9px] text-zinc-500 dark:text-zinc-400 uppercase tracking-wider">Shipping</p>
+                <p className="text-sm font-black text-[#ff385c]">{t('listing.fast')}</p>
+                <p className="text-[9px] text-zinc-500 dark:text-zinc-400 uppercase tracking-wider">{t('listing.shipping')}</p>
               </div>
               <div className="text-center bg-white dark:bg-zinc-800 rounded-xl py-2 px-1">
                 <p className="text-sm font-black text-[#ff385c]">24/7</p>
-                <p className="text-[9px] text-zinc-500 dark:text-zinc-400 uppercase tracking-wider">Support</p>
+                <p className="text-[9px] text-zinc-500 dark:text-zinc-400 uppercase tracking-wider">{t('listing.support')}</p>
               </div>
             </div>
           </div>
@@ -277,7 +279,7 @@ function ListingDetails() {
           <div className="space-y-3">
             {inCart && user && (
               <div className="flex items-center gap-2 text-sm text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-900/20 px-4 py-2 rounded-xl font-bold border border-emerald-200 dark:border-emerald-800">
-                <ShoppingCart className="w-4 h-4" /> {inCart.quantity} in cart
+                <ShoppingCart className="w-4 h-4" /> {inCart.quantity} {t('cart.title').toLowerCase()}
               </div>
             )}
             <div className="flex items-center gap-3">
@@ -295,20 +297,20 @@ function ListingDetails() {
               <>
                 <button onClick={() => addItem({ id: listing.id, name: listing.title, price: listing.price, image_url: listing.images?.[0] || null, quantity })}
                   className="w-full flex items-center justify-center gap-2 bg-[#ff385c] text-white font-black py-4 rounded-2xl hover:bg-[#e03150] transition-all shadow-lg shadow-[#ff385c]/20 text-lg">
-                  <ShoppingCart className="w-5 h-5" /> {inCart ? 'Update Cart' : 'Add to Cart'} — {formatKES(listing.price * quantity)}
+                  <ShoppingCart className="w-5 h-5" /> {inCart ? t('cart.title') : t('productCard.addToCart')} &mdash; {formatKES(listing.price * quantity)}
                 </button>
                 <button onClick={() => { addItem({ id: listing.id, name: listing.title, price: listing.price, image_url: listing.images?.[0] || null, quantity }); navigate('/checkout'); }}
                   className="w-full flex items-center justify-center gap-2 bg-zinc-900 dark:bg-white text-white dark:text-zinc-900 font-bold py-4 rounded-2xl hover:opacity-90 transition-all">
-                  Buy Now — {formatKES(listing.price * quantity)}
+                  {t('listing.buyNow')} &mdash; {formatKES(listing.price * quantity)}
                 </button>
               </>
             ) : (
               <>
                 <Link to={`/signup?redirect=/listing/${listing.id}`} className="w-full flex items-center justify-center gap-2 bg-[#ff385c] text-white font-black py-4 rounded-2xl hover:bg-[#e03150] transition-all shadow-lg shadow-[#ff385c]/20 text-lg">
-                  <ShoppingCart className="w-5 h-5" /> Sign Up to Add to Cart
+                  <ShoppingCart className="w-5 h-5" /> {t('listing.signUpToAddToCart')}
                 </Link>
                 <Link to={`/login?redirect=/listing/${listing.id}`} className="w-full flex items-center justify-center gap-2 bg-zinc-900 dark:bg-white text-white dark:text-zinc-900 font-bold py-4 rounded-2xl hover:opacity-90 transition-all">
-                  Log In to Buy Now
+                  {t('listing.loginToBuyNow')}
                 </Link>
               </>
             )}
@@ -324,7 +326,7 @@ function ListingDetails() {
       {/* Related */}
       {related.length > 0 && (
         <div className="mt-16 pt-8 border-t border-zinc-200 dark:border-zinc-800 pb-24 md:pb-0">
-          <h2 className="text-2xl font-bold mb-6">You May Also Like</h2>
+          <h2 className="text-2xl font-bold mb-6">{t('listing.youMayAlsoLike')}</h2>
           <AutoScrollCarousel itemMinWidth={260} gap={16} speed={40}>
             {related.map(l => (
               <ProductCard key={l.id} listing={l} />

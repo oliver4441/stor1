@@ -161,7 +161,7 @@ function Home() {
         {featuredProducts.length > 0 && activeCategory === 'All' && !searchQuery && (
           <div className="mb-10">
             <div className="flex items-center justify-between mb-4">
-              <h2 className="text-xl font-bold text-zinc-900 dark:text-white">Featured Products</h2>
+              <h2 className="text-xl font-bold text-zinc-900 dark:text-white">{t('home.featuredListings')}</h2>
             </div>
             <AutoScrollCarousel itemMinWidth={260} gap={16} speed={35}>
               {featuredProducts.map((product) => (
