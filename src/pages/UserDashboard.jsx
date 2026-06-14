@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import { Package, LogOut, ShoppingBag, ArrowRight, Search, Grid3X3, List, ChevronDown, ChevronUp, Clock, Gift, Copy, Check, Star, ChevronRight, ExternalLink } from 'lucide-react';
+import { Package, LogOut, ShoppingBag, ArrowRight, Search, Grid3X3, List, ChevronDown, ChevronUp, Clock, Gift, Copy, Check, Star, ChevronRight, ExternalLink, Users } from 'lucide-react';
 import { supabase } from '../utils/supabase';
 import { fetchOrders, fetchListings, fetchAddresses, saveAddress, deleteAddress, setDefaultAddress, getReferralCode, getReferralStats, getLoyaltyPoints, getPointsHistory } from '../utils/api';
 import { formatKES, CATEGORIES } from '../utils/constants';
