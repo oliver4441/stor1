@@ -211,6 +211,99 @@ function UserDashboard() {
         </div>
       )}
 
+      {/* Referral Program */}
+      <div className="mb-12">
+        <div className="bg-white dark:bg-zinc-900 rounded-2xl border border-zinc-200 dark:border-zinc-800 p-6">
+          <div className="flex items-center gap-3 mb-5">
+            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[#ff385c] to-[#e03150] flex items-center justify-center">
+              <Users className="w-5 h-5 text-white" />
+            </div>
+            <div>
+              <h2 className="text-lg font-bold text-zinc-900 dark:text-white">Refer a Friend</h2>
+              <p className="text-xs text-zinc-500 dark:text-zinc-400">Share your code and earn rewards</p>
+            </div>
+          </div>
+          <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center">
+            <div className="flex-1 w-full">
+              <label className="text-xs font-medium text-zinc-500 dark:text-zinc-400 mb-1.5 block">Your referral code</label>
+              <div className="flex items-center gap-2 bg-zinc-50 dark:bg-zinc-800/50 rounded-xl px-4 py-3 border border-zinc-200 dark:border-zinc-700">
+                <span className="font-mono font-bold text-lg text-zinc-900 dark:text-white tracking-wider">{referralCode}</span>
+                <button
+                  onClick={() => {
+                    navigator.clipboard.writeText(referralCode);
+                    setCopied(true);
+                    setTimeout(() => setCopied(false), 2000);
+                  }}
+                  className="ml-auto p-2 rounded-lg bg-zinc-200 dark:bg-zinc-700 hover:bg-zinc-300 dark:hover:bg-zinc-600 transition-colors"
+                >
+                  {copied ? <Check className="w-4 h-4 text-green-500" /> : <Copy className="w-4 h-4 text-zinc-500" />}
+                </button>
+              </div>
+            </div>
+            <div className="text-center sm:text-left">
+              <label className="text-xs font-medium text-zinc-500 dark:text-zinc-400 mb-1.5 block">People referred</label>
+              <div className="flex items-center gap-2 bg-zinc-50 dark:bg-zinc-800/50 rounded-xl px-5 py-3 border border-zinc-200 dark:border-zinc-700">
+                <Users className="w-5 h-5 text-[#ff385c]" />
+                <span className="font-bold text-xl text-zinc-900 dark:text-white">{referralCount}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Loyalty Points */}
+      <div className="mb-12">
+        <div className="bg-white dark:bg-zinc-900 rounded-2xl border border-zinc-200 dark:border-zinc-800 p-6">
+          <div className="flex items-center gap-3 mb-5">
+            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-amber-400 to-orange-500 flex items-center justify-center">
+              <Gift className="w-5 h-5 text-white" />
+            </div>
+            <div>
+              <h2 className="text-lg font-bold text-zinc-900 dark:text-white">Loyalty Points</h2>
+              <p className="text-xs text-zinc-500 dark:text-zinc-400">Earn points with every purchase</p>
+            </div>
+          </div>
+          <div className="flex items-center gap-3 mb-5">
+            <div className="bg-gradient-to-br from-amber-400 to-orange-500 rounded-2xl p-4">
+              <Star className="w-8 h-8 text-white" />
+            </div>
+            <div>
+              <span className="text-3xl font-black text-zinc-900 dark:text-white">{loyaltyPoints}</span>
+              <p className="text-xs text-zinc-500 dark:text-zinc-400">Available points</p>
+            </div>
+          </div>
+          {pointsHistory.length > 0 && (
+            <div>
+              <h4 className="text-xs font-bold text-zinc-500 dark:text-zinc-400 uppercase tracking-wider mb-3">Recent Activity</h4>
+              <div className="space-y-2">
+                {pointsHistory.slice(0, 5).map((entry, i) => (
+                  <div key={i} className="flex items-center justify-between bg-zinc-50 dark:bg-zinc-800/50 rounded-xl px-4 py-2.5">
+                    <div className="flex items-center gap-3">
+                      <div className={`w-8 h-8 rounded-lg flex items-center justify-center ${
+                        entry.points > 0 ? 'bg-green-100 dark:bg-green-900/30' : 'bg-red-100 dark:bg-red-900/30'
+                      }`}>
+                        {entry.points > 0 ? (
+                          <Star className="w-4 h-4 text-green-600 dark:text-green-400" />
+                        ) : (
+                          <ExternalLink className="w-4 h-4 text-red-600 dark:text-red-400" />
+                        )}
+                      </div>
+                      <div>
+                        <p className="text-sm font-bold text-zinc-900 dark:text-white">{entry.description || 'Points update'}</p>
+                        <p className="text-xs text-zinc-500">{new Date(entry.created_at).toLocaleDateString('en-KE', { month: 'short', day: 'numeric' })}</p>
+                      </div>
+                    </div>
+                    <span className={`font-bold text-sm ${entry.points > 0 ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400'}`}>
+                      {entry.points > 0 ? '+' : ''}{entry.points}
+                    </span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+        </div>
+      </div>
+
       <div>
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
           <h2 className="text-xl font-bold text-zinc-900 dark:text-white">All Products</h2>

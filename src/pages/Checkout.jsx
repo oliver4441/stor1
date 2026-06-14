@@ -248,7 +248,18 @@ export default function CheckoutPage() {
 
   const isFreeDelivery = promoApplied && promoApplied.discount_type === 'free_delivery';
 
-  // Calculate discounted total if promo code applies
+  // Compute loyalty points discount value — useMemo, not setState during render
+  const computedPtsDiscount = (() => {
+    if (!redeemPoints || !userPoints) return 0;
+    let base = total;
+    if (promoApplied) {
+      if (promoApplied.discount_type === 'percentage') base = Math.round(base * (1 - promoApplied.discount_value / 100));
+      else if (promoApplied.discount_type === 'fixed') base = Math.max(0, base - promoApplied.discount_value);
+    }
+    return Math.min(userPoints, Math.floor(base / 2)); // max 50% off with points
+  })();
+
+  // Calculate discounted total
   const discountedTotal = (() => {
     let t = total;
     if (promoApplied) {
@@ -256,12 +267,15 @@ export default function CheckoutPage() {
       else if (promoApplied.discount_type === 'fixed') t = Math.max(0, t - promoApplied.discount_value);
     }
     if (redeemPoints) {
-      const ptsDiscount = Math.min(userPoints, Math.floor(t / 2)); // max 50% off with points
-      setPointsDiscount(ptsDiscount);
-      t = Math.max(0, t - ptsDiscount);
+      t = Math.max(0, t - computedPtsDiscount);
     }
     return t;
   })();
+
+  // Sync computed discount into state (for display)
+  useEffect(() => {
+    setPointsDiscount(computedPtsDiscount);
+  }, [computedPtsDiscount]);
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {

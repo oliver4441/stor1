@@ -17,10 +17,13 @@ export async function signUp({ email, password, fullName, phone, refCode }) {
       const { data: referrer } = await supabase
         .from('profiles')
         .select('id')
-        .filter('id', 'ilike', `${refCode}%`)
+        .eq('referral_code', refCode.toUpperCase())
         .maybeSingle();
       if (referrer) referredBy = referrer.id;
     }
+
+    // Generate a referral code for this new user
+    const genRefCode = (data.user.id || '').replace(/-/g, '').slice(0, 8).toUpperCase();
 
     const { error: profileError } = await supabase.from('profiles').insert({
       id: data.user.id,
@@ -30,6 +33,7 @@ export async function signUp({ email, password, fullName, phone, refCode }) {
       role: 'customer',
       referred_by: referredBy,
       loyalty_points: 0,
+      referral_code: genRefCode,
     });
     if (profileError) {
       console.error('Profile insert failed:', profileError.message);
@@ -662,9 +666,15 @@ export async function setDefaultAddress(id) {
 // ── Referral System ─────────────────────────────────────────────
 export async function getReferralCode(userId) {
   try {
-    // Use user ID as the referral code — simple and unique
-    const shortCode = (userId || '').replace(/-/g, '').slice(0, 8).toUpperCase();
-    return shortCode;
+    // Read the stored referral code from the profile
+    const { data } = await supabase
+      .from('profiles')
+      .select('referral_code')
+      .eq('id', userId)
+      .maybeSingle();
+    if (data?.referral_code) return data.referral_code;
+    // Fallback: generate from UUID (for profiles without stored code)
+    return (userId || '').replace(/-/g, '').slice(0, 8).toUpperCase();
   } catch { return null; }
 }
 

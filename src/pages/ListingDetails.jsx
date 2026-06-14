@@ -15,7 +15,6 @@ import Breadcrumb from '../components/Breadcrumb';
 import NiaContextualTrigger from '../components/NiaContextualTrigger';
 import AutoScrollCarousel from '../components/AutoScrollCarousel';
 import { ReviewList, ReviewForm } from '../components/Reviews';
-import ImageLightbox from '../components/ImageLightbox';
 import { useLang } from '../utils/lang';
 
 function ListingDetails() {
@@ -28,8 +27,6 @@ function ListingDetails() {
   const [error, setError] = useState(null);
   const [quantity, setQuantity] = useState(1);
   const [user, setUser] = useState(null);
-  const [lightboxOpen, setLightboxOpen] = useState(false);
-  const [lightboxIndex, setLightboxIndex] = useState(0);
   const { addItem, cart } = useCart();
 
   const listingId = Number(id);
@@ -326,15 +323,6 @@ function ListingDetails() {
           </div>
         </div>
       </div>
-
-      {/* Image Lightbox */}
-      {lightboxOpen && listing.images?.length > 0 && (
-        <ImageLightbox
-          images={listing.images}
-          initialIndex={lightboxIndex}
-          onClose={() => setLightboxOpen(false)}
-        />
-      )}
 
       {/* Reviews */}
       <div className="mt-16 pt-8 border-t border-zinc-200 dark:border-zinc-800">

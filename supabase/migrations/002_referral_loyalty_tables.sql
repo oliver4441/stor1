@@ -45,6 +45,7 @@ CREATE TABLE IF NOT EXISTS saved_addresses (
 -- ========================================
 ALTER TABLE profiles ADD COLUMN IF NOT EXISTS referred_by UUID REFERENCES auth.users(id);
 ALTER TABLE profiles ADD COLUMN IF NOT EXISTS loyalty_points INTEGER DEFAULT 0;
+ALTER TABLE profiles ADD COLUMN IF NOT EXISTS referral_code TEXT;
 
 -- ========================================
 -- 5. REFERRAL REWARDS

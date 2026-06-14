@@ -7,7 +7,7 @@ export default function NiaFloatingButton() {
   return (
     <button
       onClick={() => isOpen ? closeChat() : openChat()}
-      className={`fixed bottom-4 right-4 z-[55] w-14 h-14 rounded-full flex items-center justify-center shadow-lg transition-all duration-300 hover:scale-105 active:scale-95 overflow-hidden ${
+      className={`fixed bottom-20 right-4 z-[55] w-14 h-14 rounded-full flex items-center justify-center shadow-lg transition-all duration-300 hover:scale-105 active:scale-95 overflow-hidden ${
         isOpen ? 'hover:opacity-90' : 'hover:shadow-xl'
       }`}
       style={{

@@ -35,7 +35,6 @@ export function NiaChatProvider({ children }) {
   const [showOnboarding, setShowOnboarding] = useState(() => {
     try { return localStorage.getItem('nia-onboarding-shown') !== 'true'; } catch { return true; }
   });
-  const [pageContext, setPageContext] = useState('home');
   const [userName, setUserName] = useState('');
   const messagesEndRef = useRef(null);
   const conversationHistoryRef = useRef([]);
@@ -153,7 +152,6 @@ export function NiaChatProvider({ children }) {
     messages, isTyping, currentChips,
     handleChipClick, handleUserInput,
     hasOpened, showOnboarding, dismissOnboarding,
-    pageContext, setPageContext,
     messagesEndRef,
     COLORS,
   };

@@ -30,7 +30,7 @@ export default function NiaChat() {
 
   return (
     <div
-      className="fixed bottom-20 right-4 z-[60] w-[380px] max-w-[calc(100vw-2rem)] h-[520px] max-h-[calc(100vh-8rem)] flex flex-col rounded-2xl shadow-2xl overflow-hidden border animate-in slide-in-from-bottom-4 fade-in duration-200"
+      className="fixed bottom-36 right-4 z-[60] w-[380px] max-w-[calc(100vw-2rem)] h-[520px] max-h-[calc(100vh-12rem)] flex flex-col rounded-2xl shadow-2xl overflow-hidden border animate-in slide-in-from-bottom-4 fade-in duration-200"
       style={{
         backgroundColor: COLORS.bg,
         borderColor: COLORS.border,
@@ -39,7 +39,7 @@ export default function NiaChat() {
     >
       {/* Header */}
       <div
-        className="flex items-center justify-between px-4 py-3 text-white flex-shrink-0"
+        className="relative flex items-center justify-between px-4 py-3 text-white flex-shrink-0"
         style={{ background: `linear-gradient(135deg, ${COLORS.accent}, ${COLORS.accentDark})` }}
       >
         <div className="flex items-center gap-3">

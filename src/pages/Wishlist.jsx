@@ -35,8 +35,19 @@ export default function Wishlist() {
 
   const removeItem = async (listingId) => {
     if (!user) return;
-    await supabase.from('wishlist').delete().eq('user_id', user.id).eq('listing_id', listingId);
+    // Optimistic remove from UI
     setItems(prev => prev.filter(i => i.listing_id !== listingId));
+    try {
+      const { error } = await supabase.from('wishlist').delete().eq('user_id', user.id).eq('listing_id', listingId);
+      if (error) {
+        console.error('Failed to remove wishlist item:', error);
+        // Rollback — reload the wishlist
+        loadWishlist(user.id);
+      }
+    } catch (err) {
+      console.error('Failed to remove wishlist item:', err);
+      loadWishlist(user.id);
+    }
   };
 
   if (loading) {

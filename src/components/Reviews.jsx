@@ -96,7 +96,9 @@ export function ReviewList({ listingId }) {
               <p className="text-sm text-zinc-600 dark:text-zinc-400">{review.review}</p>
             )}
             <p className="text-xs text-zinc-400 mt-2">
-              {new Date(review.created_at).toLocaleDateString('en-KE', { month: 'short', day: 'numeric', year: 'numeric' })}
+              {review.created_at
+                ? new Date(review.created_at).toLocaleDateString('en-KE', { month: 'short', day: 'numeric', year: 'numeric' })
+                : 'Recently'}
             </p>
           </div>
         ))}

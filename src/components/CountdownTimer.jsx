@@ -15,6 +15,7 @@ export default function CountdownTimer({ targetDate, onExpired }) {
         setExpired(true);
         setTimeLeft(null);
         onExpired?.();
+        clearInterval(interval);
         return;
       }
       const days = Math.floor(diff / (1000 * 60 * 60 * 24));
