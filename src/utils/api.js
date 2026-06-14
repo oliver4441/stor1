@@ -495,18 +495,21 @@ export async function createOrder({ items, total, customerName, phone, email, ad
   if (user) {
     const pointsEarned = Math.floor(total / 100);
     if (pointsEarned > 0) {
-      await supabase.from('points_transactions').insert({
+      const { error: ptsTxError } = await supabase.from('points_transactions').insert({
         user_id: user.id,
         points: pointsEarned,
         description: `Order #${order.id}`,
         reference_type: 'order',
         reference_id: order.id,
-      }).catch(() => {});
+      });
+      if (ptsTxError) console.warn('Points transaction failed:', ptsTxError.message);
+
       const { data: currentProfile } = await supabase
         .from('profiles').select('loyalty_points').eq('id', user.id).single();
-      await supabase.from('profiles').update({
+      const { error: ptsUpdateError } = await supabase.from('profiles').update({
         loyalty_points: (currentProfile?.loyalty_points || 0) + pointsEarned
-      }).eq('id', user.id).catch(() => {});
+      }).eq('id', user.id);
+      if (ptsUpdateError) console.warn('Loyalty points update failed:', ptsUpdateError.message);
     }
   }
 
@@ -520,13 +523,14 @@ export async function createOrder({ items, total, customerName, phone, email, ad
         .eq('referee_id', user.id)
         .maybeSingle();
       if (!existing) {
-        await supabase.from('referral_rewards').insert({
+        const { error: refError } = await supabase.from('referral_rewards').insert({
           referrer_id: profile.referred_by,
           referee_id: user.id,
           order_id: order.id,
           reward_amount: 100,
           status: 'pending',
-        }).catch(() => {});
+        });
+        if (refError) console.warn('Referral reward failed:', refError.message);
       }
     }
   } catch {}

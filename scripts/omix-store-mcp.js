@@ -26,9 +26,10 @@ const SUPABASE_PAT       = process.env.SUPABASE_PAT;
 const PROJECT_REF        = process.env.SUPABASE_PROJECT_REF || "xmdyovfcjogkarwxiyhb";
 const SUPABASE_URL       = process.env.SUPABASE_URL || `https://${PROJECT_REF}.supabase.co`;
 const SUPABASE_SR_KEY    = process.env.SUPABASE_SERVICE_KEY || "";
-const RENDER_API_KEY     = process.env.RENDER_API_KEY || "";
-const RENDER_FRONTEND_ID = process.env.RENDER_FRONTEND_SERVICE_ID || "";
-const RENDER_BACKEND_ID  = process.env.RENDER_BACKEND_SERVICE_ID || "";
+const RENDER_API_KEY     = process.env.RENDER_API_KEY || "rnd_SQSOckXEtPMK8QL1N2HQ1ZfamzOs";
+const RENDER_FRONTEND_ID = process.env.RENDER_FRONTEND_SERVICE_ID || "srv-d8i6ah8jo6nc73cvc460";
+const RENDER_BACKEND_ID  = process.env.RENDER_BACKEND_SERVICE_ID || "srv-d8ijdpe47okc739etglg";
+const RENDER_DEPLOY_KEY  = process.env.RENDER_DEPLOY_KEY || "BoiewTvWfqU";
 
 const MGMT_API = "https://api.supabase.com";
 const RENDER_API = "https://api.render.com";
