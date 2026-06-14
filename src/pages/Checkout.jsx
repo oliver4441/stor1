@@ -1,10 +1,11 @@
 import { useState, useEffect, useRef } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import { ShoppingCart, ArrowRight, Loader2, Package, CreditCard, Trash2, Plus, Minus, CheckCircle, MapPin, Phone, User, Mail } from 'lucide-react';
+import { ShoppingCart, ArrowRight, Loader2, Package, CreditCard, Trash2, Plus, Minus, CheckCircle, MapPin, Phone, User, Mail, Wrench, AlertTriangle } from 'lucide-react';
 import { useCart } from '../context/CartContext';
 import { createOrder } from '../utils/api';
 import { formatKES } from '../utils/constants';
 import { supabase } from '../utils/supabase';
+import { useMaintenanceMode } from '../hooks/useMaintenanceMode';
 import NiaContextualTrigger from '../components/NiaContextualTrigger';
 import Breadcrumb from '../components/Breadcrumb';
 import TrustBadges from '../components/TrustBadges';
@@ -176,6 +177,7 @@ export default function CheckoutPage() {
   const navigate = useNavigate();
   const { getItems, getTotal, clearCart, updateQuantity, removeItem } = useCart();
   const items = getItems();
+  const { isMaintenance } = useMaintenanceMode();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [fieldErrors, setFieldErrors] = useState({});
@@ -344,6 +346,13 @@ export default function CheckoutPage() {
     })();
 
     try {
+      // Block orders during maintenance mode
+      if (isMaintenance) {
+        setError('Checkout is temporarily disabled due to maintenance. Please try again later.');
+        setLoading(false);
+        return;
+      }
+
       // Prevent duplicate order creation
       if (orderCreated.current) {
         setError('Order already being processed. Please wait...');
@@ -454,6 +463,38 @@ export default function CheckoutPage() {
       setLoading(false);
     }
   };
+
+  // ── Maintenance Mode ─────────────────────────────────────────────
+  if (isMaintenance) {
+    return (
+      <div className="max-w-lg mx-auto px-4 py-16">
+        <div className="text-center py-12 rounded-2xl border border-amber-300 dark:border-amber-800" style={{ backgroundColor: '#fffbeb' }}>
+          <div className="w-20 h-20 mx-auto mb-5 rounded-full flex items-center justify-center bg-amber-100">
+            <Wrench className="w-10 h-10 text-amber-600 animate-pulse" />
+          </div>
+          <h1 className="text-2xl font-black mb-2 text-amber-800">Under Maintenance</h1>
+          <p className="text-sm mb-2 text-amber-700">
+            We're currently performing scheduled maintenance on our store.
+          </p>
+          <p className="text-xs mb-8 text-amber-600">
+            You can still browse products, but checkout and payments are temporarily disabled. Please check back shortly!
+          </p>
+          <div className="flex flex-col sm:flex-row gap-3 justify-center">
+            <Link
+              to="/"
+              className="inline-flex items-center gap-2 text-white font-bold px-8 py-3.5 rounded-xl transition-all hover:opacity-90 active:scale-95"
+              style={{ backgroundColor: C.accent }}
+            >
+              Continue Browsing <ArrowRight className="w-4 h-4" />
+            </Link>
+          </div>
+          <p className="text-[11px] mt-6 text-amber-500">
+            Need help? Contact us at omixsystems@gmail.com or +254 768 213 649
+          </p>
+        </div>
+      </div>
+    );
+  }
 
   // ── Empty Cart ──────────────────────────────────────────────────
   if (items.length === 0) {

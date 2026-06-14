@@ -122,7 +122,6 @@ export default function SeasonalParticles({ type, count = 20 }) {
             style={{
               left: p.left,
               animationDelay: p.delay,
-              animationDuration: p.duration,
               width: p.size,
               height: p.size,
               backgroundColor: type === 'snow' ? undefined : p.color,

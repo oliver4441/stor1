@@ -1,9 +1,10 @@
 import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { X, ShoppingCart, Share2, MapPin, Package, ChevronLeft, ChevronRight } from 'lucide-react';
+import { X, ShoppingCart, Share2, MapPin, Package, ChevronLeft, ChevronRight, AlertTriangle } from 'lucide-react';
 import { formatKES } from '../utils/constants';
 import { useCart } from '../context/CartContext';
 import { supabase } from '../utils/supabase';
+import { isMaintenanceCached } from '../hooks/useMaintenanceMode';
 
 export default function QuickViewModal({ listing, onClose }) {
   const [imgIndex, setImgIndex] = useState(0);
@@ -35,6 +36,12 @@ export default function QuickViewModal({ listing, onClose }) {
 
   const handleAddToCart = (e) => {
     e.stopPropagation();
+
+    // Block during maintenance mode
+    if (isMaintenanceCached()) {
+      return;
+    }
+
     if (!user) {
       onClose();
       navigate(`/login?redirect=/listing/${listing.id}`);

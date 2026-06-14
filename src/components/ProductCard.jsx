@@ -1,11 +1,12 @@
 import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { Image as ImageIcon, MapPin, Share2, Package, ShoppingCart, Eye, CheckSquare, Square } from 'lucide-react';
+import { Image as ImageIcon, MapPin, Share2, Package, ShoppingCart, Eye, CheckSquare, Square, AlertTriangle } from 'lucide-react';
 import CountdownTimer from './CountdownTimer';
 import { ProductSocialBadge } from '../components/SocialProof';
 import { formatKES } from '../utils/constants';
 import { useCart } from '../context/CartContext';
 import { supabase } from '../utils/supabase';
+import { isMaintenanceCached } from '../hooks/useMaintenanceMode';
 
 const COMPARE_KEY = 'omix_compare_ids';
 
@@ -77,6 +78,16 @@ function ProductCard({ listing, compareMode, onCompareChange }) {
   const handleAddToCart = (e) => {
     e.preventDefault();
     e.stopPropagation();
+
+    // Block during maintenance mode
+    if (isMaintenanceCached()) {
+      // Brief shake animation on the button area
+      const btn = e.currentTarget;
+      btn.style.animation = 'none';
+      btn.offsetHeight; // reflow
+      btn.style.animation = 'shake 0.4s ease-in-out';
+      return;
+    }
 
     if (!user) {
       navigate(`/login?redirect=/listing/${listing.id}`);
@@ -179,16 +190,22 @@ function ProductCard({ listing, compareMode, onCompareChange }) {
         <button
             onClick={handleAddToCart}
             className={`absolute bottom-2 right-2 flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-[10px] font-bold shadow-sm transition-all opacity-0 group-hover:opacity-100 ${
-              justAdded
-                ? 'bg-green-500 text-white'
-                : inCart
-                ? 'bg-[#ff385c]/90 text-white'
-                : 'bg-white/90 dark:bg-black/90 text-zinc-900 dark:text-white hover:bg-[#ff385c] hover:text-white'
+              isMaintenanceCached()
+                ? 'bg-amber-500 text-white'
+                : justAdded
+                  ? 'bg-green-500 text-white'
+                  : inCart
+                    ? 'bg-[#ff385c]/90 text-white'
+                    : 'bg-white/90 dark:bg-black/90 text-zinc-900 dark:text-white hover:bg-[#ff385c] hover:text-white'
             }`}
-            aria-label="Add to cart"
+            aria-label={isMaintenanceCached() ? 'Under maintenance' : 'Add to cart'}
           >
-            <ShoppingCart className="w-3 h-3" />
-            {justAdded ? 'Added!' : inCart ? `In Cart (${inCart.quantity})` : 'Add to Cart'}
+            {isMaintenanceCached() ? (
+              <><AlertTriangle className="w-3 h-3" /> Unavailable</>
+            ) : (
+              <><ShoppingCart className="w-3 h-3" />
+              {justAdded ? 'Added!' : inCart ? `In Cart (${inCart.quantity})` : 'Add to Cart'}</>
+            )}
           </button>
       </div>
 

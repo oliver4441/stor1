@@ -1,6 +1,7 @@
-import { useState } from 'react';
-import { Save, Store, Truck, Bell, Globe, Palette, Eye, Calendar } from 'lucide-react';
+import { useState, useEffect } from 'react';
+import { Save, Store, Truck, Bell, Globe, Palette, Eye, Calendar, Wrench } from 'lucide-react';
 import themesConfig from '../config/seasonal-themes.json';
+import { supabase } from '../utils/supabase';
 
 export default function AdminSettings() {
   const [saved, setSaved] = useState(false);
@@ -48,8 +49,41 @@ export default function AdminSettings() {
     emailNotifications: true,
   });
 
-  const handleSave = () => {
-    // TODO: Persist to Supabase settings table
+  // Fetch current maintenance mode from Supabase on mount
+  useEffect(() => {
+    let cancelled = false;
+    (async () => {
+      try {
+        const { data } = await supabase
+          .from('app_settings')
+          .select('value')
+          .eq('key', 'maintenance_mode')
+          .single();
+        if (!cancelled && data) {
+          setForm(prev => ({ ...prev, maintenanceMode: data.value === true }));
+        }
+      } catch (err) {
+        console.warn('Could not fetch maintenance mode:', err.message);
+      }
+    })();
+    return () => { cancelled = true; };
+  }, []);
+
+  const handleSave = async () => {
+    // Persist maintenance mode to Supabase
+    if (form.maintenanceMode !== undefined) {
+      const { error } = await supabase
+        .from('app_settings')
+        .update({ value: form.maintenanceMode, updated_at: new Date().toISOString() })
+        .eq('key', 'maintenance_mode');
+      if (error) {
+        console.error('Failed to save maintenance mode:', error);
+        alert('Failed to save maintenance mode. Please try again.');
+        return;
+      }
+      // Clear the frontend cache so all users see the change immediately
+      try { localStorage.removeItem('omix_maintenance_mode'); } catch { /* ignore */ }
+    }
     setSaved(true);
     setTimeout(() => setSaved(false), 3000);
   };
@@ -148,21 +182,41 @@ export default function AdminSettings() {
       </div>
 
       {/* Maintenance */}
-      <div className="bg-white dark:bg-zinc-900 rounded-2xl border border-zinc-200 dark:border-zinc-800 p-6">
+      <div className={`rounded-2xl border p-6 ${
+        form.maintenanceMode
+          ? 'bg-amber-50 dark:bg-amber-950/30 border-amber-300 dark:border-amber-800'
+          : 'bg-white dark:bg-zinc-900 border-zinc-200 dark:border-zinc-800'
+      }`}>
         <div className="flex items-center gap-3 mb-5">
-          <Globe className="w-5 h-5 text-purple-500" />
+          <Wrench className={`w-5 h-5 ${form.maintenanceMode ? 'text-amber-600' : 'text-purple-500'}`} />
           <h3 className="text-base font-bold text-zinc-900 dark:text-white">Site Status</h3>
+          {form.maintenanceMode && (
+            <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-amber-500 text-white uppercase tracking-wider animate-pulse">
+              Active
+            </span>
+          )}
         </div>
         <label className="flex items-center justify-between cursor-pointer">
           <div>
             <p className="text-sm font-semibold text-zinc-900 dark:text-white">Maintenance Mode</p>
-            <p className="text-xs text-zinc-500">Temporarily disable the store for customers</p>
+            <p className="text-xs text-zinc-500">Temporarily disable purchases for customers</p>
           </div>
-          <div className={`w-11 h-6 rounded-full transition-colors relative ${form.maintenanceMode ? 'bg-[#ff385c]' : 'bg-zinc-300 dark:bg-zinc-700'}`}
+          <div className={`w-11 h-6 rounded-full transition-colors relative ${
+            form.maintenanceMode ? 'bg-amber-500' : 'bg-zinc-300 dark:bg-zinc-700'
+          }`}
             onClick={() => updateField('maintenanceMode', !form.maintenanceMode)}>
-            <div className={`absolute top-0.5 w-5 h-5 bg-white rounded-full shadow transition-transform ${form.maintenanceMode ? 'translate-x-5.5' : 'translate-x-0.5'}`} />
+            <div className={`absolute top-0.5 w-5 h-5 bg-white rounded-full shadow transition-transform ${
+              form.maintenanceMode ? 'translate-x-5.5' : 'translate-x-0.5'
+            }`} />
           </div>
         </label>
+        {form.maintenanceMode && (
+          <div className="mt-4 p-3 rounded-xl bg-amber-100 dark:bg-amber-900/40 border border-amber-300 dark:border-amber-700">
+            <p className="text-xs font-semibold text-amber-800 dark:text-amber-300">
+              ⚠️ Customers can browse but cannot add to cart or checkout. They will see a maintenance warning banner.
+            </p>
+          </div>
+        )}
       </div>
 
       {/* Seasonal Themes */}

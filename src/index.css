@@ -356,3 +356,12 @@
 .animate-fade-in-up { animation: fade-in-up 0.6s ease-out both; }
 .animate-scale-in { animation: scale-in 0.3s ease-out; }
 .animate-fade-in { animation: fade-in 0.3s ease-out; }
+
+/* Maintenance mode — shake button on blocked add-to-cart */
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  20% { transform: translateX(-4px); }
+  40% { transform: translateX(4px); }
+  60% { transform: translateX(-3px); }
+  80% { transform: translateX(3px); }
+}

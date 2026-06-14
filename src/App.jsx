@@ -18,6 +18,8 @@ import AbandonedCartBanner from './components/AbandonedCartBanner';
 import FloatingCartButton from './components/FloatingCartButton';
 import { SeasonalProvider } from './context/SeasonalContext';
 import { supabase } from './utils/supabase';
+import { useMaintenanceMode } from './hooks/useMaintenanceMode';
+import MaintenanceBanner from './components/MaintenanceBanner';
 
 // Lazy-loaded page components for route-based code splitting
 const Home = React.lazy(() => import('./pages/Home'));
@@ -56,6 +58,8 @@ function PageLoadingFallback() {
 }
 
 function App() {
+  const { isMaintenance } = useMaintenanceMode();
+
   React.useEffect(() => {
     // App mounted
 
@@ -93,6 +97,7 @@ function App() {
       <ScrollToTop />
       <div className="min-h-screen flex flex-col bg-white dark:bg-zinc-950 text-zinc-900 dark:text-zinc-50 antialiased pb-16 lg:pb-0">
         <Navbar />
+        {isMaintenance && <MaintenanceBanner />}
         <main className="flex-grow page-transition">
           <Suspense fallback={<PageLoadingFallback />}>
             <Routes>
