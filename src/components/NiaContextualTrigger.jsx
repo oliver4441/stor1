@@ -3,7 +3,7 @@ import { useNiaChat } from '../context/NiaChatContext';
 import { useState } from 'react';
 
 export default function NiaContextualTrigger({ page, className = '' }) {
-  const { openChat, FLOWS, COLORS } = useNiaChat();
+  const { openChat, COLORS } = useNiaChat();
   const [dismissed, setDismissed] = useState(false);
 
   if (dismissed) return null;
@@ -11,15 +11,12 @@ export default function NiaContextualTrigger({ page, className = '' }) {
   const config = {
     listing: {
       message: "Need help with this listing? Ask Nia",
-      flow: FLOWS.listingHelp,
     },
     checkout: {
       message: "Stuck at checkout? Ask Nia",
-      flow: FLOWS.checkoutHelp,
     },
     emptyCart: {
       message: "Nia can help you find items nearby",
-      flow: FLOWS.emptyCart,
     },
   }[page];
 
@@ -41,7 +38,7 @@ export default function NiaContextualTrigger({ page, className = '' }) {
       </div>
       <p className="text-sm flex-1" style={{ color: COLORS.textBot }}>{config.message}</p>
       <button
-        onClick={() => openChat(config.flow)}
+        onClick={() => openChat()}
         className="px-3 py-1.5 text-white text-xs font-bold rounded-full transition-opacity hover:opacity-90 flex-shrink-0"
         style={{ backgroundColor: COLORS.accent }}
       >
