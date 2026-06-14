@@ -1,13 +1,27 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { Image as ImageIcon, MapPin, Share2, Package, ShoppingCart, Eye } from 'lucide-react';
+import { Image as ImageIcon, MapPin, Share2, Package, ShoppingCart, Eye, CheckSquare, Square } from 'lucide-react';
 import CountdownTimer from './CountdownTimer';
 import { ProductSocialBadge } from '../components/SocialProof';
 import { formatKES } from '../utils/constants';
 import { useCart } from '../context/CartContext';
 import { supabase } from '../utils/supabase';
 
-function ProductCard({ listing }) {
+const COMPARE_KEY = 'omix_compare_ids';
+
+function getCompareIds() {
+  try {
+    return JSON.parse(localStorage.getItem(COMPARE_KEY) || '[]');
+  } catch { return []; }
+}
+
+function setCompareIds(ids) {
+  localStorage.setItem(COMPARE_KEY, JSON.stringify(ids));
+  // Dispatch custom event so floating button can react
+  window.dispatchEvent(new Event('omix-compare-changed'));
+}
+
+function ProductCard({ listing, compareMode, onCompareChange }) {
   const [imgError, setImgError] = useState(false);
   const [user, setUser] = useState(null);
   const [justAdded, setJustAdded] = useState(false);
@@ -17,14 +31,43 @@ function ProductCard({ listing }) {
 
   const inCart = cart.find(item => item.id === listing.id);
 
+  // Check if this item is selected for comparison
+  const [isCompared, setIsCompared] = useState(() => getCompareIds().includes(listing.id));
+
   // Check auth on mount
-  useState(() => {
+  useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
       setUser(session?.user ?? null);
     });
-  });
+  }, []);
 
-  const handleShare = (e) => {
+  // Sync compare state when localStorage changes
+  useEffect(() => {
+    const handler = () => {
+      setIsCompared(getCompareIds().includes(listing.id));
+    };
+    window.addEventListener('omix-compare-changed', handler);
+    return () => window.removeEventListener('omix-compare-changed', handler);
+  }, [listing.id]);
+
+  const handleWebShare = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    const shareData = {
+      title: listing.title,
+      text: `${listing.title} - KES ${listing.price?.toLocaleString()} on Omix`,
+      url: window.location.origin + '/listing/' + listing.id,
+    };
+    if (navigator.share) {
+      navigator.share(shareData).catch(() => {});
+    } else {
+      navigator.clipboard.writeText(shareData.url).then(() => {
+        // Brief visual feedback — could use a toast
+      }).catch(() => {});
+    }
+  };
+
+  const handleWhatsAppShare = (e) => {
     e.preventDefault();
     e.stopPropagation();
     const message = `Check out this ${listing.title} on Omix!\nKES ${listing.price?.toLocaleString()} - Kericho\n${window.location.origin}/listing/${listing.id}`;
@@ -50,6 +93,20 @@ function ProductCard({ listing }) {
 
     setJustAdded(true);
     setTimeout(() => setJustAdded(false), 1500);
+  };
+
+  const toggleCompare = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    let ids = getCompareIds();
+    if (ids.includes(listing.id)) {
+      ids = ids.filter(id => id !== listing.id);
+    } else {
+      ids.push(listing.id);
+    }
+    setCompareIds(ids);
+    setIsCompared(!isCompared);
+    if (onCompareChange) onCompareChange(ids);
   };
 
   return (
@@ -82,8 +139,30 @@ function ProductCard({ listing }) {
           </div>
         )}
 
-        {/* Share button */}
-        <button onClick={handleShare}
+        {/* Compare checkbox (visible when comparison mode is active) */}
+        {compareMode && (
+          <button
+            onClick={toggleCompare}
+            className={`absolute top-2 left-2 p-1.5 rounded-full shadow-sm transition-all z-10 ${
+              isCompared
+                ? 'bg-[#ff385c] text-white'
+                : 'bg-white/90 dark:bg-black/90 text-zinc-400 hover:text-[#ff385c]'
+            }`}
+            aria-label={isCompared ? 'Remove from comparison' : 'Add to comparison'}
+          >
+            {isCompared ? <CheckSquare className="w-4 h-4" /> : <Square className="w-4 h-4" />}
+          </button>
+        )}
+
+        {/* Web Share button */}
+        <button onClick={handleWebShare}
+          className="absolute top-2 right-12 bg-white/90 dark:bg-black/90 text-zinc-700 dark:text-zinc-300 p-1.5 rounded-full shadow-sm hover:bg-[#ff385c] hover:text-white transition-all opacity-0 group-hover:opacity-100"
+          aria-label="Share">
+          <Share2 className="w-3 h-3" />
+        </button>
+
+        {/* WhatsApp Share button */}
+        <button onClick={handleWhatsAppShare}
           className="absolute top-2 right-2 bg-[#25D366] text-white p-1.5 rounded-full shadow-sm hover:bg-[#20BD5A] transition-all opacity-0 group-hover:opacity-100"
           aria-label="Share on WhatsApp">
           <Share2 className="w-3 h-3" />

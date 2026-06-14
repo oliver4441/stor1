@@ -1,7 +1,24 @@
-// Omix Service Worker — aggressive update strategy
+// Omix Service Worker — aggressive update strategy with offline cart support
 const CACHE_NAME = 'omix-v1';
+const API_CACHE = 'omix-api-v1';
+const CART_CACHE = 'omix-cart-v1';
+
+// Assets to pre-cache on install
+const PRECACHE_URLS = [
+  '/',
+  '/index.html',
+  '/offline.html',
+];
 
 self.addEventListener('install', (event) => {
+  // Pre-cache core assets
+  event.waitUntil(
+    caches.open(CACHE_NAME)
+      .then((cache) => cache.addAll(PRECACHE_URLS))
+      .catch(() => {
+        // Pre-cache failed — still activate
+      })
+  );
   // Force immediate activation
   self.skipWaiting();
 });
@@ -9,13 +26,13 @@ self.addEventListener('install', (event) => {
 self.addEventListener('activate', (event) => {
   // Claim all clients immediately
   event.waitUntil(clients.claim());
-  
+
   // Delete old caches
   event.waitUntil(
     caches.keys().then((names) =>
       Promise.all(
         names
-          .filter((name) => name !== CACHE_NAME)
+          .filter((name) => name !== CACHE_NAME && name !== API_CACHE && name !== CART_CACHE)
           .map((name) => caches.delete(name))
       )
     )
@@ -24,24 +41,74 @@ self.addEventListener('activate', (event) => {
 
 // Network-first strategy with cache fallback
 self.addEventListener('fetch', (event) => {
-  if (event.request.method !== 'GET') return;
-  
-  // Skip non-HTML requests that aren't in our domain
-  const url = new URL(event.request.url);
+  const { request } = event;
+  const url = new URL(request.url);
+
+  // Only handle GET requests
+  if (request.method !== 'GET') return;
+
+  // Handle API requests with Stale-While-Revalidate
+  if (url.pathname.startsWith('/api/')) {
+    return event.respondWith(
+      caches.open(API_CACHE).then((cache) =>
+        fetch(request)
+          .then((response) => {
+            if (response.ok) {
+              cache.put(request, response.clone());
+            }
+            return response;
+          })
+          .catch(() => cache.match(request))
+      )
+    );
+  }
+
+  // Skip non-html/static requests that aren't in our domain
   if (url.origin !== location.origin) return;
-  
-  event.respondWith(
-    fetch(event.request)
-      .then((response) => {
-        // Cache successful responses
-        if (response.ok && event.request.destination === 'document') {
-          const clone = response.clone();
-          caches.open(CACHE_NAME).then((cache) => cache.put(event.request, clone));
-        }
-        return response;
+
+  // Navigational requests — Network first, cache fallback
+  if (request.destination === 'document' || request.destination === '') {
+    event.respondWith(
+      fetch(request)
+        .then((response) => {
+          if (response.ok) {
+            const clone = response.clone();
+            caches.open(CACHE_NAME).then((cache) => cache.put(request, clone));
+          }
+          return response;
+        })
+        .catch(() =>
+          caches.match(request).then((cached) => {
+            // If no cached page, show offline fallback
+            if (cached) return cached;
+            return caches.match('/offline.html');
+          })
+        )
+    );
+    return;
+  }
+
+  // Static assets (JS, CSS, images) — Cache-first
+  if (
+    request.destination === 'script' ||
+    request.destination === 'style' ||
+    request.destination === 'image' ||
+    request.destination === 'font'
+  ) {
+    event.respondWith(
+      caches.match(request).then((cached) => {
+        if (cached) return cached;
+        return fetch(request).then((response) => {
+          if (response.ok) {
+            const clone = response.clone();
+            caches.open(CACHE_NAME).then((cache) => cache.put(request, clone));
+          }
+          return response;
+        });
       })
-      .catch(() => caches.match(event.request))
-  );
+    );
+    return;
+  }
 });
 
 // Listen for messages from the page

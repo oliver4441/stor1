@@ -1,5 +1,5 @@
-import { useState } from 'react';
-import { X, RotateCcw, MoreHorizontal, Sparkles, Send } from 'lucide-react';
+import { useState, useRef } from 'react';
+import { X, RotateCcw, MoreHorizontal, Sparkles, Send, Mic } from 'lucide-react';
 import { useNiaChat } from '../context/NiaChatContext';
 
 export default function NiaChat() {
@@ -12,6 +12,34 @@ export default function NiaChat() {
 
   const [showMenu, setShowMenu] = useState(false);
   const [inputText, setInputText] = useState('');
+  const [voiceListening, setVoiceListening] = useState(false);
+  const voiceRecRef = useRef(null);
+
+  const startVoiceInput = () => {
+    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+    if (!SpeechRecognition) return;
+    if (voiceListening) {
+      try { voiceRecRef.current?.stop(); } catch {}
+      setVoiceListening(false);
+      return;
+    }
+    try {
+      const recognition = new SpeechRecognition();
+      recognition.lang = 'en-KE';
+      recognition.continuous = false;
+      recognition.interimResults = false;
+      recognition.onresult = (e) => {
+        const text = e.results[0][0].transcript;
+        setInputText(prev => prev + (prev ? ' ' : '') + text);
+        setVoiceListening(false);
+      };
+      recognition.onerror = () => setVoiceListening(false);
+      recognition.onend = () => setVoiceListening(false);
+      recognition.start();
+      voiceRecRef.current = recognition;
+      setVoiceListening(true);
+    } catch { setVoiceListening(false); }
+  };
 
   if (!isOpen) return null;
 
@@ -189,6 +217,17 @@ export default function NiaChat() {
               border: `1px solid ${COLORS.border}`,
             }}
           />
+          <button
+            type="button"
+            onClick={startVoiceInput}
+            className={`p-2.5 rounded-xl transition-all ${
+              voiceListening ? 'bg-[#ff385c] text-white animate-pulse' : 'text-zinc-400 hover:bg-zinc-100 dark:hover:bg-zinc-800'
+            }`}
+            title={voiceListening ? 'Listening...' : 'Speak your question'}
+            style={voiceListening ? { backgroundColor: COLORS.accent } : {}}
+          >
+            <Mic className="w-4 h-4" />
+          </button>
           <button
             onClick={handleSend}
             disabled={!inputText.trim() || isTyping}

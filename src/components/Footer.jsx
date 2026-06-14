@@ -17,6 +17,9 @@ function Footer() {
         <div className="flex gap-4">
           <Link to="/terms" className="text-sm text-zinc-500 dark:text-zinc-400 hover:text-[#ff385c]">{t('footer.terms')}</Link>
           <Link to="/privacy" className="text-sm text-zinc-500 dark:text-zinc-400 hover:text-[#ff385c]">{t('footer.privacy')}</Link>
+          <a href="https://www.facebook.com/share/1Csjdd5f6h/" target="_blank" rel="noopener noreferrer" className="text-sm text-zinc-500 dark:text-zinc-400 hover:text-[#ff385c]">
+            Follow us on Facebook
+          </a>
         </div>
       </div>
     </footer>

@@ -415,6 +415,37 @@ const translations = {
       delivery: 'Delivery available',
     },
 
+    // ── Compare ──
+    compare: {
+      title: 'Compare Products',
+      addToCompare: 'Add to Compare',
+      removeFromCompare: 'Remove from Compare',
+      compare: 'Compare',
+      noProducts: 'No products selected for comparison.',
+      selectProducts: 'Select up to 4 products to compare',
+      maxReached: 'Maximum 4 products can be compared at once',
+      clearAll: 'Clear All',
+      differences: 'Differences',
+      allFeatures: 'All Features',
+      price: 'Price',
+      condition: 'Condition',
+      category: 'Category',
+      location: 'Location',
+      viewDetails: 'View Details',
+    },
+
+    // ── Saved Searches ──
+    savedSearches: {
+      title: 'Saved Searches',
+      saveSearch: 'Save Search',
+      saved: 'Search saved!',
+      noSavedSearches: 'No saved searches yet.',
+      saveDescription: 'Get notified when new items match your search',
+      unsave: 'Unsave',
+      manageAlerts: 'Manage Alerts',
+      searchAgain: 'Search Again',
+    },
+
     // ── About ──
     about: {
       title: 'About Omix Store',
@@ -967,6 +998,38 @@ const translations = {
       signUpToAddToCart: 'Jisajili kuongeza kikoche',
       loginToBuyNow: 'Ingia kununua sasa',
       share: 'Sambaza',
+      delivery: 'Usafirishaji unapatikana',
+    },
+
+    // ── Compare ──
+    compare: {
+      title: 'Linganisha Bidhaa',
+      addToCompare: 'Ongeza kwa Kulinganisha',
+      removeFromCompare: 'Ondoa kwenye Kulinganisha',
+      compare: 'Linganisha',
+      noProducts: 'Hakuna bidhaa zilizochaguliwa kwa kulinganisha.',
+      selectProducts: 'Chagua hadi bidhaa 4 kulinganisha',
+      maxReached: 'Upeo wa bidhaa 4 unaweza kulinganishwa kwa wakati mmoja',
+      clearAll: 'Futa Zote',
+      differences: 'Tofauti',
+      allFeatures: 'Vipengele Vyote',
+      price: 'Bei',
+      condition: 'Hali',
+      category: 'Aghamu',
+      location: 'Eneo',
+      viewDetails: 'Ona Maelezo',
+    },
+
+    // ── Saved Searches ──
+    savedSearches: {
+      title: 'Tafuta Zilizohifadhiwa',
+      saveSearch: 'Hifadhi Utafutaji',
+      saved: 'Utafutaji umehifadhiwa!',
+      noSavedSearches: 'Hakuna utafutaji uliohifadhiwa bado.',
+      saveDescription: 'Pata arifa bidhaa mpya zinapolingana na utafutaji wako',
+      unsave: 'Ondoa Kuhifadhi',
+      manageAlerts: 'Dhibiti Arifa',
+      searchAgain: 'Tafuta Tena',
     },
 
     // ── About ──
@@ -1124,48 +1187,6 @@ const translations = {
     // ── Recently Viewed ──
     recentlyViewed: {
       title: 'Uliyotazama Hivi Karibuni',
-    },
-
-    // ── Footer ──
-    footer: {
-      tagline: 'Soko safi zaidi la P2P Kericho, Kenya.',
-      quickLinks: 'Viungo vya Haraka',
-      sell: 'Kuuza',
-      events: 'Matukio',
-      wishes: 'Matakayo',
-      howItWorks: 'Jinsi Inavyofanya Kazi',
-      about: 'Kuhusu',
-      legal: 'Kisheria',
-      terms: 'Masharti ya Huduma',
-      privacy: 'Sera ya Faragha',
-      contact: 'Wasiliana',
-      allRights: 'Haki zote zimehifadhiwa.',
-    },
-
-    // ── Terms ──
-    terms: {
-      title: 'Masharti ya Huduma',
-      lastUpdated: 'Imesasishwa mwisho: Juni 2025',
-      back: 'Rudi Nyumbani',
-    },
-
-    // ── Privacy ──
-    privacy: {
-      title: 'Sera ya Faragha',
-      lastUpdated: 'Imesasishwa mwisho: Juni 2025',
-      back: 'Rudi Nyumbani',
-    },
-
-    // ── Wishes ──
-    wishes: {
-      title: 'Bodi ya Matakayo',
-      subtitle: 'Unatafuta kitu maalum? Chapisha taka na wauzaji wakuje kwako.',
-      postWish: 'Chapisha Taka',
-      noWishes: 'Hakuna matakayo bado. Kuwa wa kwanza!',
-      budget: 'Bajeti',
-      urgent: 'Haraka',
-      open: 'Fungua',
-      fulfilled: 'Imetimizwa',
     },
   },
 };

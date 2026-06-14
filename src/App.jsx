@@ -13,6 +13,7 @@ import MobileBottomNav from './components/MobileBottomNav';
 import ScrollToTop from './components/ScrollToTop';
 import BackToTop from './components/BackToTop';
 import PWAUpdateChecker from './components/PWAUpdateChecker';
+import InstallPrompt from './components/InstallPrompt';
 import FloatingCartButton from './components/FloatingCartButton';
 import { SeasonalProvider } from './context/SeasonalContext';
 import { supabase } from './utils/supabase';
@@ -128,6 +129,7 @@ function App() {
         <NiaChat />
         <NiaFloatingButton />
         <PWAUpdateChecker />
+        <InstallPrompt />
       </div>
     </ErrorBoundary>
     </NiaChatProvider>

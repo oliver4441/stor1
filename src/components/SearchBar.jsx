@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from 'react';
-import { Search, X, Clock, TrendingUp } from 'lucide-react';
+import { Search, X, Clock, TrendingUp, Mic } from 'lucide-react';
 
 const TRENDING_SEARCHES = [
   'iPhone', 'Sofa', 'Laptop', 'TV', 'Shoes',
@@ -33,8 +33,38 @@ export default function SearchBar({ onSearch, initialValue = '' }) {
   const [query, setQuery] = useState(initialValue);
   const [focused, setFocused] = useState(false);
   const [recent, setRecent] = useState([]);
+  const [listening, setListening] = useState(false);
   const inputRef = useRef(null);
   const containerRef = useRef(null);
+  const recognitionRef = useRef(null);
+
+  const startVoiceSearch = () => {
+    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+    if (!SpeechRecognition) return;
+    if (listening) { stopVoiceSearch(); return; }
+    try {
+      const recognition = new SpeechRecognition();
+      recognition.lang = 'en-KE';
+      recognition.continuous = false;
+      recognition.interimResults = false;
+      recognition.onresult = (e) => {
+        const transcript = e.results[0][0].transcript;
+        setQuery(transcript);
+        setListening(false);
+        setTimeout(() => onSearch(transcript), 100);
+      };
+      recognition.onerror = () => setListening(false);
+      recognition.onend = () => setListening(false);
+      recognition.start();
+      recognitionRef.current = recognition;
+      setListening(true);
+    } catch { setListening(false); }
+  };
+
+  const stopVoiceSearch = () => {
+    try { recognitionRef.current?.stop(); } catch {}
+    setListening(false);
+  };
 
   useEffect(() => {
     setRecent(getRecentSearches());
@@ -95,17 +125,27 @@ export default function SearchBar({ onSearch, initialValue = '' }) {
           onChange={(e) => setQuery(e.target.value)}
           onFocus={() => setFocused(true)}
           placeholder="Search for anything..."
-          className="w-full pl-12 pr-12 py-3.5 rounded-2xl bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 focus:border-[#ff385c] focus:outline-none text-zinc-900 dark:text-white text-sm shadow-sm"
+          className="w-full pl-12 pr-36 py-3.5 rounded-2xl bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 focus:border-[#ff385c] focus:outline-none text-zinc-900 dark:text-white text-sm shadow-sm"
         />
         {query && (
           <button
             type="button"
             onClick={() => { setQuery(''); onSearch(''); inputRef.current?.focus(); }}
-            className="absolute right-12 top-1/2 -translate-y-1/2 p-1 rounded-full hover:bg-zinc-100 dark:hover:bg-zinc-800 text-zinc-400"
+            className="absolute right-[8.5rem] top-1/2 -translate-y-1/2 p-1 rounded-full hover:bg-zinc-100 dark:hover:bg-zinc-800 text-zinc-400"
           >
             <X className="w-4 h-4" />
           </button>
         )}
+        <button
+          type="button"
+          onClick={startVoiceSearch}
+          className={`absolute right-[5.5rem] top-1/2 -translate-y-1/2 p-1.5 rounded-full transition-colors ${
+            listening ? 'bg-[#ff385c] text-white animate-pulse' : 'text-zinc-400 hover:bg-zinc-100 dark:hover:bg-zinc-800'
+          }`}
+          title={listening ? 'Listening...' : 'Search by voice'}
+        >
+          <Mic className="w-4 h-4" />
+        </button>
         <button
           type="submit"
           className="absolute right-2 top-1/2 -translate-y-1/2 bg-[#ff385c] text-white px-4 py-1.5 rounded-xl text-xs font-bold hover:bg-[#e03150] transition-colors"

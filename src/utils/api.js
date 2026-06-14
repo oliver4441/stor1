@@ -804,3 +804,184 @@ export async function paystackVerify(reference) {
   } catch (err) { return { success: false, error: err.message }; }
 }
 
+// ── Price Drop Watchers ────────────────────────────────────
+
+/**
+ * Create a price drop watch for a listing.
+ * @param {string} userId - The user's UUID
+ * @param {number} listingId - The listing ID
+ * @param {number|null} targetPrice - The target price (null = any drop)
+ * @returns {Promise<{success: boolean, data?: object, error?: string}>}
+ */
+export async function watchPriceDrop(userId, listingId, targetPrice = null) {
+  try {
+    const { data, error } = await supabase
+      .from('price_watchers')
+      .upsert({
+        user_id: userId,
+        listing_id: listingId,
+        target_price: targetPrice,
+      }, {
+        onConflict: 'user_id, listing_id, coalesce(target_price, -1)',
+      })
+      .select()
+      .single();
+
+    if (error) return { success: false, error: error.message };
+    return { success: true, data };
+  } catch (err) {
+    return { success: false, error: err.message };
+  }
+}
+
+/**
+ * Get all price watchers for a user.
+ * @param {string} userId - The user's UUID
+ * @returns {Promise<Array>}
+ */
+export async function getPriceWatchers(userId) {
+  try {
+    const { data, error } = await supabase
+      .from('price_watchers')
+      .select('*, listings:listing_id(title, price, images, status)')
+      .eq('user_id', userId)
+      .order('created_at', { ascending: false });
+
+    if (error) { console.error('getPriceWatchers error:', error); return []; }
+    return data || [];
+  } catch (err) {
+    console.error('getPriceWatchers error:', err);
+    return [];
+  }
+}
+
+/**
+ * Remove a price watcher.
+ * @param {number} id - The price_watchers row ID
+ * @returns {Promise<{success: boolean, error?: string}>}
+ */
+export async function removePriceWatcher(id) {
+  try {
+    const { error } = await supabase
+      .from('price_watchers')
+      .delete()
+      .eq('id', id);
+
+    if (error) return { success: false, error: error.message };
+    return { success: true };
+  } catch (err) {
+    return { success: false, error: err.message };
+  }
+}
+
+// ── Back in Stock Watchers ─────────────────────────────────
+
+/**
+ * Create a back-in-stock watch for a listing.
+ * @param {string} userId - The user's UUID
+ * @param {number} listingId - The listing ID
+ * @returns {Promise<{success: boolean, data?: object, error?: string}>}
+ */
+export async function watchBackInStock(userId, listingId) {
+  try {
+    const { data, error } = await supabase
+      .from('stock_watchers')
+      .upsert({
+        user_id: userId,
+        listing_id: listingId,
+      }, {
+        onConflict: 'user_id, listing_id',
+      })
+      .select()
+      .single();
+
+    if (error) return { success: false, error: error.message };
+    return { success: true, data };
+  } catch (err) {
+    return { success: false, error: err.message };
+  }
+}
+
+/**
+ * Get all stock watchers for a user.
+ * @param {string} userId - The user's UUID
+ * @returns {Promise<Array>}
+ */
+export async function getStockWatchers(userId) {
+  try {
+    const { data, error } = await supabase
+      .from('stock_watchers')
+      .select('*, listings:listing_id(title, price, images, quantity, status)')
+      .eq('user_id', userId)
+      .order('created_at', { ascending: false });
+
+    if (error) { console.error('getStockWatchers error:', error); return []; }
+    return data || [];
+  } catch (err) {
+    console.error('getStockWatchers error:', err);
+    return [];
+  }
+}
+
+/**
+ * Remove a stock watcher.
+ * @param {number} id - The stock_watchers row ID
+ * @returns {Promise<{success: boolean, error?: string}>}
+ */
+export async function removeStockWatcher(id) {
+  try {
+    const { error } = await supabase
+      .from('stock_watchers')
+      .delete()
+      .eq('id', id);
+
+    if (error) return { success: false, error: error.message };
+    return { success: true };
+  } catch (err) {
+    return { success: false, error: err.message };
+  }
+}
+
+
+// ── Saved Searches ────────────────────────────────────────────────────
+export async function saveSearch(userId, query) {
+  try {
+    const { data, error } = await supabase
+      .from('saved_searches')
+      .insert({ user_id: userId, query })
+      .select()
+      .single();
+    if (error) throw error;
+    return { success: true, data };
+  } catch (err) {
+    return { success: false, error: err.message };
+  }
+}
+
+export async function getSavedSearches(userId) {
+  try {
+    const { data, error } = await supabase
+      .from('saved_searches')
+      .select('*')
+      .eq('user_id', userId)
+      .order('created_at', { ascending: false });
+    if (error) throw error;
+    return data || [];
+  } catch (err) {
+    console.error('getSavedSearches error:', err);
+    return [];
+  }
+}
+
+export async function deleteSavedSearch(id) {
+  try {
+    const { error } = await supabase
+      .from('saved_searches')
+      .delete()
+      .eq('id', id);
+    if (error) throw error;
+    return { success: true };
+  } catch (err) {
+    return { success: false, error: err.message };
+  }
+}
