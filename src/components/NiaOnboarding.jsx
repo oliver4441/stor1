@@ -46,7 +46,7 @@ export default function NiaOnboarding() {
 
         <div className="px-5 py-4">
           <p className="text-sm mb-4 leading-relaxed" style={{ color: COLORS.textBot }}>
-            Hi! I'm <strong>Nia</strong> — I'll help you find products, track orders, and get the most out of Omix Store.
+            Hi! I'm <strong>Nia</strong> 🤖 — your AI-powered assistant. I can help you find products, track orders, and answer any question about Omix Store.
           </p>
 
           <div className="flex gap-2">

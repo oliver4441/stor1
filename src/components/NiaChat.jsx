@@ -1,18 +1,32 @@
 import { useState } from 'react';
-import { X, RotateCcw, MoreHorizontal, Sparkles } from 'lucide-react';
+import { X, RotateCcw, MoreHorizontal, Sparkles, Send } from 'lucide-react';
 import { useNiaChat } from '../context/NiaChatContext';
 
 export default function NiaChat() {
   const {
     isOpen, closeChat, resetChat,
     messages, isTyping, currentChips,
-    handleChipClick,
+    handleChipClick, handleUserInput,
     messagesEndRef, COLORS,
   } = useNiaChat();
 
   const [showMenu, setShowMenu] = useState(false);
+  const [inputText, setInputText] = useState('');
 
   if (!isOpen) return null;
+
+  const handleSend = () => {
+    if (!inputText.trim() || isTyping) return;
+    handleUserInput(inputText);
+    setInputText('');
+  };
+
+  const handleKeyDown = (e) => {
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault();
+      handleSend();
+    }
+  };
 
   return (
     <div
@@ -39,7 +53,7 @@ export default function NiaChat() {
               Nia
               <span className="w-2 h-2 bg-green-400 rounded-full inline-block" />
             </div>
-            <div className="text-[11px] text-white/70">Omix Store Assistant</div>
+            <div className="text-[11px] text-white/70">AI Assistant</div>
           </div>
         </div>
         <div className="flex items-center gap-1">
@@ -75,14 +89,14 @@ export default function NiaChat() {
         )}
       </div>
 
-      {/* Chat with AI coming soon banner */}
+      {/* AI-powered badge */}
       <div
-        className="flex items-center gap-2.5 px-4 py-3 flex-shrink-0 border-b"
-        style={{ backgroundColor: `${COLORS.accent}10`, borderColor: COLORS.border }}
+        className="flex items-center gap-2.5 px-4 py-2.5 flex-shrink-0 border-b"
+        style={{ backgroundColor: `${COLORS.accent}08`, borderColor: COLORS.border }}
       >
-        <Sparkles className="w-4 h-4 flex-shrink-0" style={{ color: COLORS.accent }} />
-        <p className="text-xs font-medium" style={{ color: COLORS.textBot }}>
-          Chat with AI coming soon. For now, use the quick options below to navigate the store.
+        <Sparkles className="w-3.5 h-3.5 flex-shrink-0" style={{ color: COLORS.accent }} />
+        <p className="text-[11px] font-medium" style={{ color: COLORS.textBot }}>
+          AI-powered — ask me anything about Omix Store!
         </p>
       </div>
 
@@ -147,14 +161,8 @@ export default function NiaChat() {
                   color: COLORS.chipText,
                   backgroundColor: 'transparent',
                 }}
-                onMouseEnter={(e) => {
-                  e.target.style.backgroundColor = COLORS.accent;
-                  e.target.style.color = '#fff';
-                }}
-                onMouseLeave={(e) => {
-                  e.target.style.backgroundColor = 'transparent';
-                  e.target.style.color = COLORS.chipText;
-                }}
+                onMouseEnter={(e) => { e.target.style.backgroundColor = COLORS.accent; e.target.style.color = '#fff'; }}
+                onMouseLeave={(e) => { e.target.style.backgroundColor = 'transparent'; e.target.style.color = COLORS.chipText; }}
               >
                 {chip}
               </button>
@@ -163,6 +171,33 @@ export default function NiaChat() {
         )}
 
         <div ref={messagesEndRef} />
+      </div>
+
+      {/* Input */}
+      <div className="flex-shrink-0 p-3 border-t" style={{ borderColor: COLORS.border, backgroundColor: COLORS.bg }}>
+        <div className="flex items-center gap-2">
+          <input
+            type="text"
+            value={inputText}
+            onChange={(e) => setInputText(e.target.value)}
+            onKeyDown={handleKeyDown}
+            placeholder="Ask Nia anything..."
+            className="flex-1 px-4 py-2.5 rounded-xl text-sm outline-none transition-all"
+            style={{
+              backgroundColor: COLORS.bgGray,
+              color: COLORS.textBot,
+              border: `1px solid ${COLORS.border}`,
+            }}
+          />
+          <button
+            onClick={handleSend}
+            disabled={!inputText.trim() || isTyping}
+            className="p-2.5 rounded-xl text-white transition-all disabled:opacity-40"
+            style={{ backgroundColor: COLORS.accent }}
+          >
+            <Send className="w-4 h-4" />
+          </button>
+        </div>
       </div>
     </div>
   );
