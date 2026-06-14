@@ -185,6 +185,7 @@ export default function CheckoutPage() {
     email: '',
     area: '',
     landmark: '',
+    referralCode: '',
   });
 
   const total = getTotal();
@@ -371,6 +372,12 @@ export default function CheckoutPage() {
 
       await loadPaystackScript();
 
+      if (!window.PaystackPop) {
+        setError('Payment system failed to load. Please check your internet connection and try again.');
+        setLoading(false);
+        return;
+      }
+
       const orderResult = await createOrder({
         items: currentItems.map(item => ({
           product_id: item.id,
@@ -380,7 +387,7 @@ export default function CheckoutPage() {
           quantity: item.quantity,
           subtotal: item.price * item.quantity,
         })),
-        total,
+        total: currentTotal,
         customerName: form.fullName.trim(),
         phone: form.phone.trim(),
         email: form.email.trim(),
@@ -391,6 +398,8 @@ export default function CheckoutPage() {
         promoCode: promoApplied ? promoApplied.code : null,
         promoCodeId: promoApplied ? promoApplied.id : null,
         isFreeDelivery,
+        loyaltyPointsUsed: redeemPoints ? computedPtsDiscount : 0,
+        referralCode: form.referralCode || null,
       });
 
       if (!orderResult.success) {
@@ -407,31 +416,37 @@ export default function CheckoutPage() {
       }
       orderCreated.current = true;
 
-      window.PaystackPop.setup({
-        key: PAYSTACK_PUBLIC_KEY,
-        email: form.email.trim() || 'customer@omix.store',
-        amount: Math.round(currentDiscounted * 100),
-        currency: 'KES',
-        ref: `omix_${orderId}_${Date.now()}`,
-        metadata: {
-          order_id: orderId,
-          customer_name: form.fullName.trim(),
-          phone: form.phone.trim(),
-        },
-        callback: function(response) {
-          if (response && response.trxref) {
-            clearCart();
-            navigate(`/order-success?orderId=${orderId}&reference=${response.trxref}`);
-          } else {
-            setError('Payment was not verified. Please contact support with your order ID.');
+      try {
+        window.PaystackPop.setup({
+          key: PAYSTACK_PUBLIC_KEY,
+          email: form.email.trim() || 'customer@omix.store',
+          amount: Math.round(currentDiscounted * 100),
+          currency: 'KES',
+          ref: `omix_${orderId}_${Date.now()}`,
+          metadata: {
+            order_id: orderId,
+            customer_name: form.fullName.trim(),
+            phone: form.phone.trim(),
+          },
+          callback: function(response) {
+            if (response && response.trxref) {
+              clearCart();
+              navigate(`/order-success?orderId=${orderId}&reference=${response.trxref}`);
+            } else {
+              setError('Payment was not verified. Please contact support with your order ID.');
+              setLoading(false);
+            }
+          },
+          onClose: function() {
             setLoading(false);
-          }
-        },
-        onClose: function() {
-          setLoading(false);
-          setError('Payment was not completed. Your order is saved — you can try again from My Account.');
-        },
-      }).openIframe();
+            setError('Payment was not completed. Your order is saved — you can try again from My Account.');
+          },
+        }).openIframe();
+      } catch (paystackErr) {
+        console.error('Paystack setup error:', paystackErr);
+        setError('Payment system error. Please try again or contact support. Your order has been saved.');
+        setLoading(false);
+      }
 
     } catch (err) {
       console.error('Checkout error:', err);

@@ -422,7 +422,7 @@ export async function adminDeleteListing(id) {
 
 // ── Orders (Online Store) ────────────────────────────────
 
-export async function createOrder({ items, total, customerName, phone, email, address, city, area, landmark, promoCode, promoCodeId, isFreeDelivery }) {
+export async function createOrder({ items, total, customerName, phone, email, address, city, area, landmark, promoCode, promoCodeId, isFreeDelivery, loyaltyPointsUsed, referralCode }) {
   const { data: { user } } = await supabase.auth.getUser()
 
   if (!user) {
@@ -450,6 +450,8 @@ export async function createOrder({ items, total, customerName, phone, email, ad
       promo_code_id: promoCodeId || null,
       promo_code_text: promoCode || null,
       delivery_discount: isFreeDelivery ? 1 : 0,
+      loyalty_points_used: loyaltyPointsUsed || 0,
+      referral_code: referralCode || null,
     })
     .select('*')
     .single()
