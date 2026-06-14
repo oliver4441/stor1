@@ -92,8 +92,14 @@ CREATE POLICY "Users create order items" ON omix_order_items
 -- ========================================
 CREATE POLICY "Anyone read active promo codes" ON promo_codes
   FOR SELECT USING (is_active = true);
-CREATE POLICY "Admins manage promo codes" ON promo_codes
-  FOR ALL USING (auth.uid() IN (SELECT id FROM profiles WHERE role = 'admin'));
+CREATE POLICY "Admins manage promo codes select" ON promo_codes
+  FOR SELECT USING (auth.uid() IN (SELECT id FROM profiles WHERE role = 'admin'));
+CREATE POLICY "Admins manage promo codes insert" ON promo_codes
+  FOR INSERT WITH CHECK (auth.uid() IN (SELECT id FROM profiles WHERE role = 'admin'));
+CREATE POLICY "Admins manage promo codes update" ON promo_codes
+  FOR UPDATE USING (auth.uid() IN (SELECT id FROM profiles WHERE role = 'admin'));
+CREATE POLICY "Admins manage promo codes delete" ON promo_codes
+  FOR DELETE USING (auth.uid() IN (SELECT id FROM profiles WHERE role = 'admin'));
 
 -- ========================================
 -- PRODUCT REVIEWS

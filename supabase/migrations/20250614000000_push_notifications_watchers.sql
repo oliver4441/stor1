@@ -12,12 +12,23 @@ CREATE TABLE IF NOT EXISTS public.push_subscriptions (
   UNIQUE(user_id, endpoint)
 );
 ALTER TABLE public.push_subscriptions ENABLE ROW LEVEL SECURITY;
-DROP POLICY IF EXISTS "Users can manage their own push subscriptions" ON public.push_subscriptions;
-CREATE POLICY "Users can manage their own push subscriptions"
-  ON public.push_subscriptions
-  FOR ALL
+DROP POLICY IF EXISTS "Users can manage their own push subscriptions select" ON public.push_subscriptions;
+CREATE POLICY "Users can manage their own push subscriptions select"
+  ON public.push_subscriptions FOR SELECT
+  USING (auth.uid() = user_id);
+DROP POLICY IF EXISTS "Users can manage their own push subscriptions insert" ON public.push_subscriptions;
+CREATE POLICY "Users can manage their own push subscriptions insert"
+  ON public.push_subscriptions FOR INSERT
+  WITH CHECK (auth.uid() = user_id);
+DROP POLICY IF EXISTS "Users can manage their own push subscriptions update" ON public.push_subscriptions;
+CREATE POLICY "Users can manage their own push subscriptions update"
+  ON public.push_subscriptions FOR UPDATE
   USING (auth.uid() = user_id)
   WITH CHECK (auth.uid() = user_id);
+DROP POLICY IF EXISTS "Users can manage their own push subscriptions delete" ON public.push_subscriptions;
+CREATE POLICY "Users can manage their own push subscriptions delete"
+  ON public.push_subscriptions FOR DELETE
+  USING (auth.uid() = user_id);
 CREATE INDEX IF NOT EXISTS idx_push_subscriptions_user_id ON public.push_subscriptions(user_id);
 
 -- PRICE DROP WATCHERS
@@ -30,12 +41,23 @@ CREATE TABLE IF NOT EXISTS public.price_watchers (
   UNIQUE(user_id, listing_id, COALESCE(target_price, -1))
 );
 ALTER TABLE public.price_watchers ENABLE ROW LEVEL SECURITY;
-DROP POLICY IF EXISTS "Users can manage their own price watchers" ON public.price_watchers;
-CREATE POLICY "Users can manage their own price watchers"
-  ON public.price_watchers
-  FOR ALL
+DROP POLICY IF EXISTS "Users can manage their own price watchers select" ON public.price_watchers;
+CREATE POLICY "Users can manage their own price watchers select"
+  ON public.price_watchers FOR SELECT
+  USING (auth.uid() = user_id);
+DROP POLICY IF EXISTS "Users can manage their own price watchers insert" ON public.price_watchers;
+CREATE POLICY "Users can manage their own price watchers insert"
+  ON public.price_watchers FOR INSERT
+  WITH CHECK (auth.uid() = user_id);
+DROP POLICY IF EXISTS "Users can manage their own price watchers update" ON public.price_watchers;
+CREATE POLICY "Users can manage their own price watchers update"
+  ON public.price_watchers FOR UPDATE
   USING (auth.uid() = user_id)
   WITH CHECK (auth.uid() = user_id);
+DROP POLICY IF EXISTS "Users can manage their own price watchers delete" ON public.price_watchers;
+CREATE POLICY "Users can manage their own price watchers delete"
+  ON public.price_watchers FOR DELETE
+  USING (auth.uid() = user_id);
 CREATE INDEX IF NOT EXISTS idx_price_watchers_user_id ON public.price_watchers(user_id);
 CREATE INDEX IF NOT EXISTS idx_price_watchers_listing_id ON public.price_watchers(listing_id);
 
@@ -48,11 +70,22 @@ CREATE TABLE IF NOT EXISTS public.stock_watchers (
   UNIQUE(user_id, listing_id)
 );
 ALTER TABLE public.stock_watchers ENABLE ROW LEVEL SECURITY;
-DROP POLICY IF EXISTS "Users can manage their own stock watchers" ON public.stock_watchers;
-CREATE POLICY "Users can manage their own stock watchers"
-  ON public.stock_watchers
-  FOR ALL
+DROP POLICY IF EXISTS "Users can manage their own stock watchers select" ON public.stock_watchers;
+CREATE POLICY "Users can manage their own stock watchers select"
+  ON public.stock_watchers FOR SELECT
+  USING (auth.uid() = user_id);
+DROP POLICY IF EXISTS "Users can manage their own stock watchers insert" ON public.stock_watchers;
+CREATE POLICY "Users can manage their own stock watchers insert"
+  ON public.stock_watchers FOR INSERT
+  WITH CHECK (auth.uid() = user_id);
+DROP POLICY IF EXISTS "Users can manage their own stock watchers update" ON public.stock_watchers;
+CREATE POLICY "Users can manage their own stock watchers update"
+  ON public.stock_watchers FOR UPDATE
   USING (auth.uid() = user_id)
   WITH CHECK (auth.uid() = user_id);
+DROP POLICY IF EXISTS "Users can manage their own stock watchers delete" ON public.stock_watchers;
+CREATE POLICY "Users can manage their own stock watchers delete"
+  ON public.stock_watchers FOR DELETE
+  USING (auth.uid() = user_id);
 CREATE INDEX IF NOT EXISTS idx_stock_watchers_user_id ON public.stock_watchers(user_id);
 CREATE INDEX IF NOT EXISTS idx_stock_watchers_listing_id ON public.stock_watchers(listing_id);
