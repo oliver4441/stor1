@@ -4,6 +4,7 @@ import { signUp } from '../utils/api';
 import { useLang } from '../utils/lang';
 import { User, Mail, Lock, CheckCircle2, ShoppingBag, Chrome } from 'lucide-react';
 import { supabase } from '../utils/supabase';
+import { checkRateLimit, recordActionAttempt, clearRateLimit } from '../utils/rateLimit';
 
 function Signup() {
   const { t } = useLang();
@@ -47,12 +48,23 @@ function Signup() {
     if (!agreed) { setError('Please agree to the Terms of Service'); return; }
     if (formData.password.length < 6) { setError('Password must be at least 6 characters'); return; }
     if (formData.password !== formData.confirmPassword) { setError('Passwords do not match'); return; }
+
+    // Rate limit check
+    const rl = checkRateLimit('signup');
+    if (!rl.allowed) {
+      setError(`Too many signup attempts. Please wait ${rl.retryAfter} seconds before trying again.`);
+      setLoading(false);
+      return;
+    }
+
     setLoading(true);
     setError('');
 
     try {
+      recordActionAttempt('signup');
       const result = await signUp({ email: formData.email, password: formData.password, fullName: formData.fullName, refCode });
       if (result.success) {
+        clearRateLimit('signup');
         if (result.session) { setSuccess(true); successTimer.current = setTimeout(() => navigate('/account'), 1500); }
         else { setNeedsVerification(true); setRegisteredEmail(formData.email); setLoading(false); }
       } else { setError(result.error); setLoading(false); }

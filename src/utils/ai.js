@@ -6,7 +6,7 @@ export async function aiSearch(query, listings) {
   // In a real app, we'd send the query and listing titles/descriptions to Gemini
   // to find the best matches. For now, we'll simulate the AI filtering.
   
-  console.log('AI Searching for:', query);
+  // AI search initiated
   
   // Simulation: Filter based on keywords if AI key is missing
   const keywords = query.toLowerCase().split(' ');

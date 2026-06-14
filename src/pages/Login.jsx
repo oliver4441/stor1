@@ -3,6 +3,7 @@ import { useNavigate, Link } from 'react-router-dom';
 import { signIn } from '../utils/api';
 import { useLang } from '../utils/lang';
 import { supabase } from '../utils/supabase';
+import { checkRateLimit, recordActionAttempt, clearRateLimit } from '../utils/rateLimit';
 import { Chrome } from 'lucide-react';
 
 function Login() {
@@ -29,15 +30,26 @@ function Login() {
 
   const handleLogin = async (e) => {
     e.preventDefault();
+
+    // Rate limit check
+    const rl = checkRateLimit('login');
+    if (!rl.allowed) {
+      setError(`Too many login attempts. Please wait ${rl.retryAfter} seconds before trying again.`);
+      setLoading(false);
+      return;
+    }
+
     setLoading(true);
     setError('');
     setNeedsVerification(false);
 
     try {
       const { email, password } = e.target.elements;
+      recordActionAttempt('login');
       const result = await signIn({ email: email.value, password: password.value });
 
       if (result.success) {
+        clearRateLimit('login');
         try {
           const { data: profile } = await supabase
             .from('profiles').select('role').eq('id', result.user.id).single();

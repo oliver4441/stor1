@@ -57,7 +57,7 @@ function PageLoadingFallback() {
 
 function App() {
   React.useEffect(() => {
-    console.log('Omix Store Mounted');
+    // App mounted
 
     // Listen for auth state changes (OAuth login/signup)
     const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
