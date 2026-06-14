@@ -1,8 +1,8 @@
 import { useState, useEffect, useCallback } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import { Package, LogOut, ShoppingBag, ArrowRight, Search, Grid3X3, List, ChevronDown, ChevronUp, Clock, Gift, Copy, Check, Star, ChevronRight, ExternalLink, Users } from 'lucide-react';
+import { Package, LogOut, ShoppingBag, ArrowRight, Search, Grid3X3, List, ChevronDown, ChevronUp, Clock, Gift, Copy, Check, Star, ChevronRight, ExternalLink, Users, Bookmark, X } from 'lucide-react';
 import { supabase } from '../utils/supabase';
-import { fetchOrders, fetchListings, fetchAddresses, saveAddress, deleteAddress, setDefaultAddress, getReferralCode, getReferralStats, getLoyaltyPoints, getPointsHistory } from '../utils/api';
+import { fetchOrders, fetchListings, fetchAddresses, saveAddress, deleteAddress, setDefaultAddress, getReferralCode, getReferralStats, getLoyaltyPoints, getPointsHistory, getSavedSearches, deleteSavedSearch } from '../utils/api';
 import { formatKES, CATEGORIES } from '../utils/constants';
 import ProductCard from '../components/ProductCard';
 import Breadcrumb from '../components/Breadcrumb';
@@ -24,13 +24,14 @@ function UserDashboard() {
   const [copied, setCopied] = useState(false);
   const [loyaltyPoints, setLoyaltyPoints] = useState(0);
   const [pointsHistory, setPointsHistory] = useState([]);
+  const [savedSearches, setSavedSearches] = useState([]);
 
   const loadData = useCallback(async () => {
     try {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) { navigate('/login'); return; }
       setUser(user);
-      const [userOrders, allProducts, userAddresses, code, stats, pts, hist] = await Promise.all([
+      const [userOrders, allProducts, userAddresses, code, stats, pts, hist, searches] = await Promise.all([
         fetchOrders(user.id),
         fetchListings('All', '', 1, 100),
         fetchAddresses(user.id),
@@ -38,6 +39,7 @@ function UserDashboard() {
         getReferralStats(user.id),
         getLoyaltyPoints(user.id),
         getPointsHistory(user.id),
+        getSavedSearches(user.id),
       ]);
       setOrders(userOrders);
       setProducts(allProducts.listings || allProducts);
@@ -46,6 +48,7 @@ function UserDashboard() {
       setReferralCount(stats.count);
       setLoyaltyPoints(pts.points);
       setPointsHistory(hist);
+      setSavedSearches(searches);
     } catch (err) {
       console.error('Dashboard load error:', err);
     } finally {
@@ -299,6 +302,52 @@ function UserDashboard() {
                   </div>
                 ))}
               </div>
+            </div>
+          )}
+        </div>
+      </div>
+
+      {/* Saved Searches */}
+      <div className="mb-12">
+        <div className="bg-white dark:bg-zinc-900 rounded-2xl border border-zinc-200 dark:border-zinc-800 p-6">
+          <div className="flex items-center gap-3 mb-5">
+            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[#ff385c] to-[#e03150] flex items-center justify-center">
+              <Bookmark className="w-5 h-5 text-white" />
+            </div>
+            <div>
+              <h2 className="text-lg font-bold text-zinc-900 dark:text-white">Saved Searches</h2>
+              <p className="text-xs text-zinc-500 dark:text-zinc-400">Quick access to your recent searches</p>
+            </div>
+          </div>
+          {savedSearches.length > 0 ? (
+            <div className="space-y-2">
+              {savedSearches.map((search) => (
+                <div key={search.id} className="flex items-center justify-between bg-zinc-50 dark:bg-zinc-800/50 rounded-xl px-4 py-2.5 group hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors">
+                  <Link
+                    to={`/?search=${encodeURIComponent(search.search_term)}`}
+                    className="flex items-center gap-3 flex-1 min-w-0"
+                  >
+                    <Search className="w-4 h-4 text-zinc-400 flex-shrink-0" />
+                    <span className="text-sm font-medium text-zinc-900 dark:text-white truncate">{search.search_term}</span>
+                  </Link>
+                  <button
+                    onClick={async () => {
+                      await deleteSavedSearch(search.id);
+                      setSavedSearches(prev => prev.filter(s => s.id !== search.id));
+                    }}
+                    className="p-1.5 rounded-lg text-zinc-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 opacity-0 group-hover:opacity-100 transition-all flex-shrink-0"
+                    title="Remove search"
+                  >
+                    <X className="w-4 h-4" />
+                  </button>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <div className="text-center py-6">
+              <Search className="w-8 h-8 text-zinc-300 mx-auto mb-2" />
+              <p className="text-sm text-zinc-500">No saved searches yet</p>
+              <p className="text-xs text-zinc-400 mt-1">Searches you save will appear here</p>
             </div>
           )}
         </div>

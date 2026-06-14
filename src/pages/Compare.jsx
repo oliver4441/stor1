@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useSearchParams, Link } from 'react-router-dom';
-import { Scales, X, Package, ArrowLeft, Image as ImageIcon } from 'lucide-react';
+import { Scale, X, Package, ArrowLeft, Image as ImageIcon } from 'lucide-react';
 import { supabase } from '../utils/supabase';
 import { formatKES } from '../utils/constants';
 import Breadcrumb from '../components/Breadcrumb';
@@ -85,7 +85,7 @@ export default function Compare() {
   if (error) {
     return (
       <div className="max-w-4xl mx-auto px-4 py-16 text-center">
-        <Scales className="w-16 h-16 text-zinc-300 mx-auto mb-4" />
+        <Scale className="w-16 h-16 text-zinc-300 mx-auto mb-4" />
         <h1 className="text-2xl font-black mb-2">Compare Products</h1>
         <p className="text-zinc-500 mb-8">{error}</p>
         <Link to="/" className="inline-flex items-center gap-2 bg-[#ff385c] text-white font-bold px-6 py-3 rounded-xl">
@@ -98,7 +98,7 @@ export default function Compare() {
   if (listings.length === 0) {
     return (
       <div className="max-w-4xl mx-auto px-4 py-16 text-center">
-        <Scales className="w-16 h-16 text-zinc-300 mx-auto mb-4" />
+        <Scale className="w-16 h-16 text-zinc-300 mx-auto mb-4" />
         <h1 className="text-2xl font-black mb-2">No Results</h1>
         <p className="text-zinc-500 mb-8">Could not find the selected listings.</p>
         <Link to="/" className="inline-flex items-center gap-2 bg-[#ff385c] text-white font-bold px-6 py-3 rounded-xl">
@@ -114,7 +114,7 @@ export default function Compare() {
       <div className="flex items-center justify-between mb-8">
         <div>
           <h1 className="text-2xl font-black flex items-center gap-2">
-            <Scales className="w-6 h-6 text-[#ff385c]" /> Compare Products
+            <Scale className="w-6 h-6 text-[#ff385c]" /> Compare Products
           </h1>
           <p className="text-zinc-500 text-sm">Comparing {listings.length} product{listings.length !== 1 ? 's' : ''}</p>
         </div>

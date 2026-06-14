@@ -1,9 +1,9 @@
 import { useState, useEffect } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
-import { MapPin, CheckCircle, ShoppingCart, Minus, Plus, Package, Truck, Shield, Tag, Cpu, HardDrive, Monitor, Battery, Camera, Wifi } from 'lucide-react';
+import { MapPin, CheckCircle, ShoppingCart, Minus, Plus, Package, Truck, Shield, Tag, Cpu, HardDrive, Monitor, Battery, Camera, Wifi, Bell } from 'lucide-react';
 import ProductCard from '../components/ProductCard';
 import { WhatsAppShareButton } from '../components/WhatsAppButtons';
-import { fetchListing, fetchListings } from '../utils/api';
+import { fetchListing, fetchListings, watchPriceDrop, watchBackInStock } from '../utils/api';
 import { formatKES } from '../utils/constants';
 import { useCart } from '../context/CartContext';
 import { supabase } from '../utils/supabase';
@@ -28,6 +28,7 @@ function ListingDetails() {
   const [quantity, setQuantity] = useState(1);
   const [user, setUser] = useState(null);
   const { addItem, cart } = useCart();
+  const [notifyMsg, setNotifyMsg] = useState('');
 
   const listingId = Number(id);
   const inCart = cart.find(item => item.id === listingId);
@@ -321,6 +322,37 @@ function ListingDetails() {
           <div className="mt-4">
             <WhatsAppShareButton title={listing.title} price={listing.price} url={`${window.location.origin}/listing/${listing.id}`} type="listing" className="flex-1 justify-center" />
           </div>
+
+          {/* Price Drop & Back in Stock Watchers */}
+          {user && (
+            <div className="mt-4 space-y-2">
+              <button
+                onClick={async () => {
+                  await watchPriceDrop(user.id, listing.id);
+                  setNotifyMsg('You\'ll be notified when the price drops!');
+                  setTimeout(() => setNotifyMsg(''), 3000);
+                }}
+                className="w-full flex items-center justify-center gap-2 border-2 border-[#ff385c] text-[#ff385c] font-bold py-3 rounded-xl hover:bg-[#ff385c]/5 transition-all"
+              >
+                <Bell className="w-4 h-4" /> Notify me when price drops
+              </button>
+              <button
+                onClick={async () => {
+                  await watchBackInStock(user.id, listing.id);
+                  setNotifyMsg('You\'ll be notified when back in stock!');
+                  setTimeout(() => setNotifyMsg(''), 3000);
+                }}
+                className="w-full flex items-center justify-center gap-2 border-2 border-[#ff385c] text-[#ff385c] font-bold py-3 rounded-xl hover:bg-[#ff385c]/5 transition-all"
+              >
+                <Bell className="w-4 h-4" /> Notify when back in stock
+              </button>
+              {notifyMsg && (
+                <div className="text-center text-sm font-medium text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-900/20 px-4 py-2 rounded-xl animate-fade-in">
+                  {notifyMsg}
+                </div>
+              )}
+            </div>
+          )}
         </div>
       </div>
 

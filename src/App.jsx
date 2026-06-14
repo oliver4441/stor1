@@ -14,6 +14,7 @@ import ScrollToTop from './components/ScrollToTop';
 import BackToTop from './components/BackToTop';
 import PWAUpdateChecker from './components/PWAUpdateChecker';
 import InstallPrompt from './components/InstallPrompt';
+import AbandonedCartBanner from './components/AbandonedCartBanner';
 import FloatingCartButton from './components/FloatingCartButton';
 import { SeasonalProvider } from './context/SeasonalContext';
 import { supabase } from './utils/supabase';
@@ -35,6 +36,7 @@ const QRCodePage = React.lazy(() => import('./pages/QRCodePage'));
 const Privacy = React.lazy(() => import('./pages/Privacy'));
 const Terms = React.lazy(() => import('./pages/Terms'));
 const Wishlist = React.lazy(() => import('./pages/Wishlist'));
+const Compare = React.lazy(() => import('./pages/Compare'));
 const AdminLayout = React.lazy(() => import('./pages/AdminLayout'));
 const AdminOverview = React.lazy(() => import('./pages/AdminOverview'));
 const AdminProducts = React.lazy(() => import('./pages/AdminProducts'));
@@ -118,6 +120,7 @@ function App() {
               <Route path="/privacy" element={<Privacy />} />
               <Route path="/install" element={<Install />} />
               <Route path="/cart" element={<Cart />} />
+              <Route path="/compare" element={<Compare />} />
             </Routes>
           </Suspense>
         </main>
@@ -130,6 +133,7 @@ function App() {
         <NiaFloatingButton />
         <PWAUpdateChecker />
         <InstallPrompt />
+        <AbandonedCartBanner />
       </div>
     </ErrorBoundary>
     </NiaChatProvider>
