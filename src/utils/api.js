@@ -95,7 +95,7 @@ export async function fetchListings(category = 'All', searchQuery = '', page = 1
   }
 
   const { data, error, count } = await query
-  if (error) { console.error(error); return [] }
+  if (error) { console.error(error); return { listings: [], total: 0 } }
   return { listings: data || [], total: count || 0 }
 }
 
