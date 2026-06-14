@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { ShoppingCart, ArrowRight, Loader2, Package, CreditCard, Trash2, Plus, Minus, CheckCircle, MapPin, Phone, User, Mail } from 'lucide-react';
 import { useCart } from '../context/CartContext';
@@ -121,7 +121,7 @@ function TextAreaField({ icon: Icon, label, error, dark, ...props }) {
       </label>
       <div className="relative">
         {Icon && (
-          <MapPin className="absolute left-3 top-3 w-4 h-4" style={{ color: dark ? C.textMutedDark : C.textMuted }} />
+          <Icon className="absolute left-3 top-3 w-4 h-4" style={{ color: dark ? C.textMutedDark : C.textMuted }} />
         )}
         <textarea
           {...props}
@@ -183,8 +183,6 @@ export default function CheckoutPage() {
     fullName: '',
     phone: '',
     email: '',
-    address: '',
-    city: '',
     area: '',
     landmark: '',
   });
@@ -195,6 +193,9 @@ export default function CheckoutPage() {
   const [promoError, setPromoError] = useState('');
   const [promoLoading, setPromoLoading] = useState(false);
   const [deliveryFee, setDeliveryFee] = useState(0); // base delivery fee
+  const [userPoints, setUserPoints] = useState(0);
+  const [redeemPoints, setRedeemPoints] = useState(false);
+  const [pointsDiscount, setPointsDiscount] = useState(0);
 
   // Apply promo code
   const applyPromoCode = async () => {
@@ -247,10 +248,30 @@ export default function CheckoutPage() {
 
   const isFreeDelivery = promoApplied && promoApplied.discount_type === 'free_delivery';
 
+  // Calculate discounted total if promo code applies
+  const discountedTotal = (() => {
+    let t = total;
+    if (promoApplied) {
+      if (promoApplied.discount_type === 'percentage') t = Math.round(t * (1 - promoApplied.discount_value / 100));
+      else if (promoApplied.discount_type === 'fixed') t = Math.max(0, t - promoApplied.discount_value);
+    }
+    if (redeemPoints) {
+      const ptsDiscount = Math.min(userPoints, Math.floor(t / 2)); // max 50% off with points
+      setPointsDiscount(ptsDiscount);
+      t = Math.max(0, t - ptsDiscount);
+    }
+    return t;
+  })();
+
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
       if (!session) navigate('/login?redirect=/checkout');
-    });
+      if (session?.user) {
+        supabase.from('profiles').select('loyalty_points').eq('id', session.user.id).single()
+          .then(({ data }) => setUserPoints(data?.loyalty_points || 0))
+          .catch(() => {});
+      }
+    }).catch(() => {});
   }, [navigate]);
 
   const handleChange = (e) => {
@@ -263,12 +284,27 @@ export default function CheckoutPage() {
   const validate = () => {
     const errs = {};
     if (!form.fullName.trim()) errs.fullName = 'Required';
-    if (!form.phone.trim()) errs.phone = 'Required for M-Pesa';
+    if (!form.phone.trim()) {
+      errs.phone = 'Required for M-Pesa';
+    } else {
+      // Kenyan phone validation: 07XX XXX XXX or 2547XX XXX XXX
+      const cleaned = form.phone.trim().replace(/[^0-9]/g, '');
+      if (!/^(?:254|0)?7[0-9]{8}$/.test(cleaned)) {
+        errs.phone = 'Enter a valid Kenyan M-Pesa number (e.g. 07XXXXXXXX)';
+      }
+    }
+    if (form.email.trim()) {
+      if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email.trim())) {
+        errs.email = 'Enter a valid email address';
+      }
+    }
     if (!form.area) errs.area = 'Please select your area';
     if (!form.landmark) errs.landmark = 'Please select a landmark';
     setFieldErrors(errs);
     return Object.keys(errs).length === 0;
   };
+
+  const orderCreated = useRef(false);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -278,11 +314,51 @@ export default function CheckoutPage() {
 
     setLoading(true);
 
+    // Get fresh cart state to avoid stale closure
+    const currentItems = getItems();
+    const currentTotal = getTotal();
+    const currentDiscounted = (() => {
+      if (!promoApplied) return currentTotal;
+      if (promoApplied.discount_type === 'percentage') {
+        return Math.round(currentTotal * (1 - promoApplied.discount_value / 100));
+      }
+      if (promoApplied.discount_type === 'fixed') {
+        return Math.max(0, currentTotal - promoApplied.discount_value);
+      }
+      return currentTotal;
+    })();
+
     try {
+      // Prevent duplicate order creation
+      if (orderCreated.current) {
+        setError('Order already being processed. Please wait...');
+        setLoading(false);
+        return;
+      }
+
+      // Check stock availability
+      const productIds = currentItems.map(i => i.id).filter(Boolean);
+      if (productIds.length > 0) {
+        const { data: stockData, error: stockError } = await supabase
+          .from('listings')
+          .select('id, quantity, title')
+          .in('id', productIds);
+        if (!stockError && stockData) {
+          for (const item of currentItems) {
+            const stockItem = stockData.find(s => s.id === item.id);
+            if (stockItem && stockItem.quantity !== null && stockItem.quantity < (item.quantity || 1)) {
+              setError(`"${item.name}" only has ${stockItem.quantity} in stock. Please reduce the quantity.`);
+              setLoading(false);
+              return;
+            }
+          }
+        }
+      }
+
       await loadPaystackScript();
 
       const orderResult = await createOrder({
-        items: items.map(item => ({
+        items: currentItems.map(item => ({
           product_id: item.id,
           product_name: item.name,
           product_image: item.image_url,
@@ -309,12 +385,18 @@ export default function CheckoutPage() {
         return;
       }
 
-      const orderId = orderResult.order.id;
+      const orderId = orderResult.order?.id;
+      if (!orderId) {
+        setError('Order created but could not get order ID. Please contact support.');
+        setLoading(false);
+        return;
+      }
+      orderCreated.current = true;
 
       window.PaystackPop.setup({
         key: PAYSTACK_PUBLIC_KEY,
         email: form.email.trim() || 'customer@omix.store',
-        amount: total * 100,
+        amount: Math.round(currentDiscounted * 100),
         currency: 'KES',
         ref: `omix_${orderId}_${Date.now()}`,
         metadata: {
@@ -323,8 +405,13 @@ export default function CheckoutPage() {
           phone: form.phone.trim(),
         },
         callback: function(response) {
-          clearCart();
-          navigate(`/order-success?orderId=${orderId}`);
+          if (response && response.trxref) {
+            clearCart();
+            navigate(`/order-success?orderId=${orderId}&reference=${response.trxref}`);
+          } else {
+            setError('Payment was not verified. Please contact support with your order ID.');
+            setLoading(false);
+          }
         },
         onClose: function() {
           setLoading(false);
@@ -475,6 +562,23 @@ export default function CheckoutPage() {
             </div>
 
             {/* Total */}
+            {userPoints > 0 && (
+              <div className="px-5 py-3 border-t" style={{ borderColor: C.border }}>
+                <label className="flex items-center gap-2 cursor-pointer">
+                  <input
+                    type="checkbox"
+                    checked={redeemPoints}
+                    onChange={(e) => setRedeemPoints(e.target.checked)}
+                    className="w-4 h-4 rounded border-zinc-300 text-[#ff385c] focus:ring-[#ff385c]"
+                  />
+                  <span className="text-sm" style={{ color: C.textMuted }}>
+                    Use loyalty points <strong className="text-amber-500">({userPoints} pts)</strong>
+                    <span className="text-xs block">100 pts = KES 50 • Max 50% of order</span>
+                  </span>
+                </label>
+              </div>
+            )}
+
             <div className="px-5 py-4 border-t" style={{ borderColor: C.border }}>
               <div className="flex justify-between items-center mb-2">
                 <span className="text-sm" style={{ color: C.textMuted }}>Subtotal</span>
@@ -488,15 +592,23 @@ export default function CheckoutPage() {
                   <span className="text-sm font-semibold" style={{ color: C.success }}>Calculated at delivery</span>
                 )}
               </div>
-              {promoApplied && promoApplied.discount_type === 'free_delivery' && (
+              {promoApplied && (
                 <div className="flex justify-between items-center mb-2">
                   <span className="text-sm" style={{ color: C.success }}>Promo Discount</span>
-                  <span className="text-sm font-semibold" style={{ color: C.success }}>- Delivery Fee</span>
+                  <span className="text-sm font-semibold" style={{ color: C.success }}>
+                    -{promoApplied.discount_type === 'percentage' ? `${promoApplied.discount_value}%` : promoApplied.discount_type === 'free_delivery' ? 'Delivery Fee' : formatKES(promoApplied.discount_value)}
+                  </span>
+                </div>
+              )}
+              {redeemPoints && pointsDiscount > 0 && (
+                <div className="flex justify-between items-center mb-2">
+                  <span className="text-sm" style={{ color: C.success }}>Loyalty Points</span>
+                  <span className="text-sm font-semibold" style={{ color: C.success }}>-{formatKES(pointsDiscount)}</span>
                 </div>
               )}
               <div className="flex justify-between items-center pt-3 border-t" style={{ borderColor: C.border }}>
                 <span className="text-base font-bold" style={{ color: C.text }}>Total</span>
-                <span className="text-xl font-black" style={{ color: C.accent }}>{formatKES(total)}</span>
+                <span className="text-xl font-black" style={{ color: C.accent }}>{formatKES(discountedTotal)}</span>
               </div>
             </div>
 
@@ -658,7 +770,7 @@ export default function CheckoutPage() {
                 {loading ? (
                   <><Loader2 className="w-5 h-5 animate-spin" /> Processing...</>
                 ) : (
-                  <><CreditCard className="w-5 h-5" /> Pay {formatKES(total)} via M-Pesa</>
+                  <><CreditCard className="w-5 h-5" /> Pay {formatKES(discountedTotal)} via M-Pesa</>
                 )}
               </button>
 

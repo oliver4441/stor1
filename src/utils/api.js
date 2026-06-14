@@ -3,7 +3,7 @@ import { supabase } from './supabase'
 import { CATEGORY_TO_ID } from './constants'
 
 // Auth
-export async function signUp({ email, password, fullName, phone }) {
+export async function signUp({ email, password, fullName, phone, refCode }) {
   const { data, error: authError } = await supabase.auth.signUp({
     email,
     password,
@@ -11,15 +11,31 @@ export async function signUp({ email, password, fullName, phone }) {
   });
   if (authError) return { success: false, error: authError.message };
   if (data.user) {
+    // Look up referrer if referral code provided
+    let referredBy = null;
+    if (refCode) {
+      const { data: referrer } = await supabase
+        .from('profiles')
+        .select('id')
+        .filter('id', 'ilike', `${refCode}%`)
+        .maybeSingle();
+      if (referrer) referredBy = referrer.id;
+    }
+
     const { error: profileError } = await supabase.from('profiles').insert({
       id: data.user.id,
       full_name: fullName,
       email,
       phone: phone || null,
       role: 'customer',
+      referred_by: referredBy,
+      loyalty_points: 0,
     });
     if (profileError) {
-      console.warn('Profile insert failed (non-critical):', profileError.message);
+      console.error('Profile insert failed:', profileError.message);
+      // Clean up the auth user since profile couldn't be created
+      await supabase.auth.admin.deleteUser(data.user.id).catch(() => {});
+      return { success: false, error: 'Account creation failed. Please try again.' };
     }
   }
   // Return session if auto-signed in (email confirmation disabled), null if verification needed
@@ -27,9 +43,13 @@ export async function signUp({ email, password, fullName, phone }) {
 }
 
 export async function signIn({ email, password }) {
-  const { data, error } = await supabase.auth.signInWithPassword({ email, password })
-  if (error) return { success: false, error: error.message }
-  return { success: true, user: data.user }
+  try {
+    const { data, error } = await supabase.auth.signInWithPassword({ email, password })
+    if (error) return { success: false, error: error.message }
+    return { success: true, user: data.user, session: data.session }
+  } catch (err) {
+    return { success: false, error: err.message || 'Login failed. Please try again.' }
+  }
 }
 
 export async function signOut() {
@@ -37,28 +57,42 @@ export async function signOut() {
   return { success: true }
 }
 
-export function getCurrentUser() {
-  return supabase.auth.getUser().then(({ data }) => data.user)
+export async function getCurrentUser() {
+  try {
+    const { data } = await supabase.auth.getUser();
+    return data?.user || null;
+  } catch {
+    return null;
+  }
 }
 
 // Listings
-export async function fetchListings(category = 'All', searchQuery = '') {
+export async function fetchListings(category = 'All', searchQuery = '', page = 1, limit = null) {
   let query = supabase
     .from('listings')
-    .select('*')
+    .select('*', { count: 'exact' })
     .eq('status', 'active')
-    .order('created_at', { ascending: false })
 
   if (category && category !== 'All') {
     query = query.eq('category', category)
   }
   if (searchQuery) {
-    query = query.or(`title.ilike.%${searchQuery}%,description.ilike.%${searchQuery}%`)
+    // Use full-text search via Supabase textSearch
+    const sanitized = searchQuery.replace(/[%_]/g, '\\$&');
+    query = query.or(`title.ilike.%${sanitized}%,description.ilike.%${sanitized}%`)
   }
 
-  const { data, error } = await query
+  query = query.order('created_at', { ascending: false })
+
+  if (limit) {
+    const from = (page - 1) * limit;
+    const to = from + limit - 1;
+    query = query.range(from, to);
+  }
+
+  const { data, error, count } = await query
   if (error) { console.error(error); return [] }
-  return data || []
+  return { listings: data || [], total: count || 0 }
 }
 
 export async function fetchListing(id) {
@@ -300,6 +334,9 @@ export async function updateListing(id, formData) {
 
 // Bulk update listing status
 export async function bulkUpdateListingStatus(ids, status) {
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) return { success: false, error: 'Authentication required' };
+
   const { error } = await supabase
     .from('listings')
     .update({ status })
@@ -311,6 +348,9 @@ export async function bulkUpdateListingStatus(ids, status) {
 
 // Bulk delete listings
 export async function bulkDeleteListings(ids) {
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) return { success: false, error: 'Authentication required' };
+
   const { error } = await supabase
     .from('listings')
     .delete()
@@ -322,6 +362,9 @@ export async function bulkDeleteListings(ids) {
 
 // Delete listing
 export async function deleteListing(id) {
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) return { success: false, error: 'Authentication required' };
+
   const { error } = await supabase
     .from('listings')
     .delete()
@@ -347,6 +390,9 @@ export async function fetchAllListings() {
 
 // Admin: update listing status
 export async function updateListingStatus(id, status) {
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) return { success: false, error: 'Authentication required' };
+
   const { error } = await supabase
     .from('listings')
     .update({ status })
@@ -358,6 +404,9 @@ export async function updateListingStatus(id, status) {
 
 // Admin: delete any listing
 export async function adminDeleteListing(id) {
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) return { success: false, error: 'Authentication required' };
+
   const { error } = await supabase
     .from('listings')
     .delete()
@@ -369,7 +418,7 @@ export async function adminDeleteListing(id) {
 
 // ── Orders (Online Store) ────────────────────────────────
 
-export async function createOrder({ items, total, customerName, phone, email, address, city, promoCode, promoCodeId, isFreeDelivery }) {
+export async function createOrder({ items, total, customerName, phone, email, address, city, area, landmark, promoCode, promoCodeId, isFreeDelivery }) {
   const { data: { user } } = await supabase.auth.getUser()
 
   if (!user) {
@@ -392,6 +441,8 @@ export async function createOrder({ items, total, customerName, phone, email, ad
       phone: phone || null,
       address: address || null,
       city: city || null,
+      area: area || null,
+      landmark: landmark || null,
       promo_code_id: promoCodeId || null,
       promo_code_text: promoCode || null,
       delivery_discount: isFreeDelivery ? 1 : 0,
@@ -435,6 +486,46 @@ export async function createOrder({ items, total, customerName, phone, email, ad
       return { success: false, error: `Order items failed: ${itemsError.message}` }
     }
   }
+
+  // Award loyalty points (1 point per KES 100)
+  if (user) {
+    const pointsEarned = Math.floor(total / 100);
+    if (pointsEarned > 0) {
+      await supabase.from('points_transactions').insert({
+        user_id: user.id,
+        points: pointsEarned,
+        description: `Order #${order.id}`,
+        reference_type: 'order',
+        reference_id: order.id,
+      }).catch(() => {});
+      const { data: currentProfile } = await supabase
+        .from('profiles').select('loyalty_points').eq('id', user.id).single();
+      await supabase.from('profiles').update({
+        loyalty_points: (currentProfile?.loyalty_points || 0) + pointsEarned
+      }).eq('id', user.id).catch(() => {});
+    }
+  }
+
+  // Check if referee -> award referral reward
+  try {
+    const { data: profile } = await supabase.from('profiles').select('referred_by').eq('id', user.id).single();
+    if (profile?.referred_by) {
+      const { data: existing } = await supabase
+        .from('referral_rewards')
+        .select('id')
+        .eq('referee_id', user.id)
+        .maybeSingle();
+      if (!existing) {
+        await supabase.from('referral_rewards').insert({
+          referrer_id: profile.referred_by,
+          referee_id: user.id,
+          order_id: order.id,
+          reward_amount: 100,
+          status: 'pending',
+        }).catch(() => {});
+      }
+    }
+  } catch {}
 
   // Increment promo code usage
   if (promoCodeId) {
@@ -510,6 +601,108 @@ export async function fetchOrderStats() {
   if (error) return { success: false, error: error.message };
   return { success: true, data };
 }
+// ── Saved Addresses ───────────────────────────────────────────
+export async function fetchAddresses(userId) {
+  try {
+    const { data, error } = await supabase
+      .from('saved_addresses')
+      .select('*')
+      .eq('user_id', userId)
+      .order('is_default', { ascending: false })
+      .order('created_at', { ascending: false });
+    if (error) throw error;
+    return data || [];
+  } catch (err) {
+    console.error('fetchAddresses error:', err);
+    return [];
+  }
+}
+
+export async function saveAddress(address) {
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) return { success: false, error: 'Not authenticated' };
+  try {
+    if (address.is_default) {
+      await supabase.from('saved_addresses').update({ is_default: false }).eq('user_id', user.id);
+    }
+    const { data, error } = await supabase
+      .from('saved_addresses')
+      .insert({ ...address, user_id: user.id })
+      .select()
+      .single();
+    if (error) throw error;
+    return { success: true, address: data };
+  } catch (err) {
+    return { success: false, error: err.message };
+  }
+}
+
+export async function deleteAddress(id) {
+  try {
+    const { error } = await supabase.from('saved_addresses').delete().eq('id', id);
+    if (error) throw error;
+    return { success: true };
+  } catch (err) {
+    return { success: false, error: err.message };
+  }
+}
+
+export async function setDefaultAddress(id) {
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) return { success: false, error: 'Not authenticated' };
+  try {
+    await supabase.from('saved_addresses').update({ is_default: false }).eq('user_id', user.id);
+    await supabase.from('saved_addresses').update({ is_default: true }).eq('id', id);
+    return { success: true };
+  } catch (err) {
+    return { success: false, error: err.message };
+  }
+}
+
+// ── Referral System ─────────────────────────────────────────────
+export async function getReferralCode(userId) {
+  try {
+    // Use user ID as the referral code — simple and unique
+    const shortCode = (userId || '').replace(/-/g, '').slice(0, 8).toUpperCase();
+    return shortCode;
+  } catch { return null; }
+}
+
+export async function getReferralStats(userId) {
+  try {
+    const { count } = await supabase
+      .from('profiles')
+      .select('id', { count: 'exact', head: true })
+      .eq('referred_by', userId);
+    return { success: true, count: count || 0 };
+  } catch { return { success: true, count: 0 }; }
+}
+
+// ── Loyalty Points ───────────────────────────────────────────────
+export async function getLoyaltyPoints(userId) {
+  try {
+    const { data, error } = await supabase
+      .from('profiles')
+      .select('loyalty_points')
+      .eq('id', userId)
+      .single();
+    if (error) return { success: true, points: 0 };
+    return { success: true, points: data?.loyalty_points || 0 };
+  } catch { return { success: true, points: 0 }; }
+}
+
+export async function getPointsHistory(userId) {
+  try {
+    const { data } = await supabase
+      .from('points_transactions')
+      .select('*')
+      .eq('user_id', userId)
+      .order('created_at', { ascending: false })
+      .limit(20);
+    return data || [];
+  } catch { return []; }
+}
+
 // ── Admin ────────────────────────────────────────────────
 
 export async function updateOrderStatus(orderId, status) {
@@ -565,6 +758,8 @@ export async function createListingPayment(formData) {
 
 export async function updateListingPaymentStatus(paymentId, updates) {
   try {
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) return { success: false, error: 'Authentication required' };
     const { error } = await supabase
       .from('listing_payments')
       .update({ ...updates })

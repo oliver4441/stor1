@@ -33,23 +33,34 @@ function Login() {
     setError('');
     setNeedsVerification(false);
 
-    const { email, password } = e.target.elements;
-    const result = await signIn({ email: email.value, password: password.value });
+    try {
+      const { email, password } = e.target.elements;
+      const result = await signIn({ email: email.value, password: password.value });
 
-    if (result.success) {
-      const { data: profile } = await supabase
-        .from('profiles').select('role').eq('id', result.user.id).single();
-      const params = new URLSearchParams(window.location.search);
-      const redirect = params.get('redirect');
-      if (redirect) navigate(redirect);
-      else if (profile?.role === 'admin') navigate('/admin');
-      else navigate('/account');
-    } else {
-      const msg = result.error || '';
-      if (msg.toLowerCase().includes('confirm') || msg.toLowerCase().includes('verify') || msg.toLowerCase().includes('email')) {
-        setNeedsVerification(true);
+      if (result.success) {
+        try {
+          const { data: profile } = await supabase
+            .from('profiles').select('role').eq('id', result.user.id).single();
+          const params = new URLSearchParams(window.location.search);
+          const redirect = params.get('redirect');
+          if (redirect) navigate(redirect);
+          else if (profile?.role === 'admin') navigate('/admin');
+          else navigate('/account');
+        } catch {
+          // Profile fetch failed, still navigate
+          navigate('/account');
+        }
+      } else {
+        const msg = result.error || '';
+        const emailErrors = ['confirm', 'verify', 'email not confirmed', 'email not verified'];
+        if (emailErrors.some(k => msg.toLowerCase().includes(k))) {
+          setNeedsVerification(true);
+        }
+        setError(result.error);
+        setLoading(false);
       }
-      setError(result.error);
+    } catch (err) {
+      setError(err.message || 'Something went wrong. Please try again.');
       setLoading(false);
     }
   };

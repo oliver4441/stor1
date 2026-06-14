@@ -28,9 +28,20 @@ export default function AdminProducts() {
   });
   const [submitting, setSubmitting] = useState(false);
   const [successMsg, setSuccessMsg] = useState('');
+  const [errorMsg, setErrorMsg] = useState('');
   const [deleteTarget, setDeleteTarget] = useState(null);
   const [imageUploading, setImageUploading] = useState(false);
   const fileInputRef = useRef(null);
+  const successTimer = useRef(null);
+  const errorTimer = useRef(null);
+
+  // Clear timers on unmount
+  useEffect(() => {
+    return () => {
+      if (successTimer.current) clearTimeout(successTimer.current);
+      if (errorTimer.current) clearTimeout(errorTimer.current);
+    };
+  }, []);
 
   // Quick edit state
   const [quickEditId, setQuickEditId] = useState(null);
@@ -39,9 +50,16 @@ export default function AdminProducts() {
 
   const loadData = useCallback(async () => {
     setLoading(true);
-    const allListings = await fetchAllListings();
-    setListings(allListings);
-    setLoading(false);
+    setErrorMsg('');
+    try {
+      const allListings = await fetchAllListings();
+      setListings(allListings);
+    } catch (err) {
+      console.error('Failed to load products:', err);
+      setErrorMsg('Failed to load products. Please refresh the page.');
+    } finally {
+      setLoading(false);
+    }
   }, []);
 
   useEffect(() => { loadData(); }, [loadData]);
@@ -77,9 +95,10 @@ export default function AdminProducts() {
         setSuccessMsg(`${selectedIds.length} products deleted`);
         setSelectedIds([]);
         await loadData();
-        setTimeout(() => setSuccessMsg(''), 3000);
+        successTimer.current = setTimeout(() => setSuccessMsg(''), 3000);
       } else {
-        alert('Bulk delete failed: ' + result.error);
+        setErrorMsg('Bulk delete failed: ' + result.error);
+        errorTimer.current = setTimeout(() => setErrorMsg(''), 5000);
       }
     } else {
       const result = await bulkUpdateListingStatus(selectedIds, bulkAction);
@@ -88,9 +107,10 @@ export default function AdminProducts() {
         setSelectedIds([]);
         setBulkAction('');
         await loadData();
-        setTimeout(() => setSuccessMsg(''), 3000);
+        successTimer.current = setTimeout(() => setSuccessMsg(''), 3000);
       } else {
-        alert('Bulk update failed: ' + result.error);
+        setErrorMsg('Bulk update failed: ' + result.error);
+        errorTimer.current = setTimeout(() => setErrorMsg(''), 5000);
       }
     }
   };
@@ -127,13 +147,27 @@ export default function AdminProducts() {
     const toUpload = files.slice(0, remaining);
     setImageUploading(true);
     const newUrls = [];
+    let uploadError = '';
     for (const file of toUpload) {
       const result = await uploadImage(file);
-      if (result.success) newUrls.push(result.url);
+      if (result.success) {
+        newUrls.push(result.url);
+      } else {
+        uploadError = result.error || 'Upload failed';
+      }
     }
     setForm(prev => ({ ...prev, images: [...prev.images, ...newUrls] }));
     setImageUploading(false);
-    if (files.length > remaining) alert(`Only ${remaining} images added (max ${MAX_IMAGES})`);
+    if (uploadError) {
+      setErrorMsg(uploadError);
+      errorTimer.current = setTimeout(() => setErrorMsg(''), 5000);
+    }
+    if (files.length > remaining) {
+      setErrorMsg(`Only ${remaining} images added (max ${MAX_IMAGES})`);
+      errorTimer.current = setTimeout(() => setErrorMsg(''), 5000);
+    }
+    // Reset file input so same file can be re-selected
+    if (fileInputRef.current) fileInputRef.current.value = '';
   };
 
   const removeImage = (index) => {
@@ -163,24 +197,25 @@ export default function AdminProducts() {
       setSuccessMsg(editingId ? 'Product updated!' : 'Product added!');
       setModalOpen(false);
       await loadData();
-      setTimeout(() => setSuccessMsg(''), 3000);
+      successTimer.current = setTimeout(() => setSuccessMsg(''), 3000);
     } else {
-      alert('Error: ' + result.error);
+      setErrorMsg('Error: ' + result.error);
+      errorTimer.current = setTimeout(() => setErrorMsg(''), 5000);
     }
     setSubmitting(false);
   };
 
   const handleDelete = async () => {
     if (!deleteTarget) return;
-    let result = await adminDeleteListing(deleteTarget.id);
-    if (!result.success) result = await deleteListing(deleteTarget.id);
+    const result = await adminDeleteListing(deleteTarget.id);
     if (result.success) {
       setSuccessMsg('Product deleted!');
       setDeleteTarget(null);
       await loadData();
-      setTimeout(() => setSuccessMsg(''), 3000);
+      successTimer.current = setTimeout(() => setSuccessMsg(''), 3000);
     } else {
-      alert('Delete failed: ' + (result.error || 'Unknown error'));
+      setErrorMsg('Delete failed: ' + (result.error || 'Unknown error'));
+      errorTimer.current = setTimeout(() => setErrorMsg(''), 5000);
     }
   };
 
@@ -193,26 +228,38 @@ export default function AdminProducts() {
 
   const saveQuickEdit = async () => {
     if (!quickEditId || !quickEditField) return;
+    const oldListing = listings.find(l => l.id === quickEditId);
+    const oldValue = oldListing?.[quickEditField] ?? '';
     const updateData = { [quickEditField]: quickEditValue };
-    if (quickEditField === 'price') updateData.price = parseInt(quickEditValue) || 0;
+    if (quickEditField === 'price') updateData.price = parseFloat(quickEditValue) || 0;
+
+    // Optimistic update
+    setListings(prev => prev.map(l => l.id === quickEditId ? { ...l, [quickEditField]: quickEditValue } : l));
+    setQuickEditId(null);
+    setQuickEditField(null);
+    setQuickEditValue('');
 
     const { error } = await supabase
       .from('listings')
       .update({ ...updateData })
       .eq('id', quickEditId);
 
-    if (!error) {
-      setListings(prev => prev.map(l => l.id === quickEditId ? { ...l, [quickEditField]: quickEditValue } : l));
+    if (error) {
+      console.error('Quick edit failed:', error);
+      // Rollback
+      setListings(prev => prev.map(l => l.id === quickEditId ? { ...l, [quickEditField]: oldValue } : l));
+      setErrorMsg('Quick edit failed: ' + error.message);
+      errorTimer.current = setTimeout(() => setErrorMsg(''), 5000);
     }
-    setQuickEditId(null);
-    setQuickEditField(null);
-    setQuickEditValue('');
   };
 
   return (
     <div className="space-y-6 max-w-7xl">
       {successMsg && (
         <div className="fixed top-20 right-4 z-50 bg-green-500 text-white px-6 py-3 rounded-2xl shadow-lg shadow-green-500/20 text-sm font-bold">{successMsg}</div>
+      )}
+      {errorMsg && (
+        <div className="fixed top-28 right-4 z-50 bg-red-500 text-white px-6 py-3 rounded-2xl shadow-lg shadow-red-500/20 text-sm font-bold">{errorMsg}</div>
       )}
 
       {/* Header */}

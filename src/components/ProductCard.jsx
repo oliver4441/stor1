@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Image as ImageIcon, MapPin, Share2, Package, ShoppingCart, Eye } from 'lucide-react';
+import CountdownTimer from './CountdownTimer';
 import { ProductSocialBadge } from '../components/SocialProof';
 import { formatKES } from '../utils/constants';
 import { useCart } from '../context/CartContext';
@@ -67,6 +68,13 @@ function ProductCard({ listing }) {
           {listing.condition?.replace('_', ' ')}
         </div>
 
+        {/* Flash sale badge */}
+        {listing.flash_sale_ends_at && (
+          <div className="absolute top-2 right-12 bg-red-500 text-white px-2 py-1 rounded-lg text-[10px] font-bold shadow-sm flex items-center gap-1">
+            <CountdownTimer targetDate={listing.flash_sale_ends_at} />
+          </div>
+        )}
+
         {/* Discount badge on image */}
         {listing.compare_at_price && listing.compare_at_price > listing.price && (
           <div className="absolute top-2 right-12 bg-red-500 text-white px-2 py-1 rounded-lg text-[10px] font-bold shadow-sm">
@@ -113,10 +121,12 @@ function ProductCard({ listing }) {
         <p className="text-zinc-500 dark:text-zinc-400 text-xs">{listing.category}{listing.brand ? ` - ${listing.brand}` : ''}</p>
         <div className="flex items-center justify-between mt-1">
           <div className="flex items-center gap-2">
-            <p className="font-bold text-[#ff385c] text-sm">{formatKES(listing.price)}</p>
-            {listing.compare_at_price && listing.compare_at_price > listing.price && (
-              <p className="text-xs text-zinc-400 line-through">{formatKES(listing.compare_at_price)}</p>
-            )}
+            <p className="font-bold text-[#ff385c] text-sm">
+              {listing.flash_sale_price ? formatKES(listing.flash_sale_price) : formatKES(listing.price)}
+            </p>
+            {(listing.compare_at_price && listing.compare_at_price > listing.price) || listing.flash_sale_price ? (
+              <p className="text-xs text-zinc-400 line-through">{formatKES(listing.compare_at_price || listing.price)}</p>
+            ) : null}
           </div>
           {listing.location && (
             <span className="text-zinc-400 text-[10px] flex items-center gap-0.5">

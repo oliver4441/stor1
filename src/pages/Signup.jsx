@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { signUp } from '../utils/api';
 import { useLang } from '../utils/lang';
@@ -8,13 +8,22 @@ import { supabase } from '../utils/supabase';
 function Signup() {
   const { t } = useLang();
   const navigate = useNavigate();
+  const params = new URLSearchParams(window.location.search);
+  const refCode = params.get('ref');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState(false);
   const [needsVerification, setNeedsVerification] = useState(false);
   const [registeredEmail, setRegisteredEmail] = useState('');
   const [agreed, setAgreed] = useState(false);
-  const [formData, setFormData] = useState({ fullName: '', email: '', password: '' });
+  const [formData, setFormData] = useState({ fullName: '', email: '', password: '', confirmPassword: '' });
+  const successTimer = useRef(null);
+
+  useEffect(() => {
+    return () => {
+      if (successTimer.current) clearTimeout(successTimer.current);
+    };
+  }, []);
 
   const updateField = (field, value) => setFormData(prev => ({ ...prev, [field]: value }));
 
@@ -37,13 +46,14 @@ function Signup() {
     e.preventDefault();
     if (!agreed) { setError('Please agree to the Terms of Service'); return; }
     if (formData.password.length < 6) { setError('Password must be at least 6 characters'); return; }
+    if (formData.password !== formData.confirmPassword) { setError('Passwords do not match'); return; }
     setLoading(true);
     setError('');
 
     try {
-      const result = await signUp({ email: formData.email, password: formData.password, fullName: formData.fullName });
+      const result = await signUp({ email: formData.email, password: formData.password, fullName: formData.fullName, refCode });
       if (result.success) {
-        if (result.session) { setSuccess(true); setTimeout(() => navigate('/account'), 1500); }
+        if (result.session) { setSuccess(true); successTimer.current = setTimeout(() => navigate('/account'), 1500); }
         else { setNeedsVerification(true); setRegisteredEmail(formData.email); setLoading(false); }
       } else { setError(result.error); setLoading(false); }
     } catch (err) { setError(err.message || 'Something went wrong. Please try again.'); setLoading(false); }
@@ -89,14 +99,14 @@ function Signup() {
           <label className="block text-sm font-bold mb-2 text-zinc-700 dark:text-zinc-300">Full Name</label>
           <div className="relative">
             <User className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-zinc-400" />
-            <input type="text" value={formData.fullName} onChange={e => updateField('fullName', e.target.value)} placeholder="e.g. Kiprono Yegon" className="w-full pl-12 pr-4 py-3.5 rounded-xl bg-zinc-100 dark:bg-zinc-900 border border-transparent focus:border-[#ff385c] focus:bg-white dark:focus:bg-zinc-950 focus:outline-none text-zinc-900 dark:text-white transition-all shadow-sm" />
+            <input type="text" value={formData.fullName} onChange={e => updateField('fullName', e.target.value)} placeholder="e.g. Kiprono Yegon" required minLength={2} className="w-full pl-12 pr-4 py-3.5 rounded-xl bg-zinc-100 dark:bg-zinc-900 border border-transparent focus:border-[#ff385c] focus:bg-white dark:focus:bg-zinc-950 focus:outline-none text-zinc-900 dark:text-white transition-all shadow-sm" />
           </div>
         </div>
         <div>
           <label className="block text-sm font-bold mb-2 text-zinc-700 dark:text-zinc-300">Email Address</label>
           <div className="relative">
             <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-zinc-400" />
-            <input type="email" value={formData.email} onChange={e => updateField('email', e.target.value)} placeholder="you@example.com" className="w-full pl-12 pr-4 py-3.5 rounded-xl bg-zinc-100 dark:bg-zinc-900 border border-transparent focus:border-[#ff385c] focus:bg-white dark:focus:bg-zinc-950 focus:outline-none text-zinc-900 dark:text-white transition-all shadow-sm" />
+            <input type="email" value={formData.email} onChange={e => updateField('email', e.target.value)} placeholder="you@example.com" required className="w-full pl-12 pr-4 py-3.5 rounded-xl bg-zinc-100 dark:bg-zinc-900 border border-transparent focus:border-[#ff385c] focus:bg-white dark:focus:bg-zinc-950 focus:outline-none text-zinc-900 dark:text-white transition-all shadow-sm" />
           </div>
         </div>
         <div>
@@ -104,6 +114,13 @@ function Signup() {
           <div className="relative">
             <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-zinc-400" />
             <input required name="password" type="password" value={formData.password} onChange={e => updateField('password', e.target.value)} placeholder="Minimum 6 characters" minLength={6} className="w-full pl-12 pr-4 py-3.5 rounded-xl bg-zinc-100 dark:bg-zinc-900 border border-transparent focus:border-[#ff385c] focus:bg-white dark:focus:bg-zinc-950 focus:outline-none text-zinc-900 dark:text-white transition-all shadow-sm" />
+          </div>
+        </div>
+        <div>
+          <label className="block text-sm font-bold mb-2 text-zinc-700 dark:text-zinc-300">Confirm Password</label>
+          <div className="relative">
+            <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-zinc-400" />
+            <input required name="confirmPassword" type="password" value={formData.confirmPassword} onChange={e => updateField('confirmPassword', e.target.value)} placeholder="Repeat your password" minLength={6} className="w-full pl-12 pr-4 py-3.5 rounded-xl bg-zinc-100 dark:bg-zinc-900 border border-transparent focus:border-[#ff385c] focus:bg-white dark:focus:bg-zinc-950 focus:outline-none text-zinc-900 dark:text-white transition-all shadow-sm" />
           </div>
         </div>
 

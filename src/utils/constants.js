@@ -58,6 +58,7 @@ export const CATEGORY_TO_ID = {
   'Sports': 7,
   'Toys & Games': 8,
   'Health & Beauty': 9,
+  'Services': 10,
   'Business Services': 10,
   'Food': 12,
   'Drinks': 13,

@@ -1,9 +1,17 @@
 import { useState, useEffect, useCallback } from 'react';
-import { Search, Eye, X, Calendar, Download, RefreshCw, MessageSquare, Package, MapPin, Phone, Mail, Clock, AlertTriangle } from 'lucide-react';
+import { Search, Eye, X, Calendar, Download, RefreshCw, MessageSquare, Package, MapPin, Phone, Mail, User, Clock, AlertTriangle } from 'lucide-react';
 import { fetchAllOrders, updateOrderStatus, updateOrderNotes, cancelOrder } from '../utils/api';
 import { formatKES } from '../utils/constants';
 
 const ORDER_STATUSES = ['pending', 'processing', 'shipped', 'delivered', 'cancelled'];
+// Valid transitions: pending -> processing -> shipped -> delivered, or any -> cancelled
+const VALID_TRANSITIONS = {
+  pending: ['processing', 'cancelled'],
+  processing: ['shipped', 'cancelled'],
+  shipped: ['delivered', 'cancelled'],
+  delivered: [],
+  cancelled: [],
+};
 const STATUS_COLORS = {
   pending: 'bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400',
   processing: 'bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400',
@@ -30,12 +38,20 @@ export default function AdminOrders() {
   const [editingNotes, setEditingNotes] = useState(false);
   const [notesValue, setNotesValue] = useState('');
   const [successMsg, setSuccessMsg] = useState('');
+  const [errorMsg, setErrorMsg] = useState('');
 
   const loadData = useCallback(async () => {
     setLoading(true);
-    const allOrders = await fetchAllOrders();
-    setOrders(allOrders);
-    setLoading(false);
+    setErrorMsg('');
+    try {
+      const allOrders = await fetchAllOrders();
+      setOrders(allOrders);
+    } catch (err) {
+      console.error('Failed to load orders:', err);
+      setErrorMsg('Failed to load orders. Please refresh the page.');
+    } finally {
+      setLoading(false);
+    }
   }, []);
 
   useEffect(() => { loadData(); }, [loadData]);
@@ -59,12 +75,26 @@ export default function AdminOrders() {
   });
 
   const handleStatusChange = async (orderId, newStatus) => {
+    const currentOrder = orders.find(o => o.id === orderId);
+    if (currentOrder) {
+      const allowed = VALID_TRANSITIONS[currentOrder.status] || [];
+      if (!allowed.includes(newStatus)) {
+        setErrorMsg('Cannot change from "' + currentOrder.status + '" to "' + newStatus + '"');
+        setTimeout(() => setErrorMsg(''), 5000);
+        return;
+      }
+    }
     const result = await updateOrderStatus(orderId, newStatus);
     if (result.success) {
       setOrders(prev => prev.map(o => o.id === orderId ? { ...o, status: newStatus } : o));
       if (selectedOrder?.id === orderId) {
         setSelectedOrder(prev => ({ ...prev, status: newStatus }));
       }
+      setSuccessMsg('Status updated');
+      setTimeout(() => setSuccessMsg(''), 3000);
+    } else {
+      setErrorMsg('Failed to update status: ' + (result.error || 'Unknown error'));
+      setTimeout(() => setErrorMsg(''), 5000);
     }
   };
 
@@ -78,6 +108,9 @@ export default function AdminOrders() {
       }
       setSuccessMsg('Order cancelled');
       setTimeout(() => setSuccessMsg(''), 3000);
+    } else {
+      setErrorMsg('Failed to cancel: ' + (result.error || 'Unknown error'));
+      setTimeout(() => setErrorMsg(''), 5000);
     }
   };
 
@@ -86,9 +119,13 @@ export default function AdminOrders() {
     const result = await updateOrderNotes(selectedOrder.id, notesValue);
     if (result.success) {
       setSelectedOrder(prev => ({ ...prev, admin_notes: notesValue }));
+      setOrders(prev => prev.map(o => o.id === selectedOrder.id ? { ...o, admin_notes: notesValue } : o));
       setEditingNotes(false);
       setSuccessMsg('Notes saved');
       setTimeout(() => setSuccessMsg(''), 3000);
+    } else {
+      setErrorMsg('Failed to save notes: ' + (result.error || 'Unknown error'));
+      setTimeout(() => setErrorMsg(''), 5000);
     }
   };
 
@@ -129,6 +166,9 @@ export default function AdminOrders() {
     <div className="space-y-6 max-w-7xl">
       {successMsg && (
         <div className="fixed top-20 right-4 z-50 bg-green-500 text-white px-6 py-3 rounded-2xl shadow-lg shadow-green-500/20 text-sm font-bold">{successMsg}</div>
+      )}
+      {errorMsg && (
+        <div className="fixed top-28 right-4 z-50 bg-red-500 text-white px-6 py-3 rounded-2xl shadow-lg shadow-red-500/20 text-sm font-bold">{errorMsg}</div>
       )}
 
       {/* Header */}
@@ -285,7 +325,7 @@ export default function AdminOrders() {
               <h4 className="text-sm font-bold text-zinc-700 dark:text-zinc-300 mb-3">Customer</h4>
               <div className="space-y-2">
                 <div className="flex items-center gap-2 text-sm text-zinc-600 dark:text-zinc-400">
-                  <Mail className="w-4 h-4 text-zinc-400 flex-shrink-0" />
+                  <User className="w-4 h-4 text-zinc-400 flex-shrink-0" />
                   <span className="truncate">{selectedOrder.customer_name || 'Guest'}</span>
                 </div>
                 {selectedOrder.email && (

@@ -1,8 +1,8 @@
 import { useState, useEffect, useCallback } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import { Package, LogOut, ShoppingBag, ArrowRight, Search, Grid3X3, List, ChevronDown, ChevronUp, Clock } from 'lucide-react';
+import { Package, LogOut, ShoppingBag, ArrowRight, Search, Grid3X3, List, ChevronDown, ChevronUp, Clock, Gift, Copy, Check, Star, ChevronRight, ExternalLink } from 'lucide-react';
 import { supabase } from '../utils/supabase';
-import { fetchOrders, fetchListings } from '../utils/api';
+import { fetchOrders, fetchListings, fetchAddresses, saveAddress, deleteAddress, setDefaultAddress, getReferralCode, getReferralStats, getLoyaltyPoints, getPointsHistory } from '../utils/api';
 import { formatKES, CATEGORIES } from '../utils/constants';
 import ProductCard from '../components/ProductCard';
 import Breadcrumb from '../components/Breadcrumb';
@@ -17,15 +17,40 @@ function UserDashboard() {
   const [activeCategory, setActiveCategory] = useState('All');
   const [searchQuery, setSearchQuery] = useState('');
   const [viewMode, setViewMode] = useState('grid');
+  const [addresses, setAddresses] = useState([]);
+  const [showAddressForm, setShowAddressForm] = useState(false);
+  const [referralCode, setReferralCode] = useState('');
+  const [referralCount, setReferralCount] = useState(0);
+  const [copied, setCopied] = useState(false);
+  const [loyaltyPoints, setLoyaltyPoints] = useState(0);
+  const [pointsHistory, setPointsHistory] = useState([]);
 
   const loadData = useCallback(async () => {
-    const { data: { user } } = await supabase.auth.getUser();
-    if (!user) { navigate('/login'); return; }
-    setUser(user);
-    const [userOrders, allProducts] = await Promise.all([fetchOrders(user.id), fetchListings('All', '')]);
-    setOrders(userOrders);
-    setProducts(allProducts);
-    setLoading(false);
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) { navigate('/login'); return; }
+      setUser(user);
+      const [userOrders, allProducts, userAddresses, code, stats, pts, hist] = await Promise.all([
+        fetchOrders(user.id),
+        fetchListings('All', '', 1, 100),
+        fetchAddresses(user.id),
+        getReferralCode(user.id),
+        getReferralStats(user.id),
+        getLoyaltyPoints(user.id),
+        getPointsHistory(user.id),
+      ]);
+      setOrders(userOrders);
+      setProducts(allProducts.listings || allProducts);
+      setAddresses(userAddresses);
+      setReferralCode(code);
+      setReferralCount(stats.count);
+      setLoyaltyPoints(pts.points);
+      setPointsHistory(hist);
+    } catch (err) {
+      console.error('Dashboard load error:', err);
+    } finally {
+      setLoading(false);
+    }
   }, [navigate]);
 
   useEffect(() => { loadData(); }, [loadData]);
@@ -53,7 +78,7 @@ function UserDashboard() {
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-8">
         <div>
           <h1 className="text-3xl font-black text-zinc-900 dark:text-white">My Account</h1>
-          <p className="text-zinc-500 dark:text-zinc-400">Welcome back, {user?.user_metadata?.full_name || user?.email}</p>
+          <p className="text-zinc-500 dark:text-zinc-400">Welcome back, {user?.user_metadata?.full_name || user?.email || 'there'}</p>
         </div>
         <button onClick={handleLogout} className="flex items-center gap-2 bg-zinc-100 dark:bg-zinc-900 text-zinc-600 dark:text-zinc-300 px-6 py-3 rounded-2xl font-bold hover:bg-zinc-200 dark:hover:bg-zinc-800 transition-all">
           <LogOut className="w-5 h-5" /> Log Out
@@ -134,10 +159,10 @@ function UserDashboard() {
                   {isExpanded && (
                     <div className="border-t border-zinc-100 dark:border-zinc-800 px-4 py-3 space-y-3 animate-slide-down">
                       {/* Order items from the items JSON */}
-                      {order.items && Array.isArray(order.items) && order.items.length > 0 ? (
+                      {order.omix_order_items && Array.isArray(order.omix_order_items) && order.omix_order_items.length > 0 ? (
                         <div className="space-y-2">
                           <p className="text-xs font-bold text-zinc-500 dark:text-zinc-400 uppercase tracking-wider">Items</p>
-                          {order.items.map((item, i) => (
+                          {order.omix_order_items.map((item, i) => (
                             <div key={i} className="flex items-center gap-3 bg-zinc-50 dark:bg-zinc-800/50 rounded-xl p-2.5">
                               {item.image_url ? (
                                 <img src={item.image_url} alt={item.name} className="w-10 h-10 rounded-lg object-cover bg-zinc-200 dark:bg-zinc-700" />

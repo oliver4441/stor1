@@ -14,6 +14,8 @@ import SeasonalParticles from '../components/SeasonalParticles';
 import { useActiveTheme } from '../context/SeasonalContext';
 import AutoScrollCarousel from '../components/AutoScrollCarousel';
 
+const ITEMS_PER_PAGE = 24;
+
 function Home() {
   const { t } = useLang();
   const [user, setUser] = useState(null);
@@ -21,6 +23,10 @@ function Home() {
   const [searchQuery, setSearchQuery] = useState('');
   const [listings, setListings] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [loadingMore, setLoadingMore] = useState(false);
+  const [page, setPage] = useState(1);
+  const [totalCount, setTotalCount] = useState(0);
+  const [hasMore, setHasMore] = useState(false);
   const theme = useActiveTheme();
 
   useEffect(() => {
@@ -38,12 +44,26 @@ function Home() {
   useEffect(() => {
     setLoading(true);
     const fetch = async () => {
-      const data = await fetchListings(activeCategory, isAiMode ? '' : searchQuery);
-      setListings(data);
+      const result = await fetchListings(activeCategory, isAiMode ? '' : searchQuery, 1, ITEMS_PER_PAGE);
+      setListings(result.listings);
+      setTotalCount(result.total);
+      setHasMore(result.listings.length < result.total);
+      setPage(1);
       setLoading(false);
     };
     fetch();
   }, [activeCategory, searchQuery, isAiMode]);
+
+  const loadMore = async () => {
+    if (loadingMore || !hasMore) return;
+    setLoadingMore(true);
+    const nextPage = page + 1;
+    const result = await fetchListings(activeCategory, isAiMode ? '' : searchQuery, nextPage, ITEMS_PER_PAGE);
+    setListings(prev => [...prev, ...result.listings]);
+    setPage(nextPage);
+    setHasMore(nextPage * ITEMS_PER_PAGE < result.total);
+    setLoadingMore(false);
+  };
 
   const featuredProducts = listings.slice(0, 8);
 
@@ -199,13 +219,33 @@ function Home() {
               </div>
             ))}
           </div>
-        ) : listings.length > 0 ? (
+        ) : (
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
             {listings.map(listing => (
               <ProductCard key={listing.id} listing={listing} />
             ))}
           </div>
-        ) : (
+        )}
+
+        {/* Load More button */}
+        {!loading && listings.length > 0 && hasMore && (
+          <div className="text-center mt-8">
+            <button
+              onClick={loadMore}
+              disabled={loadingMore}
+              className="px-8 py-3 bg-[#ff385c] text-white rounded-xl font-bold hover:bg-[#e03150] transition-all disabled:opacity-50 shadow-lg shadow-[#ff385c]/20"
+            >
+              {loadingMore ? (
+                <span className="flex items-center gap-2"><div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" /> Loading...</span>
+              ) : (
+                `Load More (${listings.length} of ${totalCount})`
+              )}
+            </button>
+          </div>
+        )}
+
+        {/* Empty state */}
+        {!loading && listings.length === 0 && (
           <div className="text-center py-20">
             <p className="text-zinc-500 dark:text-zinc-400 mb-4 text-lg">{t('home.noListings')}</p>
             <Link to="/" className="text-[#ff385c] font-bold text-lg hover:underline underline-offset-4 mb-8 block">
