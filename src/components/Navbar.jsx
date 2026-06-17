@@ -8,6 +8,7 @@ import { useCart } from '../context/CartContext';
 import { useActiveTheme } from '../context/SeasonalContext';
 
 const FEATURE_LINKS = [
+  { to: 'https://omix-blog.vercel.app', label: 'Blog', icon: Globe, color: 'from-violet-500 to-purple-600', glow: 'shadow-violet-500/40', external: true },
   { to: '/how-it-works', label: 'How It Works', icon: HelpCircle, color: 'from-amber-500 to-orange-600', glow: 'shadow-amber-500/40' },
   { to: '/about', label: 'About', icon: Info, color: 'from-cyan-500 to-teal-600', glow: 'shadow-cyan-500/40' },
   { to: '/install', label: 'Install App', icon: Download, color: 'from-[#ff385c] to-[#e03150]', glow: 'shadow-[#ff385c]/40' },
@@ -78,20 +79,25 @@ function Navbar() {
         <div className="hidden lg:flex items-center gap-2">
           {FEATURE_LINKS.map(link => {
             const Icon = link.icon;
-            const isActive = location.pathname === link.to;
+            const isActive = !link.external && location.pathname === link.to;
+            const linkClass = `relative flex items-center gap-1.5 px-4 py-2 rounded-full text-sm font-bold transition-all duration-300 group ${
+              isActive
+                ? `bg-gradient-to-r ${link.color} text-white shadow-lg ${link.glow}`
+                : `text-zinc-600 dark:text-zinc-300 hover:text-white hover:bg-gradient-to-r hover:${link.color} hover:shadow-md hover:${link.glow}`
+            }`;
+            const iconEl = <Icon className={`w-4 h-4 ${isActive ? 'animate-bounce-subtle' : 'group-hover:animate-bounce-subtle'}`} />;
+            const labelEl = <span>{link.label}</span>;
+            const pingEl = <span className={`absolute inset-0 rounded-full bg-gradient-to-r ${link.color} opacity-0 group-hover:opacity-20 animate-ping-slow pointer-events-none`} />;
+            if (link.external) {
+              return (
+                <a key={link.to} href={link.to} target="_blank" rel="noopener noreferrer" className={linkClass}>
+                  {iconEl}{labelEl}{pingEl}
+                </a>
+              );
+            }
             return (
-              <Link
-                key={link.to}
-                to={link.to}
-                className={`relative flex items-center gap-1.5 px-4 py-2 rounded-full text-sm font-bold transition-all duration-300 group ${
-                  isActive
-                    ? `bg-gradient-to-r ${link.color} text-white shadow-lg ${link.glow}`
-                    : `text-zinc-600 dark:text-zinc-300 hover:text-white hover:bg-gradient-to-r hover:${link.color} hover:shadow-md hover:${link.glow}`
-                }`}
-              >
-                <Icon className={`w-4 h-4 ${isActive ? 'animate-bounce-subtle' : 'group-hover:animate-bounce-subtle'}`} />
-                <span>{link.label}</span>
-                <span className={`absolute inset-0 rounded-full bg-gradient-to-r ${link.color} opacity-0 group-hover:opacity-20 animate-ping-slow pointer-events-none`} />
+              <Link key={link.to} to={link.to} className={linkClass}>
+                {iconEl}{labelEl}{pingEl}
               </Link>
             );
           })}
@@ -168,17 +174,22 @@ function Navbar() {
           <div className="px-4 py-4 space-y-2">
             {FEATURE_LINKS.map(link => {
               const Icon = link.icon;
-              const isActive = location.pathname === link.to;
+              const isActive = !link.external && location.pathname === link.to;
+              const linkClass = `flex items-center gap-3 px-4 py-3 rounded-2xl text-sm font-bold transition-all ${
+                isActive
+                  ? `bg-gradient-to-r ${link.color} text-white shadow-lg`
+                  : 'text-zinc-700 dark:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-zinc-800'
+              }`;
+              if (link.external) {
+                return (
+                  <a key={link.to} href={link.to} target="_blank" rel="noopener noreferrer" className={linkClass}>
+                    <Icon className="w-5 h-5" />
+                    {link.label}
+                  </a>
+                );
+              }
               return (
-                <Link
-                  key={link.to}
-                  to={link.to}
-                  className={`flex items-center gap-3 px-4 py-3 rounded-2xl text-sm font-bold transition-all ${
-                    isActive
-                      ? `bg-gradient-to-r ${link.color} text-white shadow-lg`
-                      : 'text-zinc-700 dark:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-zinc-800'
-                  }`}
-                >
+                <Link key={link.to} to={link.to} className={linkClass}>
                   <Icon className="w-5 h-5" />
                   {link.label}
                 </Link>
