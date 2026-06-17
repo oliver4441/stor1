@@ -2,8 +2,62 @@
 import { supabase } from './supabase'
 import { CATEGORY_TO_ID } from './constants'
 
+// ── Server-side validation helpers ─────────────────────────────
+const MAX_TITLE_LEN = 100
+const MAX_DESC_LEN = 2000
+const MAX_PRICE = 10_000_000
+const MAX_QUANTITY = 9999
+const ALLOWED_CONDITIONS = ['new', 'used', 'refurbished']
+const ALLOWED_ORDER_STATUSES = ['pending', 'confirmed', 'shipped', 'delivered', 'cancelled', 'returned']
+const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+const PHONE_RE = /^\+?[0-9]{7,15}$/
+const NAME_RE = /^[a-zA-Z\s\-'.]{1,100}$/
+
+function sanitizeString(str, maxLen) {
+  if (typeof str !== 'string') return ''
+  return str.slice(0, maxLen).trim()
+}
+
+function validateListing(data) {
+  const errors = []
+  if (!data.title || data.title.trim().length < 3) errors.push('Title must be at least 3 characters')
+  if (data.title && data.title.length > MAX_TITLE_LEN) errors.push(`Title must be under ${MAX_TITLE_LEN} characters`)
+  if (data.description && data.description.length > MAX_DESC_LEN) errors.push(`Description must be under ${MAX_DESC_LEN} characters`)
+  if (!data.price || isNaN(data.price) || data.price <= 0) errors.push('Price must be a positive number')
+  if (data.price > MAX_PRICE) errors.push(`Price cannot exceed ${MAX_PRICE}`)
+  if (data.condition && !ALLOWED_CONDITIONS.includes(data.condition)) errors.push('Invalid condition value')
+  if (data.quantity && (isNaN(data.quantity) || data.quantity < 1 || data.quantity > MAX_QUANTITY)) errors.push('Invalid quantity')
+  if (data.seller_name && !NAME_RE.test(data.seller_name)) errors.push('Invalid seller name')
+  if (data.seller_phone && !PHONE_RE.test(data.seller_phone)) errors.push('Invalid phone number')
+  return errors
+}
+
+function validateOrder(data) {
+  const errors = []
+  if (!data.items || !Array.isArray(data.items) || data.items.length === 0) errors.push('Order must have at least one item')
+  if (!data.customerName || data.customerName.trim().length < 2) errors.push('Customer name is required')
+  if (data.email && !EMAIL_RE.test(data.email)) errors.push('Invalid email address')
+  if (data.phone && !PHONE_RE.test(data.phone)) errors.push('Invalid phone number')
+  if (data.total && (isNaN(data.total) || data.total < 0)) errors.push('Invalid total amount')
+  return errors
+}
+
+function validateProfile(data) {
+  const errors = []
+  if (data.fullName && !NAME_RE.test(data.fullName)) errors.push('Invalid name')
+  if (data.phone && !PHONE_RE.test(data.phone)) errors.push('Invalid phone number')
+  if (data.email && !EMAIL_RE.test(data.email)) errors.push('Invalid email address')
+  return errors
+}
+
 // Auth
 export async function signUp({ email, password, fullName, phone, refCode }) {
+  // Server-side validation
+  const errors = validateProfile({ fullName, phone, email })
+  if (errors.length > 0) return { success: false, error: errors.join('. ') }
+  if (!email || !EMAIL_RE.test(email)) return { success: false, error: 'Valid email is required' }
+  if (!password || password.length < 8) return { success: false, error: 'Password must be at least 8 characters' }
+
   const { data, error: authError } = await supabase.auth.signUp({
     email,
     password,
@@ -268,28 +322,32 @@ export async function createListing(formData) {
   const { data: { user } } = await supabase.auth.getUser()
   const catId = CATEGORY_TO_ID[formData.category] || null
 
+  // Server-side validation
+  const errors = validateListing(formData)
+  if (errors.length > 0) return { success: false, error: errors.join('. ') }
+
   const { data, error } = await supabase
     .from('listings')
     .insert({
-      title: formData.title,
-      description: formData.description,
+      title: sanitizeString(formData.title, MAX_TITLE_LEN),
+      description: sanitizeString(formData.description, MAX_DESC_LEN),
       price: parseInt(formData.price) || 0,
       condition: formData.condition,
       category: formData.category,
       category_id: catId,
-      location_city: formData.location,
+      location_city: sanitizeString(formData.location, 100),
       location_region: 'Kericho',
       images: formData.images && formData.images.length > 0 ? formData.images : (formData.image_url ? [formData.image_url] : []),
-      seller_name: formData.seller_name || user?.user_metadata?.full_name,
+      seller_name: sanitizeString(formData.seller_name || user?.user_metadata?.full_name, 100),
       seller_id: user?.id || null,
       seller_phone: formData.seller_phone || null,
       status: formData.status || 'active',
       quantity: parseInt(formData.quantity) || 1,
-      brand: formData.brand || null,
-      model: formData.model || null,
-      color: formData.color || null,
-      weight: formData.weight || null,
-      sku: formData.sku || null,
+      brand: sanitizeString(formData.brand, 50) || null,
+      model: sanitizeString(formData.model, 50) || null,
+      color: sanitizeString(formData.color, 30) || null,
+      weight: sanitizeString(formData.weight, 30) || null,
+      sku: sanitizeString(formData.sku, 50) || null,
     })
     .select('id')
     .single()
@@ -306,6 +364,10 @@ export async function updateListing(id, formData) {
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) return { success: false, error: 'Authentication required' };
 
+  // Server-side validation
+  const errors = validateListing(formData)
+  if (errors.length > 0) return { success: false, error: errors.join('. ') }
+
   // Verify ownership or admin role
   const { data: listing } = await supabase.from('listings').select('seller_id').eq('id', id).maybeSingle();
   if (!listing) return { success: false, error: 'Listing not found' };
@@ -319,24 +381,24 @@ export async function updateListing(id, formData) {
   const { data, error } = await supabase
     .from('listings')
     .update({
-      title: formData.title,
-      description: formData.description,
+      title: sanitizeString(formData.title, MAX_TITLE_LEN),
+      description: sanitizeString(formData.description, MAX_DESC_LEN),
       price: parseInt(formData.price) || 0,
       condition: formData.condition,
       category: formData.category,
       category_id: catId,
-      location_city: formData.location,
+      location_city: sanitizeString(formData.location, 100),
       location_region: 'Kericho',
       images: formData.images && formData.images.length > 0 ? formData.images : (formData.image_url ? [formData.image_url] : []),
-      seller_name: formData.seller_name || user?.user_metadata?.full_name,
+      seller_name: sanitizeString(formData.seller_name || user?.user_metadata?.full_name, 100),
       seller_phone: formData.seller_phone || null,
       status: formData.status || 'active',
       quantity: parseInt(formData.quantity) || 1,
-      brand: formData.brand || null,
-      model: formData.model || null,
-      color: formData.color || null,
-      weight: formData.weight || null,
-      sku: formData.sku || null,
+      brand: sanitizeString(formData.brand, 50) || null,
+      model: sanitizeString(formData.model, 50) || null,
+      color: sanitizeString(formData.color, 30) || null,
+      weight: sanitizeString(formData.weight, 30) || null,
+      sku: sanitizeString(formData.sku, 50) || null,
     })
     .eq('id', id)
     .select('id')
@@ -469,6 +531,10 @@ export async function createOrder({ items, total, customerName, phone, email, ad
   if (!user) {
     return { success: false, error: 'You must be logged in to place an order. Please log in and try again.' }
   }
+
+  // Server-side validation
+  const errors = validateOrder({ items, total, customerName, phone, email })
+  if (errors.length > 0) return { success: false, error: errors.join('. ') }
 
   if (!items || items.length === 0) {
     return { success: false, error: 'Your cart is empty. Please add items before checking out.' }
@@ -768,6 +834,14 @@ export async function getPointsHistory(userId) {
 // ── Admin ────────────────────────────────────────────────
 
 export async function updateOrderStatus(orderId, status) {
+  // Verify admin role server-side
+  const admin = await isAdmin();
+  if (!admin) return { success: false, error: 'Admin access required' };
+
+  // Validate status value
+  if (!ALLOWED_ORDER_STATUSES.includes(status)) {
+    return { success: false, error: `Invalid status: ${status}` };
+  }
   const { error } = await supabase
     .from('omix_orders')
     .update({ status })

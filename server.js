@@ -3,6 +3,7 @@ import express from 'express';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import fetch from 'node-fetch';
+// crypto is a built-in Node.js module — no import needed
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -13,6 +14,48 @@ const port = process.env.PORT || 3000;
 // Health check endpoint
 app.get('/health', (req, res) => {
   res.json({ status: 'ok', service: 'stor1-frontend', timestamp: new Date().toISOString() });
+});
+
+// ── Paystack Webhook ───────────────────────────────────────────────
+// Verifies Paystack signature before processing payment confirmations
+
+app.post('/api/paystack/webhook', express.raw({ type: 'application/json' }), (req, res) => {
+  const paystackSecret = process.env.PAYSTACK_SECRET_KEY;
+  
+  if (!paystackSecret) {
+    console.error('[Paystack Webhook] No secret key configured');
+    return res.status(503).json({ error: 'Webhook not configured' });
+  }
+
+  // Verify signature
+  const signature = req.headers['x-paystack-signature'];
+  if (!signature) {
+    console.warn('[Paystack Webhook] Missing signature header');
+    return res.status(401).json({ error: 'Missing signature' });
+  }
+
+  const hash = crypto
+    .createHmac('sha512', paystackSecret)
+    .update(req.body, 'utf8')
+    .digest('hex');
+
+  if (hash !== signature) {
+    console.warn('[Paystack Webhook] Invalid signature');
+    return res.status(401).json({ error: 'Invalid signature' });
+  }
+
+  // Process the verified webhook
+  const event = JSON.parse(req.body);
+  console.log('[Paystack Webhook] Verified event:', event.event);
+
+  // Handle payment success
+  if (event.event === 'charge.success') {
+    const { reference, amount, customer } = event.data;
+    console.log(`[Paystack Webhook] Payment confirmed: ${reference} - KES ${amount / 100}`);
+    // TODO: Update order status in Supabase via service_role key
+  }
+
+  res.status(200).json({ received: true });
 });
 
 // ── Nia AI Chat Proxy ──────────────────────────────────────────────

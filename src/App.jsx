@@ -18,6 +18,7 @@ import InstallPrompt from './components/InstallPrompt';
 import AbandonedCartBanner from './components/AbandonedCartBanner';
 import FloatingCartButton from './components/FloatingCartButton';
 import { SeasonalProvider } from './context/SeasonalContext';
+import AdminRoute from './components/AdminRoute';
 import { supabase } from './utils/supabase';
 import { useMaintenanceMode } from './hooks/useMaintenanceMode';
 import MaintenanceBanner from './components/MaintenanceBanner';
@@ -125,7 +126,7 @@ function App() {
               <Route path="/login" element={<Login />} />
               <Route path="/signup" element={<Signup />} />
               <Route path="/account" element={<UserDashboard />} />
-              <Route path="/admin" element={<AdminLayout />}>
+              <Route path="/admin" element={<AdminRoute><AdminLayout /></AdminRoute>}>
                 <Route index element={<Navigate to="/admin/dashboard" replace />} />
                 <Route path="dashboard" element={<AdminOverview />} />
                 <Route path="products" element={<AdminProducts />} />
