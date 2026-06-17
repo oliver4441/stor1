@@ -8,7 +8,7 @@ import { useCart } from '../context/CartContext';
 import { useActiveTheme } from '../context/SeasonalContext';
 
 const FEATURE_LINKS = [
-  { to: 'https://omix-blog.vercel.app', label: 'Blog', icon: Globe, color: 'from-violet-500 to-purple-600', glow: 'shadow-violet-500/40', external: true },
+  { to: 'https://blog.omixsystems.store', label: 'Blog', icon: Globe, color: 'from-violet-500 to-purple-600', glow: 'shadow-violet-500/40', external: true },
   { to: '/how-it-works', label: 'How It Works', icon: HelpCircle, color: 'from-amber-500 to-orange-600', glow: 'shadow-amber-500/40' },
   { to: '/about', label: 'About', icon: Info, color: 'from-cyan-500 to-teal-600', glow: 'shadow-cyan-500/40' },
   { to: '/install', label: 'Install App', icon: Download, color: 'from-[#ff385c] to-[#e03150]', glow: 'shadow-[#ff385c]/40' },
