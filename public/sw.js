@@ -47,18 +47,31 @@ self.addEventListener('fetch', (event) => {
   // Only handle GET requests
   if (request.method !== 'GET') return;
 
-  // Handle API requests with Stale-While-Revalidate
+  // Handle API requests with Stale-While-Revalidate + TTL (5 min max)
   if (url.pathname.startsWith('/api/')) {
     return event.respondWith(
       caches.open(API_CACHE).then((cache) =>
-        fetch(request)
-          .then((response) => {
-            if (response.ok) {
-              cache.put(request, response.clone());
+        cache.match(request).then((cached) => {
+          const networkFetch = fetch(request)
+            .then((response) => {
+              if (response.ok) {
+                cache.put(request, response.clone());
+              }
+              return response;
+            })
+            .catch(() => cached);
+
+          if (cached) {
+            const dateHeader = cached.headers.get('sw-cache-date');
+            if (dateHeader) {
+              const age = Date.now() - parseInt(dateHeader, 10);
+              if (age < 300_000) return cached; // serve if < 5 min old
             }
-            return response;
-          })
-          .catch(() => cache.match(request))
+            return cached; // serve stale while revalidating
+          }
+
+          return networkFetch;
+        })
       )
     );
   }

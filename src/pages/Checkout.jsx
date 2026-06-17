@@ -9,8 +9,9 @@ import { useMaintenanceMode } from '../hooks/useMaintenanceMode';
 import NiaContextualTrigger from '../components/NiaContextualTrigger';
 import Breadcrumb from '../components/Breadcrumb';
 import TrustBadges from '../components/TrustBadges';
+import { trackBeginCheckout, trackError } from '../utils/analytics';
 
-const PAYSTACK_PUBLIC_KEY = 'pk_live_27f0020f17e275660e4a92c34fb7f7a9fc36ea94';
+const PAYSTACK_PUBLIC_KEY = import.meta.env.VITE_PAYSTACK_PUBLIC_KEY || '';
 
 function loadPaystackScript() {
   return new Promise((resolve, reject) => {
@@ -346,6 +347,14 @@ export default function CheckoutPage() {
     })();
 
     try {
+      // Track checkout initiation
+      trackBeginCheckout(currentItems.map(item => ({
+        product_id: item.id,
+        product_name: item.name,
+        price: item.price,
+        quantity: item.quantity,
+      })), currentTotal);
+      
       // Block orders during maintenance mode
       if (isMaintenance) {
         setError('Checkout is temporarily disabled due to maintenance. Please try again later.');
@@ -425,6 +434,18 @@ export default function CheckoutPage() {
       }
       orderCreated.current = true;
 
+      // Store order data for purchase tracking on success page
+      sessionStorage.setItem(`omix_order_${orderId}`, JSON.stringify({
+        id: orderId,
+        total: currentDiscounted,
+        items: currentItems.map(item => ({
+          product_id: item.id,
+          product_name: item.name,
+          price: item.price,
+          quantity: item.quantity,
+        })),
+      }));
+
       try {
         window.PaystackPop.setup({
           key: PAYSTACK_PUBLIC_KEY,
@@ -459,6 +480,7 @@ export default function CheckoutPage() {
 
     } catch (err) {
       console.error('Checkout error:', err);
+      trackError(err.message || 'Checkout failed', 'Checkout.handleSubmit');
       setError(err.message || 'Something went wrong during checkout. Please try again.');
       setLoading(false);
     }

@@ -1,16 +1,1 @@
-{
-  "projectId": "prj_jvhJpY2BpYnyb0BLVynH6zfKdzkW",
-  "orgId": "team_osZxoIzDBMePUxtd5biFGhyo",
-  "projectName": "omix",
-  "settings": {
-    "createdAt": 1771948449573,
-    "framework": "vite",
-    "devCommand": null,
-    "installCommand": "npm install",
-    "buildCommand": "npm run build",
-    "outputDirectory": "dist",
-    "rootDirectory": null,
-    "directoryListing": false,
-    "nodeVersion": "24.x"
-  }
-}
+{"projectId":"prj_jvhJpY2BpYnyb0BLVynH6zfKdzkW","orgId":"team_osZxoIzDBMePUxtd5biFGhyo","projectName":"omix"}

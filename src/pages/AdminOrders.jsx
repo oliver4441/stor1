@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import { Search, Eye, X, Calendar, Download, RefreshCw, MessageSquare, Package, MapPin, Phone, Mail, User, Clock, AlertTriangle } from 'lucide-react';
 import { fetchAllOrders, updateOrderStatus, updateOrderNotes, cancelOrder } from '../utils/api';
 import { formatKES } from '../utils/constants';
@@ -39,6 +39,18 @@ export default function AdminOrders() {
   const [notesValue, setNotesValue] = useState('');
   const [successMsg, setSuccessMsg] = useState('');
   const [errorMsg, setErrorMsg] = useState('');
+  const timersRef = useRef([]);
+
+  // Cleanup all timers on unmount
+  useEffect(() => {
+    return () => { timersRef.current.forEach(clearTimeout); };
+  }, []);
+
+  const addTimer = (fn, ms) => {
+    const id = setTimeout(() => { fn(); timersRef.current = timersRef.current.filter(t => t !== id); }, ms);
+    timersRef.current.push(id);
+    return id;
+  };
 
   const loadData = useCallback(async () => {
     setLoading(true);
@@ -80,7 +92,7 @@ export default function AdminOrders() {
       const allowed = VALID_TRANSITIONS[currentOrder.status] || [];
       if (!allowed.includes(newStatus)) {
         setErrorMsg('Cannot change from "' + currentOrder.status + '" to "' + newStatus + '"');
-        setTimeout(() => setErrorMsg(''), 5000);
+        addTimer(() => setErrorMsg(''), 5000);
         return;
       }
     }
@@ -91,10 +103,10 @@ export default function AdminOrders() {
         setSelectedOrder(prev => ({ ...prev, status: newStatus }));
       }
       setSuccessMsg('Status updated');
-      setTimeout(() => setSuccessMsg(''), 3000);
+      addTimer(() => setSuccessMsg(''), 3000);
     } else {
       setErrorMsg('Failed to update status: ' + (result.error || 'Unknown error'));
-      setTimeout(() => setErrorMsg(''), 5000);
+      addTimer(() => setErrorMsg(''), 5000);
     }
   };
 
@@ -107,10 +119,10 @@ export default function AdminOrders() {
         setSelectedOrder(prev => ({ ...prev, status: 'cancelled' }));
       }
       setSuccessMsg('Order cancelled');
-      setTimeout(() => setSuccessMsg(''), 3000);
+      addTimer(() => setSuccessMsg(''), 3000);
     } else {
       setErrorMsg('Failed to cancel: ' + (result.error || 'Unknown error'));
-      setTimeout(() => setErrorMsg(''), 5000);
+      addTimer(() => setErrorMsg(''), 5000);
     }
   };
 
@@ -122,15 +134,21 @@ export default function AdminOrders() {
       setOrders(prev => prev.map(o => o.id === selectedOrder.id ? { ...o, admin_notes: notesValue } : o));
       setEditingNotes(false);
       setSuccessMsg('Notes saved');
-      setTimeout(() => setSuccessMsg(''), 3000);
+      addTimer(() => setSuccessMsg(''), 3000);
     } else {
       setErrorMsg('Failed to save notes: ' + (result.error || 'Unknown error'));
-      setTimeout(() => setErrorMsg(''), 5000);
+      addTimer(() => setErrorMsg(''), 5000);
     }
   };
 
   const handleExportCSV = () => {
     const headers = ['Order ID', 'Customer', 'Email', 'Phone', 'Total', 'Status', 'Date', 'Address'];
+    const escapeCSV = (val) => {
+      const s = String(val ?? '');
+      // Prevent CSV injection: strip leading =, +, -, @, tab, CR
+      const sanitized = s.replace(/^[=+\-@\t\r]/, '');
+      return `"${sanitized.replace(/"/g, '""')}"`;
+    };
     const rows = filteredOrders.map(o => [
       String(o.id).slice(0, 8).toUpperCase(),
       o.customer_name || 'Guest',
@@ -141,7 +159,7 @@ export default function AdminOrders() {
       new Date(o.created_at).toLocaleDateString('en-KE'),
       `${o.address || ''} ${o.city || ''}`.trim(),
     ]);
-    const csv = [headers, ...rows].map(row => row.map(cell => `"${cell}"`).join(',')).join('\n');
+    const csv = [headers, ...rows].map(row => row.map(escapeCSV).join(',')).join('\n');
     const blob = new Blob([csv], { type: 'text/csv' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');

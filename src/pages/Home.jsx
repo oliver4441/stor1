@@ -259,7 +259,7 @@ function Home() {
 
       {/* Recently Viewed */}
       <div className="max-w-7xl mx-auto px-4 mt-12">
-        <RecentlyViewed allListings={[]} />
+        <RecentlyViewed allListings={listings} />
       </div>
 
       {/* Quick View Modal */}

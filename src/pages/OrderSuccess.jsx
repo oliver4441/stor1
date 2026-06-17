@@ -1,9 +1,25 @@
+import React from 'react';
 import { Link } from 'react-router-dom';
 import { CheckCircle, Package, ArrowRight } from 'lucide-react';
+import { trackPurchase } from '../utils/analytics';
 
 export default function OrderSuccess() {
   const params = new URLSearchParams(window.location.search);
   const orderId = params.get('orderId') || 'N/A';
+
+  // Track purchase on page load
+  React.useEffect(() => {
+    // Get order details from localStorage or sessionStorage if available
+    const orderData = sessionStorage.getItem(`omix_order_${orderId}`);
+    if (orderData) {
+      try {
+        const order = JSON.parse(orderData);
+        trackPurchase(orderId, order.total, order.items || []);
+      } catch (e) {
+        console.warn('Failed to parse order data for tracking:', e);
+      }
+    }
+  }, [orderId]);
 
   return (
     <div className="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8 py-16" data-name="order-success-page">

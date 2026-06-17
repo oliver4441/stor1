@@ -31,6 +31,7 @@ export default function AdminProducts() {
   const [errorMsg, setErrorMsg] = useState('');
   const [deleteTarget, setDeleteTarget] = useState(null);
   const [imageUploading, setImageUploading] = useState(false);
+  const [processing, setProcessing] = useState(false);
   const fileInputRef = useRef(null);
   const successTimer = useRef(null);
   const errorTimer = useRef(null);
@@ -90,28 +91,35 @@ export default function AdminProducts() {
     if (!bulkAction || selectedIds.length === 0) return;
     if (bulkAction === 'delete') {
       if (!confirm(`Delete ${selectedIds.length} products? This cannot be undone.`)) return;
-      const result = await bulkDeleteListings(selectedIds);
-      if (result.success) {
-        setSuccessMsg(`${selectedIds.length} products deleted`);
-        setSelectedIds([]);
-        await loadData();
-        successTimer.current = setTimeout(() => setSuccessMsg(''), 3000);
+    }
+    setProcessing(true);
+    try {
+      if (bulkAction === 'delete') {
+        const result = await bulkDeleteListings(selectedIds);
+        if (result.success) {
+          setSuccessMsg(`${selectedIds.length} products deleted`);
+          setSelectedIds([]);
+          await loadData();
+          successTimer.current = setTimeout(() => setSuccessMsg(''), 3000);
+        } else {
+          setErrorMsg('Bulk delete failed: ' + result.error);
+          errorTimer.current = setTimeout(() => setErrorMsg(''), 5000);
+        }
       } else {
-        setErrorMsg('Bulk delete failed: ' + result.error);
-        errorTimer.current = setTimeout(() => setErrorMsg(''), 5000);
+        const result = await bulkUpdateListingStatus(selectedIds, bulkAction);
+        if (result.success) {
+          setSuccessMsg(`${selectedIds.length} products updated to "${bulkAction}"`);
+          setSelectedIds([]);
+          setBulkAction('');
+          await loadData();
+          successTimer.current = setTimeout(() => setSuccessMsg(''), 3000);
+        } else {
+          setErrorMsg('Bulk update failed: ' + result.error);
+          errorTimer.current = setTimeout(() => setErrorMsg(''), 5000);
+        }
       }
-    } else {
-      const result = await bulkUpdateListingStatus(selectedIds, bulkAction);
-      if (result.success) {
-        setSuccessMsg(`${selectedIds.length} products updated to "${bulkAction}"`);
-        setSelectedIds([]);
-        setBulkAction('');
-        await loadData();
-        successTimer.current = setTimeout(() => setSuccessMsg(''), 3000);
-      } else {
-        setErrorMsg('Bulk update failed: ' + result.error);
-        errorTimer.current = setTimeout(() => setErrorMsg(''), 5000);
-      }
+    } finally {
+      setProcessing(false);
     }
   };
 
@@ -207,15 +215,20 @@ export default function AdminProducts() {
 
   const handleDelete = async () => {
     if (!deleteTarget) return;
-    const result = await adminDeleteListing(deleteTarget.id);
-    if (result.success) {
-      setSuccessMsg('Product deleted!');
-      setDeleteTarget(null);
-      await loadData();
-      successTimer.current = setTimeout(() => setSuccessMsg(''), 3000);
-    } else {
-      setErrorMsg('Delete failed: ' + (result.error || 'Unknown error'));
-      errorTimer.current = setTimeout(() => setErrorMsg(''), 5000);
+    setProcessing(true);
+    try {
+      const result = await adminDeleteListing(deleteTarget.id);
+      if (result.success) {
+        setSuccessMsg('Product deleted!');
+        setDeleteTarget(null);
+        await loadData();
+        successTimer.current = setTimeout(() => setSuccessMsg(''), 3000);
+      } else {
+        setErrorMsg('Delete failed: ' + (result.error || 'Unknown error'));
+        errorTimer.current = setTimeout(() => setErrorMsg(''), 5000);
+      }
+    } finally {
+      setProcessing(false);
     }
   };
 
@@ -307,9 +320,9 @@ export default function AdminProducts() {
             <option value="draft">Set Draft</option>
             <option value="delete">Delete</option>
           </select>
-          <button onClick={handleBulkAction} disabled={!bulkAction}
-            className="px-4 py-1.5 bg-[#ff385c] text-white rounded-lg text-sm font-bold disabled:opacity-50 hover:bg-[#e03150]">
-            Apply
+          <button onClick={handleBulkAction} disabled={!bulkAction || processing}
+            className="px-4 py-1.5 bg-[#ff385c] text-white rounded-lg text-sm font-bold disabled:opacity-50 hover:bg-[#e03150] flex items-center gap-2">
+            {processing ? <><Loader2 className="w-3.5 h-3.5 animate-spin" /> Processing...</> : 'Apply'}
           </button>
           <button onClick={() => setSelectedIds([])} className="text-xs text-zinc-500 hover:text-zinc-700 ml-auto">Clear selection</button>
         </div>
@@ -591,8 +604,10 @@ export default function AdminProducts() {
             <h3 className="text-lg font-bold text-zinc-900 dark:text-white mb-2">Delete Product?</h3>
             <p className="text-sm text-zinc-500 dark:text-zinc-400 mb-6">This will permanently delete "{deleteTarget.title}".</p>
             <div className="flex gap-3">
-              <button onClick={() => setDeleteTarget(null)} className="flex-1 bg-zinc-100 dark:bg-zinc-800 text-zinc-700 dark:text-zinc-300 font-bold py-2.5 rounded-xl text-sm">Cancel</button>
-              <button onClick={handleDelete} className="flex-1 bg-red-500 text-white font-bold py-2.5 rounded-xl text-sm hover:bg-red-600">Delete</button>
+              <button onClick={() => !processing && setDeleteTarget(null)} disabled={processing} className="flex-1 bg-zinc-100 dark:bg-zinc-800 text-zinc-700 dark:text-zinc-300 font-bold py-2.5 rounded-xl text-sm disabled:opacity-50">Cancel</button>
+              <button onClick={handleDelete} disabled={processing} className="flex-1 bg-red-500 text-white font-bold py-2.5 rounded-xl text-sm hover:bg-red-600 disabled:opacity-50 flex items-center justify-center gap-2">
+                {processing ? <><Loader2 className="w-4 h-4 animate-spin" /> Deleting...</> : 'Delete'}
+              </button>
             </div>
           </div>
         </div>

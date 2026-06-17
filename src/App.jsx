@@ -1,6 +1,7 @@
 import React, { Suspense } from 'react';
-import { Routes, Route, Navigate } from 'react-router-dom';
+import { Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import { LanguageProvider } from './utils/lang';
+import { AuthProvider } from './context/AuthContext';
 import { CartProvider } from './context/CartContext';
 import { NiaChatProvider } from './context/NiaChatContext';
 import Navbar from './components/Navbar';
@@ -20,6 +21,7 @@ import { SeasonalProvider } from './context/SeasonalContext';
 import { supabase } from './utils/supabase';
 import { useMaintenanceMode } from './hooks/useMaintenanceMode';
 import MaintenanceBanner from './components/MaintenanceBanner';
+import { trackPageView, trackUserLogin, trackUserSignup, setUserId } from './utils/analytics';
 
 // Lazy-loaded page components for route-based code splitting
 const Home = React.lazy(() => import('./pages/Home'));
@@ -59,6 +61,12 @@ function PageLoadingFallback() {
 
 function App() {
   const { isMaintenance } = useMaintenanceMode();
+  const location = useLocation();
+
+  // Track page views for SPA navigation
+  React.useEffect(() => {
+    trackPageView(location.pathname);
+  }, [location.pathname]);
 
   React.useEffect(() => {
     // App mounted
@@ -66,6 +74,15 @@ function App() {
     // Listen for auth state changes (OAuth login/signup)
     const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
       if (event === 'SIGNED_IN' && session?.user) {
+        // Track user login
+        const isNewUser = !session.user.user_metadata?.email_verified;
+        if (isNewUser) {
+          trackUserSignup('google', session.user.id);
+        } else {
+          trackUserLogin('google', session.user.id);
+        }
+        setUserId(session.user.id);
+
         // Check if profile exists, create if not (for OAuth users)
         const { data: existing } = await supabase
           .from('profiles')
@@ -91,6 +108,7 @@ function App() {
   return (
     <SeasonalProvider>
     <LanguageProvider>
+    <AuthProvider>
     <CartProvider>
     <NiaChatProvider>
     <ErrorBoundary>
@@ -143,6 +161,7 @@ function App() {
     </ErrorBoundary>
     </NiaChatProvider>
     </CartProvider>
+    </AuthProvider>
     </LanguageProvider>
     </SeasonalProvider>
   )

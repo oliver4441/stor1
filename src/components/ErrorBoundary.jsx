@@ -3,22 +3,19 @@ import React from 'react';
 class ErrorBoundary extends React.Component {
   constructor(props) {
     super(props);
-    this.state = { hasError: false, error: null };
+    this.state = { hasError: false };
   }
 
-  static getDerivedStateFromError(error) {
-    return { hasError: true, error };
+  static getDerivedStateFromError() {
+    return { hasError: true };
   }
 
   componentDidCatch(error, errorInfo) {
     console.error('ErrorBoundary caught:', error, errorInfo);
-    console.error('Error stack:', error?.stack);
-    console.error('Error message:', error?.message);
-    console.error('ErrorInfo componentStack:', errorInfo?.componentStack);
   }
 
   handleRetry = () => {
-    this.setState({ hasError: false, error: null });
+    this.setState({ hasError: false });
   };
 
   render() {
@@ -27,11 +24,8 @@ class ErrorBoundary extends React.Component {
         <div className="min-h-screen flex items-center justify-center p-4 text-center">
           <div className="max-w-md bg-red-50 dark:bg-red-900/20 p-8 rounded-3xl border border-red-100 dark:border-red-900/50">
             <h1 className="text-2xl font-bold text-red-600 mb-2">Something went wrong</h1>
-            <p className="text-zinc-600 dark:text-zinc-400 mb-2 text-sm font-mono">
-              {this.state.error?.message || this.state.error?.toString() || 'The application failed to load.'}
-            </p>
-            <p className="text-zinc-500 dark:text-zinc-500 mb-6 text-xs">
-              {this.state.error?.stack?.split('\n').slice(0, 3).join('\n') || ''}
+            <p className="text-zinc-600 dark:text-zinc-400 mb-6 text-sm">
+              An unexpected error occurred. Please try again or contact support if the problem persists.
             </p>
             <button
               onClick={this.handleRetry}

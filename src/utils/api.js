@@ -37,8 +37,8 @@ export async function signUp({ email, password, fullName, phone, refCode }) {
     });
     if (profileError) {
       console.error('Profile insert failed:', profileError.message);
-      // Clean up the auth user since profile couldn't be created
-      await supabase.auth.admin.deleteUser(data.user.id).catch(() => {});
+      // Note: auth user cleanup should be handled by a DB trigger or edge function,
+      // never call admin methods from the client
       return { success: false, error: 'Account creation failed. Please try again.' };
     }
   }
@@ -57,8 +57,9 @@ export async function signIn({ email, password }) {
 }
 
 export async function signOut() {
-  await supabase.auth.signOut()
-  return { success: true }
+  await supabase.auth.signOut();
+  clearAdminCache();
+  return { success: true };
 }
 
 export async function getCurrentUser() {
@@ -81,9 +82,11 @@ export async function fetchListings(category = 'All', searchQuery = '', page = 1
     query = query.eq('category', category)
   }
   if (searchQuery) {
-    // Use full-text search via Supabase textSearch
-    const sanitized = searchQuery.replace(/[%_]/g, '\\$&');
-    query = query.or(`title.ilike.%${sanitized}%,description.ilike.%${sanitized}%`)
+    // Sanitize: only allow alphanumeric, spaces, hyphens, periods
+    const sanitized = searchQuery.replace(/[^a-zA-Z0-9\s\-.]/g, '').trim();
+    if (sanitized.length > 0) {
+      query = query.or(`(title.ilike.%${sanitized}%,description.ilike.%${sanitized}%)`);
+    }
   }
 
   query = query.order('created_at', { ascending: false })
@@ -298,9 +301,19 @@ export async function createListing(formData) {
   return { success: true, id: data?.id }
 }
 
-// Update listing
+// Update listing — only seller or admin can update
 export async function updateListing(id, formData) {
   const { data: { user } } = await supabase.auth.getUser()
+  if (!user) return { success: false, error: 'Authentication required' };
+
+  // Verify ownership or admin role
+  const { data: listing } = await supabase.from('listings').select('seller_id').eq('id', id).maybeSingle();
+  if (!listing) return { success: false, error: 'Listing not found' };
+  if (listing.seller_id !== user.id) {
+    const admin = await isAdmin();
+    if (!admin) return { success: false, error: 'You can only edit your own listings' };
+  }
+
   const catId = CATEGORY_TO_ID[formData.category] || null
 
   const { data, error } = await supabase
@@ -336,10 +349,20 @@ export async function updateListing(id, formData) {
   return { success: true, id: data?.id }
 }
 
-// Bulk update listing status
+// Bulk update listing status — only seller or admin
 export async function bulkUpdateListingStatus(ids, status) {
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return { success: false, error: 'Authentication required' };
+
+  // Verify ownership or admin
+  const { data: listings } = await supabase.from('listings').select('seller_id').in('id', ids);
+  if (listings && listings.length > 0) {
+    const allOwned = listings.every(l => l.seller_id === user.id);
+    if (!allOwned) {
+      const admin = await isAdmin();
+      if (!admin) return { success: false, error: 'You can only update your own listings' };
+    }
+  }
 
   const { error } = await supabase
     .from('listings')
@@ -350,10 +373,20 @@ export async function bulkUpdateListingStatus(ids, status) {
   return { success: true }
 }
 
-// Bulk delete listings
+// Bulk delete listings — only seller or admin
 export async function bulkDeleteListings(ids) {
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return { success: false, error: 'Authentication required' };
+
+  // Verify ownership or admin
+  const { data: listings } = await supabase.from('listings').select('seller_id').in('id', ids);
+  if (listings && listings.length > 0) {
+    const allOwned = listings.every(l => l.seller_id === user.id);
+    if (!allOwned) {
+      const admin = await isAdmin();
+      if (!admin) return { success: false, error: 'You can only delete your own listings' };
+    }
+  }
 
   const { error } = await supabase
     .from('listings')
@@ -364,10 +397,18 @@ export async function bulkDeleteListings(ids) {
   return { success: true }
 }
 
-// Delete listing
+// Delete listing — only seller or admin can delete
 export async function deleteListing(id) {
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return { success: false, error: 'Authentication required' };
+
+  // Verify ownership or admin role
+  const { data: listing } = await supabase.from('listings').select('seller_id').eq('id', id).maybeSingle();
+  if (!listing) return { success: false, error: 'Listing not found' };
+  if (listing.seller_id !== user.id) {
+    const admin = await isAdmin();
+    if (!admin) return { success: false, error: 'You can only delete your own listings' };
+  }
 
   const { error } = await supabase
     .from('listings')
@@ -537,16 +578,19 @@ export async function createOrder({ items, total, customerName, phone, email, ad
     }
   } catch {}
 
-  // Increment promo code usage
+  // Increment promo code usage — use atomic DB function if available
   if (promoCodeId) {
-    // Use raw increment via rpc or fallback to select+update
     try {
-      const { data: current } = await supabase.from('promo_codes').select('times_used').eq('id', promoCodeId).single();
-      if (current) {
-        await supabase.from('promo_codes').update({ times_used: (current.times_used || 0) + 1 }).eq('id', promoCodeId);
+      // Prefer atomic increment via RPC (requires create_promo_increment_fn in DB)
+      const { error: rpcError } = await supabase.rpc('increment_promo_usage', { promo_id: promoCodeId });
+      if (rpcError) {
+        // Fallback: direct update (still has race condition but better than nothing)
+        const { data: current } = await supabase.from('promo_codes').select('times_used').eq('id', promoCodeId).single();
+        if (current) {
+          await supabase.from('promo_codes').update({ times_used: (current.times_used || 0) + 1 }).eq('id', promoCodeId);
+        }
       }
     } catch (e) {
-      // Non-critical: log but don't fail the order
       console.warn('Failed to increment promo usage:', e.message);
     }
   }
@@ -648,8 +692,10 @@ export async function saveAddress(address) {
 }
 
 export async function deleteAddress(id) {
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) return { success: false, error: 'Not authenticated' };
   try {
-    const { error } = await supabase.from('saved_addresses').delete().eq('id', id);
+    const { error } = await supabase.from('saved_addresses').delete().eq('id', id).eq('user_id', user.id);
     if (error) throw error;
     return { success: true };
   } catch (err) {
@@ -662,7 +708,7 @@ export async function setDefaultAddress(id) {
   if (!user) return { success: false, error: 'Not authenticated' };
   try {
     await supabase.from('saved_addresses').update({ is_default: false }).eq('user_id', user.id);
-    await supabase.from('saved_addresses').update({ is_default: true }).eq('id', id);
+    await supabase.from('saved_addresses').update({ is_default: true }).eq('id', id).eq('user_id', user.id);
     return { success: true };
   } catch (err) {
     return { success: false, error: err.message };
@@ -731,17 +777,21 @@ export async function updateOrderStatus(orderId, status) {
   return { success: true };
 }
 
+// No-op: admin cache removed for security (isAdmin now always checks server-side)
+export function clearAdminCache() {}
+
 export async function isAdmin() {
   try {
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) return false;
+
     const { data: profile, error } = await supabase
       .from('profiles')
       .select('role')
       .eq('id', user.id)
       .single();
-    if (error || !profile) return false;
-    return profile.role === 'admin';
+
+    return !error && profile?.role === 'admin';
   } catch {
     return false;
   }

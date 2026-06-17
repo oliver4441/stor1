@@ -5,6 +5,7 @@ import { useLang } from '../utils/lang';
 import { User, Mail, Lock, CheckCircle2, ShoppingBag, Chrome } from 'lucide-react';
 import { supabase } from '../utils/supabase';
 import { checkRateLimit, recordActionAttempt, clearRateLimit } from '../utils/rateLimit';
+import { trackUserSignup, trackError } from '../utils/analytics';
 
 function Signup() {
   const { t } = useLang();
@@ -38,6 +39,7 @@ function Signup() {
       });
       if (error) throw error;
     } catch (err) {
+      trackError(err.message || 'Google sign-up failed', 'Signup.handleGoogleSignup');
       setError(err.message || 'Google sign-up failed');
       setLoading(false);
     }
@@ -65,10 +67,15 @@ function Signup() {
       const result = await signUp({ email: formData.email, password: formData.password, fullName: formData.fullName, refCode });
       if (result.success) {
         clearRateLimit('signup');
+        trackUserSignup('email', result.user.id);
         if (result.session) { setSuccess(true); successTimer.current = setTimeout(() => navigate('/account'), 1500); }
         else { setNeedsVerification(true); setRegisteredEmail(formData.email); setLoading(false); }
       } else { setError(result.error); setLoading(false); }
-    } catch (err) { setError(err.message || 'Something went wrong. Please try again.'); setLoading(false); }
+    } catch (err) { 
+      trackError(err.message || 'Signup failed', 'Signup.handleSignup');
+      setError(err.message || 'Something went wrong. Please try again.'); 
+      setLoading(false); 
+    }
   };
 
   if (needsVerification) {

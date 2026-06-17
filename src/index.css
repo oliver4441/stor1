@@ -168,10 +168,6 @@
 }
 
 /* PWA Update banner animation */
-@keyframes slide-up {
-  from { opacity: 0; transform: translateY(20px); }
-  to { opacity: 1; transform: translateY(0); }
-}
 
 .animate-slide-up {
   animation: slide-up 0.3s ease-out;
@@ -291,12 +287,6 @@
 }
 
 /* Bounce once animation for cart button */
-@keyframes bounce-once {
-  0%, 100% { transform: translateY(0); }
-  30% { transform: translateY(-8px); }
-  50% { transform: translateY(-4px); }
-  70% { transform: translateY(-2px); }
-}
 
 .animate-bounce-once {
   animation: bounce-once 0.4s ease-out;

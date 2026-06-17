@@ -1,25 +1,9 @@
 // AI Search utility
-// TODO: Connect to backend proxy for Gemini API
-// const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
+// NOTE: This is a placeholder. AI-powered search is not yet implemented.
+// When ready, connect to a backend proxy for the LLM API.
 
 export async function aiSearch(query, listings) {
-  // In a real app, we'd send the query and listing titles/descriptions to Gemini
-  // to find the best matches. For now, we'll simulate the AI filtering.
-  
-  // AI search initiated
-  
-  // Simulation: Filter based on keywords if AI key is missing
-  const keywords = query.toLowerCase().split(' ');
-  return listings.filter(item => {
-    const text = (item.title + ' ' + item.description + ' ' + item.category).toLowerCase();
-    return keywords.some(word => text.includes(word));
-  });
+  // Placeholder: returns empty results until AI search is implemented
+  console.warn('aiSearch: AI search not yet connected. Returning empty results.');
+  return [];
 }
-
-/**
- * Example prompt for Gemini:
- * "You are a marketplace assistant for Kericho, Kenya. 
- * Based on these listings: [LISTINGS_JSON], 
- * find the best items for the user query: '[USER_QUERY]'.
- * Return only a JSON array of product IDs."
- */

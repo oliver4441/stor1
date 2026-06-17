@@ -4,7 +4,7 @@
 
 import { supabase } from './supabase';
 
-const PUBLIC_VAPID_KEY = 'BEl62iUYgUivxIkv69p4k9y7lTgLVZ2JmBzRUFqRk5Cg0v0I1QNlYq0lV5Z0nH0ZlQ0Y3L0Y1c0Z0l0V0Z0l0V0'; // Demo key — replace with real one in production
+const PUBLIC_VAPID_KEY = import.meta.env.VITE_VAPID_PUBLIC_KEY || '';
 
 /**
  * Check if the browser supports push notifications and service workers.

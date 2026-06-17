@@ -1,7 +1,7 @@
 import React from 'react';
-import { Navigate, Outlet, useLocation, Link } from 'react-router-dom';
+import { Navigate, Outlet, useLocation, Link, useNavigate } from 'react-router-dom';
 import { supabase } from '../utils/supabase';
-import { isAdmin } from '../utils/api';
+import { isAdmin, clearAdminCache } from '../utils/api';
 import {
   LayoutDashboard, Package, ShoppingBag, Users, BarChart3, Settings,
   LogOut, Shield, Menu, X, ChevronRight, Tag
@@ -20,6 +20,7 @@ const NAV_ITEMS = [
 
 export default function AdminLayout() {
   const location = useLocation();
+  const navigate = useNavigate();
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -27,17 +28,18 @@ export default function AdminLayout() {
   useEffect(() => {
     (async () => {
       const { data: { user } } = await supabase.auth.getUser();
-      if (!user) { window.location.href = '/login'; return; }
+      if (!user) { navigate('/login'); return; }
       const admin = await isAdmin();
-      if (!admin) { window.location.href = '/account'; return; }
+      if (!admin) { navigate('/account'); return; }
       setUser(user);
       setLoading(false);
     })();
-  }, []);
+  }, [navigate]);
 
   const handleLogout = async () => {
     await supabase.auth.signOut();
-    window.location.href = '/login';
+    clearAdminCache();
+    navigate('/login');
   };
 
   const currentPage = NAV_ITEMS.find(item =>

@@ -1,7 +1,7 @@
-node_modules
-dist
-build
+.vercel
 .env
-.DS_Store
-supabase/.temp/
-public/version.json
+.env*.local
+*.local
+node_modules/
+dist/
+build/

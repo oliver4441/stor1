@@ -1,6 +1,10 @@
 {
-  "framework": null,
-  "buildCommand": "echo 'Static site - no build needed'",
-  "installCommand": "echo 'No install needed'",
-  "outputDirectory": "."
+  "framework": "vite",
+  "buildCommand": "node scripts/generate-version.js && vite build",
+  "installCommand": "npm install",
+  "outputDirectory": "dist",
+  "routes": [
+    { "handle": "filesystem" },
+    { "src": "/(.*)", "dest": "/index.html" }
+  ]
 }

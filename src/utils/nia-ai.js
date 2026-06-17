@@ -1,9 +1,8 @@
 // Nia AI — powers the Omix Store chatbot with real LLM intelligence
 // Uses OpenCode API (OpenAI-compatible) via the frontend
 
-const OPENCODE_API_URL = 'https://api.opencode.ai/v1/chat/completions';
+const OPENCODE_API_URL = import.meta.env.VITE_OPENCODE_API_URL || 'https://api.opencode.ai/v1/chat/completions';
 
-// Fallback: use VITE_OPENCODE_API_KEY from env
 function getApiKey() {
   return import.meta.env.VITE_OPENCODE_API_KEY || '';
 }

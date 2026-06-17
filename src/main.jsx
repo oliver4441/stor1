@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom/client'
 import { BrowserRouter } from 'react-router-dom'
 import App from './App.jsx'
 import './index.css'
+import { initGA } from './utils/analytics'
 
 // Register service worker for PWA install support
 if ('serviceWorker' in navigator) {
@@ -26,6 +27,9 @@ if ('serviceWorker' in navigator) {
     }
   }
 })();
+
+// Initialize Google Analytics
+initGA();
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>

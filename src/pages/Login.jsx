@@ -5,6 +5,7 @@ import { useLang } from '../utils/lang';
 import { supabase } from '../utils/supabase';
 import { checkRateLimit, recordActionAttempt, clearRateLimit } from '../utils/rateLimit';
 import { Chrome } from 'lucide-react';
+import { trackUserLogin, trackError } from '../utils/analytics';
 
 function Login() {
   const { t } = useLang();
@@ -23,6 +24,7 @@ function Login() {
       });
       if (error) throw error;
     } catch (err) {
+      trackError(err.message || 'Google sign-in failed', 'Login.handleGoogleLogin');
       setError(err.message || 'Google sign-in failed');
       setLoading(false);
     }
@@ -50,12 +52,14 @@ function Login() {
 
       if (result.success) {
         clearRateLimit('login');
+        trackUserLogin('email', result.user.id);
         try {
           const { data: profile } = await supabase
             .from('profiles').select('role').eq('id', result.user.id).single();
+          const ALLOWED_REDIRECTS = ['/account', '/admin', '/cart', '/checkout', '/listings', '/'];
           const params = new URLSearchParams(window.location.search);
           const redirect = params.get('redirect');
-          if (redirect) navigate(redirect);
+          if (redirect && ALLOWED_REDIRECTS.includes(redirect)) navigate(redirect);
           else if (profile?.role === 'admin') navigate('/admin');
           else navigate('/account');
         } catch {
@@ -72,6 +76,7 @@ function Login() {
         setLoading(false);
       }
     } catch (err) {
+      trackError(err.message || 'Login failed', 'Login.handleLogin');
       setError(err.message || 'Something went wrong. Please try again.');
       setLoading(false);
     }

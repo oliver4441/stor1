@@ -5,7 +5,7 @@ import CountdownTimer from './CountdownTimer';
 import { ProductSocialBadge } from '../components/SocialProof';
 import { formatKES } from '../utils/constants';
 import { useCart } from '../context/CartContext';
-import { supabase } from '../utils/supabase';
+import { useAuth } from '../context/AuthContext';
 import { isMaintenanceCached } from '../hooks/useMaintenanceMode';
 
 const COMPARE_KEY = 'omix_compare_ids';
@@ -24,8 +24,8 @@ function setCompareIds(ids) {
 
 function ProductCard({ listing, compareMode, onCompareChange }) {
   const [imgError, setImgError] = useState(false);
-  const [user, setUser] = useState(null);
   const [justAdded, setJustAdded] = useState(false);
+  const { user } = useAuth();
   const { addItem, cart } = useCart();
   const navigate = useNavigate();
   const hasImage = listing.images && listing.images.length > 0 && !imgError;
@@ -34,13 +34,6 @@ function ProductCard({ listing, compareMode, onCompareChange }) {
 
   // Check if this item is selected for comparison
   const [isCompared, setIsCompared] = useState(() => getCompareIds().includes(listing.id));
-
-  // Check auth on mount
-  useEffect(() => {
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      setUser(session?.user ?? null);
-    });
-  }, []);
 
   // Sync compare state when localStorage changes
   useEffect(() => {

@@ -1,4 +1,5 @@
 import React, { createContext, useContext, useReducer, useEffect, useCallback, useRef, useState } from 'react';
+import { trackAddToCart } from '../utils/analytics';
 
 const CART_STORAGE_KEY = 'omix_cart';
 const DB_NAME = 'omix_store';
@@ -187,6 +188,8 @@ export function CartProvider({ children }) {
   // ── Actions ──
   const addItem = useCallback((product) => {
     dispatch({ type: 'ADD_ITEM', payload: product });
+    // Track add to cart event
+    trackAddToCart(product.id, product.name, product.price, product.quantity || 1);
     // Trigger animation callback
     if (onAddCallback.current) {
       onAddCallback.current(product);
@@ -203,14 +206,6 @@ export function CartProvider({ children }) {
 
   const clearCart = useCallback(() => {
     dispatch({ type: 'CLEAR_CART' });
-  }, []);
-
-  const syncCart = useCallback(() => {
-    const currentCart = loadCartFromStorage();
-    dispatch({ type: 'SET_CART', payload: currentCart });
-    if (currentCart.length > 0) {
-      saveCartToIndexedDB(currentCart);
-    }
   }, []);
 
   // ── Selectors ──
