@@ -10,10 +10,8 @@ import NiaContextualTrigger from '../components/NiaContextualTrigger';
 import SearchBar from '../components/SearchBar';
 import RecentlyViewed from '../components/RecentlyViewed';
 import QuickViewModal from '../components/QuickViewModal';
-import SeasonalParticles from '../components/SeasonalParticles';
 import { useActiveTheme } from '../context/SeasonalContext';
 import AutoScrollCarousel from '../components/AutoScrollCarousel';
-
 const ITEMS_PER_PAGE = 24;
 
 function Home() {
@@ -77,14 +75,10 @@ function Home() {
   const ctaText = theme?.colors?.ctaText || '#ff385c';
   const heroTitle = theme?.heroTitle || 'Your Online Store in Kericho';
   const heroSubtitle = theme?.heroSubtitle || 'Browse, add to cart, and pay easily via M-Pesa. Delivered to your doorstep.';
-  const particleType = theme?.particleType || 'none';
-  const heroImages = theme?.heroImages || [];
-  const hasHeroImages = heroImages.length > 0;
+  const badgeText = theme?.badgeText || '';
 
   return (
     <div data-name="home-page">
-      {/* Seasonal Particles */}
-      <SeasonalParticles type={particleType} count={25} />
 
       {/* Hero Section */}
       <div className="relative overflow-hidden mb-8">
@@ -100,8 +94,17 @@ function Home() {
 
         {/* Hero Content */}
         <div className="relative z-10 py-20 md:py-28 px-4">
-          <div className="max-w-7xl mx-auto text-center">
-            <h1
+        <div className="max-w-7xl mx-auto text-center">
+          {/* Seasonal badge */}
+          {badgeText && (
+            <span
+              className="inline-block text-xs font-bold uppercase tracking-wider px-3 py-1 rounded-full mb-4"
+              style={{ backgroundColor: theme.colors?.badgeBg, color: theme.colors?.badgeText }}
+            >
+              {badgeText}
+            </span>
+          )}
+          <h1
               className="text-4xl md:text-6xl font-black mb-4 tracking-tighter drop-shadow-lg"
               style={{ color: heroText }}
             >
@@ -132,27 +135,6 @@ function Home() {
 
             <SearchBar onSearch={(q) => { setSearchQuery(q); setIsAiMode(false); }} initialValue={searchQuery} />
 
-            {/* World Cup Hero Images */}
-            {hasHeroImages && (
-              <div className="mt-10 max-w-4xl mx-auto">
-                <div className="grid grid-cols-3 gap-3 md:gap-5">
-                  {heroImages.map((img, idx) => (
-                    <div
-                      key={idx}
-                      className="relative rounded-2xl overflow-hidden shadow-2xl border-2 border-white/20 hover:border-white/50 transition-all duration-500 hover:scale-[1.03] hover:-translate-y-1 group"
-                      style={{ animationDelay: `${idx * 150}ms` }}
-                    >
-                      <img
-                        src={img}
-                        alt={`World Cup ${idx + 1}`}
-                        className="w-full aspect-[4/3] object-cover group-hover:scale-110 transition-transform duration-700"
-                      />
-                      <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent"></div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            )}
           </div>
         </div>
       </div>
