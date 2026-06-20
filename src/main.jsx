@@ -5,11 +5,12 @@ import App from './App.jsx'
 import './index.css'
 import { initGA } from './utils/analytics'
 
-// Register service worker for PWA install support
+// Unregister any existing service workers that might be serving stale content
 if ('serviceWorker' in navigator) {
-  window.addEventListener('load', () => {
-    navigator.serviceWorker.register('/sw.js').catch(() => {
-      // Service worker registration failed — app still works as normal website
+  navigator.serviceWorker.getRegistrations().then(registrations => {
+    registrations.forEach(reg => {
+      console.log('Unregistering SW:', reg.scope);
+      reg.unregister();
     });
   });
 }
@@ -21,7 +22,6 @@ if ('serviceWorker' in navigator) {
     if (stored === 'dark') document.documentElement.classList.add('dark');
     else document.documentElement.classList.remove('dark');
   } else {
-    // No stored preference — follow system
     if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
       document.documentElement.classList.add('dark');
     }
