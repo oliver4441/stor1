@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Save, Store, Truck, Bell, Palette, Eye, Calendar, Wrench } from 'lucide-react';
+import { Save, Store, Truck, Bell, Globe, Palette, Eye, Calendar, Wrench } from 'lucide-react';
 import themesConfig from '../config/seasonal-themes.json';
 import { supabase } from '../utils/supabase';
 
@@ -8,26 +8,33 @@ export default function AdminSettings() {
   const [previewTheme, setPreviewTheme] = useState(null);
   const [themes, setThemes] = useState(themesConfig.themes);
 
-  // Find currently active seasonal theme (exclude default)
+  // Find currently active theme based on date
   const now = new Date();
   const currentMonth = String(now.getMonth() + 1).padStart(2, '0');
   const currentDay = String(now.getDate()).padStart(2, '0');
   const currentDate = `${currentMonth}-${currentDay}`;
   
   const activeTheme = themes.find(t => {
-    if (!t.enabled || t.id === 'default') return false;
+    if (!t.enabled) return false;
     const { start, end } = t.dateRange;
     if (end < start) {
+      // Year-wrap range
       return currentDate >= start || currentDate <= end;
     }
     return currentDate >= start && currentDate <= end;
   });
 
   const toggleTheme = (themeId) => {
-    if (themeId === 'default') return; // default always on
-    setThemes(prev => prev.map(t =>
+    setThemes(prev => prev.map(t => 
       t.id === themeId ? { ...t, enabled: !t.enabled } : t
     ));
+    setSaved(false);
+  };
+
+  const handleSaveThemes = () => {
+    // TODO: Persist to Supabase
+    setSaved(true);
+    setTimeout(() => setSaved(false), 3000);
   };
   const [form, setForm] = useState({
     storeName: 'Omix Store',
@@ -219,11 +226,11 @@ export default function AdminSettings() {
           <h3 className="text-base font-bold text-zinc-900 dark:text-white">Seasonal Themes</h3>
         </div>
         <p className="text-xs text-zinc-500 mb-4">
-          Toggle seasonal themes on or off. The active theme is determined by date.
+          Automatically transform the app look for holidays and events. Active theme changes based on date.
         </p>
 
-        {/* Currently active seasonal theme */}
-        {activeTheme ? (
+        {/* Currently active */}
+        {activeTheme && (
           <div className="mb-4 p-3 rounded-xl border" style={{ borderColor: activeTheme.colors?.primary + '40', backgroundColor: activeTheme.colors?.primary + '08' }}>
             <div className="flex items-center gap-2">
               <div className="w-3 h-3 rounded-full animate-pulse" style={{ backgroundColor: activeTheme.colors?.primary }} />
@@ -233,11 +240,14 @@ export default function AdminSettings() {
             </div>
             <p className="text-xs text-zinc-500 mt-1">
               {activeTheme.dateRange.start} — {activeTheme.dateRange.end}
+              {activeTheme.particleType && activeTheme.particleType !== 'none' && ` · ${activeTheme.particleType} particles`}
             </p>
           </div>
-        ) : (
+        )}
+
+        {!activeTheme && (
           <div className="mb-4 p-3 rounded-xl bg-zinc-50 dark:bg-zinc-800/50 border border-zinc-200 dark:border-zinc-700">
-            <p className="text-xs text-zinc-500">No seasonal theme active — using default Omix theme.</p>
+            <p className="text-xs text-zinc-500">No seasonal theme is currently active. Enable one below to get started.</p>
           </div>
         )}
 
@@ -245,7 +255,6 @@ export default function AdminSettings() {
         <div className="space-y-2">
           {themes.map(theme => {
             const isActive = activeTheme?.id === theme.id;
-            const isDefault = theme.id === 'default';
             return (
               <div
                 key={theme.id}
@@ -256,43 +265,40 @@ export default function AdminSettings() {
                 }}
               >
                 <div className="flex items-center gap-3">
+                  {/* Color swatch */}
                   <div className="flex -space-x-1">
                     <div className="w-4 h-4 rounded-full border-2 border-white dark:border-zinc-900" style={{ backgroundColor: theme.colors?.primary }} />
                     <div className="w-4 h-4 rounded-full border-2 border-white dark:border-zinc-900" style={{ backgroundColor: theme.colors?.secondary }} />
                   </div>
                   <div>
-                    <div className="flex items-center gap-2">
-                      <p className="text-sm font-semibold text-zinc-900 dark:text-white">{theme.name}</p>
-                      {isDefault && <span className="text-[9px] font-bold uppercase tracking-wider px-1.5 py-0.5 rounded bg-zinc-200 dark:bg-zinc-700 text-zinc-500">Always on</span>}
-                    </div>
+                    <p className="text-sm font-semibold text-zinc-900 dark:text-white">{theme.name}</p>
                     <div className="flex items-center gap-2 text-[11px] text-zinc-500">
                       <Calendar className="w-3 h-3" />
                       {theme.dateRange.start} — {theme.dateRange.end}
+                      {theme.particleType && theme.particleType !== 'none' && (
+                        <span className="text-zinc-400">· {theme.particleType}</span>
+                      )}
                     </div>
                   </div>
                 </div>
 
                 <div className="flex items-center gap-2">
-                  {!isDefault && (
-                    <button
-                      onClick={() => setPreviewTheme(previewTheme === theme.id ? null : theme.id)}
-                      className="p-1.5 rounded-lg hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors"
-                      title="Preview theme"
-                    >
-                      <Eye className="w-4 h-4 text-zinc-400" />
-                    </button>
-                  )}
+                  {/* Preview button */}
+                  <button
+                    onClick={() => setPreviewTheme(previewTheme === theme.id ? null : theme.id)}
+                    className="p-1.5 rounded-lg hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors"
+                    title="Preview theme"
+                  >
+                    <Eye className="w-4 h-4 text-zinc-400" />
+                  </button>
 
-                  {isDefault ? (
-                    <span className="text-[10px] font-bold text-zinc-400 px-2">ON</span>
-                  ) : (
-                    <button
-                      onClick={() => toggleTheme(theme.id)}
-                      className={`w-10 h-5 rounded-full transition-colors relative ${theme.enabled ? 'bg-green-500' : 'bg-zinc-300 dark:bg-zinc-700'}`}
-                    >
-                      <div className={`absolute top-0.5 w-4 h-4 bg-white rounded-full shadow transition-transform ${theme.enabled ? 'translate-x-5' : 'translate-x-0.5'}`} />
-                    </button>
-                  )}
+                  {/* Toggle */}
+                  <button
+                    onClick={() => toggleTheme(theme.id)}
+                    className={`w-10 h-5 rounded-full transition-colors relative ${theme.enabled ? 'bg-green-500' : 'bg-zinc-300 dark:bg-zinc-700'}`}
+                  >
+                    <div className={`absolute top-0.5 w-4 h-4 bg-white rounded-full shadow transition-transform ${theme.enabled ? 'translate-x-5' : 'translate-x-0.5'}`} />
+                  </button>
                 </div>
               </div>
             );
@@ -306,16 +312,8 @@ export default function AdminSettings() {
           return (
             <div className="mt-4 p-4 rounded-xl border-2 border-dashed" style={{ borderColor: pt.colors?.primary }}>
               <p className="text-xs font-bold mb-2" style={{ color: pt.colors?.primary }}>Preview: {pt.name}</p>
-              <div className="rounded-lg overflow-hidden" style={{ background: `linear-gradient(135deg, ${pt.colors?.heroFrom}, ${pt.colors?.heroTo})` }}>
-                <div className="p-4">
-                  {pt.badgeText && (
-                    <span className="inline-block text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full mb-2" style={{ backgroundColor: pt.colors?.badgeBg, color: pt.colors?.badgeText }}>
-                      {pt.badgeText}
-                    </span>
-                  )}
-                  <p className="text-sm font-bold" style={{ color: pt.colors?.heroText }}>{pt.heroTitle}</p>
-                  <p className="text-xs mt-1 opacity-80" style={{ color: pt.colors?.heroSubtext }}>{pt.heroSubtitle}</p>
-                </div>
+              <div className="h-16 rounded-lg flex items-center justify-center" style={{ background: `linear-gradient(135deg, ${pt.colors?.heroFrom}, ${pt.colors?.heroTo})` }}>
+                <span className="text-sm font-bold" style={{ color: pt.colors?.heroText }}>{pt.heroTitle}</span>
               </div>
               <button
                 onClick={() => setPreviewTheme(null)}
@@ -326,6 +324,15 @@ export default function AdminSettings() {
             </div>
           );
         })()}
+
+        <button
+          onClick={handleSaveThemes}
+          className="mt-4 flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold text-white transition-all"
+          style={{ backgroundColor: '#ff385c' }}
+        >
+          <Save className="w-3.5 h-3.5" />
+          Save Theme Settings
+        </button>
       </div>
 
       {/* Save */}
