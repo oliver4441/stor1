@@ -52,37 +52,26 @@ function showFatalError(error) {
   }
 })();
 
-try {
-  // Initialize Google Analytics (non-blocking)
-  try { initGA(); } catch(e) { console.warn('GA init failed:', e); }
-
-  // Register service worker for PWA install support
-  if ('serviceWorker' in navigator) {
-    window.addEventListener('load', () => {
-      navigator.serviceWorker.register('/sw.js').then(reg => {
-        reg.update();
-        if (reg.waiting) {
-          reg.waiting.postMessage({ type: 'SKIP_WAITING' });
-        }
-        reg.addEventListener('updatefound', () => {
-          const newWorker = reg.installing;
-          newWorker.addEventListener('statechange', () => {
-            if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
-              // New SW available — PWAUpdateChecker handles this
-            }
-          });
-        });
-      }).catch(() => {});
-      
-      let refreshing = false;
-      navigator.serviceWorker.addEventListener('controllerchange', () => {
-        if (!refreshing) {
-          refreshing = true;
-          window.location.reload();
-        }
-      });
-    });
+// Trace helper — writes to both console and a visible on-screen log
+window.__traceLog = [];
+function trace(msg) {
+  window.__traceLog.push(msg);
+  console.log('[TRACE]', msg);
+  // Also write to a visible debug div
+  var dbg = document.getElementById('trace-debug');
+  if (dbg) {
+    dbg.innerHTML += msg + '\n';
+    dbg.scrollTop = dbg.scrollHeight;
   }
+}
+
+try {
+  trace('1. Starting bootstrap');
+  
+  // Initialize Google Analytics (non-blocking)
+  try { initGA(); trace('2. GA init done'); } catch(e) { console.warn('GA init failed:', e); trace('2. GA init failed: ' + e.message); }
+
+  trace('3. About to render React');
 
   ReactDOM.createRoot(document.getElementById('root')).render(
     <React.StrictMode>
@@ -91,11 +80,17 @@ try {
       </BrowserRouter>
     </React.StrictMode>,
   );
+  
+  trace('4. React render called');
+  
   // Signal that the app loaded successfully
   window.__appLoaded = true;
   // Hide the initial loader
   var loader = document.getElementById('initial-loader');
   if (loader) loader.style.display = 'none';
+  
+  trace('5. Loader hidden');
 } catch (error) {
+  trace('ERROR: ' + (error?.message || error));
   showFatalError(error);
 }
