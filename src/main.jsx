@@ -91,6 +91,11 @@ try {
       </BrowserRouter>
     </React.StrictMode>,
   );
+  // Signal that the app loaded successfully
+  window.__appLoaded = true;
+  // Hide the initial loader
+  var loader = document.getElementById('initial-loader');
+  if (loader) loader.style.display = 'none';
 } catch (error) {
   showFatalError(error);
 }
