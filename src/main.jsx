@@ -5,16 +5,6 @@ import App from './App.jsx'
 import './index.css'
 import { initGA } from './utils/analytics'
 
-// Unregister any existing service workers that might be serving stale content
-if ('serviceWorker' in navigator) {
-  navigator.serviceWorker.getRegistrations().then(registrations => {
-    registrations.forEach(reg => {
-      console.log('Unregistering SW:', reg.scope);
-      reg.unregister();
-    });
-  });
-}
-
 // Apply theme before React renders to prevent flash
 (function() {
   const stored = localStorage.getItem('theme');

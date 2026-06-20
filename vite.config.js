@@ -36,37 +36,12 @@ export default defineConfig({
   base: '/',
   plugins: [
     react(),
-    VitePWA({
-      registerType: 'autoUpdate',
-      includeAssets: ['logo.jpg', 'logo.svg'],
-      manifest: {
-        name: 'Omix Store',
-        short_name: 'Omix',
-        description: 'The cleanest P2P marketplace in Kericho',
-        theme_color: '#ff385c',
-        background_color: '#ffffff',
-        display: 'standalone',
-        scope: '/',
-        start_url: '/',
-        icons: [
-          {
-            src: 'icon-192.png',
-            sizes: '192x192',
-            type: 'image/png'
-          },
-          {
-            src: 'icon-512.png',
-            sizes: '512x512',
-            type: 'image/png'
-          },
-          {
-            src: 'logo.jpg',
-            sizes: '180x180',
-            type: 'image/jpeg'
-          }
-        ]
-      }
-    }),
+    // VitePWA temporarily disabled to debug white screen issue
+    // VitePWA({
+    //   registerType: 'autoUpdate',
+    //   includeAssets: ['logo.jpg', 'logo.svg'],
+    //   manifest: { ... }
+    // }),
     copyPublicAssets()
   ]
 })
