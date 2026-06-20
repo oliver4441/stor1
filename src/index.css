@@ -167,6 +167,10 @@
   padding-bottom: max(0.75rem, env(safe-area-inset-bottom));
 }
 
+.safe-area-top {
+  padding-top: max(0px, env(safe-area-inset-top));
+}
+
 /* PWA Update banner animation */
 
 .animate-slide-up {

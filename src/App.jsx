@@ -15,6 +15,7 @@ import ScrollToTop from './components/ScrollToTop';
 import BackToTop from './components/BackToTop';
 import PWAUpdateChecker from './components/PWAUpdateChecker';
 import InstallPrompt from './components/InstallPrompt';
+import PushNudge from './components/PushNudge';
 import AbandonedCartBanner from './components/AbandonedCartBanner';
 import FloatingCartButton from './components/FloatingCartButton';
 import { SeasonalProvider } from './context/SeasonalContext';
@@ -157,6 +158,7 @@ function App() {
         <NiaFloatingButton />
         <PWAUpdateChecker />
         <InstallPrompt />
+        <PushNudge />
         <AbandonedCartBanner />
       </div>
     </ErrorBoundary>

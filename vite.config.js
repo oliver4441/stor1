@@ -24,7 +24,6 @@ function copyPublicAssets() {
             fs.copyFileSync(src, dest)
           }
         } catch (e) {
-          // Skip files that can't be read/copied
           console.warn(`Skipping ${item}: ${e.message}`)
         }
       })
@@ -39,6 +38,21 @@ export default defineConfig({
     VitePWA({
       registerType: 'autoUpdate',
       includeAssets: ['logo.jpg', 'logo.svg'],
+      workbox: {
+        // Add custom runtime caching and push event handling
+        importScripts: ['sw-push.js'],
+        runtimeCaching: [
+          {
+            urlPattern: /^https:\/\/xmdyovfcjogkarwxiyhb\.supabase\.co\/rest\/v1\/.*/i,
+            handler: 'NetworkFirst',
+            options: {
+              cacheName: 'supabase-api-cache',
+              expiration: { maxEntries: 50, maxAgeSeconds: 5 * 60 },
+              cacheableResponse: { statuses: [0, 200] }
+            }
+          }
+        ]
+      },
       manifest: {
         name: 'Omix Store',
         short_name: 'Omix',

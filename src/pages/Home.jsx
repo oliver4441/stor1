@@ -94,17 +94,17 @@ function Home() {
 
         {/* Hero Content */}
         <div className="relative z-10 py-20 md:py-28 px-4">
-        <div className="max-w-7xl mx-auto text-center">
-          {/* Seasonal badge */}
-          {badgeText && (
-            <span
-              className="inline-block text-xs font-bold uppercase tracking-wider px-3 py-1 rounded-full mb-4"
-              style={{ backgroundColor: theme.colors?.badgeBg, color: theme.colors?.badgeText }}
-            >
-              {badgeText}
-            </span>
-          )}
-          <h1
+          <div className="max-w-7xl mx-auto text-center">
+            {/* Seasonal badge */}
+            {badgeText && (
+              <span
+                className="inline-block text-xs font-bold uppercase tracking-wider px-3 py-1 rounded-full mb-4"
+                style={{ backgroundColor: theme.colors?.badgeBg, color: theme.colors?.badgeText }}
+              >
+                {badgeText}
+              </span>
+            )}
+            <h1
               className="text-4xl md:text-6xl font-black mb-4 tracking-tighter drop-shadow-lg"
               style={{ color: heroText }}
             >
