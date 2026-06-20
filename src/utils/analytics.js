@@ -3,6 +3,7 @@
 
 let gaInitialized = false;
 let measurementId = null;
+let GA_NOT_SUPPORTED = false;
 
 /**
  * Initialize Google Analytics
@@ -10,37 +11,37 @@ let measurementId = null;
  */
 export function initGA() {
   if (typeof window === 'undefined') return;
-  
+
   measurementId = import.meta.env.VITE_GA_MEASUREMENT_ID;
-  
+
   if (!measurementId || measurementId === 'G-XXXXXXXXXX') {
-    console.warn('GA4: Measurement ID not configured. Skipping initialization.');
     return;
   }
 
-  // Load gtag script
-  const script1 = document.createElement('script');
-  script1.async = true;
-  script1.src = `https://www.googletagmanager.com/gtag/js?id=${measurementId}`;
-  document.head.appendChild(script1);
+  try {
+    // Load gtag script
+    const script1 = document.createElement('script');
+    script1.async = true;
+    script1.src = `https://www.googletagmanager.com/gtag/js?id=${measurementId}`;
+    script1.onerror = () => { GA_NOT_SUPPORTED = true; };
+    document.head.appendChild(script1);
 
-  // Initialize gtag
-  window.dataLayer = window.dataLayer || [];
-  window.gtag = function gtag() {
-    window.dataLayer.push(arguments);
-  };
-  window.gtag('js', new Date());
-  window.gtag('config', measurementId, {
-    page_location: window.location.href,
-    page_title: document.title,
-    send_page_view: true,
-    // Enhanced measurement
-    allow_google_signals: true,
-    allow_ad_personalization_signals: false,
-  });
+    // Initialize gtag
+    window.dataLayer = window.dataLayer || [];
+    window.gtag = function gtag() {
+      window.dataLayer.push(arguments);
+    };
+    window.gtag('js', new Date());
+    window.gtag('config', measurementId, {
+      page_path: window.location.pathname,
+      send_page_view: false,
+    });
 
-  gaInitialized = true;
-  console.log('GA4: Initialized with measurement ID:', measurementId);
+    gaInitialized = true;
+  } catch (e) {
+    // GA blocked (CSP, ad-blocker, etc.) — app still works
+    GA_NOT_SUPPORTED = true;
+  }
 }
 
 /**
