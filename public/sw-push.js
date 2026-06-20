@@ -1,6 +1,13 @@
 // Custom service worker for push notifications
 // This script is loaded by Workbox via importScripts
 
+// Listen for messages from the page
+self.addEventListener('message', function(event) {
+  if (event.data && event.data.type === 'SKIP_WAITING') {
+    self.skipWaiting();
+  }
+});
+
 // Listen for push events from the server
 self.addEventListener('push', function(event) {
   if (!event.data) return;
