@@ -577,3 +577,201 @@ body[data-theme-id]:not([data-theme-id="none"]) .theme-card-shimmer::after {
               border-color 0.5s ease, 
               box-shadow 0.5s ease;
 }
+
+/* =============================================
+   THEME CARD GLOW — subtle colored border glow
+   on product cards during active themes
+   ============================================= */
+@keyframes card-glow {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(255,215,0,0); }
+  50% { box-shadow: 0 0 12px 2px var(--seasonal-glow, #ff385c); }
+}
+
+body[data-theme-id]:not([data-theme-id="none"]) .theme-card-glow {
+  animation: card-glow 4s ease-in-out infinite;
+  border-color: var(--seasonal-card-border, #e4e4e7);
+}
+
+/* =============================================
+   THEME SVG PATTERN OVERLAYS
+   Visible texture patterns that add depth to pages
+   ============================================= */
+
+/* Stadium vibe (World Cup) — diagonal pitch stripes */
+body[data-theme-vibe="stadium"]::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  background-image: 
+    repeating-linear-gradient(
+      45deg,
+      transparent,
+      transparent 40px,
+      rgba(0,132,61,0.03) 40px,
+      rgba(0,132,61,0.03) 41px
+    ),
+    repeating-linear-gradient(
+      -45deg,
+      transparent,
+      transparent 40px,
+      rgba(255,215,0,0.02) 40px,
+      rgba(255,215,0,0.02) 41px
+    );
+}
+
+/* Festive vibe (Christmas) — subtle stars */
+body[data-theme-vibe="festive"]::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  background-image: 
+    radial-gradient(2px 2px at 20px 30px, rgba(255,255,255,0.06), transparent),
+    radial-gradient(2px 2px at 40px 70px, rgba(255,215,0,0.05), transparent),
+    radial-gradient(2px 2px at 50px 160px, rgba(255,255,255,0.04), transparent),
+    radial-gradient(2px 2px at 90px 40px, rgba(255,215,0,0.05), transparent),
+    radial-gradient(2px 2px at 130px 80px, rgba(255,255,255,0.04), transparent),
+    radial-gradient(2px 2px at 160px 30px, rgba(255,215,0,0.05), transparent);
+  background-size: 200px 200px;
+}
+
+/* Romantic vibe (Valentine's) — subtle scattered dots */
+body[data-theme-vibe="romantic"]::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  background-image: 
+    radial-gradient(1.5px 1.5px at 15px 20px, rgba(233,30,99,0.04), transparent),
+    radial-gradient(1.5px 1.5px at 45px 90px, rgba(233,30,99,0.03), transparent),
+    radial-gradient(1.5px 1.5px at 85px 30px, rgba(233,30,99,0.04), transparent),
+    radial-gradient(1.5px 1.5px at 115px 70px, rgba(233,30,99,0.03), transparent),
+    radial-gradient(1.5px 1.5px at 155px 40px, rgba(233,30,99,0.04), transparent),
+    radial-gradient(1.5px 1.5px at 185px 100px, rgba(233,30,99,0.03), transparent);
+  background-size: 200px 120px;
+}
+
+/* Urgent vibe (Black Friday) — diagonal urgency lines */
+body[data-theme-vibe="urgent"]::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  background-image: repeating-linear-gradient(
+    -45deg,
+    transparent,
+    transparent 30px,
+    rgba(255,107,53,0.02) 30px,
+    rgba(255,107,53,0.02) 31px
+  );
+}
+
+/* Celebration vibe (New Year) — sparkle dots */
+body[data-theme-vibe="celebration"]::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  background-image: 
+    radial-gradient(2px 2px at 10px 20px, rgba(255,215,0,0.06), transparent),
+    radial-gradient(2px 2px at 30px 120px, rgba(255,255,255,0.05), transparent),
+    radial-gradient(2px 2px at 70px 50px, rgba(255,215,0,0.06), transparent),
+    radial-gradient(2px 2px at 110px 140px, rgba(255,255,255,0.04), transparent),
+    radial-gradient(2px 2px at 150px 30px, rgba(255,215,0,0.05), transparent),
+    radial-gradient(2px 2px at 190px 90px, rgba(255,255,255,0.05), transparent);
+  background-size: 200px 160px;
+}
+
+/* Patriotic vibe (Madaraka) — flag-colored dots */
+body[data-theme-vibe="patriotic"]::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  background-image: 
+    radial-gradient(2px 2px at 20px 30px, rgba(0,102,0,0.04), transparent),
+    radial-gradient(2px 2px at 50px 70px, rgba(204,0,0,0.03), transparent),
+    radial-gradient(2px 2px at 80px 130px, rgba(0,102,0,0.04), transparent),
+    radial-gradient(2px 2px at 120px 40px, rgba(204,0,0,0.03), transparent),
+    radial-gradient(2px 2px at 160px 90px, rgba(0,102,0,0.04), transparent),
+    radial-gradient(2px 2px at 190px 50px, rgba(204,0,0,0.03), transparent);
+  background-size: 200px 160px;
+}
+
+/* Heroic vibe (Mashujaa) — gold sparkle */
+body[data-theme-vibe="heroic"]::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  background-image: 
+    radial-gradient(2px 2px at 15px 25px, rgba(255,215,0,0.05), transparent),
+    radial-gradient(2px 2px at 55px 85px, rgba(255,215,0,0.03), transparent),
+    radial-gradient(2px 2px at 95px 35px, rgba(255,215,0,0.05), transparent),
+    radial-gradient(2px 2px at 135px 75px, rgba(255,215,0,0.03), transparent);
+  background-size: 150px 100px;
+}
+
+/* Republic vibe (Jamhuri) — red/green dots */
+body[data-theme-vibe="republic"]::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  background-image: 
+    radial-gradient(2px 2px at 20px 30px, rgba(204,0,0,0.04), transparent),
+    radial-gradient(2px 2px at 50px 80px, rgba(0,102,0,0.03), transparent),
+    radial-gradient(2px 2px at 90px 20px, rgba(204,0,0,0.04), transparent),
+    radial-gradient(2px 2px at 130px 60px, rgba(0,102,0,0.03), transparent);
+  background-size: 150px 100px;
+}
+
+/* Ensure themed content appears above pattern overlay */
+body[data-theme-vibe] #root,
+body[data-theme-vibe] .fixed,
+body[data-theme-vibe] .sticky,
+body[data-theme-vibe] nav {
+  position: relative;
+  z-index: 1;
+}
+
+/* =============================================
+   THEME ENTRANCE ANIMATION
+   Subtle fade-in when page loads with a theme active
+   ============================================= */
+@keyframes theme-entrance {
+  from { opacity: 0.97; }
+  to { opacity: 1; }
+}
+
+body[data-theme-id]:not([data-theme-id="none"]) main {
+  animation: theme-entrance 0.4s ease-out;
+}
+
+/* =============================================
+   THEME SECTION DIVIDER
+   Decorative gradient divider between sections
+   ============================================= */
+.theme-section-divider {
+  border: none;
+  height: 1px;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    var(--seasonal-border, #e4e4e7) 20%,
+    var(--seasonal-primary, #ff385c) 50%,
+    var(--seasonal-border, #e4e4e7) 80%,
+    transparent 100%
+  );
+  margin: 2.5rem 0;
+  opacity: 0.5;
+}

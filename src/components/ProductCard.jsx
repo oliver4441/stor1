@@ -120,7 +120,7 @@ function ProductCard({ listing, compareMode, onCompareChange }) {
   };
 
   return (
-    <Link to={`/listing/${listing.id}`} className="block group theme-card-shimmer">
+    <Link to={`/listing/${listing.id}`} className="block group theme-card-shimmer theme-card-glow">
       <div className="bg-zinc-100 dark:bg-zinc-900 rounded-2xl overflow-hidden aspect-[4/5] mb-3 relative">
         {hasImage ? (
           <img src={listing.images[0]} alt={listing.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" loading="lazy" onError={() => setImgError(true)} />
