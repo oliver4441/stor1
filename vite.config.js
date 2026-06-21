@@ -36,12 +36,21 @@ export default defineConfig({
   base: '/',
   plugins: [
     react(),
-    // VitePWA temporarily disabled to debug white screen issue
-    // VitePWA({
-    //   registerType: 'autoUpdate',
-    //   includeAssets: ['logo.jpg', 'logo.svg'],
-    //   manifest: { ... }
-    // }),
     copyPublicAssets()
-  ]
+  ],
+  resolve: {
+    alias: {
+      // Use browser native WebSocket instead of Node.js ws package
+      'ws': resolve(__dirname, 'src/utils/browser-ws.js'),
+    },
+  },
+  define: {
+    // Ensure Supabase Realtime uses browser WebSocket
+    'process.env': {},
+  },
+  build: {
+    rollupOptions: {
+      external: [],
+    },
+  },
 })
