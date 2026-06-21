@@ -1,11 +1,12 @@
 import { useState, useEffect, useCallback } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import { Package, LogOut, ShoppingBag, ArrowRight, Search, Grid3X3, List, ChevronDown, ChevronUp, Clock, Gift, Copy, Check, Star, ChevronRight, ExternalLink, Users, Bookmark, X } from 'lucide-react';
+import { Package, LogOut, ShoppingBag, ArrowRight, Search, Grid3X3, List, ChevronDown, ChevronUp, Clock, Gift, Copy, Check, Star, ChevronRight, ExternalLink, Users, Bookmark, X, Bell, BellRing, BellOff } from 'lucide-react';
 import { supabase } from '../utils/supabase';
 import { fetchOrders, fetchListings, fetchAddresses, saveAddress, deleteAddress, setDefaultAddress, getReferralCode, getReferralStats, getLoyaltyPoints, getPointsHistory, getSavedSearches, deleteSavedSearch } from '../utils/api';
 import { formatKES, CATEGORIES } from '../utils/constants';
 import ProductCard from '../components/ProductCard';
 import Breadcrumb from '../components/Breadcrumb';
+import { isPushSupported, subscribeToPush, unsubscribeFromPush } from '../utils/pushNotifications';
 
 function UserDashboard() {
   const navigate = useNavigate();
@@ -25,6 +26,9 @@ function UserDashboard() {
   const [loyaltyPoints, setLoyaltyPoints] = useState(0);
   const [pointsHistory, setPointsHistory] = useState([]);
   const [savedSearches, setSavedSearches] = useState([]);
+  const [notifStatus, setNotifStatus] = useState('loading'); // 'loading' | 'on' | 'off' | 'blocked' | 'unsupported'
+  const [notifBusy, setNotifBusy] = useState(false);
+  const [notifMsg, setNotifMsg] = useState(null); // { type: 'success'|'error', text }
 
   const loadData = useCallback(async () => {
     try {
@@ -57,6 +61,47 @@ function UserDashboard() {
   }, [navigate]);
 
   useEffect(() => { loadData(); }, [loadData]);
+
+  // Check notification status
+  useEffect(() => {
+    if (!isPushSupported()) {
+      setNotifStatus('unsupported');
+      return;
+    }
+    if (Notification.permission === 'granted') setNotifStatus('on');
+    else if (Notification.permission === 'denied') setNotifStatus('blocked');
+    else setNotifStatus('off');
+  }, []);
+
+  const handleNotifToggle = async () => {
+    setNotifBusy(true);
+    setNotifMsg(null);
+    try {
+      if (notifStatus === 'on') {
+        const res = await unsubscribeFromPush();
+        if (res.success) {
+          setNotifStatus('off');
+          setNotifMsg({ type: 'success', text: 'Notifications turned off.' });
+        } else {
+          setNotifMsg({ type: 'error', text: res.error || 'Failed to turn off notifications.' });
+        }
+      } else {
+        const res = await subscribeToPush();
+        if (res.success) {
+          setNotifStatus('on');
+          setNotifMsg({ type: 'success', text: 'Notifications enabled!' });
+        } else {
+          if (res.error?.includes('denied')) setNotifStatus('blocked');
+          setNotifMsg({ type: 'error', text: res.error || 'Failed to enable notifications.' });
+        }
+      }
+    } catch (err) {
+      setNotifMsg({ type: 'error', text: 'Something went wrong. Please try again.' });
+    } finally {
+      setNotifBusy(false);
+      setTimeout(() => setNotifMsg(null), 4000);
+    }
+  };
 
   const handleLogout = async () => { await supabase.auth.signOut(); navigate('/login'); };
 
@@ -350,6 +395,121 @@ function UserDashboard() {
               <p className="text-xs text-zinc-400 mt-1">Searches you save will appear here</p>
             </div>
           )}
+        </div>
+      </div>
+
+      {/* Notification Settings */}
+      <div className="mb-12">
+        <div className="bg-white dark:bg-zinc-900 rounded-2xl border border-zinc-200 dark:border-zinc-800 p-6">
+          <div className="flex items-center gap-3 mb-5">
+            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-amber-400 to-orange-500 flex items-center justify-center">
+              {notifStatus === 'on' ? (
+                <BellRing className="w-5 h-5 text-white" />
+              ) : (
+                <Bell className="w-5 h-5 text-white" />
+              )}
+            </div>
+            <div>
+              <h2 className="text-lg font-bold text-zinc-900 dark:text-white">Notifications</h2>
+              <p className="text-xs text-zinc-500 dark:text-zinc-400">Manage push notification settings</p>
+            </div>
+          </div>
+
+          <div className="space-y-4">
+            {/* Status badge */}
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                {notifStatus === 'loading' ? (
+                  <div className="w-5 h-5 border-2 border-zinc-300 border-t-transparent rounded-full animate-spin" />
+                ) : notifStatus === 'on' ? (
+                  <div className="flex items-center gap-2">
+                    <div className="w-2.5 h-2.5 rounded-full bg-green-500 animate-pulse" />
+                    <span className="text-sm font-semibold text-green-600 dark:text-green-400">Enabled</span>
+                  </div>
+                ) : notifStatus === 'blocked' ? (
+                  <div className="flex items-center gap-2">
+                    <div className="w-2.5 h-2.5 rounded-full bg-red-500" />
+                    <span className="text-sm font-semibold text-red-600 dark:text-red-400">Blocked</span>
+                  </div>
+                ) : notifStatus === 'unsupported' ? (
+                  <div className="flex items-center gap-2">
+                    <div className="w-2.5 h-2.5 rounded-full bg-zinc-400" />
+                    <span className="text-sm font-semibold text-zinc-500">Unsupported</span>
+                  </div>
+                ) : (
+                  <div className="flex items-center gap-2">
+                    <div className="w-2.5 h-2.5 rounded-full bg-zinc-400" />
+                    <span className="text-sm font-semibold text-zinc-500">Off</span>
+                  </div>
+                )}
+              </div>
+
+              {/* Toggle or action */}
+              {notifStatus === 'on' && (
+                <button
+                  onClick={handleNotifToggle}
+                  disabled={notifBusy}
+                  className="flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold text-red-600 dark:text-red-400 bg-red-50 dark:bg-red-900/20 hover:bg-red-100 dark:hover:bg-red-900/40 transition-all disabled:opacity-50"
+                >
+                  <BellOff className="w-3.5 h-3.5" />
+                  {notifBusy ? 'Turning off...' : 'Turn Off'}
+                </button>
+              )}
+              {notifStatus === 'off' && (
+                <button
+                  onClick={handleNotifToggle}
+                  disabled={notifBusy}
+                  className="flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold text-white bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 transition-all disabled:opacity-50 shadow-lg shadow-amber-500/20"
+                >
+                  <BellRing className="w-3.5 h-3.5" />
+                  {notifBusy ? 'Enabling...' : 'Enable'}
+                </button>
+              )}
+              {notifStatus === 'blocked' && (
+                <div className="text-xs text-zinc-500 text-right max-w-[200px]">
+                  <p>Enable in browser settings</p>
+                  <button
+                    onClick={() => {
+                      if (Notification.permission === 'denied') {
+                        setNotifMsg({ type: 'error', text: 'Open your browser site settings to allow notifications for this site.' });
+                        setTimeout(() => setNotifMsg(null), 5000);
+                      }
+                    }}
+                    className="text-[var(--seasonal-primary,#ff385c)] font-semibold hover:underline mt-1"
+                  >
+                    How to enable
+                  </button>
+                </div>
+              )}
+              {notifStatus === 'unsupported' && (
+                <span className="text-xs text-zinc-400">Not available in this browser</span>
+              )}
+            </div>
+
+            {/* Description */}
+            <p className="text-xs text-zinc-500 dark:text-zinc-400 leading-relaxed">
+              {notifStatus === 'on'
+                ? 'You will receive notifications about order updates, new arrivals, deals, and cart reminders.'
+                : notifStatus === 'blocked'
+                ? 'Notifications are blocked in your browser. Update your site permissions to enable them.'
+                : notifStatus === 'unsupported'
+                ? 'Your browser does not support push notifications. Try using a modern browser like Chrome or Firefox.'
+                : 'Enable notifications to stay updated on order status, new products, and special offers.'}
+            </p>
+
+            {/* Feedback message */}
+            {notifMsg && (
+              <div
+                className={`p-3 rounded-xl text-xs font-semibold transition-all ${
+                  notifMsg.type === 'success'
+                    ? 'bg-green-50 dark:bg-green-900/20 text-green-700 dark:text-green-400 border border-green-200 dark:border-green-800'
+                    : 'bg-red-50 dark:bg-red-900/20 text-red-700 dark:text-red-400 border border-red-200 dark:border-red-800'
+                }`}
+              >
+                {notifMsg.text}
+              </div>
+            )}
+          </div>
         </div>
       </div>
 
