@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Save, Store, Truck, Bell, Palette, Eye, Calendar, Wrench } from 'lucide-react';
+import { Save, Store, Truck, Bell, Palette, Eye, Calendar, Wrench, Megaphone } from 'lucide-react';
 import themesConfig from '../config/seasonal-themes.json';
 import { supabase } from '../utils/supabase';
 
@@ -10,6 +10,9 @@ export default function AdminSettings() {
   const [previewTheme, setPreviewTheme] = useState(null);
   const [themes, setThemes] = useState(themesConfig.themes);
   const [saving, setSaving] = useState(false);
+  const [updateMsg, setUpdateMsg] = useState('');
+  const [sendingUpdate, setSendingUpdate] = useState(false);
+  const [updateSent, setUpdateSent] = useState(false);
 
   // Find currently active theme based on date
   const now = new Date();
@@ -135,6 +138,31 @@ export default function AdminSettings() {
           .insert({ key: 'maintenance_mode', value: mmValue, description: 'When true, disables purchases' });
       }
 
+      // 3. Send push notification if maintenance mode changed
+      const { data: prevMM } = existingMM ? await supabase
+        .from('app_settings')
+        .select('value')
+        .eq('key', 'maintenance_mode')
+        .single() : { data: null };
+      const wasMM = prevMM?.value === true;
+      
+      if (wasMM !== mmValue) {
+        // Maintenance mode changed — notify users
+        const pushPayload = mmValue 
+          ? { title: '🔧 Site Under Maintenance', body: 'Omix Store is undergoing maintenance. Purchases are temporarily disabled. We\'ll be back shortly!', tag: 'maintenance-on', url: '/' }
+          : { title: '✅ Site Back Online', body: 'Omix Store is fully operational again. You can now place orders as usual!', tag: 'maintenance-off', url: '/' };
+        
+        try {
+          await fetch('/api/push/broadcast', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', 'X-API-Key': import.meta.env.VITE_OPENCODE_API_KEY },
+            body: JSON.stringify(pushPayload),
+          });
+        } catch (pushErr) {
+          console.warn('Push notification failed:', pushErr.message);
+        }
+      }
+
       setSaved(true);
       setTimeout(() => setSaved(false), 3000);
     } catch (err) {
@@ -146,6 +174,28 @@ export default function AdminSettings() {
   };
 
   const updateField = (key, value) => setForm(prev => ({ ...prev, [key]: value }));
+
+  const sendUpdate = async () => {
+    if (!updateMsg.trim()) return;
+    setSendingUpdate(true);
+    try {
+      const res = await fetch('/api/push/broadcast', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'X-API-Key': import.meta.env.VITE_OPENCODE_API_KEY },
+        body: JSON.stringify({ title: '📢 New Update', body: updateMsg.trim(), tag: 'store-update', url: '/' }),
+      });
+      if (res.ok) {
+        setUpdateSent(true);
+        setUpdateMsg('');
+        setTimeout(() => setUpdateSent(false), 4000);
+      }
+    } catch (err) {
+      console.warn('Failed to send update:', err.message);
+      alert('Failed to send update notification.');
+    } finally {
+      setSendingUpdate(false);
+    }
+  };
 
   return (
     <div className="space-y-6 max-w-3xl">
@@ -381,6 +431,38 @@ export default function AdminSettings() {
             </div>
           );
         })()}
+      </div>
+
+      {/* Broadcast Update */}
+      <div className="bg-white dark:bg-zinc-900 rounded-2xl border border-zinc-200 dark:border-zinc-800 p-6">
+        <div className="flex items-center gap-3 mb-5">
+          <Megaphone className="w-5 h-5 text-purple-500" />
+          <h3 className="text-base font-bold text-zinc-900 dark:text-white">Broadcast Update</h3>
+        </div>
+        <p className="text-xs text-zinc-500 mb-3">
+          Send a push notification to all users who have enabled notifications. Use for new features, promotions, or important announcements.
+        </p>
+        <textarea
+          value={updateMsg}
+          onChange={e => setUpdateMsg(e.target.value)}
+          placeholder="What's new at Omix Store?..."
+          rows={3}
+          className="w-full px-4 py-3 rounded-xl bg-zinc-100 dark:bg-zinc-800 border border-transparent focus:border-[#ff385c] focus:outline-none text-zinc-900 dark:text-white text-sm resize-none"
+        />
+        <div className="flex items-center justify-between mt-3">
+          <span className="text-[11px] text-zinc-400">{updateMsg.length}/200</span>
+          {updateSent && (
+            <span className="text-xs font-bold text-green-600">✓ Update sent!</span>
+          )}
+          <button
+            onClick={sendUpdate}
+            disabled={!updateMsg.trim() || sendingUpdate}
+            className="flex items-center gap-2 px-5 py-2 rounded-xl text-xs font-bold text-white bg-purple-600 hover:bg-purple-700 disabled:opacity-50 transition-all"
+          >
+            <Megaphone className={`w-3.5 h-3.5 ${sendingUpdate ? 'animate-pulse' : ''}`} />
+            {sendingUpdate ? 'Sending...' : 'Send Update'}
+          </button>
+        </div>
       </div>
 
       {/* Save */}

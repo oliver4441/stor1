@@ -15,6 +15,7 @@ import FloatingCartButton from './components/FloatingCartButton';
 import NiaChat from './components/NiaChat';
 import InstallBanner from './components/InstallBanner';
 import PushNudge from './components/PushNudge';
+import CartReminder from './components/CartReminder';
 
 // Pages
 import Home from './pages/Home';
@@ -91,6 +92,7 @@ function App() {
         <NiaChat />
         <InstallBanner />
         <PushNudge />
+        <CartReminder />
       </div>
     </ErrorBoundary>
     </NiaChatProvider>

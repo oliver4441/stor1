@@ -79,8 +79,26 @@ export function NiaChatProvider({ children }) {
       setCurrentChips(chips);
       setIsTyping(false);
       scrollToBottom();
+      
+      // Show push notification if chat is closed and Nia sends a message
+      if (!isOpen && 'Notification' in window && Notification.permission === 'granted') {
+        try {
+          const notification = new Notification('💬 Nia says', {
+            body: text.length > 120 ? text.substring(0, 120) + '...' : text,
+            icon: '/nia-avatar.jpg',
+            badge: '/logo.jpg',
+            tag: 'nia-nudge',
+            requireInteraction: false,
+          });
+          notification.onclick = () => {
+            window.focus();
+            // Open Nia chat
+            setIsOpen(true);
+          };
+        } catch {}
+      }
     }, delay);
-  }, [scrollToBottom]);
+  }, [scrollToBottom, isOpen, setIsOpen]);
 
   const openChat = useCallback(() => {
     setIsOpen(true);

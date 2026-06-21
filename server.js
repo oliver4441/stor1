@@ -3,22 +3,128 @@ import express from 'express';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import fetch from 'node-fetch';
+import webpush from 'web-push';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 const app = express();
+app.use(express.json({ limit: '1mb' }));
 const port = process.env.PORT || 3000;
+
+// ── VAPID Keys for Push Notifications ──────────────────────────────
+const VAPID_PUBLIC_KEY = process.env.VITE_VAPID_PUBLIC_KEY || '';
+const VAPID_PRIVATE_KEY = process.env.VAPID_PRIVATE_KEY || '';
+
+if (VAPID_PUBLIC_KEY && VAPID_PRIVATE_KEY) {
+  webpush.setVapidDetails(
+    'mailto:omixsystems@gmail.com',
+    VAPID_PUBLIC_KEY,
+    VAPID_PRIVATE_KEY
+  );
+  console.log('Push notifications: ENABLED');
+} else {
+  console.log('Push notifications: DISABLED (missing VAPID keys in env)');
+}
 
 // Health check endpoint
 app.get('/health', (req, res) => {
   res.json({ status: 'ok', service: 'stor1-frontend', timestamp: new Date().toISOString() });
 });
 
+// ── Push Notification Endpoint ──────────────────────────────────────
+// Frontend calls this to send a push notification to all subscribers
+app.post('/api/push/broadcast', async (req, res) => {
+  const { title, body, url, tag, image } = req.body;
+  const apiKey = req.headers['x-api-key'];
+
+  // Simple API key check to prevent abuse
+  if (apiKey !== process.env.VITE_OPENCODE_API_KEY) {
+    return res.status(401).json({ error: 'Invalid API key' });
+  }
+
+  if (!title) {
+    return res.status(400).json({ error: 'Title is required' });
+  }
+
+  try {
+    // Fetch all subscriptions from Supabase
+    // Note: We use fetch directly to avoid importing supabase-js in Node ESM
+    const supabaseUrl = process.env.VITE_SUPABASE_URL || 'https://xmdyovfcjogkarwxiyhb.supabase.co';
+    const supabaseKey = process.env.VITE_SUPABASE_ANON_KEY || '';
+
+    const subResponse = await fetch(`${supabaseUrl}/rest/v1/push_subscriptions?select=*`, {
+      headers: {
+        'apikey': supabaseKey,
+        'Authorization': `Bearer ${supabaseKey}`,
+      },
+    });
+
+    if (!subResponse.ok) {
+      console.error('[Push] Failed to fetch subscriptions:', await subResponse.text());
+      return res.status(502).json({ error: 'Failed to fetch subscriptions' });
+    }
+
+    const subscriptions = await subResponse.json();
+    
+    if (!subscriptions || subscriptions.length === 0) {
+      return res.json({ sent: 0, total: 0 });
+    }
+
+    const payload = JSON.stringify({
+      title,
+      body: body || '',
+      url: url || '/',
+      tag: tag || 'omix-notification',
+      image: image || null,
+      renotify: true,
+      requireInteraction: true,
+    });
+
+    let sent = 0;
+    let failed = 0;
+
+    const sendPromises = subscriptions.map(async (sub) => {
+      try {
+        await webpush.sendNotification({
+          endpoint: sub.endpoint,
+          keys: {
+            p256dh: sub.p256dh_key,
+            auth: sub.auth_key,
+          },
+        }, payload);
+        sent++;
+      } catch (err) {
+        failed++;
+        // If subscription is expired/invalid, delete it
+        if (err.statusCode === 410 || err.statusCode === 404) {
+          try {
+            await fetch(`${supabaseUrl}/rest/v1/push_subscriptions?id=eq.${sub.id}`, {
+              method: 'DELETE',
+              headers: {
+                'apikey': supabaseKey,
+                'Authorization': `Bearer ${supabaseKey}`,
+              },
+            });
+          } catch {}
+        }
+      }
+    });
+
+    await Promise.allSettled(sendPromises);
+    
+    console.log(`[Push] Sent: ${sent}, Failed: ${failed}, Total: ${subscriptions.length}`);
+    res.json({ sent, failed, total: subscriptions.length });
+  } catch (err) {
+    console.error('[Push] Broadcast error:', err.message);
+    res.status(500).json({ error: err.message });
+  }
+});
+
 // ── Nia AI Chat Proxy ──────────────────────────────────────────────
 // Proxies OpenCode Zen API calls so the API key stays server-side
 
-app.post('/api/nia/chat', express.json(), async (req, res) => {
+app.post('/api/nia/chat', async (req, res) => {
   const apiKey = process.env.VITE_OPENCODE_API_KEY;
   
   if (!apiKey) {
@@ -105,4 +211,5 @@ app.get('*', (req, res) => {
 app.listen(port, () => {
   console.log(`Server is running on port ${port}`);
   console.log(`Nia AI proxy: ${process.env.VITE_OPENCODE_API_KEY ? 'ENABLED' : 'DISABLED'}`);
+  console.log(`Push notifications: ${VAPID_PUBLIC_KEY && VAPID_PRIVATE_KEY ? 'ENABLED' : 'DISABLED'}`);
 });
