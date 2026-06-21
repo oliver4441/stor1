@@ -735,11 +735,10 @@ body[data-theme-vibe="republic"]::before {
   background-size: 150px 100px;
 }
 
-/* Ensure themed content appears above pattern overlay */
-body[data-theme-vibe] #root,
-body[data-theme-vibe] .fixed,
-body[data-theme-vibe] .sticky,
-body[data-theme-vibe] nav {
+/* Ensure main content appears above pattern overlay */
+body[data-theme-vibe] main,
+body[data-theme-vibe] header,
+body[data-theme-vibe] footer {
   position: relative;
   z-index: 1;
 }
