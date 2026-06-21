@@ -1,7 +1,10 @@
 import { createContext, useContext, useState, useEffect, useMemo } from 'react';
 import themesConfig from '../config/seasonal-themes.json';
+import { supabase } from '../utils/supabase';
 
 const SeasonalContext = createContext(null);
+
+const THEME_STATES_KEY = 'omix_theme_states';
 
 /**
  * Check if current date falls within a theme's date range.
@@ -18,10 +21,8 @@ function isDateInRange(startStr, endStr, now) {
 
   // Handle year-wrap (e.g. Dec 26 - Jan 5)
   if (endDate < startDate) {
-    // Range wraps into next year
     const endDateNextYear = new Date(year + 1, endMonth - 1, endDay);
     if (now >= startDate && now <= endDateNextYear) return true;
-    // Also check if we're in the early part of the range (Jan 1-5)
     const startDatePrevYear = new Date(year - 1, startMonth - 1, startDay);
     if (now >= startDatePrevYear && now <= endDate) return true;
     return false;
@@ -45,24 +46,73 @@ function getActiveTheme(themes, now = new Date()) {
   return null;
 }
 
+/**
+ * Merge themes from JSON config with saved enabled states.
+ * Priority: localStorage > Supabase > JSON default
+ */
+function mergeThemeStates(themes) {
+  let savedStates = {};
+  try {
+    const stored = localStorage.getItem(THEME_STATES_KEY);
+    if (stored) savedStates = JSON.parse(stored);
+  } catch {}
+  return themes.map(t => ({
+    ...t,
+    enabled: savedStates[t.id] !== undefined ? savedStates[t.id] : t.enabled,
+  }));
+}
+
 export function SeasonalProvider({ children, previewThemeId = null }) {
   const [previewTheme, setPreviewTheme] = useState(previewThemeId);
+  const [savedStates, setSavedStates] = useState(null);
+
+  // Load saved theme states from Supabase on mount
+  useEffect(() => {
+    let cancelled = false;
+    (async () => {
+      try {
+        const { data } = await supabase
+          .from('app_settings')
+          .select('value')
+          .eq('key', 'theme_enabled_states')
+          .single();
+        if (!cancelled && data?.value) {
+          setSavedStates(data.value);
+          // Also sync to localStorage for immediate use
+          try { localStorage.setItem(THEME_STATES_KEY, JSON.stringify(data.value)); } catch {}
+        }
+      } catch {
+        // Row might not exist — use defaults
+      }
+    })();
+    return () => { cancelled = true; };
+  }, []);
+
+  const themes = useMemo(() => {
+    if (savedStates) {
+      return themesConfig.themes.map(t => ({
+        ...t,
+        enabled: savedStates[t.id] !== undefined ? savedStates[t.id] : t.enabled,
+      }));
+    }
+    // Fall back to localStorage + JSON defaults
+    return mergeThemeStates(themesConfig.themes);
+  }, [savedStates]);
 
   const activeTheme = useMemo(() => {
     if (previewTheme) {
-      return themesConfig.themes.find(t => t.id === previewTheme) || null;
+      return themes.find(t => t.id === previewTheme) || null;
     }
-    return getActiveTheme(themesConfig.themes);
-  }, [previewTheme]);
+    return getActiveTheme(themes);
+  }, [themes, previewTheme]);
 
-  // Provide theme data + preview controls
   const value = useMemo(() => ({
     activeTheme,
-    allThemes: themesConfig.themes,
+    allThemes: themes,
     setPreviewTheme,
     clearPreview: () => setPreviewTheme(null),
     isPreviewing: !!previewTheme,
-  }), [activeTheme, previewTheme]);
+  }), [activeTheme, themes, previewTheme]);
 
   return (
     <SeasonalContext.Provider value={value}>

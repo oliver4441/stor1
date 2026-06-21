@@ -1,12 +1,15 @@
 import { useState, useEffect } from 'react';
-import { Save, Store, Truck, Bell, Globe, Palette, Eye, Calendar, Wrench } from 'lucide-react';
+import { Save, Store, Truck, Bell, Palette, Eye, Calendar, Wrench } from 'lucide-react';
 import themesConfig from '../config/seasonal-themes.json';
 import { supabase } from '../utils/supabase';
+
+const THEME_STATES_KEY = 'omix_theme_states';
 
 export default function AdminSettings() {
   const [saved, setSaved] = useState(false);
   const [previewTheme, setPreviewTheme] = useState(null);
   const [themes, setThemes] = useState(themesConfig.themes);
+  const [saving, setSaving] = useState(false);
 
   // Find currently active theme based on date
   const now = new Date();
@@ -24,18 +27,6 @@ export default function AdminSettings() {
     return currentDate >= start && currentDate <= end;
   });
 
-  const toggleTheme = (themeId) => {
-    setThemes(prev => prev.map(t => 
-      t.id === themeId ? { ...t, enabled: !t.enabled } : t
-    ));
-    setSaved(false);
-  };
-
-  const handleSaveThemes = () => {
-    // TODO: Persist to Supabase
-    setSaved(true);
-    setTimeout(() => setSaved(false), 3000);
-  };
   const [form, setForm] = useState({
     storeName: 'Omix Store',
     storeEmail: 'omixsystems@gmail.com',
@@ -49,18 +40,39 @@ export default function AdminSettings() {
     emailNotifications: true,
   });
 
-  // Fetch current maintenance mode from Supabase on mount
+  // Load saved states from Supabase on mount
   useEffect(() => {
     let cancelled = false;
     (async () => {
       try {
-        const { data } = await supabase
+        // Load theme states
+        const { data: themeData } = await supabase
+          .from('app_settings')
+          .select('value')
+          .eq('key', 'theme_enabled_states')
+          .single();
+
+        if (!cancelled && themeData?.value) {
+          const savedStates = themeData.value;
+          setThemes(prev => prev.map(t => ({
+            ...t,
+            enabled: savedStates[t.id] !== undefined ? savedStates[t.id] : t.enabled,
+          })));
+        }
+      } catch (err) {
+        // Table or row might not exist yet — use defaults
+        console.warn('Could not load theme states:', err.message);
+      }
+
+      try {
+        // Load maintenance mode
+        const { data: mmData } = await supabase
           .from('app_settings')
           .select('value')
           .eq('key', 'maintenance_mode')
           .single();
-        if (!cancelled && data) {
-          setForm(prev => ({ ...prev, maintenanceMode: data.value === true }));
+        if (!cancelled && mmData) {
+          setForm(prev => ({ ...prev, maintenanceMode: mmData.value === true }));
         }
       } catch (err) {
         console.warn('Could not fetch maintenance mode:', err.message);
@@ -69,23 +81,68 @@ export default function AdminSettings() {
     return () => { cancelled = true; };
   }, []);
 
+  const toggleTheme = (themeId) => {
+    setThemes(prev => prev.map(t => 
+      t.id === themeId ? { ...t, enabled: !t.enabled } : t
+    ));
+    setSaved(false);
+  };
+
   const handleSave = async () => {
-    // Persist maintenance mode to Supabase
-    if (form.maintenanceMode !== undefined) {
-      const { error } = await supabase
+    setSaving(true);
+    try {
+      // 1. Save theme enabled states
+      const themeStates = {};
+      themes.forEach(t => { themeStates[t.id] = t.enabled; });
+
+      // Check if theme_enabled_states row exists
+      const { data: existingTheme } = await supabase
         .from('app_settings')
-        .update({ value: form.maintenanceMode, updated_at: new Date().toISOString() })
-        .eq('key', 'maintenance_mode');
-      if (error) {
-        console.error('Failed to save maintenance mode:', error);
-        alert('Failed to save maintenance mode. Please try again.');
-        return;
+        .select('key')
+        .eq('key', 'theme_enabled_states')
+        .single();
+
+      if (existingTheme) {
+        await supabase
+          .from('app_settings')
+          .update({ value: themeStates, updated_at: new Date().toISOString() })
+          .eq('key', 'theme_enabled_states');
+      } else {
+        await supabase
+          .from('app_settings')
+          .insert({ key: 'theme_enabled_states', value: themeStates, description: 'Enabled/disabled state per seasonal theme' });
       }
-      // Clear the frontend cache so all users see the change immediately
-      try { localStorage.removeItem('omix_maintenance_mode'); } catch { /* ignore */ }
+
+      // Also save to localStorage so current session sees changes immediately
+      try { localStorage.setItem(THEME_STATES_KEY, JSON.stringify(themeStates)); } catch {}
+
+      // 2. Save maintenance mode
+      const mmValue = form.maintenanceMode;
+      const { data: existingMM } = await supabase
+        .from('app_settings')
+        .select('key')
+        .eq('key', 'maintenance_mode')
+        .single();
+
+      if (existingMM) {
+        await supabase
+          .from('app_settings')
+          .update({ value: mmValue, updated_at: new Date().toISOString() })
+          .eq('key', 'maintenance_mode');
+      } else {
+        await supabase
+          .from('app_settings')
+          .insert({ key: 'maintenance_mode', value: mmValue, description: 'When true, disables purchases' });
+      }
+
+      setSaved(true);
+      setTimeout(() => setSaved(false), 3000);
+    } catch (err) {
+      console.error('Failed to save settings:', err);
+      alert('Failed to save settings. Please try again.');
+    } finally {
+      setSaving(false);
     }
-    setSaved(true);
-    setTimeout(() => setSaved(false), 3000);
   };
 
   const updateField = (key, value) => setForm(prev => ({ ...prev, [key]: value }));
@@ -324,21 +381,12 @@ export default function AdminSettings() {
             </div>
           );
         })()}
-
-        <button
-          onClick={handleSaveThemes}
-          className="mt-4 flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold text-white transition-all"
-          style={{ backgroundColor: '#ff385c' }}
-        >
-          <Save className="w-3.5 h-3.5" />
-          Save Theme Settings
-        </button>
       </div>
 
       {/* Save */}
       <div className="flex justify-end">
-        <button onClick={handleSave} className="flex items-center gap-2 bg-[#ff385c] text-white px-6 py-3 rounded-xl font-bold text-sm hover:bg-[#e03150] shadow-lg shadow-[#ff385c]/20 transition-all">
-          <Save className="w-4 h-4" /> Save Settings
+        <button onClick={handleSave} disabled={saving} className="flex items-center gap-2 bg-[#ff385c] text-white px-6 py-3 rounded-xl font-bold text-sm hover:bg-[#e03150] disabled:opacity-50 shadow-lg shadow-[#ff385c]/20 transition-all">
+          <Save className={`w-4 h-4 ${saving ? 'animate-spin' : ''}`} /> {saving ? 'Saving...' : 'Save Settings'}
         </button>
       </div>
     </div>
