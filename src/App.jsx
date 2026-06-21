@@ -23,6 +23,8 @@ import { useMaintenanceMode } from './hooks/useMaintenanceMode';
 import MaintenanceBanner from './components/MaintenanceBanner';
 import { trackPageView, trackUserLogin, trackUserSignup, setUserId } from './utils/analytics';
 
+console.log('[TRACE 8] App.jsx module loaded');
+
 // Lazy-loaded page components for route-based code splitting
 const Home = React.lazy(() => import('./pages/Home'));
 const ListingDetails = React.lazy(() => import('./pages/ListingDetails'));
@@ -50,6 +52,8 @@ const AdminAnalytics = React.lazy(() => import('./pages/AdminAnalytics'));
 const AdminSettings = React.lazy(() => import('./pages/AdminSettings'));
 const AdminPromoCodes = React.lazy(() => import('./pages/AdminPromoCodes'));
 
+console.log('[TRACE 9] Lazy imports declared');
+
 /** A simple centered spinner shown while lazy page chunks load. */
 function PageLoadingFallback() {
   return (
@@ -60,21 +64,21 @@ function PageLoadingFallback() {
 }
 
 function App() {
+  console.log('[TRACE 10] App component rendering');
   const { isMaintenance } = useMaintenanceMode();
+  console.log('[TRACE 11] useMaintenanceMode called, isMaintenance:', isMaintenance);
   const location = useLocation();
 
   // Track page views for SPA navigation
   React.useEffect(() => {
+    console.log('[TRACE 12] App mounted useEffect');
     trackPageView(location.pathname);
   }, [location.pathname]);
 
   React.useEffect(() => {
-    // App mounted
-
-    // Listen for auth state changes (OAuth login/signup)
+    console.log('[TRACE 13] Auth listener useEffect');
     const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
       if (event === 'SIGNED_IN' && session?.user) {
-        // Track user login
         const isNewUser = !session.user.user_metadata?.email_verified;
         if (isNewUser) {
           trackUserSignup('google', session.user.id);
@@ -82,14 +86,11 @@ function App() {
           trackUserLogin('google', session.user.id);
         }
         setUserId(session.user.id);
-
-        // Check if profile exists, create if not (for OAuth users)
         const { data: existing } = await supabase
           .from('profiles')
           .select('id')
           .eq('id', session.user.id)
           .single();
-
         if (!existing) {
           await supabase.from('profiles').insert({
             id: session.user.id,
@@ -101,9 +102,10 @@ function App() {
         }
       }
     });
-
     return () => subscription?.unsubscribe();
   }, []);
+
+  console.log('[TRACE 14] About to return JSX from App');
 
   return (
     <SeasonalProvider>
@@ -166,5 +168,7 @@ function App() {
     </SeasonalProvider>
   )
 }
+
+console.log('[TRACE 15] App function defined, exporting');
 
 export default App
