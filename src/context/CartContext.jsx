@@ -131,11 +131,8 @@ function saveCartToStorage(cart) {
 
 // ── Provider ──────────────────────────────────────────────
 export function CartProvider({ children }) {
-  console.log('🔵 CartProvider rendering');
   const [cart, dispatch] = useReducer(cartReducer, [], loadCartFromStorage);
-  console.log('🔵 CartProvider useReducer done');
   const [isOnline, setIsOnline] = useState(navigator.onLine);
-  console.log('🔵 CartProvider useState done');
   const onAddCallback = useRef(null);
   const initialLoadDone = useRef(false);
 
