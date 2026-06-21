@@ -125,7 +125,7 @@ export default function PWAUpdateChecker() {
             <button
               onClick={handleUpdate}
               disabled={isUpdating}
-              className="flex-1 flex items-center justify-center gap-2 bg-[#ff385c] hover:bg-[#e03150] text-white text-xs font-bold py-2.5 rounded-xl transition-all disabled:opacity-50"
+              className="flex-1 flex items-center justify-center gap-2 bg-[var(--seasonal-primary,#ff385c)] hover:bg-[var(--seasonal-secondary,#e03150)] text-white text-xs font-bold py-2.5 rounded-xl transition-all disabled:opacity-50"
             >
               <RefreshCw className={`w-3.5 h-3.5 ${isUpdating ? 'animate-spin' : ''}`} />
               {isUpdating ? 'Updating...' : 'Update Now'}
@@ -142,7 +142,7 @@ export default function PWAUpdateChecker() {
         {/* Progress bar */}
         {isUpdating && (
           <div className="h-1 bg-zinc-700">
-            <div className="h-full bg-[#ff385c] animate-progress-bar" />
+            <div className="h-full bg-[var(--seasonal-primary,#ff385c)] animate-progress-bar" />
           </div>
         )}
       </div>

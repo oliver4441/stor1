@@ -24,8 +24,8 @@ function HowItWorks() {
       icon: <ShoppingCart className="w-7 h-7" />,
       title: 'Add to Cart & Checkout',
       description: 'Found something you like? Add to cart, enter your details, and pay via M-Pesa STK push.',
-      color: 'from-[#ff385c] to-[#e03150]',
-      bg: 'bg-[#ff385c]/5 dark:bg-[#ff385c]/10',
+      color: 'from-[var(--seasonal-primary,#ff385c)] to-[var(--seasonal-secondary,#e03150)]',
+      bg: 'bg-[var(--seasonal-primary,#ff385c)]/5 dark:bg-[var(--seasonal-primary,#ff385c)]/10',
     },
     {
       icon: <Truck className="w-7 h-7" />,
@@ -106,7 +106,7 @@ function HowItWorks() {
               Shop online in Kericho. Browse, add to cart, pay via M-Pesa, get delivered.
             </p>
             <div className="flex flex-wrap gap-3 justify-center">
-              <Link to="/" className="bg-[#ff385c] text-white px-6 py-3 rounded-xl font-bold hover:bg-[#e03150] transition-all flex items-center gap-2">
+              <Link to="/" className="bg-[var(--seasonal-primary,#ff385c)] text-white px-6 py-3 rounded-xl font-bold hover:bg-[var(--seasonal-secondary,#e03150)] transition-all flex items-center gap-2">
                 <Search className="w-5 h-5" />
                 Start Shopping
               </Link>
@@ -124,7 +124,7 @@ function HowItWorks() {
         {/* Steps */}
         <section className="mb-20">
           <div className="text-center mb-12">
-            <span className="text-xs font-bold text-[#ff385c] uppercase tracking-widest">3 Simple Steps</span>
+            <span className="text-xs font-bold text-[var(--seasonal-primary,#ff385c)] uppercase tracking-widest">3 Simple Steps</span>
             <h2 className="text-3xl md:text-4xl font-black text-zinc-900 dark:text-white mt-2">Shop with ease</h2>
             <p className="text-zinc-500 dark:text-zinc-400 mt-2 max-w-lg mx-auto">From browsing to delivery, it's that simple.</p>
           </div>
@@ -155,14 +155,14 @@ function HowItWorks() {
         {/* Key Features */}
         <section className="mb-20">
           <div className="text-center mb-12">
-            <span className="text-xs font-bold text-[#ff385c] uppercase tracking-widest">Features</span>
+            <span className="text-xs font-bold text-[var(--seasonal-primary,#ff385c)] uppercase tracking-widest">Features</span>
             <h2 className="text-3xl md:text-4xl font-black text-zinc-900 dark:text-white mt-2">Everything you get</h2>
             <p className="text-zinc-500 dark:text-zinc-400 mt-2 max-w-lg mx-auto">Designed for how people shop in Kenya.</p>
           </div>
 
           <div className="grid sm:grid-cols-2 gap-4">
             {features.map((feature, i) => (
-              <div key={i} className="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-2xl p-6 flex gap-4 hover:border-[#ff385c]/30 transition-all">
+              <div key={i} className="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-2xl p-6 flex gap-4 hover:border-[var(--seasonal-primary,#ff385c)]/30 transition-all">
                 <div className="w-12 h-12 rounded-xl bg-zinc-100 dark:bg-zinc-800 flex items-center justify-center flex-shrink-0">
                   {feature.icon}
                 </div>
@@ -178,7 +178,7 @@ function HowItWorks() {
         {/* FAQ */}
         <section className="mb-16">
           <div className="text-center mb-12">
-            <span className="text-xs font-bold text-[#ff385c] uppercase tracking-widest">FAQ</span>
+            <span className="text-xs font-bold text-[var(--seasonal-primary,#ff385c)] uppercase tracking-widest">FAQ</span>
             <h2 className="text-3xl md:text-4xl font-black text-zinc-900 dark:text-white mt-2">Common questions</h2>
           </div>
 
@@ -201,11 +201,11 @@ function HowItWorks() {
 
         {/* CTA */}
         <section>
-          <div className="bg-gradient-to-br from-[#ff385c] to-[#e03150] rounded-3xl p-8 md:p-12 text-center">
+          <div className="bg-gradient-to-br from-[var(--seasonal-primary,#ff385c)] to-[var(--seasonal-secondary,#e03150)] rounded-3xl p-8 md:p-12 text-center">
             <h2 className="text-2xl md:text-3xl font-black text-white mb-3">Ready to start shopping?</h2>
             <p className="text-white/80 mb-8 max-w-lg mx-auto">Create your account in seconds and start browsing. Pay via M-Pesa, get delivered.</p>
             <div className="flex flex-wrap gap-3 justify-center">
-              <Link to="/signup" className="bg-white text-[#ff385c] px-6 py-3 rounded-xl font-bold hover:bg-zinc-100 transition-all flex items-center gap-2">
+              <Link to="/signup" className="bg-white text-[var(--seasonal-primary,#ff385c)] px-6 py-3 rounded-xl font-bold hover:bg-zinc-100 transition-all flex items-center gap-2">
                 <ShoppingCart className="w-5 h-5" />
                 Create Account
               </Link>

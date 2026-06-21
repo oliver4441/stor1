@@ -118,7 +118,7 @@ export default function ImageGallery({ images, title, condition }) {
                 onClick={() => handleThumbnailClick(i)}
                 className={`flex-shrink-0 w-16 h-16 rounded-xl overflow-hidden border-2 transition-all ${
                   activeIndex === i
-                    ? 'border-[#ff385c] shadow-md shadow-[#ff385c]/20'
+                    ? 'border-[var(--seasonal-primary,#ff385c)] shadow-md shadow-[var(--seasonal-primary,#ff385c)]/20'
                     : 'border-transparent opacity-60 hover:opacity-100'
                 }`}
               >

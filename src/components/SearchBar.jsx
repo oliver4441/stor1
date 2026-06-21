@@ -125,7 +125,7 @@ export default function SearchBar({ onSearch, initialValue = '' }) {
           onChange={(e) => setQuery(e.target.value)}
           onFocus={() => setFocused(true)}
           placeholder="Search for anything..."
-          className="w-full pl-12 pr-36 py-3.5 rounded-2xl bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 focus:border-[#ff385c] focus:outline-none text-zinc-900 dark:text-white text-sm shadow-sm"
+          className="w-full pl-12 pr-36 py-3.5 rounded-2xl bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 focus:border-[var(--seasonal-primary,#ff385c)] focus:outline-none text-zinc-900 dark:text-white text-sm shadow-sm"
         />
         {query && (
           <button
@@ -140,7 +140,7 @@ export default function SearchBar({ onSearch, initialValue = '' }) {
           type="button"
           onClick={startVoiceSearch}
           className={`absolute right-[5.5rem] top-1/2 -translate-y-1/2 p-1.5 rounded-full transition-colors ${
-            listening ? 'bg-[#ff385c] text-white animate-pulse' : 'text-zinc-400 hover:bg-zinc-100 dark:hover:bg-zinc-800'
+            listening ? 'bg-[var(--seasonal-primary,#ff385c)] text-white animate-pulse' : 'text-zinc-400 hover:bg-zinc-100 dark:hover:bg-zinc-800'
           }`}
           title={listening ? 'Listening...' : 'Search by voice'}
         >
@@ -148,7 +148,7 @@ export default function SearchBar({ onSearch, initialValue = '' }) {
         </button>
         <button
           type="submit"
-          className="absolute right-2 top-1/2 -translate-y-1/2 bg-[#ff385c] text-white px-4 py-1.5 rounded-xl text-xs font-bold hover:bg-[#e03150] transition-colors"
+          className="absolute right-2 top-1/2 -translate-y-1/2 bg-[var(--seasonal-primary,#ff385c)] text-white px-4 py-1.5 rounded-xl text-xs font-bold hover:bg-[var(--seasonal-secondary,#e03150)] transition-colors"
         >
           Search
         </button>
@@ -164,7 +164,7 @@ export default function SearchBar({ onSearch, initialValue = '' }) {
                   <Clock className="w-3.5 h-3.5" />
                   Recent Searches
                 </div>
-                <button onClick={clearRecent} className="text-[10px] text-zinc-400 hover:text-[#ff385c] font-semibold">
+                <button onClick={clearRecent} className="text-[10px] text-zinc-400 hover:text-[var(--seasonal-primary,#ff385c)] font-semibold">
                   Clear all
                 </button>
               </div>
@@ -173,7 +173,7 @@ export default function SearchBar({ onSearch, initialValue = '' }) {
                   <button
                     key={term}
                     onClick={() => handleRecentClick(term)}
-                    className="px-3 py-1.5 rounded-lg bg-zinc-100 dark:bg-zinc-800 text-xs text-zinc-700 dark:text-zinc-300 hover:bg-[#ff385c] hover:text-white transition-colors"
+                    className="px-3 py-1.5 rounded-lg bg-zinc-100 dark:bg-zinc-800 text-xs text-zinc-700 dark:text-zinc-300 hover:bg-[var(--seasonal-primary,#ff385c)] hover:text-white transition-colors"
                   >
                     {term}
                   </button>
@@ -184,7 +184,7 @@ export default function SearchBar({ onSearch, initialValue = '' }) {
 
           <div className="p-3">
             <div className="flex items-center gap-1.5 mb-2">
-              <TrendingUp className="w-3.5 h-3.5 text-[#ff385c]" />
+              <TrendingUp className="w-3.5 h-3.5 text-[var(--seasonal-primary,#ff385c)]" />
               <span className="text-xs font-bold text-zinc-500 dark:text-zinc-400">Trending</span>
             </div>
             <div className="flex flex-wrap gap-1.5">
@@ -192,7 +192,7 @@ export default function SearchBar({ onSearch, initialValue = '' }) {
                 <button
                   key={term}
                   onClick={() => handleTrendingClick(term)}
-                  className="px-3 py-1.5 rounded-lg bg-[#ff385c]/5 dark:bg-[#ff385c]/10 text-xs text-[#ff385c] font-semibold hover:bg-[#ff385c] hover:text-white transition-colors"
+                  className="px-3 py-1.5 rounded-lg bg-[var(--seasonal-primary,#ff385c)]/5 dark:bg-[var(--seasonal-primary,#ff385c)]/10 text-xs text-[var(--seasonal-primary,#ff385c)] font-semibold hover:bg-[var(--seasonal-primary,#ff385c)] hover:text-white transition-colors"
                 >
                   {term}
                 </button>

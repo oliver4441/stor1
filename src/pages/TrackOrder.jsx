@@ -55,11 +55,11 @@ export default function TrackOrder() {
             value={orderId}
             onChange={(e) => setOrderId(e.target.value)}
             placeholder="Enter order ID..."
-            className="w-full pl-12 pr-4 py-4 rounded-2xl bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 focus:border-[#ff385c] focus:outline-none text-zinc-900 dark:text-white"
+            className="w-full pl-12 pr-4 py-4 rounded-2xl bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 focus:border-[var(--seasonal-primary,#ff385c)] focus:outline-none text-zinc-900 dark:text-white"
           />
         </div>
         <button onClick={handleSearch} disabled={loading}
-          className="bg-[#ff385c] text-white font-bold px-8 py-4 rounded-2xl hover:bg-[#e03150] transition-colors disabled:opacity-50">
+          className="bg-[var(--seasonal-primary,#ff385c)] text-white font-bold px-8 py-4 rounded-2xl hover:bg-[var(--seasonal-secondary,#e03150)] transition-colors disabled:opacity-50">
           {loading ? 'Searching...' : 'Track'}
         </button>
       </div>
@@ -96,7 +96,7 @@ export default function TrackOrder() {
               </div>
               <div>
                 <p className="text-zinc-500 dark:text-zinc-400">Total</p>
-                <p className="font-bold text-[#ff385c]">{formatKES(order.total_amount)}</p>
+                <p className="font-bold text-[var(--seasonal-primary,#ff385c)]">{formatKES(order.total_amount)}</p>
               </div>
             </div>
             {order.address && (

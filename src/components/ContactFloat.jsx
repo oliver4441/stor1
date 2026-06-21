@@ -84,7 +84,7 @@ function ContactFloat() {
       >
         <ShoppingCart className={`w-6 h-6 transition-colors duration-300 ${flash ? 'text-white' : 'text-white dark:text-zinc-900'}`} />
         {cartCount > 0 && (
-          <span className={`absolute -top-1 -right-1 w-5 h-5 text-white text-[10px] font-bold rounded-full flex items-center justify-center transition-all duration-300 ${bump ? 'scale-125' : 'scale-100'} ${flash ? 'bg-white text-zinc-900' : 'bg-[#ff385c]'}`}>
+          <span className={`absolute -top-1 -right-1 w-5 h-5 text-white text-[10px] font-bold rounded-full flex items-center justify-center transition-all duration-300 ${bump ? 'scale-125' : 'scale-100'} ${flash ? 'bg-white text-zinc-900' : 'bg-[var(--seasonal-primary,#ff385c)]'}`}>
             {cartCount > 9 ? '9+' : cartCount}
           </span>
         )}
@@ -107,7 +107,7 @@ function ContactFloat() {
                 <div className="px-5 py-10 text-center">
                   <ShoppingCart className="w-10 h-10 text-zinc-300 dark:text-zinc-600 mx-auto mb-3" />
                   <p className="text-sm text-zinc-500 dark:text-zinc-400">Your cart is empty</p>
-                  <Link to="/" onClick={() => setCartOpen(false)} className="inline-block mt-4 text-sm font-bold text-[#ff385c] hover:underline">
+                  <Link to="/" onClick={() => setCartOpen(false)} className="inline-block mt-4 text-sm font-bold text-[var(--seasonal-primary,#ff385c)] hover:underline">
                     Browse Products
                   </Link>
                 </div>
@@ -126,7 +126,7 @@ function ContactFloat() {
                       </div>
                       <div className="flex-grow min-w-0">
                         <p className="font-bold text-sm text-zinc-900 dark:text-white truncate">{item.name}</p>
-                        <p className="text-[#ff385c] font-bold text-sm">{formatKES(item.price * item.quantity)}</p>
+                        <p className="text-[var(--seasonal-primary,#ff385c)] font-bold text-sm">{formatKES(item.price * item.quantity)}</p>
                       </div>
                       <div className="flex items-center gap-1 flex-shrink-0">
                         <button onClick={() => updateQuantity(item.id, Math.max(0, item.quantity - 1))} className="w-7 h-7 rounded-lg bg-zinc-100 dark:bg-zinc-800 flex items-center justify-center hover:bg-zinc-200 dark:hover:bg-zinc-700">
@@ -150,12 +150,12 @@ function ContactFloat() {
               <div className="border-t border-zinc-200 dark:border-zinc-700 p-4 space-y-3">
                 <div className="flex justify-between items-center">
                   <span className="text-sm font-bold text-zinc-500 dark:text-zinc-400">Total</span>
-                  <span className="text-xl font-black text-[#ff385c]">{formatKES(cartTotal)}</span>
+                  <span className="text-xl font-black text-[var(--seasonal-primary,#ff385c)]">{formatKES(cartTotal)}</span>
                 </div>
                 <Link
                   to="/checkout"
                   onClick={() => setCartOpen(false)}
-                  className="flex items-center justify-center gap-2 w-full bg-[#ff385c] text-white font-black py-3.5 rounded-2xl hover:bg-[#e03150] transition-all shadow-lg shadow-[#ff385c]/20"
+                  className="flex items-center justify-center gap-2 w-full bg-[var(--seasonal-primary,#ff385c)] text-white font-black py-3.5 rounded-2xl hover:bg-[var(--seasonal-secondary,#e03150)] transition-all shadow-lg shadow-[var(--seasonal-primary,#ff385c)]/20"
                 >
                   <CreditCard className="w-4 h-4" />
                   Checkout — {formatKES(cartTotal)}
@@ -163,7 +163,7 @@ function ContactFloat() {
                 <Link
                   to="/cart"
                   onClick={() => setCartOpen(false)}
-                  className="block text-center text-sm text-zinc-500 hover:text-[#ff385c] font-medium"
+                  className="block text-center text-sm text-zinc-500 hover:text-[var(--seasonal-primary,#ff385c)] font-medium"
                 >
                   View Full Cart
                 </Link>
@@ -212,7 +212,7 @@ function ContactFloat() {
             <p className="text-sm text-zinc-500 dark:text-zinc-400 mb-6">Thank you for reaching out. Our team in Kericho will respond soon.</p>
             <button
               onClick={() => { setSuccess(false); setIsOpen(false); }}
-              className="text-sm font-bold text-[#ff385c] hover:underline"
+              className="text-sm font-bold text-[var(--seasonal-primary,#ff385c)] hover:underline"
             >
               Close
             </button>
@@ -222,22 +222,22 @@ function ContactFloat() {
             <div>
               <label className="block text-xs font-bold text-zinc-500 dark:text-zinc-400 uppercase tracking-wider mb-1.5">Your Name</label>
               <input required name="name" type="text" placeholder="e.g. Kiprono Yegon"
-                className="w-full px-4 py-3 rounded-xl bg-zinc-50 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 focus:border-[#ff385c] focus:ring-2 focus:ring-[#ff385c]/10 focus:outline-none text-zinc-900 dark:text-white text-sm transition-all" />
+                className="w-full px-4 py-3 rounded-xl bg-zinc-50 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 focus:border-[var(--seasonal-primary,#ff385c)] focus:ring-2 focus:ring-[var(--seasonal-primary,#ff385c)]/10 focus:outline-none text-zinc-900 dark:text-white text-sm transition-all" />
             </div>
             <div>
               <label className="block text-xs font-bold text-zinc-500 dark:text-zinc-400 uppercase tracking-wider mb-1.5">Email Address</label>
               <input required name="email" type="email" placeholder="you@example.com"
-                className="w-full px-4 py-3 rounded-xl bg-zinc-50 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 focus:border-[#ff385c] focus:ring-2 focus:ring-[#ff385c]/10 focus:outline-none text-zinc-900 dark:text-white text-sm transition-all" />
+                className="w-full px-4 py-3 rounded-xl bg-zinc-50 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 focus:border-[var(--seasonal-primary,#ff385c)] focus:ring-2 focus:ring-[var(--seasonal-primary,#ff385c)]/10 focus:outline-none text-zinc-900 dark:text-white text-sm transition-all" />
             </div>
             <div>
               <label className="block text-xs font-bold text-zinc-500 dark:text-zinc-400 uppercase tracking-wider mb-1.5">Phone (optional)</label>
               <input name="phone" type="tel" placeholder="07XXXXXXXX"
-                className="w-full px-4 py-3 rounded-xl bg-zinc-50 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 focus:border-[#ff385c] focus:ring-2 focus:ring-[#ff385c]/10 focus:outline-none text-zinc-900 dark:text-white text-sm transition-all" />
+                className="w-full px-4 py-3 rounded-xl bg-zinc-50 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 focus:border-[var(--seasonal-primary,#ff385c)] focus:ring-2 focus:ring-[var(--seasonal-primary,#ff385c)]/10 focus:outline-none text-zinc-900 dark:text-white text-sm transition-all" />
             </div>
             <div>
               <label className="block text-xs font-bold text-zinc-500 dark:text-zinc-400 uppercase tracking-wider mb-1.5">Subject</label>
               <select name="subject"
-                className="w-full px-4 py-3 rounded-xl bg-zinc-50 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 focus:border-[#ff385c] focus:ring-2 focus:ring-[#ff385c]/10 focus:outline-none text-zinc-900 dark:text-white text-sm transition-all appearance-none"
+                className="w-full px-4 py-3 rounded-xl bg-zinc-50 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 focus:border-[var(--seasonal-primary,#ff385c)] focus:ring-2 focus:ring-[var(--seasonal-primary,#ff385c)]/10 focus:outline-none text-zinc-900 dark:text-white text-sm transition-all appearance-none"
               >
                 <option value="General Inquiry">General Inquiry</option>
                 <option value="Order Issue">Order Issue</option>
@@ -250,13 +250,13 @@ function ContactFloat() {
             <div>
               <label className="block text-xs font-bold text-zinc-500 dark:text-zinc-400 uppercase tracking-wider mb-1.5">Message</label>
               <textarea required name="message" rows="3" placeholder="Tell us how we can help..."
-                className="w-full px-4 py-3 rounded-xl bg-zinc-50 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 focus:border-[#ff385c] focus:ring-2 focus:ring-[#ff385c]/10 focus:outline-none text-zinc-900 dark:text-white text-sm transition-all resize-none" />
+                className="w-full px-4 py-3 rounded-xl bg-zinc-50 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 focus:border-[var(--seasonal-primary,#ff385c)] focus:ring-2 focus:ring-[var(--seasonal-primary,#ff385c)]/10 focus:outline-none text-zinc-900 dark:text-white text-sm transition-all resize-none" />
             </div>
 
             {error && <p className="text-xs text-red-500 font-medium">{error}</p>}
 
             <button type="submit" disabled={submitting}
-              className="w-full bg-[#ff385c] text-white font-bold py-3.5 rounded-xl hover:bg-[#e03150] transition-all disabled:opacity-50 flex items-center justify-center gap-2 shadow-lg shadow-[#ff385c]/20"
+              className="w-full bg-[var(--seasonal-primary,#ff385c)] text-white font-bold py-3.5 rounded-xl hover:bg-[var(--seasonal-secondary,#e03150)] transition-all disabled:opacity-50 flex items-center justify-center gap-2 shadow-lg shadow-[var(--seasonal-primary,#ff385c)]/20"
             >
               {submitting ? (
                 <><svg className="animate-spin w-4 h-4" viewBox="0 0 24 24" fill="none"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" /><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" /></svg>Sending...</>
@@ -274,7 +274,7 @@ function ContactFloat() {
         className={`fixed bottom-16 right-4 sm:right-6 z-50 w-14 h-14 rounded-full flex items-center justify-center shadow-2xl transition-all duration-300 ${
           isOpen
             ? 'bg-zinc-900 dark:bg-white rotate-0 scale-90'
-            : 'bg-[#ff385c] hover:bg-[#e03150] hover:scale-110'
+            : 'bg-[var(--seasonal-primary,#ff385c)] hover:bg-[var(--seasonal-secondary,#e03150)] hover:scale-110'
         }`}
         aria-label={isOpen ? 'Close contact form' : 'Contact Omix'}
       >

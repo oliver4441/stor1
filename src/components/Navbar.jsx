@@ -11,7 +11,7 @@ const FEATURE_LINKS = [
   { to: 'https://blog.omixsystems.store', label: 'Blog', icon: Globe, color: 'from-violet-500 to-purple-600', glow: 'shadow-violet-500/40', external: true },
   { to: '/how-it-works', label: 'How It Works', icon: HelpCircle, color: 'from-amber-500 to-orange-600', glow: 'shadow-amber-500/40' },
   { to: '/about', label: 'About', icon: Info, color: 'from-cyan-500 to-teal-600', glow: 'shadow-cyan-500/40' },
-  { to: '/install', label: 'Install App', icon: Download, color: 'from-[#ff385c] to-[#e03150]', glow: 'shadow-[#ff385c]/40' },
+  { to: '/install', label: 'Install App', icon: Download, color: 'from-[var(--seasonal-primary,#ff385c)] to-[var(--seasonal-secondary,#e03150)]', glow: 'shadow-[var(--seasonal-primary,#ff385c)]/40' },
 ];
 
 function Navbar() {
@@ -113,7 +113,7 @@ function Navbar() {
             <Moon className="w-5 h-5 block dark:hidden" />
           </button>
 
-          <button onClick={toggleLang} className="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold border border-zinc-200 dark:border-zinc-700 bg-white dark:bg-zinc-900 text-zinc-700 dark:text-zinc-300 hover:border-[#ff385c] hover:text-[#ff385c] transition-all" aria-label={t('common.toggleLanguage')}>
+          <button onClick={toggleLang} className="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold border border-zinc-200 dark:border-zinc-700 bg-white dark:bg-zinc-900 text-zinc-700 dark:text-zinc-300 hover:border-[var(--seasonal-primary,#ff385c)] hover:text-[var(--seasonal-primary,#ff385c)] transition-all" aria-label={t('common.toggleLanguage')}>
             <Globe className="w-3.5 h-3.5" />
             {lang === 'en' ? 'EN' : 'SW'}
           </button>
@@ -201,7 +201,7 @@ function Navbar() {
 
             <Link to="/cart" className="flex items-center gap-3 px-4 py-3 rounded-2xl text-sm font-bold text-zinc-700 dark:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-zinc-800">
               <ShoppingCart className="w-5 h-5" />
-              Cart {cartCount > 0 && <span className="bg-[#ff385c] text-white text-xs px-2 py-0.5 rounded-full">{cartCount}</span>}
+              Cart {cartCount > 0 && <span className="bg-[var(--seasonal-primary,#ff385c)] text-white text-xs px-2 py-0.5 rounded-full">{cartCount}</span>}
             </Link>
 
             <div className="border-t border-zinc-200 dark:border-zinc-800 pt-2 mt-2">
@@ -212,7 +212,7 @@ function Navbar() {
                     My Account
                   </Link>
                   {isUserAdmin && (
-                    <Link to="/admin" className="flex items-center gap-3 px-4 py-3 rounded-2xl text-sm font-bold text-[#ff385c] hover:bg-[#ff385c]/10">
+                    <Link to="/admin" className="flex items-center gap-3 px-4 py-3 rounded-2xl text-sm font-bold text-[var(--seasonal-primary,#ff385c)] hover:bg-[var(--seasonal-primary,#ff385c)]/10">
                       <Shield className="w-5 h-5" />
                       Admin Dashboard
                     </Link>

@@ -57,7 +57,7 @@ export default function CartMiniPopup() {
           {/* Header */}
           <div className="flex items-center justify-between px-4 py-3 border-b border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-900/50">
             <div className="flex items-center gap-2">
-              <ShoppingCart className="w-4 h-4 text-[#ff385c]" />
+              <ShoppingCart className="w-4 h-4 text-[var(--seasonal-primary,#ff385c)]" />
               <span className="font-bold text-sm text-zinc-900 dark:text-white">Cart ({count})</span>
             </div>
             <button onClick={() => setOpen(false)} className="p-1 rounded-lg hover:bg-zinc-200 dark:hover:bg-zinc-800 text-zinc-400">
@@ -74,7 +74,7 @@ export default function CartMiniPopup() {
                 <Link
                   to="/"
                   onClick={() => setOpen(false)}
-                  className="inline-flex items-center gap-1 mt-3 text-xs font-bold text-[#ff385c] hover:underline"
+                  className="inline-flex items-center gap-1 mt-3 text-xs font-bold text-[var(--seasonal-primary,#ff385c)] hover:underline"
                 >
                   Browse products <ArrowRight className="w-3 h-3" />
                 </Link>
@@ -96,11 +96,11 @@ export default function CartMiniPopup() {
                       <Link
                         to={`/listing/${item.id}`}
                         onClick={() => setOpen(false)}
-                        className="text-xs font-bold text-zinc-900 dark:text-white hover:text-[#ff385c] truncate block"
+                        className="text-xs font-bold text-zinc-900 dark:text-white hover:text-[var(--seasonal-primary,#ff385c)] truncate block"
                       >
                         {item.name}
                       </Link>
-                      <p className="text-xs font-bold text-[#ff385c]">{formatKES(item.price * item.quantity)}</p>
+                      <p className="text-xs font-bold text-[var(--seasonal-primary,#ff385c)]">{formatKES(item.price * item.quantity)}</p>
                     </div>
                     <div className="flex items-center gap-1">
                       <button
@@ -147,7 +147,7 @@ export default function CartMiniPopup() {
                 <Link
                   to="/checkout"
                   onClick={() => setOpen(false)}
-                  className="flex-1 flex items-center justify-center gap-1.5 py-2.5 rounded-xl bg-[#ff385c] text-white text-xs font-bold hover:bg-[#e03150] transition-colors shadow-lg shadow-[#ff385c]/20"
+                  className="flex-1 flex items-center justify-center gap-1.5 py-2.5 rounded-xl bg-[var(--seasonal-primary,#ff385c)] text-white text-xs font-bold hover:bg-[var(--seasonal-secondary,#e03150)] transition-colors shadow-lg shadow-[var(--seasonal-primary,#ff385c)]/20"
                 >
                   Checkout <ArrowRight className="w-3 h-3" />
                 </Link>

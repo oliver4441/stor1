@@ -53,7 +53,7 @@ export default function Wishlist() {
   if (loading) {
     return (
       <div className="max-w-4xl mx-auto px-4 py-20 text-center">
-        <div className="inline-block w-8 h-8 border-4 border-[#ff385c] border-t-transparent rounded-full animate-spin" />
+        <div className="inline-block w-8 h-8 border-4 border-[var(--seasonal-primary,#ff385c)] border-t-transparent rounded-full animate-spin" />
       </div>
     );
   }
@@ -64,7 +64,7 @@ export default function Wishlist() {
         <Heart className="w-16 h-16 text-zinc-300 mx-auto mb-4" />
         <h1 className="text-2xl font-black mb-2">Saved Items</h1>
         <p className="text-zinc-500 mb-8">Sign in to save your favorite items.</p>
-        <Link to="/login" className="bg-[#ff385c] text-white font-bold px-8 py-3 rounded-xl inline-block">Sign In</Link>
+        <Link to="/login" className="bg-[var(--seasonal-primary,#ff385c)] text-white font-bold px-8 py-3 rounded-xl inline-block">Sign In</Link>
       </div>
     );
   }
@@ -74,7 +74,7 @@ export default function Wishlist() {
       <Breadcrumb />
       <div className="flex items-center justify-between mb-6">
         <h1 className="text-2xl font-black flex items-center gap-2">
-          <Heart className="w-6 h-6 text-[#ff385c]" /> Saved Items
+          <Heart className="w-6 h-6 text-[var(--seasonal-primary,#ff385c)]" /> Saved Items
         </h1>
         <span className="text-sm text-zinc-500">{items.length} item{items.length !== 1 ? 's' : ''}</span>
       </div>
@@ -84,7 +84,7 @@ export default function Wishlist() {
           <Heart className="w-16 h-16 text-zinc-300 mx-auto mb-4" />
           <h2 className="text-lg font-bold mb-2">Your wishlist is empty</h2>
           <p className="text-zinc-500 mb-6">Start saving items you love!</p>
-          <Link to="/" className="bg-[#ff385c] text-white font-bold px-8 py-3 rounded-xl inline-flex items-center gap-2">
+          <Link to="/" className="bg-[var(--seasonal-primary,#ff385c)] text-white font-bold px-8 py-3 rounded-xl inline-flex items-center gap-2">
             <ArrowLeft className="w-4 h-4" /> Browse Products
           </Link>
         </div>
@@ -114,7 +114,7 @@ export default function Wishlist() {
                   <Link to={`/listing/${listing.id}`}>
                     <h3 className="font-bold text-sm text-zinc-900 dark:text-white truncate">{listing.title}</h3>
                   </Link>
-                  <p className="text-[#ff385c] font-bold text-sm mt-1">{formatKES(listing.price)}</p>
+                  <p className="text-[var(--seasonal-primary,#ff385c)] font-bold text-sm mt-1">{formatKES(listing.price)}</p>
                 </div>
               </div>
             );

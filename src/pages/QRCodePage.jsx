@@ -203,7 +203,7 @@ export default function QRCodePage() {
   return (
     <div className="min-h-screen bg-gradient-to-b from-zinc-50 to-white dark:from-zinc-950 dark:to-zinc-900 flex flex-col items-center justify-center px-4 py-12">
       {/* Logo */}
-      <div className="w-20 h-20 rounded-3xl overflow-hidden mb-6 shadow-2xl shadow-[#ff385c]/30">
+      <div className="w-20 h-20 rounded-3xl overflow-hidden mb-6 shadow-2xl shadow-[var(--seasonal-primary,#ff385c)]/30">
         <img src="/logo.svg" alt="Omix" className="w-full h-full" />
       </div>
 
@@ -219,14 +219,14 @@ export default function QRCodePage() {
         <canvas ref={canvasRef} className="block"></canvas>
       </div>
 
-      <p className="text-sm font-bold text-[#ff385c] mb-1">Scan to Install the App</p>
+      <p className="text-sm font-bold text-[var(--seasonal-primary,#ff385c)] mb-1">Scan to Install the App</p>
       <p className="text-xs text-zinc-400 font-mono mb-8">{APP_URL}</p>
 
       {/* Actions */}
       <div className="flex flex-col sm:flex-row gap-3 w-full max-w-sm">
         <button
           onClick={handleDownloadPDF}
-          className="flex-1 flex items-center justify-center gap-2 bg-gradient-to-r from-[#ff385c] to-[#e03150] text-white px-6 py-3.5 rounded-2xl font-black shadow-xl shadow-[#ff385c]/25 hover:shadow-[#ff385c]/40 transition-all hover:scale-105 active:scale-95 text-sm"
+          className="flex-1 flex items-center justify-center gap-2 bg-gradient-to-r from-[var(--seasonal-primary,#ff385c)] to-[var(--seasonal-secondary,#e03150)] text-white px-6 py-3.5 rounded-2xl font-black shadow-xl shadow-[var(--seasonal-primary,#ff385c)]/25 hover:shadow-[var(--seasonal-primary,#ff385c)]/40 transition-all hover:scale-105 active:scale-95 text-sm"
         >
           Download Print Flyer
         </button>

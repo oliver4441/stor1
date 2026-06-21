@@ -73,6 +73,7 @@ function Home() {
   const heroTo = theme?.colors?.heroTo || '#c02040';
   const heroText = theme?.colors?.heroText || '#ffffff';
   const heroSubtext = theme?.colors?.heroSubtext || '#e0e0e0';
+  const heroAccent = theme?.colors?.heroAccent || '#ffffff';
   const ctaBg = theme?.colors?.ctaBg || '#ffffff';
   const ctaText = theme?.colors?.ctaText || '#ff385c';
   const heroTitle = theme?.heroTitle || 'Your Online Store in Kericho';
@@ -98,6 +99,26 @@ function Home() {
             background: `linear-gradient(135deg, ${heroFrom}, ${heroVia}, ${heroTo})`,
           }}
         ></div>
+        {/* Ambient glow orb */}
+        <div
+          className="theme-ambient-orb"
+          style={{
+            background: `radial-gradient(circle, ${heroAccent || heroFrom} 0%, transparent 70%)`,
+            top: '-10%',
+            right: '-5%',
+          }}
+        />
+        <div
+          className="theme-ambient-orb"
+          style={{
+            background: `radial-gradient(circle, ${heroFrom} 0%, transparent 70%)`,
+            bottom: '-15%',
+            left: '-5%',
+            animationDelay: '-10s',
+            width: '400px',
+            height: '400px',
+          }}
+        />
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,rgba(255,255,255,0.15),transparent_50%)]"></div>
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_bottom_left,rgba(0,0,0,0.1),transparent_50%)]"></div>
 

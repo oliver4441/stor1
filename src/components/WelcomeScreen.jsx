@@ -22,7 +22,7 @@ export function WelcomeScreen({ onFinish }) {
 
   return (
     <div className="fixed inset-0 z-[200] flex items-center justify-center bg-black">
-      <div className="absolute inset-0 bg-gradient-to-br from-[#ff385c] via-[#e03150] to-[#c02040]"></div>
+      <div className="absolute inset-0 bg-gradient-to-br from-[var(--seasonal-primary,#ff385c)] via-[var(--seasonal-secondary,#e03150)] to-[var(--seasonal-hero-to,#c02040)]"></div>
       <div className="absolute top-[-80px] right-[-80px] w-[250px] h-[250px] rounded-full bg-white/5"></div>
       <div className="absolute bottom-[-100px] left-[-60px] w-[300px] h-[300px] rounded-full bg-white/5"></div>
 
@@ -73,7 +73,7 @@ export function WelcomeScreen({ onFinish }) {
 
         <button
           onClick={handleContinue}
-          className={`w-full bg-white text-[#ff385c] font-black py-4 rounded-2xl text-lg shadow-xl shadow-black/20 hover:shadow-black/30 active:scale-95 transition-all duration-500 flex items-center justify-center gap-2 ${
+          className={`w-full bg-white text-[var(--seasonal-primary,#ff385c)] font-black py-4 rounded-2xl text-lg shadow-xl shadow-black/20 hover:shadow-black/30 active:scale-95 transition-all duration-500 flex items-center justify-center gap-2 ${
             animStep >= 4 ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'
           }`}
         >

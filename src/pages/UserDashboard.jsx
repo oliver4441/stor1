@@ -69,7 +69,7 @@ function UserDashboard() {
   if (loading) {
     return (
       <div className="max-w-7xl mx-auto px-4 py-20 text-center">
-        <div className="inline-block w-8 h-8 border-4 border-[#ff385c] border-t-transparent rounded-full animate-spin mb-4" />
+        <div className="inline-block w-8 h-8 border-4 border-[var(--seasonal-primary,#ff385c)] border-t-transparent rounded-full animate-spin mb-4" />
         <p className="text-zinc-500">Loading your account...</p>
       </div>
     );
@@ -94,9 +94,9 @@ function UserDashboard() {
             <h3 className="font-bold text-zinc-900 dark:text-white">Track Order</h3>
             <p className="text-zinc-500 text-sm">Check delivery status</p>
           </div>
-          <Package className="w-7 h-7 text-[#ff385c] group-hover:scale-110 transition-transform" />
+          <Package className="w-7 h-7 text-[var(--seasonal-primary,#ff385c)] group-hover:scale-110 transition-transform" />
         </Link>
-        <div className="bg-gradient-to-br from-[#ff385c] to-[#e03150] p-5 rounded-2xl text-white">
+        <div className="bg-gradient-to-br from-[var(--seasonal-primary,#ff385c)] to-[var(--seasonal-secondary,#e03150)] p-5 rounded-2xl text-white">
           <h3 className="font-bold">My Orders</h3>
           <p className="text-white/70 text-sm">{orders.length} order{orders.length !== 1 ? 's' : ''}</p>
         </div>
@@ -111,7 +111,7 @@ function UserDashboard() {
                 Object.keys(expandedOrders).length === orders.slice(0, 3).length ? {} :
                 Object.fromEntries(orders.slice(0, 3).map(o => [o.id, true]))
               )}
-              className="text-xs font-bold text-[#ff385c] hover:underline"
+              className="text-xs font-bold text-[var(--seasonal-primary,#ff385c)] hover:underline"
             >
               {Object.keys(expandedOrders).length === orders.slice(0, 3).length ? 'Collapse all' : 'Expand all'}
             </button>
@@ -153,7 +153,7 @@ function UserDashboard() {
                         order.status === 'cancelled' ? 'bg-red-100 text-red-600 dark:bg-red-900/30 dark:text-red-400' :
                         'bg-amber-100 text-amber-600 dark:bg-amber-900/30 dark:text-amber-400'
                       }`}>{order.status}</span>
-                      <span className="font-bold text-[#ff385c] text-sm">{formatKES(order.total_amount)}</span>
+                      <span className="font-bold text-[var(--seasonal-primary,#ff385c)] text-sm">{formatKES(order.total_amount)}</span>
                       {isExpanded ? <ChevronUp className="w-4 h-4 text-zinc-400" /> : <ChevronDown className="w-4 h-4 text-zinc-400" />}
                     </div>
                   </button>
@@ -201,7 +201,7 @@ function UserDashboard() {
                       </div>
 
                       {/* Action */}
-                      <Link to={`/track-order?orderId=${order.id}`} className="flex items-center justify-center gap-2 w-full py-2.5 rounded-xl bg-[#ff385c]/10 text-[#ff385c] font-bold text-sm hover:bg-[#ff385c]/20 transition-colors">
+                      <Link to={`/track-order?orderId=${order.id}`} className="flex items-center justify-center gap-2 w-full py-2.5 rounded-xl bg-[var(--seasonal-primary,#ff385c)]/10 text-[var(--seasonal-primary,#ff385c)] font-bold text-sm hover:bg-[var(--seasonal-primary,#ff385c)]/20 transition-colors">
                         Track Order
                         <ArrowRight className="w-4 h-4" />
                       </Link>
@@ -218,7 +218,7 @@ function UserDashboard() {
       <div className="mb-12">
         <div className="bg-white dark:bg-zinc-900 rounded-2xl border border-zinc-200 dark:border-zinc-800 p-6">
           <div className="flex items-center gap-3 mb-5">
-            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[#ff385c] to-[#e03150] flex items-center justify-center">
+            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[var(--seasonal-primary,#ff385c)] to-[var(--seasonal-secondary,#e03150)] flex items-center justify-center">
               <Users className="w-5 h-5 text-white" />
             </div>
             <div>
@@ -246,7 +246,7 @@ function UserDashboard() {
             <div className="text-center sm:text-left">
               <label className="text-xs font-medium text-zinc-500 dark:text-zinc-400 mb-1.5 block">People referred</label>
               <div className="flex items-center gap-2 bg-zinc-50 dark:bg-zinc-800/50 rounded-xl px-5 py-3 border border-zinc-200 dark:border-zinc-700">
-                <Users className="w-5 h-5 text-[#ff385c]" />
+                <Users className="w-5 h-5 text-[var(--seasonal-primary,#ff385c)]" />
                 <span className="font-bold text-xl text-zinc-900 dark:text-white">{referralCount}</span>
               </div>
             </div>
@@ -311,7 +311,7 @@ function UserDashboard() {
       <div className="mb-12">
         <div className="bg-white dark:bg-zinc-900 rounded-2xl border border-zinc-200 dark:border-zinc-800 p-6">
           <div className="flex items-center gap-3 mb-5">
-            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[#ff385c] to-[#e03150] flex items-center justify-center">
+            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[var(--seasonal-primary,#ff385c)] to-[var(--seasonal-secondary,#e03150)] flex items-center justify-center">
               <Bookmark className="w-5 h-5 text-white" />
             </div>
             <div>
@@ -360,7 +360,7 @@ function UserDashboard() {
             <div className="relative">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-zinc-400" />
               <input type="text" placeholder="Search products..." value={searchQuery} onChange={e => setSearchQuery(e.target.value)}
-                className="pl-9 pr-4 py-2 rounded-xl bg-zinc-100 dark:bg-zinc-800 border border-transparent focus:border-[#ff385c] text-sm text-zinc-900 dark:text-white w-48" />
+                className="pl-9 pr-4 py-2 rounded-xl bg-zinc-100 dark:bg-zinc-800 border border-transparent focus:border-[var(--seasonal-primary,#ff385c)] text-sm text-zinc-900 dark:text-white w-48" />
             </div>
             <button onClick={() => setViewMode(viewMode === 'grid' ? 'list' : 'grid')}
               className="p-2 rounded-xl bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-300">
@@ -395,9 +395,9 @@ function UserDashboard() {
                   <div className="flex-grow min-w-0">
                     <h3 className="font-bold text-zinc-900 dark:text-white truncate">{product.title}</h3>
                     <p className="text-xs text-zinc-500">{product.category} • {product.condition}</p>
-                    <p className="text-[#ff385c] font-bold mt-1">{formatKES(product.price)}</p>
+                    <p className="text-[var(--seasonal-primary,#ff385c)] font-bold mt-1">{formatKES(product.price)}</p>
                   </div>
-                  <ArrowRight className="w-5 h-5 text-zinc-400 self-center group-hover:text-[#ff385c] transition-colors" />
+                  <ArrowRight className="w-5 h-5 text-zinc-400 self-center group-hover:text-[var(--seasonal-primary,#ff385c)] transition-colors" />
                 </Link>
               )
             ))}

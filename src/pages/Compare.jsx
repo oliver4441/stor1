@@ -76,7 +76,7 @@ export default function Compare() {
   if (loading) {
     return (
       <div className="max-w-7xl mx-auto px-4 py-20 text-center">
-        <div className="inline-block w-8 h-8 border-4 border-[#ff385c] border-t-transparent rounded-full animate-spin mb-4" />
+        <div className="inline-block w-8 h-8 border-4 border-[var(--seasonal-primary,#ff385c)] border-t-transparent rounded-full animate-spin mb-4" />
         <p className="text-zinc-500">Loading comparison...</p>
       </div>
     );
@@ -88,7 +88,7 @@ export default function Compare() {
         <Scale className="w-16 h-16 text-zinc-300 mx-auto mb-4" />
         <h1 className="text-2xl font-black mb-2">Compare Products</h1>
         <p className="text-zinc-500 mb-8">{error}</p>
-        <Link to="/" className="inline-flex items-center gap-2 bg-[#ff385c] text-white font-bold px-6 py-3 rounded-xl">
+        <Link to="/" className="inline-flex items-center gap-2 bg-[var(--seasonal-primary,#ff385c)] text-white font-bold px-6 py-3 rounded-xl">
           <ArrowLeft className="w-4 h-4" /> Browse Products
         </Link>
       </div>
@@ -101,7 +101,7 @@ export default function Compare() {
         <Scale className="w-16 h-16 text-zinc-300 mx-auto mb-4" />
         <h1 className="text-2xl font-black mb-2">No Results</h1>
         <p className="text-zinc-500 mb-8">Could not find the selected listings.</p>
-        <Link to="/" className="inline-flex items-center gap-2 bg-[#ff385c] text-white font-bold px-6 py-3 rounded-xl">
+        <Link to="/" className="inline-flex items-center gap-2 bg-[var(--seasonal-primary,#ff385c)] text-white font-bold px-6 py-3 rounded-xl">
           <ArrowLeft className="w-4 h-4" /> Back to Home
         </Link>
       </div>
@@ -114,7 +114,7 @@ export default function Compare() {
       <div className="flex items-center justify-between mb-8">
         <div>
           <h1 className="text-2xl font-black flex items-center gap-2">
-            <Scale className="w-6 h-6 text-[#ff385c]" /> Compare Products
+            <Scale className="w-6 h-6 text-[var(--seasonal-primary,#ff385c)]" /> Compare Products
           </h1>
           <p className="text-zinc-500 text-sm">Comparing {listings.length} product{listings.length !== 1 ? 's' : ''}</p>
         </div>
@@ -155,11 +155,11 @@ export default function Compare() {
                           </div>
                         )}
                       </div>
-                      <h3 className="font-bold text-sm text-zinc-900 dark:text-white truncate hover:text-[#ff385c] transition-colors">
+                      <h3 className="font-bold text-sm text-zinc-900 dark:text-white truncate hover:text-[var(--seasonal-primary,#ff385c)] transition-colors">
                         {listing.title}
                       </h3>
                     </Link>
-                    <p className="text-[#ff385c] font-bold text-sm mt-1">
+                    <p className="text-[var(--seasonal-primary,#ff385c)] font-bold text-sm mt-1">
                       {listing.flash_sale_price ? formatKES(listing.flash_sale_price) : formatKES(listing.price)}
                     </p>
                     {listing.compare_at_price && listing.compare_at_price > listing.price && (
@@ -240,7 +240,7 @@ export default function Compare() {
       <div className="mt-8 text-center">
         <Link
           to="/"
-          className="inline-flex items-center gap-2 bg-[#ff385c] text-white font-bold px-8 py-3 rounded-xl hover:bg-[#e03150] transition-all shadow-lg shadow-[#ff385c]/20"
+          className="inline-flex items-center gap-2 bg-[var(--seasonal-primary,#ff385c)] text-white font-bold px-8 py-3 rounded-xl hover:bg-[var(--seasonal-secondary,#e03150)] transition-all shadow-lg shadow-[var(--seasonal-primary,#ff385c)]/20"
         >
           <ArrowLeft className="w-4 h-4" /> Continue Browsing
         </Link>

@@ -15,17 +15,17 @@ function About() {
 
         <section className="grid md:grid-cols-3 gap-6">
           <div className="bg-zinc-50 dark:bg-zinc-900 p-6 rounded-3xl border border-zinc-200 dark:border-zinc-800 text-center">
-            <ShoppingBag className="w-8 h-8 text-[#ff385c] mx-auto mb-3" />
+            <ShoppingBag className="w-8 h-8 text-[var(--seasonal-primary,#ff385c)] mx-auto mb-3" />
             <h3 className="font-bold text-zinc-900 dark:text-white mb-1">Shop Online</h3>
             <p className="text-sm">Browse products, add to cart, and checkout in seconds.</p>
           </div>
           <div className="bg-zinc-50 dark:bg-zinc-900 p-6 rounded-3xl border border-zinc-200 dark:border-zinc-800 text-center">
-            <Shield className="w-8 h-8 text-[#ff385c] mx-auto mb-3" />
+            <Shield className="w-8 h-8 text-[var(--seasonal-primary,#ff385c)] mx-auto mb-3" />
             <h3 className="font-bold text-zinc-900 dark:text-white mb-1">Secure Payments</h3>
             <p className="text-sm">Pay via M-Pesa STK push — safe, instant, no cash needed.</p>
           </div>
           <div className="bg-zinc-50 dark:bg-zinc-900 p-6 rounded-3xl border border-zinc-200 dark:border-zinc-800 text-center">
-            <Truck className="w-8 h-8 text-[#ff385c] mx-auto mb-3" />
+            <Truck className="w-8 h-8 text-[var(--seasonal-primary,#ff385c)] mx-auto mb-3" />
             <h3 className="font-bold text-zinc-900 dark:text-white mb-1">Fast Delivery</h3>
             <p className="text-sm">We deliver within Kericho in 2-5 business days.</p>
           </div>
@@ -36,15 +36,15 @@ function About() {
             <h2 className="text-2xl font-bold mb-4 text-zinc-900 dark:text-white">How it works</h2>
             <ul className="space-y-4">
               <li className="flex gap-3">
-                <div className="w-6 h-6 rounded-full bg-[#ff385c]/10 text-[#ff385c] flex-shrink-0 flex items-center justify-center text-xs font-bold">1</div>
+                <div className="w-6 h-6 rounded-full bg-[var(--seasonal-primary,#ff385c)]/10 text-[var(--seasonal-primary,#ff385c)] flex-shrink-0 flex items-center justify-center text-xs font-bold">1</div>
                 <p><strong>Browse:</strong> Search or filter products by category.</p>
               </li>
               <li className="flex gap-3">
-                <div className="w-6 h-6 rounded-full bg-[#ff385c]/10 text-[#ff385c] flex-shrink-0 flex items-center justify-center text-xs font-bold">2</div>
+                <div className="w-6 h-6 rounded-full bg-[var(--seasonal-primary,#ff385c)]/10 text-[var(--seasonal-primary,#ff385c)] flex-shrink-0 flex items-center justify-center text-xs font-bold">2</div>
                 <p><strong>Checkout:</strong> Add to cart, enter your details, and pay via M-Pesa.</p>
               </li>
               <li className="flex gap-3">
-                <div className="w-6 h-6 rounded-full bg-[#ff385c]/10 text-[#ff385c] flex-shrink-0 flex items-center justify-center text-xs font-bold">3</div>
+                <div className="w-6 h-6 rounded-full bg-[var(--seasonal-primary,#ff385c)]/10 text-[var(--seasonal-primary,#ff385c)] flex-shrink-0 flex items-center justify-center text-xs font-bold">3</div>
                 <p><strong>Delivered:</strong> We deliver to your doorstep in Kericho.</p>
               </li>
             </ul>
@@ -55,11 +55,11 @@ function About() {
             <p className="mb-6 text-sm">Need help with an order? Reach out to our team in Kericho.</p>
             <div className="space-y-4">
               <div className="flex items-center gap-3">
-                <Mail className="w-5 h-5 text-[#ff385c]" />
+                <Mail className="w-5 h-5 text-[var(--seasonal-primary,#ff385c)]" />
                 <a href="mailto:omixsystems@gmail.com" className="font-bold hover:underline">omixsystems@gmail.com</a>
               </div>
               <div className="flex items-center gap-3">
-                <Phone className="w-5 h-5 text-[#ff385c]" />
+                <Phone className="w-5 h-5 text-[var(--seasonal-primary,#ff385c)]" />
                 <a href="tel:+254768213649" className="font-bold hover:underline">+254 768 213 649</a>
               </div>
             </div>

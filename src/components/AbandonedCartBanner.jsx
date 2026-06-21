@@ -81,14 +81,14 @@ export default function AbandonedCartBanner() {
 
   return (
     <div className="fixed bottom-4 left-4 right-4 z-[70] animate-in slide-in-from-bottom-4 fade-in duration-300">
-      <div className="max-w-md mx-auto bg-[#ff385c] rounded-2xl shadow-2xl p-4 flex items-center gap-3 text-white">
+      <div className="max-w-md mx-auto bg-[var(--seasonal-primary,#ff385c)] rounded-2xl shadow-2xl p-4 flex items-center gap-3 text-white">
         <ShoppingBag className="w-5 h-5 flex-shrink-0" />
         <p className="text-sm font-medium flex-1">
           Still shopping? Your cart items are waiting!
         </p>
         <button
           onClick={handleViewCart}
-          className="px-4 py-1.5 bg-white text-[#ff385c] text-xs font-bold rounded-xl hover:opacity-90 transition-opacity flex-shrink-0"
+          className="px-4 py-1.5 bg-white text-[var(--seasonal-primary,#ff385c)] text-xs font-bold rounded-xl hover:opacity-90 transition-opacity flex-shrink-0"
         >
           View Cart
         </button>

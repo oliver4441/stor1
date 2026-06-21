@@ -120,7 +120,7 @@ function ProductCard({ listing, compareMode, onCompareChange }) {
   };
 
   return (
-    <Link to={`/listing/${listing.id}`} className="block group">
+    <Link to={`/listing/${listing.id}`} className="block group theme-card-shimmer">
       <div className="bg-zinc-100 dark:bg-zinc-900 rounded-2xl overflow-hidden aspect-[4/5] mb-3 relative">
         {hasImage ? (
           <img src={listing.images[0]} alt={listing.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" loading="lazy" onError={() => setImgError(true)} />
@@ -163,8 +163,8 @@ function ProductCard({ listing, compareMode, onCompareChange }) {
             onClick={toggleCompare}
             className={`absolute top-2 left-2 p-1.5 rounded-full shadow-sm transition-all z-10 ${
               isCompared
-                ? 'bg-[#ff385c] text-white'
-                : 'bg-white/90 dark:bg-black/90 text-zinc-400 hover:text-[#ff385c]'
+                ? 'bg-[var(--seasonal-primary,#ff385c)] text-white'
+                : 'bg-white/90 dark:bg-black/90 text-zinc-400 hover:text-[var(--seasonal-primary,#ff385c)]'
             }`}
             aria-label={isCompared ? 'Remove from comparison' : 'Add to comparison'}
           >
@@ -174,7 +174,7 @@ function ProductCard({ listing, compareMode, onCompareChange }) {
 
         {/* Web Share button */}
         <button onClick={handleWebShare}
-          className="absolute top-2 right-12 bg-white/90 dark:bg-black/90 text-zinc-700 dark:text-zinc-300 p-1.5 rounded-full shadow-sm hover:bg-[#ff385c] hover:text-white transition-all opacity-0 group-hover:opacity-100"
+          className="absolute top-2 right-12 bg-white/90 dark:bg-black/90 text-zinc-700 dark:text-zinc-300 p-1.5 rounded-full shadow-sm hover:bg-[var(--seasonal-primary,#ff385c)] hover:text-white transition-all opacity-0 group-hover:opacity-100"
           aria-label="Share">
           <Share2 className="w-3 h-3" />
         </button>
@@ -189,7 +189,7 @@ function ProductCard({ listing, compareMode, onCompareChange }) {
         {/* Quick View button */}
         <button
           onClick={(e) => { e.preventDefault(); e.stopPropagation(); }}
-          className="absolute top-10 right-2 bg-white/90 dark:bg-black/90 text-zinc-900 dark:text-white p-1.5 rounded-full shadow-sm hover:bg-[#ff385c] hover:text-white transition-all opacity-0 group-hover:opacity-100"
+          className="absolute top-10 right-2 bg-white/90 dark:bg-black/90 text-zinc-900 dark:text-white p-1.5 rounded-full shadow-sm hover:bg-[var(--seasonal-primary,#ff385c)] hover:text-white transition-all opacity-0 group-hover:opacity-100"
           aria-label="Quick view"
         >
           <Eye className="w-3 h-3" />
@@ -202,8 +202,8 @@ function ProductCard({ listing, compareMode, onCompareChange }) {
                 : justAdded
                   ? 'bg-green-500 text-white'
                   : inCart
-                    ? 'bg-[#ff385c]/90 text-white'
-                    : 'bg-white/90 dark:bg-black/90 text-zinc-900 dark:text-white hover:bg-[#ff385c] hover:text-white'
+                    ? 'bg-[var(--seasonal-primary,#ff385c)]/90 text-white'
+                    : 'bg-white/90 dark:bg-black/90 text-zinc-900 dark:text-white hover:bg-[var(--seasonal-primary,#ff385c)] hover:text-white'
             }`}
             aria-label={isMaintenanceCached() ? 'Under maintenance' : 'Add to cart'}
           >

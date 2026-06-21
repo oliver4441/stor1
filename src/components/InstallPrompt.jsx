@@ -84,8 +84,8 @@ export default function InstallPrompt() {
         <div className="p-4">
           <div className="flex items-start justify-between gap-3">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-xl bg-[#ff385c]/10 flex items-center justify-center flex-shrink-0">
-                <Download className="w-5 h-5 text-[#ff385c]" />
+              <div className="w-10 h-10 rounded-xl bg-[var(--seasonal-primary,#ff385c)]/10 flex items-center justify-center flex-shrink-0">
+                <Download className="w-5 h-5 text-[var(--seasonal-primary,#ff385c)]" />
               </div>
               <div className="flex-1 min-w-0">
                 <h4 className="text-sm font-bold text-zinc-900 dark:text-white">
@@ -107,7 +107,7 @@ export default function InstallPrompt() {
 
           <button
             onClick={handleInstall}
-            className="w-full mt-3 flex items-center justify-center gap-2 bg-[#ff385c] hover:bg-[#e03150] text-white text-xs font-bold py-2.5 rounded-xl transition-all shadow-lg shadow-[#ff385c]/20"
+            className="w-full mt-3 flex items-center justify-center gap-2 bg-[var(--seasonal-primary,#ff385c)] hover:bg-[var(--seasonal-secondary,#e03150)] text-white text-xs font-bold py-2.5 rounded-xl transition-all shadow-lg shadow-[var(--seasonal-primary,#ff385c)]/20"
           >
             <Download className="w-4 h-4" />
             Install Now
