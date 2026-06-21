@@ -23,7 +23,21 @@ import { useMaintenanceMode } from './hooks/useMaintenanceMode';
 import MaintenanceBanner from './components/MaintenanceBanner';
 import { trackPageView, trackUserLogin, trackUserSignup, setUserId } from './utils/analytics';
 
-console.log('[TRACE 8] App.jsx module loaded');
+// Use same debug overlay from main.jsx
+function d(msg) {
+  const debugId = 'omix-debug-trace';
+  let el = document.getElementById(debugId);
+  if (!el) {
+    el = document.createElement('div');
+    el.id = debugId;
+    el.style.cssText = 'position:fixed;top:0;left:0;right:0;z-index:99999;background:rgba(0,0,0,0.85);color:#0f0;font-family:monospace;font-size:11px;padding:4px 8px;line-height:1.4;max-height:50vh;overflow-y:auto;white-space:pre-wrap;word-break:break-all;';
+    document.body.appendChild(el);
+  }
+  el.textContent += msg + '\n';
+  console.log(msg);
+}
+
+d('[8] App.jsx module loaded');
 
 // Lazy-loaded page components for route-based code splitting
 const Home = React.lazy(() => import('./pages/Home'));
@@ -52,7 +66,7 @@ const AdminAnalytics = React.lazy(() => import('./pages/AdminAnalytics'));
 const AdminSettings = React.lazy(() => import('./pages/AdminSettings'));
 const AdminPromoCodes = React.lazy(() => import('./pages/AdminPromoCodes'));
 
-console.log('[TRACE 9] Lazy imports declared');
+d('[9] lazy imports declared');
 
 /** A simple centered spinner shown while lazy page chunks load. */
 function PageLoadingFallback() {
@@ -64,33 +78,25 @@ function PageLoadingFallback() {
 }
 
 function App() {
-  console.log('[TRACE 10] App component rendering');
+  d('[10] App component rendering');
   const { isMaintenance } = useMaintenanceMode();
-  console.log('[TRACE 11] useMaintenanceMode called, isMaintenance:', isMaintenance);
+  d('[11] maintenance: ' + isMaintenance);
   const location = useLocation();
 
-  // Track page views for SPA navigation
   React.useEffect(() => {
-    console.log('[TRACE 12] App mounted useEffect');
+    d('[12] mounted');
     trackPageView(location.pathname);
   }, [location.pathname]);
 
   React.useEffect(() => {
-    console.log('[TRACE 13] Auth listener useEffect');
+    d('[13] auth listener');
     const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
       if (event === 'SIGNED_IN' && session?.user) {
         const isNewUser = !session.user.user_metadata?.email_verified;
-        if (isNewUser) {
-          trackUserSignup('google', session.user.id);
-        } else {
-          trackUserLogin('google', session.user.id);
-        }
+        if (isNewUser) trackUserSignup('google', session.user.id);
+        else trackUserLogin('google', session.user.id);
         setUserId(session.user.id);
-        const { data: existing } = await supabase
-          .from('profiles')
-          .select('id')
-          .eq('id', session.user.id)
-          .single();
+        const { data: existing } = await supabase.from('profiles').select('id').eq('id', session.user.id).single();
         if (!existing) {
           await supabase.from('profiles').insert({
             id: session.user.id,
@@ -105,7 +111,7 @@ function App() {
     return () => subscription?.unsubscribe();
   }, []);
 
-  console.log('[TRACE 14] About to return JSX from App');
+  d('[14] returning JSX');
 
   return (
     <SeasonalProvider>
@@ -169,6 +175,6 @@ function App() {
   )
 }
 
-console.log('[TRACE 15] App function defined, exporting');
+d('[15] App exported');
 
 export default App

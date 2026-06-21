@@ -5,11 +5,25 @@ import App from './App.jsx'
 import './index.css'
 import { initGA } from './utils/analytics'
 
-console.log('[TRACE 1] main.jsx loaded');
+// Visible debug overlay for mobile debugging
+const debugId = 'omix-debug-trace';
+function addDebug(msg) {
+  let el = document.getElementById(debugId);
+  if (!el) {
+    el = document.createElement('div');
+    el.id = debugId;
+    el.style.cssText = 'position:fixed;top:0;left:0;right:0;z-index:99999;background:rgba(0,0,0,0.85);color:#0f0;font-family:monospace;font-size:11px;padding:4px 8px;line-height:1.4;max-height:50vh;overflow-y:auto;white-space:pre-wrap;word-break:break-all;';
+    document.body.appendChild(el);
+  }
+  el.textContent += msg + '\n';
+  console.log(msg);
+}
+
+addDebug('[1] main.jsx loaded');
 
 // Apply theme before React renders to prevent flash
 (function() {
-  console.log('[TRACE 2] IIFE theme check running');
+  addDebug('[2] theme IIFE running');
   try {
     const stored = localStorage.getItem('theme');
     if (stored === 'dark' || stored === 'light') {
@@ -20,28 +34,20 @@ console.log('[TRACE 1] main.jsx loaded');
         document.documentElement.classList.add('dark');
       }
     }
-    console.log('[TRACE 3] Theme applied OK');
+    addDebug('[3] theme OK');
   } catch(e) {
-    console.error('[TRACE 3] Theme error:', e);
+    addDebug('[3] theme ERR: ' + e.message);
   }
 })();
 
-// Initialize Google Analytics
-try {
-  initGA();
-  console.log('[TRACE 4] GA init OK');
-} catch(e) {
-  console.error('[TRACE 4] GA init error:', e);
-}
+try { initGA(); addDebug('[4] GA OK'); } catch(e) { addDebug('[4] GA ERR: ' + e.message); }
 
-console.log('[TRACE 5] About to createRoot');
+addDebug('[5] about to createRoot');
 
 try {
   const rootEl = document.getElementById('root');
-  console.log('[TRACE 6] root element:', rootEl ? 'found' : 'NOT FOUND');
-  if (!rootEl) {
-    document.body.innerHTML = '<div style="padding:20px;color:red;font-family:monospace"><h1>FATAL: #root not found</h1></div>';
-  } else {
+  addDebug('[6] root: ' + (rootEl ? 'found' : 'MISSING'));
+  if (rootEl) {
     ReactDOM.createRoot(rootEl).render(
       <React.StrictMode>
         <BrowserRouter>
@@ -49,9 +55,10 @@ try {
         </BrowserRouter>
       </React.StrictMode>,
     );
-    console.log('[TRACE 7] createRoot.render called');
+    addDebug('[7] render called');
+  } else {
+    addDebug('[FATAL] no #root element');
   }
 } catch(e) {
-  console.error('[TRACE 7] FATAL render error:', e);
-  document.body.innerHTML = '<div style="padding:20px;color:red;font-family:monospace"><h1>FATAL: Render crashed</h1><pre>' + e.message + '\n' + e.stack + '</pre></div>';
+  addDebug('[FATAL] ' + e.message);
 }
