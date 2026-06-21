@@ -4,16 +4,14 @@ import ErrorBoundary from './components/ErrorBoundary';
 import { SeasonalProvider } from './context/SeasonalContext';
 import { LanguageProvider } from './utils/lang';
 import { AuthProvider } from './context/AuthContext';
-import { CartProvider } from './context/CartContext';
-import { NiaChatProvider } from './context/NiaChatContext';
-import ScrollToTop from './components/ScrollToTop';
 
-const Home = React.lazy(() => import('./pages/Home'));
-
-function PageLoadingFallback() {
+function Home() {
   return (
-    <div className="min-h-[60vh] flex items-center justify-center">
-      <div className="w-10 h-10 border-4 border-blue-500 border-t-transparent rounded-full animate-spin" />
+    <div style={{minHeight:'60vh',display:'flex',alignItems:'center',justifyContent:'center',flexDirection:'column',gap:16,padding:20}}>
+      <h1 style={{fontSize:32,fontWeight:800,color:'#ff385c'}}>Omix Store</h1>
+      <div style={{background:'#f0fdf4',border:'1px solid #bbf7d0',borderRadius:12,padding:'12px 24px',color:'#166534',fontWeight:600}}>
+        Seasonal + Language + Auth: OK
+      </div>
     </div>
   );
 }
@@ -23,22 +21,15 @@ function App() {
     <SeasonalProvider>
     <LanguageProvider>
     <AuthProvider>
-    <CartProvider>
-    <NiaChatProvider>
     <ErrorBoundary>
-      <ScrollToTop />
       <div className="min-h-screen flex flex-col bg-white">
         <main className="flex-grow">
-          <Suspense fallback={<PageLoadingFallback />}>
-            <Routes>
-              <Route path="/" element={<Home />} />
-            </Routes>
-          </Suspense>
+          <Routes>
+            <Route path="/" element={<Home />} />
+          </Routes>
         </main>
       </div>
     </ErrorBoundary>
-    </NiaChatProvider>
-    </CartProvider>
     </AuthProvider>
     </LanguageProvider>
     </SeasonalProvider>
