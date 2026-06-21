@@ -24,7 +24,7 @@ import { useMaintenanceMode } from './hooks/useMaintenanceMode';
 import MaintenanceBanner from './components/MaintenanceBanner';
 import { trackPageView, trackUserLogin, trackUserSignup, setUserId } from './utils/analytics';
 
-// Lazy-loaded page components for route-based code splitting
+// Lazy-loaded page components
 const Home = React.lazy(() => import('./pages/Home'));
 const ListingDetails = React.lazy(() => import('./pages/ListingDetails'));
 const Login = React.lazy(() => import('./pages/Login'));
@@ -51,7 +51,6 @@ const AdminAnalytics = React.lazy(() => import('./pages/AdminAnalytics'));
 const AdminSettings = React.lazy(() => import('./pages/AdminSettings'));
 const AdminPromoCodes = React.lazy(() => import('./pages/AdminPromoCodes'));
 
-/** A simple centered spinner shown while lazy page chunks load. */
 function PageLoadingFallback() {
   return (
     <div className="min-h-[60vh] flex items-center justify-center">
@@ -60,22 +59,34 @@ function PageLoadingFallback() {
   );
 }
 
+// Wrapper that catches errors in context providers
+function SafeProvider({ name, children, fallback }) {
+  return (
+    <ErrorBoundary
+      key={name}
+      fallback={
+        <div style={{ padding: 20, background: '#fef2f2', border: '1px solid #fecaca', margin: 8, borderRadius: 8 }}>
+          <p style={{ color: '#dc2626', fontWeight: 600, margin: 0 }}>⚠️ {name} failed to load</p>
+          {fallback || <p style={{ color: '#991b1b', fontSize: 13, margin: '4px 0 0' }}>This section is unavailable. The rest of the app still works.</p>}
+        </div>
+      }
+    >
+      {children}
+    </ErrorBoundary>
+  );
+}
+
 function App() {
   const { isMaintenance } = useMaintenanceMode();
   const location = useLocation();
 
-  // Track page views for SPA navigation
   React.useEffect(() => {
     trackPageView(location.pathname);
   }, [location.pathname]);
 
   React.useEffect(() => {
-    // App mounted
-
-    // Listen for auth state changes (OAuth login/signup)
     const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
       if (event === 'SIGNED_IN' && session?.user) {
-        // Track user login
         const isNewUser = !session.user.user_metadata?.email_verified;
         if (isNewUser) {
           trackUserSignup('google', session.user.id);
@@ -84,7 +95,6 @@ function App() {
         }
         setUserId(session.user.id);
 
-        // Check if profile exists, create if not (for OAuth users)
         const { data: existing } = await supabase
           .from('profiles')
           .select('id')
@@ -107,65 +117,65 @@ function App() {
   }, []);
 
   return (
-    <SeasonalProvider>
-    <LanguageProvider>
-    <AuthProvider>
-    <CartProvider>
-    <NiaChatProvider>
-    <ErrorBoundary>
-      <ScrollToTop />
-      <div className="min-h-screen flex flex-col bg-white dark:bg-zinc-950 text-zinc-900 dark:text-zinc-50 antialiased pb-16 lg:pb-0">
-        <Navbar />
-        {isMaintenance && <MaintenanceBanner />}
-        <main className="flex-grow page-transition">
-          <Suspense fallback={<PageLoadingFallback />}>
-            <Routes>
-              <Route path="/" element={<Home />} />
-              <Route path="/listing/:id" element={<ListingDetails />} />
-              <Route path="/about" element={<About />} />
-              <Route path="/login" element={<Login />} />
-              <Route path="/signup" element={<Signup />} />
-              <Route path="/account" element={<UserDashboard />} />
-              <Route path="/admin" element={<AdminLayout />}>
-                <Route index element={<Navigate to="/admin/dashboard" replace />} />
-                <Route path="dashboard" element={<AdminOverview />} />
-                <Route path="products" element={<AdminProducts />} />
-                <Route path="orders" element={<AdminOrders />} />
-                <Route path="customers" element={<AdminCustomers />} />
-                <Route path="analytics" element={<AdminAnalytics />} />
-                <Route path="settings" element={<AdminSettings />} />
-                <Route path="promo-codes" element={<AdminPromoCodes />} />
-              </Route>
-              <Route path="/how-it-works" element={<HowItWorks />} />
-              <Route path="/checkout" element={<Checkout />} />
-              <Route path="/order-success" element={<OrderSuccess />} />
-              <Route path="/track-order" element={<TrackOrder />} />
-              <Route path="/terms" element={<Terms />} />
-              <Route path="/privacy" element={<Privacy />} />
-              <Route path="/install" element={<Install />} />
-              <Route path="/cart" element={<Cart />} />
-              <Route path="/compare" element={<Compare />} />
-            </Routes>
-          </Suspense>
-        </main>
-        <Footer />
-        <MobileBottomNav />
-        <BackToTop />
-        <FloatingCartButton />
-        <NiaOnboarding />
-        <NiaChat />
-        <NiaFloatingButton />
-        <PWAUpdateChecker />
-        <InstallBanner />
-        <PushNudge />
-        <AbandonedCartBanner />
-      </div>
-    </ErrorBoundary>
-    </NiaChatProvider>
-    </CartProvider>
-    </AuthProvider>
-    </LanguageProvider>
-    </SeasonalProvider>
+    <SafeProvider name="SeasonalProvider">
+      <SafeProvider name="LanguageProvider">
+        <SafeProvider name="AuthProvider">
+          <SafeProvider name="CartProvider">
+            <SafeProvider name="NiaChatProvider">
+              <ErrorBoundary fallback={<div style={{padding:20,textAlign:'center'}}><h2>Something went wrong</h2><p>Please refresh the page</p></div>}>
+                <ScrollToTop />
+                <div className="min-h-screen flex flex-col bg-white dark:bg-zinc-950 text-zinc-900 dark:text-zinc-50 antialiased pb-16 lg:pb-0">
+                  <Navbar />
+                  {isMaintenance && <MaintenanceBanner />}
+                  <main className="flex-grow page-transition">
+                    <Suspense fallback={<PageLoadingFallback />}>
+                      <Routes>
+                        <Route path="/" element={<Home />} />
+                        <Route path="/listing/:id" element={<ListingDetails />} />
+                        <Route path="/about" element={<About />} />
+                        <Route path="/login" element={<Login />} />
+                        <Route path="/signup" element={<Signup />} />
+                        <Route path="/account" element={<UserDashboard />} />
+                        <Route path="/admin" element={<AdminLayout />}>
+                          <Route index element={<Navigate to="/admin/dashboard" replace />} />
+                          <Route path="dashboard" element={<AdminOverview />} />
+                          <Route path="products" element={<AdminProducts />} />
+                          <Route path="orders" element={<AdminOrders />} />
+                          <Route path="customers" element={<AdminCustomers />} />
+                          <Route path="analytics" element={<AdminAnalytics />} />
+                          <Route path="settings" element={<AdminSettings />} />
+                          <Route path="promo-codes" element={<AdminPromoCodes />} />
+                        </Route>
+                        <Route path="/how-it-works" element={<HowItWorks />} />
+                        <Route path="/checkout" element={<Checkout />} />
+                        <Route path="/order-success" element={<OrderSuccess />} />
+                        <Route path="/track-order" element={<TrackOrder />} />
+                        <Route path="/terms" element={<Terms />} />
+                        <Route path="/privacy" element={<Privacy />} />
+                        <Route path="/install" element={<Install />} />
+                        <Route path="/cart" element={<Cart />} />
+                        <Route path="/compare" element={<Compare />} />
+                      </Routes>
+                    </Suspense>
+                  </main>
+                  <Footer />
+                  <MobileBottomNav />
+                  <BackToTop />
+                  <FloatingCartButton />
+                  <NiaOnboarding />
+                  <NiaChat />
+                  <NiaFloatingButton />
+                  <PWAUpdateChecker />
+                  <InstallBanner />
+                  <PushNudge />
+                  <AbandonedCartBanner />
+                </div>
+              </ErrorBoundary>
+            </SafeProvider>
+          </SafeProvider>
+        </SafeProvider>
+      </SafeProvider>
+    </SafeProvider>
   )
 }
 
