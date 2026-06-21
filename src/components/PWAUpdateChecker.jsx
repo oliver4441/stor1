@@ -24,7 +24,6 @@ export default function PWAUpdateChecker() {
       setNewVersion(serverVersion);
       
       const lastVersion = localStorage.getItem(STORAGE_KEY);
-      setCurrentVersion(lastVersion || '');
       
       if (lastVersion && lastVersion !== serverVersion) {
         setUpdateAvailable(true);
