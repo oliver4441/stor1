@@ -17,6 +17,7 @@ import InstallBanner from './components/InstallBanner';
 import PushNudge from './components/PushNudge';
 import CartReminder from './components/CartReminder';
 import ThemeStyles from './components/ThemeStyles';
+import PWAUpdateChecker from './components/PWAUpdateChecker';
 
 // Pages
 import Home from './pages/Home';
@@ -95,6 +96,7 @@ function App() {
         <InstallBanner />
         <PushNudge />
         <CartReminder />
+        <PWAUpdateChecker />
       </div>
     </ErrorBoundary>
     </NiaChatProvider>
