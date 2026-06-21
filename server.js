@@ -84,10 +84,21 @@ Keep responses under 80 words. Answer directly without any reasoning or thinking
 });
 
 // Serve static files from the dist directory
-app.use(express.static(path.join(__dirname, 'dist'), { index: false }));
+app.use(express.static(path.join(__dirname, 'dist'), {
+  index: false,
+  setHeaders: (res) => {
+    res.set('Cache-Control', 'public, max-age=31536000, immutable');
+  }
+}));
 
 // SPA fallback — serve index.html for all non-API, non-file routes
+// NEVER cache HTML so Cloudflare always gets fresh index.html with correct bundle hash
 app.get('*', (req, res) => {
+  res.set('Cache-Control', 'no-cache, no-store, must-revalidate');
+  res.set('Pragma', 'no-cache');
+  res.set('Expires', '0');
+  res.set('CDN-Cache-Control', 'no-cache');
+  res.set('Cloudflare-CDN-Cache-Control', 'no-cache');
   res.sendFile(path.join(__dirname, 'dist', 'index.html'));
 });
 
