@@ -16,6 +16,7 @@ import NiaChat from './components/NiaChat';
 import InstallBanner from './components/InstallBanner';
 import PushNudge from './components/PushNudge';
 import CartReminder from './components/CartReminder';
+import ThemeStyles from './components/ThemeStyles';
 
 // Pages
 import Home from './pages/Home';
@@ -47,6 +48,7 @@ import AdminSettings from './pages/AdminSettings';
 function App() {
   return (
     <SeasonalProvider>
+      <ThemeStyles />
     <LanguageProvider>
     <AuthProvider>
     <CartProvider>

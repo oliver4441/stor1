@@ -6,22 +6,80 @@
   :root {
     --font-sans: 'DM Sans', sans-serif;
     
-    /* Seasonal theme variables — defaults */
+    /* =============================================
+       SEASONAL THEME CSS VARIABLES (set by ThemeStyles)
+       These defaults are used when no theme is active.
+       ============================================= */
     --seasonal-primary: #ff385c;
     --seasonal-secondary: #e03150;
     --seasonal-accent: #ff385c;
+    
+    /* Hero section */
     --seasonal-hero-from: #ff385c;
     --seasonal-hero-via: #e03150;
     --seasonal-hero-to: #c02040;
     --seasonal-hero-text: #ffffff;
     --seasonal-hero-subtext: #e0e0e0;
+    --seasonal-hero-accent: #ffffff;
+    --seasonal-hero-overlay: rgba(192,32,64,0.3);
+    
+    /* CTA buttons */
     --seasonal-cta-bg: #ffffff;
     --seasonal-cta-text: #ff385c;
     --seasonal-cta-hover: #f0f0f0;
+    
+    /* Badge */
     --seasonal-badge-bg: #ff385c;
     --seasonal-badge-text: #ffffff;
+    
+    /* Navbar */
     --seasonal-nav-accent: #ff385c;
     --seasonal-nav-accent-text: #ffffff;
+    --seasonal-nav-bg-from: #ff385c;
+    --seasonal-nav-bg-to: #e03150;
+    
+    /* Surfaces */
+    --seasonal-surface: #ffffff;
+    --seasonal-surface-alt: #f5f5f5;
+    --seasonal-border: #e4e4e7;
+    --seasonal-muted: #71717a;
+    
+    /* Text */
+    --seasonal-text-primary: #18181b;
+    --seasonal-text-secondary: #52525b;
+    
+    /* Footer */
+    --seasonal-footer-bg: #ffffff;
+    --seasonal-footer-text: #71717a;
+    --seasonal-footer-link: #ff385c;
+    
+    /* Cards */
+    --seasonal-card-bg: #ffffff;
+    --seasonal-card-border: #e4e4e7;
+    --seasonal-price-color: #ff385c;
+    
+    /* Buttons */
+    --seasonal-button-bg: #ff385c;
+    --seasonal-button-text: #ffffff;
+    
+    /* Effects */
+    --seasonal-shadow: #ff385c;
+    --seasonal-glow: #ff385c;
+    --seasonal-bg-pattern: none;
+    --seasonal-sticker: "";
+  }
+
+  /* Dark mode overrides for base surfaces */
+  .dark {
+    --seasonal-surface: #09090b;
+    --seasonal-surface-alt: #18181b;
+    --seasonal-border: #27272a;
+    --seasonal-muted: #a1a1aa;
+    --seasonal-text-primary: #fafafa;
+    --seasonal-text-secondary: #a1a1aa;
+    --seasonal-card-bg: #18181b;
+    --seasonal-card-border: #27272a;
+    --seasonal-footer-bg: #09090b;
   }
   
   html {
@@ -32,6 +90,11 @@
   body {
     @apply bg-white text-zinc-900 dark:bg-zinc-950 dark:text-zinc-50 antialiased;
     font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+  }
+
+  /* Body background pattern from active theme */
+  body[data-theme-id]:not([data-theme-id="none"]) {
+    background-image: var(--seasonal-bg-pattern);
   }
 }
 
@@ -284,6 +347,74 @@
 .seasonal-hero-gradient {
   background-size: 200% 200%;
   animation: hero-gradient-shift 8s ease infinite;
+}
+
+/* =============================================
+   THEME VIBE-SPECIFIC STYLES
+   ============================================= */
+
+/* Stadium vibe (World Cup) — adds subtle pitch lines */
+body[data-theme-vibe="stadium"] .product-grid-item {
+  position: relative;
+}
+body[data-theme-vibe="stadium"] .product-grid-item::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border: 1px solid var(--seasonal-border);
+  border-radius: 1rem;
+  pointer-events: none;
+}
+
+/* Festive vibe (Christmas) — warm overlay */
+body[data-theme-vibe="festive"] ::selection {
+  background-color: rgba(196,30,58,0.2);
+}
+
+/* Romantic vibe (Valentine's) — subtle rose tint */
+body[data-theme-vibe="romantic"] ::selection {
+  background-color: rgba(233,30,99,0.15);
+}
+
+/* Urgent vibe (Black Friday) — countdown pulse on price tags */
+body[data-theme-vibe="urgent"] .price-tag {
+  animation: urgent-pulse 2s ease-in-out infinite;
+}
+
+@keyframes urgent-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.85; }
+}
+
+/* Patriotic vibe (Madaraka) */
+body[data-theme-vibe="patriotic"] .seasonal-badge {
+  background: linear-gradient(135deg, #006600 50%, #cc0000 50%) !important;
+}
+
+/* Heroic vibe (Mashujaa) */
+body[data-theme-vibe="heroic"] .seasonal-badge {
+  box-shadow: 0 0 12px rgba(255,215,0,0.4);
+}
+
+/* Republic vibe (Jamhuri) */
+body[data-theme-vibe="republic"] .seasonal-badge {
+  border: 1px solid var(--seasonal-accent);
+}
+
+/* =============================================
+   THEME STICKER (decorative element on hero)
+   ============================================= */
+.theme-sticker {
+  display: inline-block;
+  font-size: 2.5rem;
+  line-height: 1;
+  animation: sticker-bounce 2s ease-in-out infinite;
+}
+
+@keyframes sticker-bounce {
+  0%, 100% { transform: translateY(0) rotate(0deg); }
+  25% { transform: translateY(-6px) rotate(-5deg); }
+  75% { transform: translateY(-3px) rotate(3deg); }
 }
 
 /* Bounce once animation for cart button */

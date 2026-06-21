@@ -80,6 +80,9 @@ function Home() {
   const particleType = theme?.particleType || 'none';
   const heroImages = theme?.heroImages || [];
   const hasHeroImages = heroImages.length > 0;
+  const sticker = theme?.sticker || '';
+  const socialBadge = theme?.socialBadge || '';
+  const vibe = theme?.vibe || 'default';
 
   return (
     <div data-name="home-page">
@@ -98,6 +101,13 @@ function Home() {
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,rgba(255,255,255,0.15),transparent_50%)]"></div>
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_bottom_left,rgba(0,0,0,0.1),transparent_50%)]"></div>
 
+        {/* Floating sticker decoration */}
+        {sticker && (
+          <div className="absolute top-8 right-8 md:top-16 md:right-16 opacity-20 select-none pointer-events-none">
+            <span className="text-8xl md:text-9xl">{sticker}</span>
+          </div>
+        )}
+
         {/* Hero Content */}
         <div className="relative z-10 py-20 md:py-28 px-4">
           <div className="max-w-7xl mx-auto text-center">
@@ -108,11 +118,19 @@ function Home() {
               {heroTitle}
             </h1>
             <p
-              className="mb-8 max-w-xl mx-auto text-lg font-medium drop-shadow-md"
+              className="mb-4 max-w-xl mx-auto text-lg font-medium drop-shadow-md"
               style={{ color: heroSubtext }}
             >
               {heroSubtitle}
             </p>
+
+            {/* Theme social proof badge */}
+            {socialBadge && (
+              <div className="mb-6 inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/15 backdrop-blur-sm border border-white/20 text-white text-sm font-bold">
+                <span>{sticker}</span>
+                <span>{socialBadge}</span>
+              </div>
+            )}
 
             <div className="flex flex-col sm:flex-row items-center justify-center gap-3 mb-8">
               <Link
@@ -172,7 +190,7 @@ function Home() {
           </video>
         </div>
         <p className="text-center text-sm text-zinc-500 dark:text-zinc-400 mt-3">
-          <Link to="/how-it-works" className="text-[#ff385c] font-bold hover:underline">{t('home.howItWorks')}</Link>
+          <Link to="/how-it-works" className="text-[var(--seasonal-primary,#ff385c)] font-bold hover:underline">{t('home.howItWorks')}</Link>
         </p>
       </div>
 
@@ -233,7 +251,12 @@ function Home() {
             <button
               onClick={loadMore}
               disabled={loadingMore}
-              className="px-8 py-3 bg-[#ff385c] text-white rounded-xl font-bold hover:bg-[#e03150] transition-all disabled:opacity-50 shadow-lg shadow-[#ff385c]/20"
+              className={`px-8 py-3 rounded-xl font-bold hover:opacity-90 transition-all disabled:opacity-50 shadow-lg`}
+              style={{
+                backgroundColor: 'var(--seasonal-primary, #ff385c)',
+                color: '#ffffff',
+                boxShadow: `0 4px 14px var(--seasonal-shadow, #ff385c)33`,
+              }}
             >
               {loadingMore ? (
                 <span className="flex items-center gap-2"><div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" /> Loading...</span>
@@ -248,7 +271,7 @@ function Home() {
         {!loading && listings.length === 0 && (
           <div className="text-center py-20">
             <p className="text-zinc-500 dark:text-zinc-400 mb-4 text-lg">{t('home.noListings')}</p>
-            <Link to="/" className="text-[#ff385c] font-bold text-lg hover:underline underline-offset-4 mb-8 block">
+            <Link to="/" className="text-[var(--seasonal-primary,#ff385c)] font-bold text-lg hover:underline underline-offset-4 mb-8 block">
               {t('home.browseListings') || 'Browse Products'}
             </Link>
             <NiaContextualTrigger page="emptyCart" />

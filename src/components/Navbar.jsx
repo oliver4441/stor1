@@ -29,6 +29,8 @@ function Navbar() {
   const badgeText = theme?.badgeText;
   const badgeBg = theme?.colors?.badgeBg || '#ff385c';
   const badgeTextColor = theme?.colors?.badgeText || '#ffffff';
+  const sticker = theme?.sticker || '';
+  const secondaryColor = theme?.colors?.secondary || '#e03150';
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
@@ -62,6 +64,7 @@ function Navbar() {
       <div className="max-w-7xl mx-auto px-4 h-16 flex items-center justify-between">
         {/* Logo */}
         <Link to="/" className="flex items-center gap-2 shrink-0">
+          {sticker && <span className="theme-sticker text-xl">{sticker}</span>}
           <span className="text-2xl font-bold tracking-tight" style={{ color: navAccentColor }}>
             Omix Store
           </span>
@@ -221,8 +224,9 @@ function Navbar() {
                     <LogIn className="w-5 h-5" />
                     Log In
                   </Link>
-                  <Link to="/signup" className="flex items-center gap-3 px-4 py-3 rounded-2xl text-sm font-bold bg-gradient-to-r from-[#ff385c] to-[#e03150] text-white mt-1">
-                    <UserPlus className="w-5 h-5" />
+                  <Link to="/signup" className="flex items-center gap-3 px-4 py-3 rounded-2xl text-sm font-bold text-white mt-1"
+                    style={{ background: `linear-gradient(135deg, ${navAccentColor}, ${secondaryColor})` }}>
+                    <UserPlus className="w-4 h-4" />
                     Sign Up
                   </Link>
                 </>

@@ -7,6 +7,7 @@ import { formatKES } from '../utils/constants';
 import { useCart } from '../context/CartContext';
 import { useAuth } from '../context/AuthContext';
 import { isMaintenanceCached } from '../hooks/useMaintenanceMode';
+import { useActiveTheme } from '../context/SeasonalContext';
 
 const COMPARE_KEY = 'omix_compare_ids';
 
@@ -31,6 +32,11 @@ function ProductCard({ listing, compareMode, onCompareChange }) {
   const hasImage = listing.images && listing.images.length > 0 && !imgError;
 
   const inCart = cart.find(item => item.id === listing.id);
+  const theme = useActiveTheme();
+  const priceColor = theme?.colors?.priceColor || '#ff385c';
+  const accentColor = theme?.colors?.accent || '#ff385c';
+  const sticker = theme?.sticker || '';
+  const socialBadge = theme?.socialBadge || '';
 
   // Check if this item is selected for comparison
   const [isCompared, setIsCompared] = useState(() => getCompareIds().includes(listing.id));
@@ -124,6 +130,14 @@ function ProductCard({ listing, compareMode, onCompareChange }) {
           </div>
         )}
 
+        {/* Seasonal theme sticker badge */}
+        {sticker && socialBadge && (
+          <div className="absolute bottom-2 left-2 bg-white/90 dark:bg-black/80 text-zinc-900 dark:text-white px-2 py-1 rounded-lg text-[10px] font-bold shadow-sm flex items-center gap-1">
+            <span>{sticker}</span>
+            <span className="truncate max-w-[80px]">{socialBadge}</span>
+          </div>
+        )}
+
         {/* Condition badge */}
         <div className="absolute top-2 left-2 bg-white/90 dark:bg-black/90 text-zinc-900 dark:text-white px-2 py-1 rounded-lg text-[10px] font-bold shadow-sm capitalize">
           {listing.condition?.replace('_', ' ')}
@@ -210,7 +224,7 @@ function ProductCard({ listing, compareMode, onCompareChange }) {
         <p className="text-zinc-500 dark:text-zinc-400 text-xs">{listing.category}{listing.brand ? ` - ${listing.brand}` : ''}</p>
         <div className="flex items-center justify-between mt-1">
           <div className="flex items-center gap-2">
-            <p className="font-bold text-[#ff385c] text-sm">
+            <p className="font-bold text-sm" style={{ color: priceColor }}>
               {listing.flash_sale_price ? formatKES(listing.flash_sale_price) : formatKES(listing.price)}
             </p>
             {(listing.compare_at_price && listing.compare_at_price > listing.price) || listing.flash_sale_price ? (
