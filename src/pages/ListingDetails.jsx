@@ -26,6 +26,9 @@ function ListingDetails() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [quantity, setQuantity] = useState(1);
+  const [selectedVariant, setSelectedVariant] = useState(null);
+  const [selectedColor, setSelectedColor] = useState(null);
+  const [selectedSize, setSelectedSize] = useState(null);
   const [user, setUser] = useState(null);
   const { addItem, cart } = useCart();
   const [notifyMsg, setNotifyMsg] = useState('');
@@ -148,6 +151,24 @@ function ListingDetails() {
     ...(listing.model ? [{ icon: Cpu, label: 'Model', value: listing.model }] : []),
   ].slice(0, 6);
 
+  // Variant helpers
+  const hasVariants = listing.has_variants && listing.variants?.length > 0;
+  const variantColors = hasVariants ? (() => {
+    const seen = new Set();
+    return listing.variants
+      .filter(v => v.color && !seen.has(v.color) && seen.add(v.color))
+      .map(v => ({ hex: v.color, name: v.colorName || v.color }));
+  })() : [];
+  const variantSizes = hasVariants ? [...new Set(listing.variants.map(v => v.size).filter(Boolean))] : [];
+  const selectedVariantObj = hasVariants && selectedColor && selectedSize
+    ? listing.variants.find(v => v.color === selectedColor && v.size === selectedSize)
+    : null;
+  const effectivePrice = selectedVariantObj
+    ? (listing.price || 0) + (selectedVariantObj.priceAdjustment || 0)
+    : listing.price;
+  const effectiveStock = selectedVariantObj?.quantity || listing.quantity;
+  const isOutOfStock = hasVariants && selectedVariantObj && selectedVariantObj.quantity <= 0;
+
   return (
     <div className="max-w-7xl mx-auto px-4 py-8 w-full" data-name="listing-details">
       <Breadcrumb customLabel={listing.title} />
@@ -160,7 +181,14 @@ function ListingDetails() {
           <div className="mb-4">
             <h1 className="text-2xl md:text-3xl font-bold mb-2 text-zinc-900 dark:text-white leading-tight">{listing.title}</h1>
             <div className="flex items-center gap-3 flex-wrap">
-              <p className="text-3xl font-black text-[var(--seasonal-primary,#ff385c)]">{formatKES(listing.price)}</p>
+              <p className="text-3xl font-black text-[var(--seasonal-primary,#ff385c)]">
+                {hasVariants && selectedVariantObj && selectedVariantObj.priceAdjustment !== 0
+                  ? formatKES(effectivePrice)
+                  : formatKES(listing.price)}
+              </p>
+              {hasVariants && selectedVariantObj && selectedVariantObj.priceAdjustment !== 0 && (
+                <p className="text-sm text-zinc-400 line-through">{formatKES(listing.price)}</p>
+              )}
               {listing.compare_at_price && listing.compare_at_price > listing.price && (
                 <>
                   <p className="text-lg font-bold text-zinc-400 line-through">{formatKES(listing.compare_at_price)}</p>
@@ -277,6 +305,102 @@ function ListingDetails() {
             <NiaContextualTrigger page="listing" />
           </div>
 
+          {/* Variant Selectors (Color + Size) */}
+          {hasVariants && (
+            <div className="mb-6 space-y-4">
+              {/* Color Selector */}
+              {variantColors.length > 0 && (
+                <div>
+                  <label className="text-xs font-bold text-zinc-500 dark:text-zinc-400 uppercase tracking-wider mb-2 block">
+                    Color {selectedColor && <span className="text-zinc-700 dark:text-zinc-300 normal-case">— {variantColors.find(c => c.hex === selectedColor)?.name}</span>}
+                  </label>
+                  <div className="flex flex-wrap gap-2">
+                    {variantColors.map(c => {
+                      const isSelected = selectedColor === c.hex;
+                      const colorStock = listing.variants.filter(v => v.color === c.hex).reduce((s, v) => s + (v.quantity || 0), 0);
+                      const disabled = colorStock <= 0;
+                      return (
+                        <button
+                          key={c.hex}
+                          type="button"
+                          disabled={disabled}
+                          onClick={() => { setSelectedColor(c.hex); setSelectedVariant(null); }}
+                          className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl border-2 text-xs font-bold transition-all ${
+                            isSelected
+                              ? 'border-[var(--seasonal-primary,#ff385c)] bg-[var(--seasonal-primary,#ff385c)]/5'
+                              : disabled
+                                ? 'border-zinc-200 dark:border-zinc-700 opacity-40 cursor-not-allowed'
+                                : 'border-zinc-200 dark:border-zinc-700 hover:border-[var(--seasonal-primary,#ff385c)]'
+                          }`}
+                        >
+                          <div className="w-4 h-4 rounded-full border border-zinc-300 dark:border-zinc-600 flex-shrink-0" style={{ backgroundColor: c.hex.startsWith('#') ? c.hex : '#ccc' }} />
+                          <span className="text-zinc-700 dark:text-zinc-300">{c.name}</span>
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
+              )}
+
+              {/* Size Selector */}
+              {variantSizes.length > 0 && (
+                <div>
+                  <div className="flex items-center justify-between mb-2">
+                    <label className="text-xs font-bold text-zinc-500 dark:text-zinc-400 uppercase tracking-wider">
+                      Size {selectedSize && <span className="text-zinc-700 dark:text-zinc-300 normal-case">— {selectedSize}</span>}
+                    </label>
+                    {listing.size_guide && (
+                      <button type="button" className="text-[10px] text-[var(--seasonal-primary,#ff385c)] font-bold hover:underline">
+                        Size Guide
+                      </button>
+                    )}
+                  </div>
+                  <div className="flex flex-wrap gap-1.5">
+                    {variantSizes.map(size => {
+                      const isSelected = selectedSize === size;
+                      const sizeStock = listing.variants.filter(v => v.size === size && (!selectedColor || v.color === selectedColor)).reduce((s, v) => s + (v.quantity || 0), 0);
+                      const disabled = sizeStock <= 0;
+                      return (
+                        <button
+                          key={size}
+                          type="button"
+                          disabled={disabled}
+                          onClick={() => { setSelectedSize(size); setSelectedVariant(null); }}
+                          className={`min-w-[36px] px-2.5 py-1.5 rounded-xl border-2 text-xs font-bold text-center transition-all ${
+                            isSelected
+                              ? 'border-[var(--seasonal-primary,#ff385c)] bg-[var(--seasonal-primary,#ff385c)] text-white'
+                              : disabled
+                                ? 'border-zinc-200 dark:border-zinc-700 opacity-40 cursor-not-allowed line-through'
+                                : 'border-zinc-200 dark:border-zinc-700 text-zinc-700 dark:text-zinc-300 hover:border-[var(--seasonal-primary,#ff385c)]'
+                          }`}
+                        >
+                          {size}
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
+              )}
+
+              {/* Selected variant info */}
+              {selectedVariantObj && (
+                <div className="flex items-center gap-3 text-xs">
+                  {selectedVariantObj.quantity > 0 && selectedVariantObj.quantity <= 3 && (
+                    <span className="text-amber-600 dark:text-amber-400 font-bold">Only {selectedVariantObj.quantity} left!</span>
+                  )}
+                  {selectedVariantObj.quantity <= 0 && (
+                    <span className="text-red-500 font-bold">Out of stock</span>
+                  )}
+                  {selectedVariantObj.priceAdjustment !== 0 && (
+                    <span className="text-zinc-500">
+                      {selectedVariantObj.priceAdjustment > 0 ? '+' : ''}{formatKES(selectedVariantObj.priceAdjustment)} from base
+                    </span>
+                  )}
+                </div>
+              )}
+            </div>
+          )}
+
           {/* Cart Section */}
           <div className="space-y-3">
             {inCart && user && (
@@ -297,13 +421,42 @@ function ListingDetails() {
             </div>
             {user ? (
               <>
-                <button onClick={() => addItem({ id: listing.id, name: listing.title, price: listing.price, image_url: listing.images?.[0] || null, quantity })}
+                <button onClick={() => addItem({
+                  id: listing.id,
+                  name: listing.title,
+                  price: effectivePrice,
+                  image_url: listing.images?.[0] || null,
+                  quantity,
+                  variant: selectedVariantObj ? {
+                    id: selectedVariantObj.id,
+                    size: selectedVariantObj.size,
+                    color: selectedVariantObj.color,
+                    colorName: selectedVariantObj.colorName,
+                    sku: selectedVariantObj.sku,
+                  } : null,
+                })}
                   className="w-full flex items-center justify-center gap-2 bg-[var(--seasonal-primary,#ff385c)] text-white font-black py-4 rounded-2xl hover:bg-[var(--seasonal-secondary,#e03150)] transition-all shadow-lg shadow-[var(--seasonal-primary,#ff385c)]/20 text-lg">
-                  <ShoppingCart className="w-5 h-5" /> {inCart ? t('cart.title') : t('productCard.addToCart')} &mdash; {formatKES(listing.price * quantity)}
+                  <ShoppingCart className="w-5 h-5" /> {inCart ? t('cart.title') : t('productCard.addToCart')} &mdash; {formatKES(effectivePrice * quantity)}
                 </button>
-                <button onClick={() => { addItem({ id: listing.id, name: listing.title, price: listing.price, image_url: listing.images?.[0] || null, quantity }); navigate('/checkout'); }}
+                <button onClick={() => {
+                  addItem({
+                    id: listing.id,
+                    name: listing.title,
+                    price: effectivePrice,
+                    image_url: listing.images?.[0] || null,
+                    quantity,
+                    variant: selectedVariantObj ? {
+                      id: selectedVariantObj.id,
+                      size: selectedVariantObj.size,
+                      color: selectedVariantObj.color,
+                      colorName: selectedVariantObj.colorName,
+                      sku: selectedVariantObj.sku,
+                    } : null,
+                  });
+                  navigate('/checkout');
+                }}
                   className="w-full flex items-center justify-center gap-2 bg-zinc-900 dark:bg-white text-white dark:text-zinc-900 font-bold py-4 rounded-2xl hover:opacity-90 transition-all">
-                  {t('listing.buyNow')} &mdash; {formatKES(listing.price * quantity)}
+                  {t('listing.buyNow')} &mdash; {formatKES(effectivePrice * quantity)}
                 </button>
               </>
             ) : (

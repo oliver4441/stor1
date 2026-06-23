@@ -222,10 +222,62 @@ function ProductCard({ listing, compareMode, onCompareChange }) {
           <ProductSocialBadge listing={listing} />
         </div>
         <p className="text-zinc-500 dark:text-zinc-400 text-xs">{listing.category}{listing.brand ? ` - ${listing.brand}` : ''}</p>
+
+        {/* Color swatches */}
+        {listing.has_variants && listing.variants?.length > 0 && (() => {
+          const uniqueColors = [];
+          const seen = new Set();
+          listing.variants.forEach(v => {
+            if (v.color && !seen.has(v.color)) {
+              seen.add(v.color);
+              uniqueColors.push({ hex: v.color, name: v.colorName || v.color });
+            }
+          });
+          if (uniqueColors.length <= 1) return null;
+          return (
+            <div className="flex items-center gap-1 mt-1.5">
+              {uniqueColors.slice(0, 5).map((c, i) => (
+                <div
+                  key={i}
+                  className="w-3.5 h-3.5 rounded-full border border-zinc-300 dark:border-zinc-600 flex-shrink-0"
+                  style={{ backgroundColor: c.hex.startsWith('#') ? c.hex : '#ccc' }}
+                  title={c.name}
+                />
+              ))}
+              {uniqueColors.length > 5 && (
+                <span className="text-[9px] text-zinc-400 font-medium">+{uniqueColors.length - 5}</span>
+              )}
+            </div>
+          );
+        })()}
+
+        {/* Size chips (show first few) */}
+        {listing.has_variants && listing.variants?.length > 0 && (() => {
+          const uniqueSizes = [...new Set(listing.variants.map(v => v.size).filter(Boolean))];
+          if (uniqueSizes.length <= 1) return null;
+          return (
+            <div className="flex items-center gap-1 mt-1 flex-wrap">
+              {uniqueSizes.slice(0, 4).map((s, i) => (
+                <span key={i} className="text-[9px] font-bold text-zinc-500 dark:text-zinc-400 bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">
+                  {s}
+                </span>
+              ))}
+              {uniqueSizes.length > 4 && (
+                <span className="text-[9px] text-zinc-400">+{uniqueSizes.length - 4} more</span>
+              )}
+            </div>
+          );
+        })()}
+
         <div className="flex items-center justify-between mt-1">
           <div className="flex items-center gap-2">
             <p className="font-bold text-sm" style={{ color: priceColor }}>
-              {listing.flash_sale_price ? formatKES(listing.flash_sale_price) : formatKES(listing.price)}
+              {listing.has_variants && listing.variants?.length > 0 ? (() => {
+                const prices = listing.variants.map(v => (listing.price || 0) + (v.priceAdjustment || 0));
+                const min = Math.min(...prices);
+                const max = Math.max(...prices);
+                return min === max ? formatKES(min) : `${formatKES(min)} – ${formatKES(max)}`;
+              })() : (listing.flash_sale_price ? formatKES(listing.flash_sale_price) : formatKES(listing.price))}
             </p>
             {(listing.compare_at_price && listing.compare_at_price > listing.price) || listing.flash_sale_price ? (
               <p className="text-xs text-zinc-400 line-through">{formatKES(listing.compare_at_price || listing.price)}</p>

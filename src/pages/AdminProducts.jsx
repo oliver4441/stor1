@@ -2,8 +2,9 @@ import { useState, useEffect, useCallback, useRef } from 'react';
 import { Plus, Pencil, Trash2, X, AlertTriangle, Loader2, Upload, Image as ImageIcon, Search, Eye, CheckSquare, Square, Tag, GripVertical, Star } from 'lucide-react';
 import { supabase } from '../utils/supabase';
 import { fetchAllListings, createListing, updateListing, deleteListing, adminDeleteListing, bulkUpdateListingStatus, bulkDeleteListings } from '../utils/api';
-import { formatKES, CATEGORIES, generateSKU } from '../utils/constants';
+import { formatKES, CATEGORIES, generateSKU, COLOR_PALETTE, SIZE_PRESETS, getPresetSizes } from '../utils/constants';
 import { uploadImage } from '../utils/api';
+import VariantManager from '../components/VariantManager';
 
 const CONDITIONS = ['New', 'Like New', 'Good', 'Fair', 'For Parts'];
 const MAX_IMAGES = 5;
@@ -24,7 +25,8 @@ export default function AdminProducts() {
   const [editingId, setEditingId] = useState(null);
   const [form, setForm] = useState({
     title: '', price: '', description: '', category: 'Electronics', condition: 'New', location: 'CBD',
-    images: [], brand: '', model: '', color: '', weight: '', sku: '', status: 'active', tags: ''
+    images: [], brand: '', model: '', color: '', weight: '', sku: '', status: 'active', tags: '',
+    has_variants: false, variants: [], size_guide: '',
   });
   const [submitting, setSubmitting] = useState(false);
   const [successMsg, setSuccessMsg] = useState('');
@@ -129,7 +131,8 @@ export default function AdminProducts() {
     setForm({
       title: '', price: '', description: '', category: cat, condition: 'New', location: 'CBD',
       images: [], brand: '', model: '', color: '', weight: '',
-      sku: generateSKU(cat), status: 'active', tags: ''
+      sku: generateSKU(cat), status: 'active', tags: '',
+      has_variants: false, variants: [], size_guide: '',
     });
     setModalOpen(true);
   };
@@ -142,7 +145,10 @@ export default function AdminProducts() {
       location: listing.location_city || 'CBD', images: listing.images || [],
       brand: listing.brand || '', model: listing.model || '',
       color: listing.color || '', weight: listing.weight || '', sku: listing.sku || '',
-      status: listing.status || 'active', tags: listing.tags || ''
+      status: listing.status || 'active', tags: listing.tags || '',
+      has_variants: listing.has_variants || false,
+      variants: listing.variants || [],
+      size_guide: listing.size_guide || '',
     });
     setModalOpen(true);
   };
@@ -199,6 +205,9 @@ export default function AdminProducts() {
       images: form.images, brand: form.brand,
       model: form.model, color: form.color, weight: form.weight, sku: form.sku,
       status: form.status, tags: form.tags,
+      has_variants: form.has_variants,
+      variants: form.variants,
+      size_guide: form.size_guide,
     };
     const result = editingId ? await updateListing(editingId, payload) : await createListing(payload);
     if (result.success) {
@@ -577,6 +586,22 @@ export default function AdminProducts() {
                   <label className="block text-sm font-bold mb-1.5 text-zinc-700 dark:text-zinc-300">Tags</label>
                   <input value={form.tags} onChange={e => setForm({...form, tags: e.target.value})} placeholder="e.g. iphone, apple, phone" className="w-full px-4 py-2.5 rounded-xl bg-zinc-100 dark:bg-zinc-800 border border-transparent focus:border-[#ff385c] focus:outline-none text-zinc-900 dark:text-white text-sm" />
                 </div>
+              </div>
+
+              {/* Variant Manager — size/color variants for clothing, shoes, etc. */}
+              <VariantManager
+                category={form.category}
+                basePrice={form.price}
+                baseSku={form.sku}
+                value={form.variants}
+                onChange={(variants) => setForm(prev => ({ ...prev, has_variants: variants.length > 0, variants }))}
+                images={form.images}
+              />
+
+              {/* Size Guide */}
+              <div>
+                <label className="block text-sm font-bold mb-1.5 text-zinc-700 dark:text-zinc-300">Size Guide <span className="font-normal text-zinc-400">(optional)</span></label>
+                <textarea rows="2" value={form.size_guide} onChange={e => setForm({...form, size_guide: e.target.value})} placeholder={'e.g. M: Chest 38-40 inch, Length 27-29 inch. Or paste a link to size chart.'} className="w-full px-4 py-2.5 rounded-xl bg-zinc-100 dark:bg-zinc-800 border border-transparent focus:border-[#ff385c] focus:outline-none text-zinc-900 dark:text-white text-sm resize-none" />
               </div>
 
               <div>

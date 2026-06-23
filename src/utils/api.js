@@ -290,6 +290,9 @@ export async function createListing(formData) {
       color: formData.color || null,
       weight: formData.weight || null,
       sku: formData.sku || null,
+      has_variants: formData.has_variants || false,
+      variants: formData.variants || [],
+      size_guide: formData.size_guide || null,
     })
     .select('id')
     .single()
@@ -337,6 +340,9 @@ export async function updateListing(id, formData) {
       color: formData.color || null,
       weight: formData.weight || null,
       sku: formData.sku || null,
+      has_variants: formData.has_variants || false,
+      variants: formData.variants || [],
+      size_guide: formData.size_guide || null,
     })
     .eq('id', id)
     .select('id')
