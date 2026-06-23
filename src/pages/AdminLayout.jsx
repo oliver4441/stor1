@@ -4,7 +4,7 @@ import { supabase } from '../utils/supabase';
 import { isAdmin, clearAdminCache } from '../utils/api';
 import {
   LayoutDashboard, Package, ShoppingBag, Users, BarChart3, Settings,
-  LogOut, Shield, Menu, X, ChevronRight, Tag
+  LogOut, Shield, Menu, X, ChevronRight, Tag, Bell
 } from 'lucide-react';
 import { useState, useEffect } from 'react';
 
@@ -16,6 +16,7 @@ const NAV_ITEMS = [
   { path: '/admin/customers', label: 'Customers', icon: Users },
   { path: '/admin/analytics', label: 'Analytics', icon: BarChart3 },
   { path: '/admin/settings', label: 'Settings', icon: Settings },
+  { path: '/admin/notifications', label: 'Notifications', icon: Bell },
 ];
 
 export default function AdminLayout() {

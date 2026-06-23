@@ -45,6 +45,7 @@ import AdminCustomers from './pages/AdminCustomers';
 import AdminAnalytics from './pages/AdminAnalytics';
 import AdminPromoCodes from './pages/AdminPromoCodes';
 import AdminSettings from './pages/AdminSettings';
+import AdminNotifications from './pages/AdminNotifications';
 
 function App() {
   return (
@@ -85,6 +86,7 @@ function App() {
               <Route path="analytics" element={<AdminAnalytics />} />
               <Route path="promo-codes" element={<AdminPromoCodes />} />
               <Route path="settings" element={<AdminSettings />} />
+              <Route path="notifications" element={<AdminNotifications />} />
             </Route>
           </Routes>
         </main>
