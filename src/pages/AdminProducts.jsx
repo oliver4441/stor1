@@ -147,7 +147,7 @@ export default function AdminProducts() {
       color: listing.color || '', weight: listing.weight || '', sku: listing.sku || '',
       status: listing.status || 'active', tags: listing.tags || '',
       has_variants: listing.has_variants || false,
-      variants: listing.variants || [],
+      variants: Array.isArray(listing.variants) ? listing.variants : [],
       size_guide: listing.size_guide || '',
     });
     setModalOpen(true);
@@ -200,7 +200,7 @@ export default function AdminProducts() {
     e.preventDefault();
     setSubmitting(true);
     const payload = {
-      title: form.title, description: form.description, price: form.price,
+      title: form.title, description: form.description, price: parseFloat(form.price) || 0,
       category: form.category, condition: form.condition, location: form.location,
       images: form.images, brand: form.brand,
       model: form.model, color: form.color, weight: form.weight, sku: form.sku,

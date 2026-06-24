@@ -7,7 +7,7 @@ import { formatKES } from '../utils/constants';
  * Only visible on small screens (hidden on md+).
  * Slides up when user scrolls down past the main CTA.
  */
-export default function StickyMobileCart({ listing, quantity, onAddToCart, onBuyNow, inCart, user }) {
+export default function StickyMobileCart({ listing, quantity, effectivePrice, selectedVariant, onAddToCart, onBuyNow, inCart, user }) {
   if (!listing) return null;
 
   return (
@@ -16,7 +16,7 @@ export default function StickyMobileCart({ listing, quantity, onAddToCart, onBuy
         {/* Price */}
         <div className="flex-shrink-0">
           <p className="text-xs text-zinc-500 dark:text-zinc-400 leading-none">Price</p>
-          <p className="text-lg font-black text-[var(--seasonal-primary,#ff385c)] leading-tight">{formatKES(listing.price * quantity)}</p>
+          <p className="text-lg font-black text-[var(--seasonal-primary,#ff385c)] leading-tight">{formatKES((effectivePrice || listing.price) * quantity)}</p>
         </div>
 
         {/* Buttons */}

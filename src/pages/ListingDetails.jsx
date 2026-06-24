@@ -160,9 +160,11 @@ function ListingDetails() {
       .map(v => ({ hex: v.color, name: v.colorName || v.color }));
   })() : [];
   const variantSizes = hasVariants ? [...new Set(listing.variants.map(v => v.size).filter(Boolean))] : [];
-  const selectedVariantObj = hasVariants && selectedColor && selectedSize
-    ? listing.variants.find(v => v.color === selectedColor && v.size === selectedSize)
-    : null;
+  const selectedVariantObj = hasVariants
+    ? listing.variants.find(v =>
+        (!variantColors.length || !selectedColor || v.color === selectedColor) &&
+        (!variantSizes.length || !selectedSize || v.size === selectedSize)
+      ) : null;
   const effectivePrice = selectedVariantObj
     ? (listing.price || 0) + (selectedVariantObj.priceAdjustment || 0)
     : listing.price;
@@ -310,7 +312,7 @@ function ListingDetails() {
             <div className="mb-6 space-y-4">
               {/* Color Selector */}
               {variantColors.length > 0 && (
-                <div>
+                <div id="variant-color-section">
                   <label className="text-xs font-bold text-zinc-500 dark:text-zinc-400 uppercase tracking-wider mb-2 block">
                     Color {selectedColor && <span className="text-zinc-700 dark:text-zinc-300 normal-case">— {variantColors.find(c => c.hex === selectedColor)?.name}</span>}
                   </label>
@@ -333,7 +335,7 @@ function ListingDetails() {
                                 : 'border-zinc-200 dark:border-zinc-700 hover:border-[var(--seasonal-primary,#ff385c)]'
                           }`}
                         >
-                          <div className="w-4 h-4 rounded-full border border-zinc-300 dark:border-zinc-600 flex-shrink-0" style={{ backgroundColor: c.hex.startsWith('#') ? c.hex : '#ccc' }} />
+                          <div className="w-4 h-4 rounded-full border border-zinc-300 dark:border-zinc-600 flex-shrink-0" style={{ backgroundColor: c.hex?.startsWith('#') ? c.hex : '#ccc' }} />
                           <span className="text-zinc-700 dark:text-zinc-300">{c.name}</span>
                         </button>
                       );
@@ -344,7 +346,7 @@ function ListingDetails() {
 
               {/* Size Selector */}
               {variantSizes.length > 0 && (
-                <div>
+                <div id="variant-size-section">
                   <div className="flex items-center justify-between mb-2">
                     <label className="text-xs font-bold text-zinc-500 dark:text-zinc-400 uppercase tracking-wider">
                       Size {selectedSize && <span className="text-zinc-700 dark:text-zinc-300 normal-case">— {selectedSize}</span>}
@@ -358,7 +360,7 @@ function ListingDetails() {
                   <div className="flex flex-wrap gap-1.5">
                     {variantSizes.map(size => {
                       const isSelected = selectedSize === size;
-                      const sizeStock = listing.variants.filter(v => v.size === size && (!selectedColor || v.color === selectedColor)).reduce((s, v) => s + (v.quantity || 0), 0);
+                      const sizeStock = listing.variants.filter(v => v.size === size && (!selectedColor || !v.color || v.color === selectedColor)).reduce((s, v) => s + (v.quantity || 0), 0);
                       const disabled = sizeStock <= 0;
                       return (
                         <button
@@ -421,22 +423,34 @@ function ListingDetails() {
             </div>
             {user ? (
               <>
-                <button onClick={() => addItem({
-                  id: listing.id,
-                  name: listing.title,
-                  price: effectivePrice,
-                  image_url: listing.images?.[0] || null,
-                  quantity,
-                  variant: selectedVariantObj ? {
-                    id: selectedVariantObj.id,
-                    size: selectedVariantObj.size,
-                    color: selectedVariantObj.color,
-                    colorName: selectedVariantObj.colorName,
-                    sku: selectedVariantObj.sku,
-                  } : null,
-                })}
-                  className="w-full flex items-center justify-center gap-2 bg-[var(--seasonal-primary,#ff385c)] text-white font-black py-4 rounded-2xl hover:bg-[var(--seasonal-secondary,#e03150)] transition-all shadow-lg shadow-[var(--seasonal-primary,#ff385c)]/20 text-lg">
-                  <ShoppingCart className="w-5 h-5" /> {inCart ? t('cart.title') : t('productCard.addToCart')} &mdash; {formatKES(effectivePrice * quantity)}
+                <button
+                  onClick={() => {
+                    if (hasVariants && variantColors.length > 0 && !selectedColor) {
+                      document.getElementById('variant-color-section')?.scrollIntoView({ behavior: 'smooth' });
+                      return;
+                    }
+                    if (hasVariants && variantSizes.length > 0 && !selectedSize) {
+                      document.getElementById('variant-size-section')?.scrollIntoView({ behavior: 'smooth' });
+                      return;
+                    }
+                    addItem({
+                      id: listing.id,
+                      name: listing.title,
+                      price: effectivePrice,
+                      image_url: listing.images?.[0] || null,
+                      quantity,
+                      variant: selectedVariantObj ? {
+                        id: selectedVariantObj.id,
+                        size: selectedVariantObj.size,
+                        color: selectedVariantObj.color,
+                        colorName: selectedVariantObj.colorName,
+                        sku: selectedVariantObj.sku,
+                      } : null,
+                    });
+                  }}
+                  className="w-full flex items-center justify-center gap-2 bg-[var(--seasonal-primary,#ff385c)] text-white font-black py-4 rounded-2xl hover:bg-[var(--seasonal-secondary,#e03150)] transition-all shadow-lg shadow-[var(--seasonal-primary,#ff385c)]/20 text-lg"
+                >
+                  <ShoppingCart className="w-5 h-5" /> {inCart ? t('cart.title') : t('productCard.addToCart')} — {formatKES(effectivePrice * quantity)}
                 </button>
                 <button onClick={() => {
                   addItem({
@@ -534,8 +548,10 @@ function ListingDetails() {
       <StickyMobileCart
         listing={listing}
         quantity={quantity}
-        onAddToCart={() => addItem({ id: listing.id, name: listing.title, price: listing.price, image_url: listing.images?.[0] || null, quantity })}
-        onBuyNow={() => { addItem({ id: listing.id, name: listing.title, price: listing.price, image_url: listing.images?.[0] || null, quantity }); navigate('/checkout'); }}
+        effectivePrice={effectivePrice}
+        selectedVariant={selectedVariantObj}
+        onAddToCart={() => addItem({ id: listing.id, name: listing.title, price: effectivePrice, image_url: listing.images?.[0] || null, quantity, variant: selectedVariantObj || null })}
+        onBuyNow={() => { addItem({ id: listing.id, name: listing.title, price: effectivePrice, image_url: listing.images?.[0] || null, quantity, variant: selectedVariantObj || null }); navigate('/checkout'); }}
         inCart={inCart}
         user={user}
       />

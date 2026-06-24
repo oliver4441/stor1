@@ -240,7 +240,7 @@ function ProductCard({ listing, compareMode, onCompareChange }) {
                 <div
                   key={i}
                   className="w-3.5 h-3.5 rounded-full border border-zinc-300 dark:border-zinc-600 flex-shrink-0"
-                  style={{ backgroundColor: c.hex.startsWith('#') ? c.hex : '#ccc' }}
+                  style={{ backgroundColor: c.hex?.startsWith('#') ? c.hex : '#ccc' }}
                   title={c.name}
                 />
               ))}
@@ -274,8 +274,10 @@ function ProductCard({ listing, compareMode, onCompareChange }) {
             <p className="font-bold text-sm" style={{ color: priceColor }}>
               {listing.has_variants && listing.variants?.length > 0 ? (() => {
                 const prices = listing.variants.map(v => (listing.price || 0) + (v.priceAdjustment || 0));
+                if (prices.length === 0) return formatKES(listing.price || 0);
                 const min = Math.min(...prices);
                 const max = Math.max(...prices);
+                if (!isFinite(min) || !isFinite(max)) return formatKES(listing.price || 0);
                 return min === max ? formatKES(min) : `${formatKES(min)} – ${formatKES(max)}`;
               })() : (listing.flash_sale_price ? formatKES(listing.flash_sale_price) : formatKES(listing.price))}
             </p>

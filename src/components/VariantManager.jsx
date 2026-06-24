@@ -56,7 +56,7 @@ export default function VariantManager({ category, basePrice, baseSku, value = [
             size,
             color: color.hex,
             colorName: color.name,
-            sku: baseSku ? `${baseSku}-${size}-${color.name.replace(/\s/g, '').toUpperCase().slice(0, 4)}` : generateSKU(category),
+            sku: baseSku ? `${baseSku}-${size}-${color.name.replace(/\s/g, '').toUpperCase()}` : generateSKU(category),
             quantity: 0,
             priceAdjustment: 0,
             imageUrl: '',
@@ -310,7 +310,7 @@ export default function VariantManager({ category, basePrice, baseSku, value = [
                             <td className="py-1.5 px-2 font-bold text-zinc-900 dark:text-white">{v.size}</td>
                             <td className="py-1.5 px-2">
                               <div className="flex items-center gap-1.5">
-                                <div className="w-4 h-4 rounded border border-zinc-200 dark:border-zinc-600 flex-shrink-0" style={{ backgroundColor: v.color.startsWith('#') ? v.color : '#ccc' }} />
+                                <div className="w-4 h-4 rounded border border-zinc-200 dark:border-zinc-600 flex-shrink-0" style={{ backgroundColor: v.color?.startsWith('#') ? v.color : '#ccc' }} />
                                 <span className="text-zinc-600 dark:text-zinc-400">{v.colorName}</span>
                               </div>
                             </td>
@@ -356,6 +356,3 @@ export default function VariantManager({ category, basePrice, baseSku, value = [
   );
 }
 
-function formatKES(amount) {
-  return new Intl.NumberFormat('en-KE', { style: 'currency', currency: 'KES', maximumFractionDigits: 0 }).format(amount);
-}
