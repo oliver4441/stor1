@@ -1047,3 +1047,119 @@ export async function deleteSavedSearch(id) {
     return { success: false, error: err.message };
   }
 }
+
+// ── Profile Management ─────────────────────────────────────────────────
+
+export async function getProfile(userId) {
+  try {
+    const { data, error } = await supabase
+      .from('profiles')
+      .select('*')
+      .eq('id', userId)
+      .single();
+    if (error) throw error;
+    return data;
+  } catch (err) {
+    console.error('getProfile error:', err);
+    return null;
+  }
+}
+
+export async function updateProfile(userId, updates) {
+  try {
+    const allowed = {};
+    if (updates.full_name !== undefined) allowed.full_name = updates.full_name;
+    if (updates.phone !== undefined) allowed.phone = updates.phone;
+    if (updates.avatar_url !== undefined) allowed.avatar_url = updates.avatar_url;
+
+    const { data, error } = await supabase
+      .from('profiles')
+      .update(allowed)
+      .eq('id', userId)
+      .select()
+      .single();
+
+    if (error) throw error;
+    return { success: true, profile: data };
+  } catch (err) {
+    return { success: false, error: err.message };
+  }
+}
+
+export async function uploadAvatar(file, userId) {
+  try {
+    const allowedTypes = ['image/jpeg', 'image/png', 'image/webp'];
+    if (!allowedTypes.includes(file.type)) {
+      return { success: false, error: 'Please upload a JPG, PNG, or WebP image.' };
+    }
+    if (file.size > 2 * 1024 * 1024) {
+      return { success: false, error: 'Image must be under 2MB.' };
+    }
+
+    // Compress to 400x400 max
+    const compressed = await compressImage(file, 400, 0.8);
+
+    const fileName = `avatar_${userId}_${Date.now()}.jpg`;
+    const filePath = `${userId}/${fileName}`;
+
+    const { error: uploadError } = await supabase.storage
+      .from('profile-pictures')
+      .upload(filePath, compressed, {
+        upsert: true,
+        contentType: 'image/jpeg',
+      });
+
+    if (uploadError) throw new Error(uploadError.message);
+
+    const { data: { publicUrl } } = supabase.storage
+      .from('profile-pictures')
+      .getPublicUrl(filePath);
+
+    const { error: updateError } = await supabase
+      .from('profiles')
+      .update({ avatar_url: publicUrl })
+      .eq('id', userId);
+
+    if (updateError) throw new Error(updateError.message);
+
+    return { success: true, url: publicUrl };
+  } catch (err) {
+    return { success: false, error: err.message };
+  }
+}
+
+// ── Enhanced Order Cancellation ───────────────────────────────────────
+
+export async function cancelOrderWithReason(orderId, reason) {
+  try {
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) return { success: false, error: 'Authentication required' };
+
+    const { data: order } = await supabase
+      .from('omix_orders')
+      .select('status, user_id')
+      .eq('id', orderId)
+      .single();
+
+    if (!order) return { success: false, error: 'Order not found' };
+    if (order.user_id !== user.id) return { success: false, error: 'You can only cancel your own orders' };
+
+    if (!['pending', 'processing'].includes(order.status)) {
+      return { success: false, error: `Order cannot be cancelled because it is already "${order.status}".` };
+    }
+
+    const { error } = await supabase
+      .from('omix_orders')
+      .update({
+        status: 'cancelled',
+        cancelled_at: new Date().toISOString(),
+        cancellation_reason: reason || null,
+      })
+      .eq('id', orderId);
+
+    if (error) throw error;
+    return { success: true };
+  } catch (err) {
+    return { success: false, error: err.message };
+  }
+}
