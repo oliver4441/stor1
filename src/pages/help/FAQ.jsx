@@ -1,61 +1,59 @@
 import HelpLayout from './HelpLayout';
+import ScreenshotGuide from '../../components/ScreenshotGuide';
+
+const faqSteps = [
+  {
+    title: 'Do I need an account to shop?',
+    desc: 'No. You can browse and add items to cart without an account. But you need to sign up to place an order.',
+    svg: `<svg viewBox="0 0 400 60" xmlns="http://www.w3.org/2000/svg" class="w-full">
+      <rect x="0" y="0" width="400" height="60" rx="8" fill="#f8fafc" stroke="#e2e8f0"/>
+      <text x="40" y="38" font-size="14" fill="#0f172a">Browse &gt; Add to Cart &gt;</text>
+      <rect x="180" y="15" width="90" height="30" rx="6" fill="#ff385c"/>
+      <text x="225" y="34" font-size="12" fill="white" text-anchor="middle" font-weight="bold">Sign Up</text>
+      <text x="300" y="38" font-size="14" fill="#0f172a">to Order</text>
+    </svg>`
+  },
+  {
+    title: 'What payment methods do you accept?',
+    desc: 'M-Pesa STK push is our main method. We also accept Paybill, Bank Transfer, and Cash on Delivery in Kericho town.',
+    svg: `<svg viewBox="0 0 400 70" xmlns="http://www.w3.org/2000/svg" class="w-full">
+      <rect x="0" y="0" width="400" height="70" rx="8" fill="#f1f5f9" stroke="#cbd5e1"/>
+      <rect x="20" y="15" width="80" height="40" rx="6" fill="#10b981"/>
+      <text x="60" y="38" font-size="10" fill="white" text-anchor="middle" font-weight="bold">M-Pesa</text>
+      <rect x="110" y="15" width="80" height="40" rx="6" fill="#3b82f6"/>
+      <text x="150" y="38" font-size="10" fill="white" text-anchor="middle" font-weight="bold">Paybill</text>
+      <rect x="200" y="15" width="80" height="40" rx="6" fill="#f59e0b"/>
+      <text x="240" y="38" font-size="10" fill="white" text-anchor="middle" font-weight="bold">Bank</text>
+      <rect x="290" y="15" width="80" height="40" rx="6" fill="#8b5cf6"/>
+      <text x="330" y="38" font-size="10" fill="white" text-anchor="middle" font-weight="bold">COD</text>
+    </svg>`
+  },
+  {
+    title: 'How do I track my order?',
+    desc: 'Log in to your account, go to Order History, and click any order to see status (Preparing, In Transit, Delivered).',
+    svg: `<svg viewBox="0 0 400 70" xmlns="http://www.w3.org/2000/svg" class="w-full">
+      <rect x="0" y="0" width="400" height="70" rx="8" fill="#ecfdf5"/>
+      <rect x="20" y="15" width="100" height="40" rx="6" fill="#22c55e"/>
+      <text x="70" y="38" font-size="10" fill="white" text-anchor="middle">Delivered</text>
+      <rect x="130" y="15" width="100" height="40" rx="6" fill="#3b82f6"/>
+      <text x="180" y="38" font-size="10" fill="white" text-anchor="middle">In Transit</text>
+      <rect x="240" y="15" width="100" height="40" rx="6" fill="#f59e0b"/>
+      <text x="290" y="38" font-size="10" fill="white" text-anchor="middle">Preparing</text>
+    </svg>`
+  }
+];
 
 export default function FAQ() {
   return (
     <HelpLayout title="FAQ Center">
-      <h3>Do I need an account to shop?</h3>
+      <p className="mb-8 text-zinc-600 dark:text-zinc-400">Quick answers to the most common questions.</p>
+      
+      <ScreenshotGuide steps={faqSteps} />
+      
+      <h3>More Questions?</h3>
       <p>
-        You can browse products without an account, but you will need to sign up to place
-        an order. Registration is free and takes less than a minute.
-      </p>
-
-      <h3>What payment methods do you accept?</h3>
-      <p>
-        We accept M-Pesa (the most popular option), and bank transfers. Card payments will
-        be available soon. See the "How Do I Pay" page for more details.
-      </p>
-
-      <h3>Can I change or cancel my order?</h3>
-      <p>
-        You can modify or cancel your order within 1 hour of placing it, as long as it has
-        not been processed yet. Contact us immediately through WhatsApp or your order page.
-      </p>
-
-      <h3>How do I track my order?</h3>
-      <p>
-        Once your order is dispatched, you will receive a tracking update via the contact
-        information you provided. You can also check your order status in your account dashboard.
-      </p>
-
-      <h3>What if my item arrives damaged?</h3>
-      <p>
-        If your item arrives damaged or defective, contact us within 48 hours with photos
-        of the damage. We will arrange a replacement or refund. See our "How to Apply for
-        a Refund" page for the full process.
-      </p>
-
-      <h3>Do you deliver outside Kericho?</h3>
-      <p>
-        Yes, we deliver to all 47 counties in Kenya. Delivery timelines vary by location.
-        See our "Delivery and Shipping" page for estimated timelines.
-      </p>
-
-      <h3>How do I contact the seller?</h3>
-      <p>
-        You can contact the seller through your order page after making a purchase. For
-        general inquiries, reach us on WhatsApp or email.
-      </p>
-
-      <h3>Is my personal information safe?</h3>
-      <p>
-        Yes, we take data security seriously. Your personal information is encrypted and
-        never shared with third parties without your consent. See our Privacy Policy for details.
-      </p>
-
-      <h3>Can I sell on Omix Store?</h3>
-      <p>
-        Yes, we welcome new sellers. Visit the "Sell on Omix" page on OmixLeads to apply.
-        Our team will review your application and get back to you within 48 hours.
+        If you cannot find your answer here, contact us via WhatsApp at 254768213649
+        or email omixsystems@gmail.com. We respond within 24 hours.
       </p>
     </HelpLayout>
   );

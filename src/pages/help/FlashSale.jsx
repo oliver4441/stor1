@@ -1,55 +1,50 @@
 import HelpLayout from './HelpLayout';
-import { Link } from 'react-router-dom';
+import ScreenshotGuide from '../../components/ScreenshotGuide';
+
+const flashSaleSteps = [
+  {
+    title: 'What Are Flash Sales?',
+    desc: 'Limited-time deals where selected products are heavily discounted for a short period. Usually 24-48 hours.',
+    svg: `<svg viewBox="0 0 400 80" xmlns="http://www.w3.org/2000/svg" class="w-full">
+      <rect x="0" y="0" width="400" height="80" rx="8" fill="#fef2f2"/>
+      <rect x="20" y="15" width="120" height="50" rx="6" fill="#dc2626"/>
+      <text x="80" y="42" font-size="14" fill="white" text-anchor="middle" font-weight="bold">FLASH SALE</text>
+      <text x="80" y="58" font-size="10" fill="#fecaca" text-anchor="middle">24-48 hours</text>
+      <rect x="160" y="15" width="100" height="50" rx="6" fill="#fee2e2"/>
+      <text x="210" y="40" font-size="28" fill="#dc2626" text-anchor="middle" font-weight="bold">50%</text>
+      <text x="210" y="58" font-size="10" fill="#ea580c" text-anchor="middle">OFF</text>
+      <rect x="280" y="15" width="100" height="50" rx="6" fill="#eff6ff"/>
+      <text x="330" y="40" font-size="12" fill="#3b82f6" text-anchor="middle" font-weight="bold">5 left</text>
+      <text x="330" y="58" font-size="10" fill="#64748b" text-anchor="middle">Hurry!</text>
+    </svg>`
+  },
+  {
+    title: 'How to Get Flash Sale Items',
+    desc: 'Spot the red "FLASH SALE" badge on products. Add to cart immediately and checkout within 2 hours to guarantee the discount.',
+    svg: `<svg viewBox="0 0 400 90" xmlns="http://www.w3.org/2000/svg" class="w-full">
+      <rect x="0" y="0" width="400" height="90" rx="8" fill="#fffbeb"/>
+      <rect x="20" y="15" width="360" height="60" rx="6" fill="#fef3c7" stroke="#fbbf24"/>
+      <rect x="30" y="25" width="60" height="40" rx="4" fill="#f59e0b"/>
+      <text x="60" y="48" font-size="10" fill="white" text-anchor="middle" font-weight="bold">NEW</text>
+      <rect x="100" y="25" width="70" height="40" rx="4" fill="#dc2626"/>
+      <text x="135" y="48" font-size="9" fill="white" text-anchor="middle" font-weight="bold">FLASH SALE</text>
+      <text x="180" y="50" font-size="14" fill="#0f172a" font-weight="bold">Product Name</text>
+      <text x="320" y="50" font-size="12" fill="#ea580c" font-weight="bold">Ksh 999</text>
+      <text x="340" y="65" font-size="10" fill="#94a3b8" style="text-decoration:line-through">Ksh 1,999</text>
+      <rect x="270" y="55" width="95" height="25" rx="6" fill="#ff385c"/>
+      <text x="317" y="71" font-size="11" fill="white" text-anchor="middle" font-weight="bold">Add to Cart</text>
+    </svg>`
+  }
+];
 
 export default function FlashSale() {
   return (
     <HelpLayout title="Flash Sale">
-      <h3>What is a Flash Sale?</h3>
-      <p>
-        A Flash Sale is a limited-time promotion where select products are offered at
-        significantly discounted prices. Flash Sales run for a few hours or until stock
-        runs out, whichever comes first.
+      <p className="mb-6 text-zinc-600 dark:text-zinc-400">
+        Grab incredible deals before they are gone.
       </p>
-
-      <h3>How to Participate</h3>
-      <ol>
-        <li>Browse the Flash Sale section on the home page or visit the Flash Sale page</li>
-        <li>Add items to your cart quickly — stock is limited</li>
-        <li>Proceed to checkout and complete payment</li>
-        <li>Orders are processed on a first-come, first-served basis</li>
-      </ol>
-
-      <h3>Flash Sale Rules</h3>
-      <ul>
-        <li>Each customer may purchase a maximum quantity as stated on the product page</li>
-        <li>Flash Sale prices are valid only while the sale is active</li>
-        <li>Standard delivery timelines apply to Flash Sale orders</li>
-        <li>Flash Sale items are final sale unless they arrive damaged or defective</li>
-        <li>Discounts cannot be combined with other promotions or coupon codes</li>
-      </ul>
-
-      <h3>Tips to Win</h3>
-      <ul>
-        <li>Create an account and save your delivery details in advance</li>
-        <li>Enable notifications so you never miss a Flash Sale announcement</li>
-        <li>Have your M-Pesa ready for quick checkout</li>
-        <li>Check the countdown timer to know how much time is left</li>
-      </ul>
-
-      <h3>Stay Updated</h3>
-      <p>
-        Follow us on social media and enable push notifications to get alerted when a new
-        Flash Sale starts. You can also check the home page for active Flash Sale banners.
-      </p>
-
-      <div className="mt-6 pt-6 border-t border-zinc-200 dark:border-zinc-700">
-        <Link
-          to="/"
-          className="inline-flex items-center gap-2 text-[#ff385c] font-bold text-sm hover:underline"
-        >
-          Browse current deals
-        </Link>
-      </div>
+      
+      <ScreenshotGuide steps={flashSaleSteps} />
     </HelpLayout>
   );
 }

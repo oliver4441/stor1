@@ -1,55 +1,54 @@
 import HelpLayout from './HelpLayout';
+import ScreenshotGuide from '../../components/ScreenshotGuide';
+
+const deliveryTimeSteps = [
+  {
+    title: 'Orders Within Kericho Town',
+    desc: 'Same-day or next-day delivery. Orders placed before 2 PM get delivered same day. After 2 PM, delivery is next day.',
+    svg: `<svg viewBox="0 0 400 100" xmlns="http://www.w3.org/2000/svg" class="w-full">
+      <rect x="0" y="0" width="400" height="100" rx="8" fill="#eff6ff"/>
+      <rect x="20" y="20" width="160" height="60" rx="6" fill="#3b82f6"/>
+      <text x="100" y="45" font-size="14" fill="white" text-anchor="middle" font-weight="bold">Kericho Town</text>
+      <text x="100" y="65" font-size="12" fill="white" text-anchor="middle">Same day / Next day</text>
+      <rect x="200" y="20" width="180" height="60" rx="6" fill="#dbeafe"/>
+      <text x="290" y="45" font-size="11" fill="#1e40af">2 PM cutoff for same day</text>
+      <text x="290" y="65" font-size="11" fill="#1e40af">After 2 PM = next day</text>
+    </svg>`
+  },
+  {
+    title: 'Orders Outside Kericho Town',
+    desc: '3-7 business days depending on your location. We partner with local courier services for county-wide delivery.',
+    svg: `<svg viewBox="00 0 400 120" xmlns="http://www.w3.org/2000/svg" class="w-full">
+      <rect x="0" y="0" width="400" height="120" rx="8" fill="#fff7ed"/>
+      <rect x="20" y="20" width="360" height="80" rx="6" fill="#f97316"/>
+      <text x="200" y="45" font-size="14" fill="white" text-anchor="middle" font-weight="bold">Upcountry Delivery</text>
+      <text x="200" y="65" font-size="12" fill="white" text-anchor="middle">3-7 business days</text>
+      <text x="200" y="88" font-size="11" fill="#fed7aa" text-anchor="middle">Bomet, Kakamega, Eldoret, Nairobi, Mombasa</text>
+    </svg>`
+  },
+  {
+    title: 'Track Your Order',
+    desc: 'Log in to your account to see order status updates. You will also receive SMS notifications on delivery progress.',
+    svg: `<svg viewBox="0 0 400 90" xmlns="http://www.w3.org/2000/svg" class="w-full">
+      <rect x="0" y="0" width="400" height="90" rx="8" fill="#f3e8ff"/>
+      <rect x="20" y="15" width="120" height="60" rx="6" fill="#8b5cf6"/>
+      <text x="80" y="40" font-size="12" fill="white" text-anchor="middle" font-weight="bold">Preparing</text>
+      <rect x="140" y="15" width="120" height="60" rx="6" fill="#3b82f6"/>
+      <text x="200" y="40" font-size="12" fill="white" text-anchor="middle" font-weight="bold">In Transit</text>
+      <rect x="260" y="15" width="120" height="60" rx="6" fill="#10b981"/>
+      <text x="320" y="40" font-size="12" fill="white" text-anchor="middle" font-weight="bold">Delivered</text>
+    </svg>`
+  }
+];
 
 export default function DeliveryTime() {
   return (
     <HelpLayout title="How Long Does My Order Arrive">
-      <h3>Estimated Delivery Times</h3>
-      <p>
-        Delivery times vary based on your location and the product availability. Below are
-        general estimates:
+      <p className="mb-6 text-zinc-600 dark:text-zinc-400">
+        Delivery times depend on your location and order time.
       </p>
-
-      <h4>Kericho Town</h4>
-      <p>
-        Orders placed before 3 PM are delivered the same day. Orders placed after 3 PM are
-        delivered the next day.
-      </p>
-
-      <h4>Kericho County (Outside Town)</h4>
-      <p>
-        Delivery takes 1-2 business days. We consolidate deliveries to nearby areas on
-        specific days of the week.
-      </p>
-
-      <h4>Major Cities (Nairobi, Nakuru, Kisumu, Eldoret)</h4>
-      <p>
-        Delivery takes 2-4 business days via our partner courier services.
-      </p>
-
-      <h4>Other Counties</h4>
-      <p>
-        Delivery takes 3-7 business days depending on the location and road accessibility.
-      </p>
-
-      <h3>Factors That May Affect Delivery</h3>
-      <ul>
-        <li>Product availability — items may need to be sourced from suppliers</li>
-        <li>Weather conditions and road accessibility</li>
-        <li>Public holidays and peak shopping seasons</li>
-        <li>Accuracy of the delivery address provided</li>
-      </ul>
-
-      <h3>Order Tracking</h3>
-      <p>
-        Once your order is dispatched, you will receive a message with tracking information.
-        You can also check your order status anytime in your account dashboard under "My Orders".
-      </p>
-
-      <h3>Delayed Orders</h3>
-      <p>
-        If your order has not arrived within the estimated timeframe, please contact us via
-        WhatsApp or email. We will investigate and provide an update within 24 hours.
-      </p>
+      
+      <ScreenshotGuide steps={deliveryTimeSteps} />
     </HelpLayout>
   );
 }
