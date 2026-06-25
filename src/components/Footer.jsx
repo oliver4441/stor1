@@ -35,6 +35,7 @@ function Footer() {
         <div className="flex gap-4 flex-wrap justify-center">
           <Link to="/how-it-works" className="text-sm transition-colors" style={{ color: footerLink || undefined }}>{t('footer.howItWorks')}</Link>
           <Link to="/about" className="text-sm transition-colors" style={{ color: footerLink || undefined }}>{t('footer.about')}</Link>
+          <Link to="/help" className="text-sm transition-colors" style={{ color: footerLink || undefined }}>{t('footer.helpCenter')}</Link>
           <Link to="/install" className="text-sm transition-colors" style={{ color: footerLink || undefined }}>{t('footer.install')}</Link>
         </div>
         <div className="flex gap-4">

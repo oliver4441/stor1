@@ -47,6 +47,18 @@ import AdminPromoCodes from './pages/AdminPromoCodes';
 import AdminSettings from './pages/AdminSettings';
 import AdminNotifications from './pages/AdminNotifications';
 
+// Help Center pages
+import HelpCenter from './pages/help/HelpCenter';
+import ShoppingGuide from './pages/help/ShoppingGuide';
+import Refund from './pages/help/Refund';
+import DisputeResolution from './pages/help/DisputeResolution';
+import AfterSale from './pages/help/AfterSale';
+import Delivery from './pages/help/Delivery';
+import FAQ from './pages/help/FAQ';
+import Payment from './pages/help/Payment';
+import DeliveryTime from './pages/help/DeliveryTime';
+import FlashSale from './pages/help/FlashSale';
+
 function App() {
   return (
     <SeasonalProvider>
@@ -78,6 +90,16 @@ function App() {
             <Route path="/privacy" element={<Privacy />} />
             <Route path="/terms" element={<Terms />} />
             <Route path="/qr" element={<QRCodePage />} />
+            <Route path="/help" element={<HelpCenter />} />
+            <Route path="/help/shopping-guide" element={<ShoppingGuide />} />
+            <Route path="/help/refund" element={<Refund />} />
+            <Route path="/help/dispute-resolution" element={<DisputeResolution />} />
+            <Route path="/help/after-sale" element={<AfterSale />} />
+            <Route path="/help/delivery" element={<Delivery />} />
+            <Route path="/help/faq" element={<FAQ />} />
+            <Route path="/help/payment" element={<Payment />} />
+            <Route path="/help/delivery-time" element={<DeliveryTime />} />
+            <Route path="/help/flash-sale" element={<FlashSale />} />
             <Route path="/admin" element={<AdminLayout />}>
               <Route index element={<AdminOverview />} />
               <Route path="products" element={<AdminProducts />} />
