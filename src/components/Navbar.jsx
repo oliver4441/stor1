@@ -1,6 +1,6 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Sun, Moon, User, Globe, Shield, Package, HelpCircle, Info, LogIn, UserPlus, Menu, X, Download, ShoppingCart } from 'lucide-react';
+import { Sun, Moon, User, Globe, Shield, Package, HelpCircle, Info, LogIn, UserPlus, Menu, X, Download, ShoppingCart, ChevronDown, LogOut } from 'lucide-react';
 import { supabase } from '../utils/supabase';
 import { useLang } from '../utils/lang';
 import { isAdmin } from '../utils/api';
@@ -18,7 +18,8 @@ const FEATURE_LINKS = [
 function Navbar() {
   const [user, setUser] = useState(null);
   const [isUserAdmin, setIsUserAdmin] = useState(false);
-  const [mobileOpen, setMobileOpen] = useState(false);
+  const [menuOpen, setMenuOpen] = useState(false);
+  const menuRef = useRef(null);
   const { lang, toggleLang, t } = useLang();
   const location = useLocation();
   const { getItemCount } = useCart();
@@ -53,25 +54,54 @@ function Navbar() {
     return () => subscription.unsubscribe();
   }, []);
 
-  useEffect(() => { setMobileOpen(false); }, [location.pathname]);
+  // Close menu on route change
+  useEffect(() => { setMenuOpen(false); }, [location.pathname]);
+
+  // Close menu on click outside
+  useEffect(() => {
+    function handleClickOutside(e) {
+      if (menuRef.current && !menuRef.current.contains(e.target)) {
+        setMenuOpen(false);
+      }
+    }
+    if (menuOpen) {
+      document.addEventListener('mousedown', handleClickOutside);
+      document.addEventListener('touchstart', handleClickOutside);
+    }
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+      document.removeEventListener('touchstart', handleClickOutside);
+    };
+  }, [menuOpen]);
+
+  // Lock body scroll when menu open on mobile
+  useEffect(() => {
+    document.body.style.overflow = menuOpen ? 'hidden' : '';
+    return () => { document.body.style.overflow = ''; };
+  }, [menuOpen]);
 
   const toggleTheme = () => {
     const isDark = document.documentElement.classList.toggle('dark');
     localStorage.setItem('theme', isDark ? 'dark' : 'light');
   };
 
+  const handleLogout = async () => {
+    await supabase.auth.signOut();
+    setMenuOpen(false);
+  };
+
   return (
     <nav className="border-b border-zinc-200/50 dark:border-zinc-800/50 bg-white/80 dark:bg-zinc-950/80 backdrop-blur-xl sticky top-0 z-50 transition-all" style={{ paddingTop: 'env(safe-area-inset-top)' }}>
-      <div className="max-w-7xl mx-auto px-4 h-16 flex items-center justify-between">
+      <div className="max-w-7xl mx-auto px-4 h-14 flex items-center justify-between">
         {/* Logo */}
         <Link to="/" className="flex items-center gap-2 shrink-0">
-          {sticker && <span className="theme-sticker text-xl">{sticker}</span>}
-          <span className="text-2xl font-bold tracking-tight" style={{ color: navAccentColor }}>
+          {sticker && <span className="theme-sticker text-lg">{sticker}</span>}
+          <span className="text-xl font-bold tracking-tight" style={{ color: navAccentColor }}>
             Omix Store
           </span>
           {badgeText && (
             <span
-              className="seasonal-badge text-[9px] font-black px-1.5 py-0.5 rounded-full leading-none"
+              className="seasonal-badge text-[8px] font-black px-1.5 py-0.5 rounded-full leading-none"
               style={{ backgroundColor: badgeBg, color: badgeTextColor }}
             >
               {badgeText}
@@ -79,12 +109,12 @@ function Navbar() {
           )}
         </Link>
 
-        {/* Desktop: Feature Links */}
-        <div className="hidden lg:flex items-center gap-2">
+        {/* Desktop (lg+): Feature Links */}
+        <div className="hidden lg:flex items-center gap-1.5">
           {FEATURE_LINKS.map(link => {
             const Icon = link.icon;
             const isActive = !link.external && location.pathname === link.to;
-            const linkClass = `relative flex items-center gap-1.5 px-4 py-2 rounded-full text-sm font-bold transition-all duration-300 group ${
+            const linkClass = `relative flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-sm font-bold transition-all duration-300 group ${
               isActive
                 ? `bg-gradient-to-r ${link.color} text-white shadow-lg ${link.glow}`
                 : `text-zinc-600 dark:text-zinc-300 hover:text-white hover:bg-gradient-to-r hover:${link.color} hover:shadow-md hover:${link.glow}`
@@ -107,8 +137,8 @@ function Navbar() {
           })}
         </div>
 
-        {/* Desktop: Right side */}
-        <div className="hidden md:flex items-center gap-2.5">
+        {/* Desktop (lg+): Right side */}
+        <div className="hidden lg:flex items-center gap-2">
           <button onClick={toggleTheme} className="p-2 rounded-full hover:bg-zinc-100 dark:hover:bg-zinc-800 text-zinc-600 dark:text-zinc-300 transition-colors" aria-label={t('common.toggleTheme')}>
             <Sun className="w-5 h-5 hidden dark:block" />
             <Moon className="w-5 h-5 block dark:hidden" />
@@ -119,7 +149,6 @@ function Navbar() {
             {lang === 'en' ? 'EN' : 'SW'}
           </button>
 
-          {/* Cart */}
           <Link to="/cart" className="relative p-2 rounded-full hover:bg-zinc-100 dark:hover:bg-zinc-800 text-zinc-600 dark:text-zinc-300 transition-colors">
             <ShoppingCart className="w-5 h-5" />
             {cartCount > 0 && (
@@ -143,7 +172,7 @@ function Navbar() {
           {user ? (
             <Link to="/account" className="flex items-center gap-2 p-2 rounded-full hover:bg-zinc-100 dark:hover:bg-zinc-800 text-zinc-600 dark:text-zinc-300 transition-colors">
               <User className="w-5 h-5" />
-              <span className="text-sm font-medium hidden lg:block">{t('nav.account') || 'Account'}</span>
+              <span className="text-sm font-medium">{t('nav.account') || 'Account'}</span>
             </Link>
           ) : (
             <>
@@ -166,16 +195,41 @@ function Navbar() {
           )}
         </div>
 
-        {/* Mobile: Hamburger */}
-        <button onClick={() => setMobileOpen(!mobileOpen)} className="md:hidden p-2 rounded-full hover:bg-zinc-100 dark:hover:bg-zinc-800 text-zinc-600 dark:text-zinc-300 transition-colors">
-          {mobileOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
-        </button>
+        {/* Below lg: Compact controls + Hamburger */}
+        <div className="flex lg:hidden items-center gap-1">
+          {/* Cart icon always visible on mobile */}
+          <Link to="/cart" className="relative p-2 rounded-full hover:bg-zinc-100 dark:hover:bg-zinc-800 text-zinc-600 dark:text-zinc-300 transition-colors">
+            <ShoppingCart className="w-5 h-5" />
+            {cartCount > 0 && (
+              <span className="absolute -top-1 -right-1 w-5 h-5 text-white text-[10px] font-bold rounded-full flex items-center justify-center"
+                style={{ backgroundColor: navAccentColor }}
+              >
+                {cartCount > 9 ? '9+' : cartCount}
+              </span>
+            )}
+          </Link>
+
+          {/* Hamburger */}
+          <button
+            onClick={() => setMenuOpen(!menuOpen)}
+            className="p-2 rounded-full hover:bg-zinc-100 dark:hover:bg-zinc-800 text-zinc-600 dark:text-zinc-300 transition-colors"
+            aria-label="Toggle menu"
+          >
+            {menuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+          </button>
+        </div>
       </div>
 
-      {/* Mobile Menu */}
-      {mobileOpen && (
-        <div className="md:hidden border-t border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-950 animate-slide-down">
-          <div className="px-4 py-4 space-y-2">
+      {/* Collapsible Menu - slides down below the navbar */}
+      <div
+        ref={menuRef}
+        className={`lg:hidden overflow-hidden transition-all duration-300 ease-in-out ${
+          menuOpen ? 'max-h-[85vh] opacity-100' : 'max-h-0 opacity-0'
+        }`}
+      >
+        <div className="border-t border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-950">
+          <div className="max-w-7xl mx-auto px-4 py-4 space-y-1 overflow-y-auto max-h-[80vh]">
+            {/* Navigation Links */}
             {FEATURE_LINKS.map(link => {
               const Icon = link.icon;
               const isActive = !link.external && location.pathname === link.to;
@@ -186,69 +240,81 @@ function Navbar() {
               }`;
               if (link.external) {
                 return (
-                  <a key={link.to} href={link.to} target="_blank" rel="noopener noreferrer" className={linkClass}>
+                  <a key={link.to} href={link.to} target="_blank" rel="noopener noreferrer" className={linkClass} onClick={() => setMenuOpen(false)}>
                     <Icon className="w-5 h-5" />
                     {link.label}
                   </a>
                 );
               }
               return (
-                <Link key={link.to} to={link.to} className={linkClass}>
+                <Link key={link.to} to={link.to} className={linkClass} onClick={() => setMenuOpen(false)}>
                   <Icon className="w-5 h-5" />
                   {link.label}
                 </Link>
               );
             })}
 
-            <Link to="/cart" className="flex items-center gap-3 px-4 py-3 rounded-2xl text-sm font-bold text-zinc-700 dark:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-zinc-800">
-              <ShoppingCart className="w-5 h-5" />
-              Cart {cartCount > 0 && <span className="bg-[var(--seasonal-primary,#ff385c)] text-white text-xs px-2 py-0.5 rounded-full">{cartCount}</span>}
-            </Link>
+            {/* Divider */}
+            <div className="border-t border-zinc-200 dark:border-zinc-800 my-1" />
 
-            <div className="border-t border-zinc-200 dark:border-zinc-800 pt-2 mt-2">
-              {user ? (
-                <>
-                  <Link to="/account" className="flex items-center gap-3 px-4 py-3 rounded-2xl text-sm font-bold text-zinc-700 dark:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-zinc-800">
-                    <User className="w-5 h-5" />
-                    My Account
+            {/* Account */}
+            {user ? (
+              <>
+                <Link to="/account" className="flex items-center gap-3 px-4 py-3 rounded-2xl text-sm font-bold text-zinc-700 dark:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-zinc-800" onClick={() => setMenuOpen(false)}>
+                  <User className="w-5 h-5" />
+                  My Account
+                </Link>
+                {isUserAdmin && (
+                  <Link to="/admin" className="flex items-center gap-3 px-4 py-3 rounded-2xl text-sm font-bold text-[var(--seasonal-primary,#ff385c)] hover:bg-[var(--seasonal-primary,#ff385c)]/10" onClick={() => setMenuOpen(false)}>
+                    <Shield className="w-5 h-5" />
+                    Admin Dashboard
                   </Link>
-                  {isUserAdmin && (
-                    <Link to="/admin" className="flex items-center gap-3 px-4 py-3 rounded-2xl text-sm font-bold text-[var(--seasonal-primary,#ff385c)] hover:bg-[var(--seasonal-primary,#ff385c)]/10">
-                      <Shield className="w-5 h-5" />
-                      Admin Dashboard
-                    </Link>
-                  )}
-                </>
-              ) : (
-                <>
-                  <Link to="/login" className="flex items-center gap-3 px-4 py-3 rounded-2xl text-sm font-bold text-zinc-700 dark:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-zinc-800">
-                    <LogIn className="w-5 h-5" />
-                    Log In
-                  </Link>
-                  <Link to="/signup" className="flex items-center gap-3 px-4 py-3 rounded-2xl text-sm font-bold text-white mt-1"
-                    style={{ background: `linear-gradient(135deg, ${navAccentColor}, ${secondaryColor})` }}>
-                    <UserPlus className="w-4 h-4" />
-                    Sign Up
-                  </Link>
-                </>
-              )}
-            </div>
+                )}
+                <button
+                  onClick={handleLogout}
+                  className="flex items-center gap-3 px-4 py-3 rounded-2xl text-sm font-bold text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 w-full text-left"
+                >
+                  <LogOut className="w-5 h-5" />
+                  Log Out
+                </button>
+              </>
+            ) : (
+              <>
+                <Link to="/login" className="flex items-center gap-3 px-4 py-3 rounded-2xl text-sm font-bold text-zinc-700 dark:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-zinc-800" onClick={() => setMenuOpen(false)}>
+                  <LogIn className="w-5 h-5" />
+                  Log In
+                </Link>
+                <Link
+                  to="/signup"
+                  className="flex items-center gap-3 px-4 py-3 rounded-2xl text-sm font-bold text-white"
+                  style={{ background: `linear-gradient(135deg, ${navAccentColor}, ${secondaryColor})` }}
+                  onClick={() => setMenuOpen(false)}
+                >
+                  <UserPlus className="w-4 h-4" />
+                  Sign Up
+                </Link>
+              </>
+            )}
 
-            <div className="flex gap-2 pt-2">
+            {/* Divider */}
+            <div className="border-t border-zinc-200 dark:border-zinc-800 my-1" />
+
+            {/* Utility buttons */}
+            <div className="flex gap-2">
               <button onClick={toggleTheme} className="flex-1 flex items-center justify-center gap-2 px-4 py-3 rounded-2xl text-sm font-bold border border-zinc-200 dark:border-zinc-700 text-zinc-600 dark:text-zinc-300">
                 <Sun className="w-4 h-4 hidden dark:block" />
                 <Moon className="w-4 h-4 block dark:hidden" />
-                <span className="hidden dark:inline">{t('common.dark')}</span>
-                <span className="dark:hidden">{t('common.light')}</span>
+                <span className="hidden dark:inline">Dark</span>
+                <span className="dark:hidden">Light</span>
               </button>
               <button onClick={toggleLang} className="flex-1 flex items-center justify-center gap-2 px-4 py-3 rounded-2xl text-sm font-bold border border-zinc-200 dark:border-zinc-700 text-zinc-600 dark:text-zinc-300">
                 <Globe className="w-4 h-4" />
-                {lang === 'en' ? 'EN' : 'SW'}
+                {lang === 'en' ? 'English' : 'Swahili'}
               </button>
             </div>
           </div>
         </div>
-      )}
+      </div>
     </nav>
   );
 }
