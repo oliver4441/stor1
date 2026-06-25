@@ -7,8 +7,8 @@ import './index.css'
 // Register service worker for push notifications
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => {
-    navigator.serviceWorker.register('/sw-push.js').then(reg => {
-      console.log('SW registered for push notifications');
+    navigator.serviceWorker.register('/sw.js').then(reg => {
+      console.log('SW registered');
     }).catch(err => {
       console.warn('SW registration failed:', err.message);
     });
