@@ -10,6 +10,7 @@ import { useActiveTheme } from '../context/SeasonalContext';
 const FEATURE_LINKS = [
   { to: 'https://blog.omixsystems.store', label: 'Blog', icon: Globe, color: 'from-violet-500 to-purple-600', glow: 'shadow-violet-500/40', external: true },
   { to: '/how-it-works', label: 'How It Works', icon: HelpCircle, color: 'from-amber-500 to-orange-600', glow: 'shadow-amber-500/40' },
+  { to: '/help', label: 'Help', icon: Package, color: 'from-emerald-500 to-green-600', glow: 'shadow-emerald-500/40' },
   { to: '/about', label: 'About', icon: Info, color: 'from-cyan-500 to-teal-600', glow: 'shadow-cyan-500/40' },
   { to: '/install', label: 'Install App', icon: Download, color: 'from-[var(--seasonal-primary,#ff385c)] to-[var(--seasonal-secondary,#e03150)]', glow: 'shadow-[var(--seasonal-primary,#ff385c)]/40' },
 ];
