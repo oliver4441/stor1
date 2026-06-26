@@ -1,5 +1,6 @@
 // Simple server to serve the Vite-built Omix frontend
 import express from 'express';
+import crypto from 'crypto';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import fetch from 'node-fetch';
@@ -11,6 +12,10 @@ const __dirname = path.dirname(__filename);
 const app = express();
 app.use(express.json({ limit: '1mb' }));
 const port = process.env.PORT || 3000;
+
+// ── Paystack Configuration ──────────────────────────────────────────
+const PAYSTACK_SECRET_KEY = process.env.PAYSTACK_SECRET_KEY || '';
+const PAYSTACK_PUBLIC_KEY = process.env.VITE_PAYSTACK_PUBLIC_KEY || '';
 
 // ── VAPID Keys for Push Notifications ──────────────────────────────
 const VAPID_PUBLIC_KEY = process.env.VITE_VAPID_PUBLIC_KEY || '';
@@ -30,6 +35,150 @@ if (VAPID_PUBLIC_KEY && VAPID_PRIVATE_KEY) {
 // Health check endpoint
 app.get('/health', (req, res) => {
   res.json({ status: 'ok', service: 'stor1-frontend', timestamp: new Date().toISOString() });
+});
+
+// ── Paystack Payment Endpoints ────────────────────────────────────────
+
+// Initialize a Paystack transaction
+app.post('/api/paystack/initialize', async (req, res) => {
+  if (!PAYSTACK_SECRET_KEY) {
+    return res.status(503).json({ status: false, message: 'Payment service not configured' });
+  }
+
+  const { email, amount, reference, callback_url, metadata } = req.body;
+
+  if (!email || !amount) {
+    return res.status(400).json({ status: false, message: 'Email and amount are required' });
+  }
+
+  try {
+    const response = await fetch('https://api.paystack.co/transaction/initialize', {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${PAYSTACK_SECRET_KEY}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        email,
+        amount: Math.round(amount * 100), // Convert to kobo/cents
+        reference,
+        callback_url,
+        metadata,
+        currency: 'KES',
+      }),
+    });
+
+    const data = await response.json();
+    res.json(data);
+  } catch (err) {
+    console.error('[Paystack] Initialize error:', err.message);
+    res.status(502).json({ status: false, message: 'Payment service error' });
+  }
+});
+
+// Verify a Paystack transaction
+app.get('/api/paystack/verify/:reference', async (req, res) => {
+  if (!PAYSTACK_SECRET_KEY) {
+    return res.status(503).json({ status: false, message: 'Payment service not configured' });
+  }
+
+  const { reference } = req.params;
+
+  try {
+    const response = await fetch(`https://api.paystack.co/transaction/verify/${encodeURIComponent(reference)}`, {
+      headers: {
+        'Authorization': `Bearer ${PAYSTACK_SECRET_KEY}`,
+      },
+    });
+
+    const data = await response.json();
+
+    // If payment successful, update the order in Supabase
+    if (data.status && data.data?.status === 'success') {
+      const supabaseUrl = process.env.VITE_SUPABASE_URL || '';
+      const supabaseKey = process.env.VITE_SUPABASE_ANON_KEY || '';
+      const orderId = data.data?.metadata?.order_id;
+
+      if (orderId && supabaseUrl) {
+        try {
+          await fetch(`${supabaseUrl}/rest/v1/omix_orders?id=eq.${orderId}`, {
+            method: 'PATCH',
+            headers: {
+              'apikey': supabaseKey,
+              'Authorization': `Bearer ${supabaseKey}`,
+              'Content-Type': 'application/json',
+              'Prefer': 'return=minimal',
+            },
+            body: JSON.stringify({
+              status: 'paid',
+              paystack_reference: reference,
+              paid_at: new Date().toISOString(),
+            }),
+          });
+          console.log(`[Paystack] Order ${orderId} marked as paid`);
+        } catch (dbErr) {
+          console.error('[Paystack] DB update error:', dbErr.message);
+        }
+      }
+    }
+
+    res.json(data);
+  } catch (err) {
+    console.error('[Paystack] Verify error:', err.message);
+    res.status(502).json({ status: false, message: 'Payment verification error' });
+  }
+});
+
+// Paystack webhook
+app.post('/api/paystack/webhook', express.raw({ type: 'application/json' }), (req, res) => {
+  const signature = req.headers['x-paystack-signature'];
+
+  if (!PAYSTACK_SECRET_KEY || !signature) {
+    return res.status(400).send('Missing signature or key');
+  }
+
+  // Verify webhook signature
+  const hash = crypto.createHmac('sha512', PAYSTACK_SECRET_KEY).update(req.body).digest('hex');
+
+  if (hash !== signature) {
+    return res.status(401).send('Invalid signature');
+  }
+
+  try {
+    const event = JSON.parse(req.body);
+
+    if (event.event === 'charge.success') {
+      const { reference, metadata } = event.data;
+      const orderId = metadata?.order_id;
+      console.log(`[Paystack Webhook] Payment success: ref=${reference} order=${orderId}`);
+
+      // Update order asynchronously
+      const supabaseUrl = process.env.VITE_SUPABASE_URL || '';
+      const supabaseKey = process.env.VITE_SUPABASE_ANON_KEY || '';
+
+      if (orderId && supabaseUrl) {
+        fetch(`${supabaseUrl}/rest/v1/omix_orders?id=eq.${orderId}`, {
+          method: 'PATCH',
+          headers: {
+            'apikey': supabaseKey,
+            'Authorization': `Bearer ${supabaseKey}`,
+            'Content-Type': 'application/json',
+            'Prefer': 'return=minimal',
+          },
+          body: JSON.stringify({
+            status: 'paid',
+            paystack_reference: reference,
+            paid_at: new Date().toISOString(),
+          }),
+        }).catch(err => console.error('[Paystack Webhook] DB error:', err.message));
+      }
+    }
+
+    res.status(200).send('OK');
+  } catch (err) {
+    console.error('[Paystack Webhook] Error:', err.message);
+    res.status(400).send('Invalid payload');
+  }
 });
 
 // ── Push Notification Endpoint ──────────────────────────────────────

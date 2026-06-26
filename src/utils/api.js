@@ -1005,49 +1005,6 @@ export async function removeStockWatcher(id) {
 }
 
 
-// ── Saved Searches ────────────────────────────────────────────────────
-export async function saveSearch(userId, query) {
-  try {
-    const { data, error } = await supabase
-      .from('saved_searches')
-      .insert({ user_id: userId, query })
-      .select()
-      .single();
-    if (error) throw error;
-    return { success: true, data };
-  } catch (err) {
-    return { success: false, error: err.message };
-  }
-}
-
-export async function getSavedSearches(userId) {
-  try {
-    const { data, error } = await supabase
-      .from('saved_searches')
-      .select('*')
-      .eq('user_id', userId)
-      .order('created_at', { ascending: false });
-    if (error) throw error;
-    return data || [];
-  } catch (err) {
-    console.error('getSavedSearches error:', err);
-    return [];
-  }
-}
-
-export async function deleteSavedSearch(id) {
-  try {
-    const { error } = await supabase
-      .from('saved_searches')
-      .delete()
-      .eq('id', id);
-    if (error) throw error;
-    return { success: true };
-  } catch (err) {
-    return { success: false, error: err.message };
-  }
-}
-
 // ── Profile Management ─────────────────────────────────────────────────
 
 export async function getProfile(userId) {
@@ -1148,14 +1105,158 @@ export async function cancelOrderWithReason(orderId, reason) {
       return { success: false, error: `Order cannot be cancelled because it is already "${order.status}".` };
     }
 
+    const updateData = {
+      status: 'cancelled',
+    };
+    // Only set cancelled_at and cancellation_reason if columns exist
+    try {
+      updateData.cancelled_at = new Date().toISOString();
+      updateData.cancellation_reason = reason || null;
+    } catch (e) { /* columns may not exist yet */ }
+
     const { error } = await supabase
       .from('omix_orders')
-      .update({
-        status: 'cancelled',
-        cancelled_at: new Date().toISOString(),
-        cancellation_reason: reason || null,
-      })
+      .update(updateData)
       .eq('id', orderId);
+
+    if (error) throw error;
+    return { success: true };
+  } catch (err) {
+    return { success: false, error: err.message };
+  }
+}
+
+// ── Wishlist ────────────────────────────────────────────────────────
+
+export async function getWishlist() {
+  try {
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) return { success: false, error: 'Not authenticated' };
+
+    const { data, error } = await supabase
+      .from('omix_wishlist')
+      .eq('user_id', user.id)
+      .order('created_at', { ascending: false });
+
+    if (error) throw error;
+    return { success: true, items: data || [] };
+  } catch (err) {
+    return { success: false, error: err.message };
+  }
+}
+
+export async function addToWishlist(listingId) {
+  try {
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) return { success: false, error: 'Not authenticated' };
+
+    const { data, error } = await supabase
+      .from('omix_wishlist')
+      .insert({ user_id: user.id, listing_id: listingId })
+      .select()
+      .single();
+
+    if (error) {
+      if (error.code === '23505') return { success: true, message: 'Already in wishlist' };
+      throw error;
+    }
+    return { success: true, item: data };
+  } catch (err) {
+    return { success: false, error: err.message };
+  }
+}
+
+export async function removeFromWishlist(listingId) {
+  try {
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) return { success: false, error: 'Not authenticated' };
+
+    const { error } = await supabase
+      .from('omix_wishlist')
+      .delete()
+      .eq('user_id', user.id)
+      .eq('listing_id', listingId);
+
+    if (error) throw error;
+    return { success: true };
+  } catch (err) {
+    return { success: false, error: err.message };
+  }
+}
+
+export async function isInWishlist(listingId) {
+  try {
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) return { success: true, inWishlist: false };
+
+    const { data, error } = await supabase
+      .from('omix_wishlist')
+      .select('id')
+      .eq('user_id', user.id)
+      .eq('listing_id', listingId)
+      .limit(1);
+
+    if (error) throw error;
+    return { success: true, inWishlist: data && data.length > 0 };
+  } catch (err) {
+    return { success: false, error: err.message };
+  }
+}
+
+// ── Saved Searches ──────────────────────────────────────────────────
+
+export async function getSavedSearches() {
+  try {
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) return { success: false, error: 'Not authenticated' };
+
+    const { data, error } = await supabase
+      .from('saved_searches')
+      .select('*')
+      .eq('user_id', user.id)
+      .order('created_at', { ascending: false });
+
+    if (error) throw error;
+    return { success: true, searches: data || [] };
+  } catch (err) {
+    return { success: false, error: err.message };
+  }
+}
+
+export async function saveSearch(query, filters = {}) {
+  try {
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) return { success: false, error: 'Not authenticated' };
+
+    if (!query || !query.trim()) return { success: false, error: 'Search query is required' };
+
+    const { data, error } = await supabase
+      .from('saved_searches')
+      .upsert({
+        user_id: user.id,
+        query: query.trim(),
+        filters,
+      }, { onConflict: 'user_id,query' })
+      .select()
+      .single();
+
+    if (error) throw error;
+    return { success: true, search: data };
+  } catch (err) {
+    return { success: false, error: err.message };
+  }
+}
+
+export async function removeSavedSearch(searchId) {
+  try {
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) return { success: false, error: 'Not authenticated' };
+
+    const { error } = await supabase
+      .from('saved_searches')
+      .delete()
+      .eq('id', searchId)
+      .eq('user_id', user.id);
 
     if (error) throw error;
     return { success: true };

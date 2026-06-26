@@ -11,7 +11,7 @@ import { supabase } from '../utils/supabase';
 import {
   fetchOrders, fetchListings, fetchAddresses, saveAddress, deleteAddress,
   setDefaultAddress, getReferralCode, getReferralStats, getLoyaltyPoints,
-  getPointsHistory, getSavedSearches, deleteSavedSearch,
+  getPointsHistory, getSavedSearches, removeSavedSearch,
   updateProfile, uploadAvatar, cancelOrderWithReason, getProfile,
 } from '../utils/api';
 import { formatKES, CATEGORIES } from '../utils/constants';
@@ -950,7 +950,7 @@ function UserDashboard() {
                         <span className="text-sm font-medium text-zinc-900 dark:text-white truncate">{search.search_term}</span>
                       </Link>
                       <button
-                        onClick={async () => { await deleteSavedSearch(search.id); setSavedSearches(prev => prev.filter(s => s.id !== search.id)); }}
+                        onClick={async () => { await removeSavedSearch(search.id); setSavedSearches(prev => prev.filter(s => s.id !== search.id)); }}
                         className="p-1.5 rounded-lg text-zinc-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 opacity-0 group-hover:opacity-100 transition-all flex-shrink-0"
                       >
                         <X className="w-4 h-4" />

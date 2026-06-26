@@ -21,8 +21,8 @@ export default function Wishlist() {
   const loadWishlist = async (userId) => {
     try {
       const { data } = await supabase
-        .from('wishlist')
-        .select('*, listings(*)')
+        .from('omix_wishlist')
+      .select('*, listings(*)')
         .eq('user_id', userId)
         .order('created_at', { ascending: false });
       setItems(data || []);
@@ -38,7 +38,7 @@ export default function Wishlist() {
     // Optimistic remove from UI
     setItems(prev => prev.filter(i => i.listing_id !== listingId));
     try {
-      const { error } = await supabase.from('wishlist').delete().eq('user_id', user.id).eq('listing_id', listingId);
+      const { error } = await supabase.from('omix_wishlist').delete().eq('user_id', user.id).eq('listing_id', listingId);
       if (error) {
         console.error('Failed to remove wishlist item:', error);
         // Rollback — reload the wishlist

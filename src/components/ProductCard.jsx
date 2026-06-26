@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { Image as ImageIcon, MapPin, Share2, Package, ShoppingCart, Eye, CheckSquare, Square, AlertTriangle } from 'lucide-react';
+import { Image as ImageIcon, MapPin, Share2, Package, ShoppingCart, Eye, CheckSquare, Square, AlertTriangle, Heart } from 'lucide-react';
 import CountdownTimer from './CountdownTimer';
 import { ProductSocialBadge } from '../components/SocialProof';
 import { formatKES } from '../utils/constants';
@@ -8,6 +8,7 @@ import { useCart } from '../context/CartContext';
 import { useAuth } from '../context/AuthContext';
 import { isMaintenanceCached } from '../hooks/useMaintenanceMode';
 import { useActiveTheme } from '../context/SeasonalContext';
+import { addToWishlist, removeFromWishlist, isInWishlist } from '../utils/api';
 
 const COMPARE_KEY = 'omix_compare_ids';
 
@@ -26,8 +27,36 @@ function setCompareIds(ids) {
 function ProductCard({ listing, compareMode, onCompareChange }) {
   const [imgError, setImgError] = useState(false);
   const [justAdded, setJustAdded] = useState(false);
+  const [wishlisted, setWishlisted] = useState(false);
+  const [wishBusy, setWishBusy] = useState(false);
   const { user } = useAuth();
   const { addItem, cart } = useCart();
+
+  // Check wishlist status on mount
+  useEffect(() => {
+    if (user && listing?.id) {
+      isInWishlist(listing.id).then(res => {
+        if (res.success) setWishlisted(res.inWishlist);
+      });
+    }
+  }, [user, listing?.id]);
+
+  const handleWishlist = async (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    if (wishBusy || !user) return;
+    setWishBusy(true);
+    try {
+      if (wishlisted) {
+        const res = await removeFromWishlist(listing.id);
+        if (res.success) setWishlisted(false);
+      } else {
+        const res = await addToWishlist(listing.id);
+        if (res.success) setWishlisted(true);
+      }
+    } catch {}
+    setWishBusy(false);
+  };
   const navigate = useNavigate();
   const hasImage = listing.images && listing.images.length > 0 && !imgError;
 
@@ -171,6 +200,18 @@ function ProductCard({ listing, compareMode, onCompareChange }) {
             {isCompared ? <CheckSquare className="w-4 h-4" /> : <Square className="w-4 h-4" />}
           </button>
         )}
+
+        {/* Wishlist Heart button */}
+        <button onClick={handleWishlist}
+          className={`absolute top-2 left-2 p-1.5 rounded-full shadow-sm transition-all z-10 ${
+            wishlisted
+              ? 'bg-[var(--seasonal-primary,#ff385c)] text-white'
+              : 'bg-white/90 dark:bg-black/90 text-zinc-400 hover:text-[var(--seasonal-primary,#ff385c)] opacity-0 group-hover:opacity-100'
+          }`}
+          aria-label={wishlisted ? 'Remove from wishlist' : 'Add to wishlist'}
+        >
+          <Heart className={`w-4 h-4 ${wishlisted ? 'fill-current' : ''}`} />
+        </button>
 
         {/* Web Share button */}
         <button onClick={handleWebShare}
