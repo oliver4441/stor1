@@ -1,6 +1,19 @@
 // API layer — back to Supabase
 import { supabase } from './supabase'
-import { CATEGORY_TO_ID } from './constants'
+import { CATEGORY_TO_ID, ID_TO_CATEGORY } from './constants'
+
+// Helper: add virtual 'category' text field from category_id
+function mapCategoryName(listing) {
+  if (listing && listing.category_id != null && !listing.category) {
+    listing.category = ID_TO_CATEGORY[listing.category_id] || 'Other';
+  }
+  return listing;
+}
+function mapListingCategories(listings) {
+  if (Array.isArray(listings)) return listings.map(mapCategoryName);
+  if (listings) mapCategoryName(listings);
+  return listings;
+}
 
 // Auth
 export async function signUp({ email, password, fullName, phone, refCode }) {
@@ -25,7 +38,7 @@ export async function signUp({ email, password, fullName, phone, refCode }) {
     // Generate a referral code for this new user
     const genRefCode = (data.user.id || '').replace(/-/g, '').slice(0, 8).toUpperCase();
 
-    const { error: profileError } = await supabase.from('profiles').insert({
+    const { error: profileError } = await supabase.from('profiles').upsert({
       id: data.user.id,
       full_name: fullName,
       email,
@@ -34,7 +47,7 @@ export async function signUp({ email, password, fullName, phone, refCode }) {
       referred_by: referredBy,
       loyalty_points: 0,
       referral_code: genRefCode,
-    });
+    }, { onConflict: 'id' });
     if (profileError) {
       console.error('Profile insert failed:', profileError.message);
       // Note: auth user cleanup should be handled by a DB trigger or edge function,
@@ -79,7 +92,14 @@ export async function fetchListings(category = 'All', searchQuery = '', page = 1
     .eq('status', 'active')
 
   if (category && category !== 'All') {
-    query = query.eq('category', category)
+    // Use category_id for filtering (Blue Prism DB uses integer FK, not text column)
+    const catId = CATEGORY_TO_ID[category] || null;
+    if (catId) {
+      query = query.eq('category_id', catId)
+    } else {
+      // Fallback: try text category column in case it exists
+      query = query.eq('category', category)
+    }
   }
   if (searchQuery) {
     // Sanitize: only allow alphanumeric, spaces, hyphens, periods
@@ -99,7 +119,7 @@ export async function fetchListings(category = 'All', searchQuery = '', page = 1
 
   const { data, error, count } = await query
   if (error) { console.error(error); return { listings: [], total: 0 } }
-  return { listings: data || [], total: count || 0 }
+  return { listings: mapListingCategories(data || []), total: count || 0 }
 }
 
 export async function fetchListing(id) {
@@ -109,7 +129,7 @@ export async function fetchListing(id) {
     .eq('id', id)
     .single()
   if (error) { console.error(error); return null }
-  return data
+  return mapCategoryName(data)
 }
 
 export async function fetchUserListings(userId) {
@@ -119,7 +139,7 @@ export async function fetchUserListings(userId) {
     .eq('seller_id', userId)
     .order('created_at', { ascending: false })
   if (error) { console.error(error); return [] }
-  return data || []
+  return mapListingCategories(data || [])
 }
 
 // Image upload to Supabase Storage
@@ -275,7 +295,6 @@ export async function createListing(formData) {
       description: formData.description,
       price: parseInt(formData.price) || 0,
       condition: formData.condition,
-      category: formData.category,
       category_id: catId,
       location_city: formData.location,
       location_region: 'Kericho',
@@ -326,7 +345,6 @@ export async function updateListing(id, formData) {
       description: formData.description,
       price: parseInt(formData.price) || 0,
       condition: formData.condition,
-      category: formData.category,
       category_id: catId,
       location_city: formData.location,
       location_region: 'Kericho',
@@ -436,7 +454,7 @@ export async function fetchAllListings() {
     .order('created_at', { ascending: false })
 
   if (error) { console.error(error); return [] }
-  return data || []
+  return mapListingCategories(data || [])
 }
 
 // Admin: update listing status
