@@ -127,7 +127,7 @@ export default function AdminPromoCodes() {
   };
 
   const isExpired = (expiresAt) => expiresAt && new Date(expiresAt) < new Date();
-  const isExhausted = (c) => c.max_uses && c.times_used >= c.max_uses;
+  const isExhausted = (c) => c.max_uses && (c.current_uses || c.times_used || 0) >= c.max_uses;
 
   return (
     <div className="space-y-6">
@@ -233,10 +233,10 @@ export default function AdminPromoCodes() {
 
                     <div className="flex items-center gap-4 mt-2 text-[11px] text-zinc-400">
                       {c.max_uses && (
-                        <span>Used {c.times_used || 0} / {c.max_uses} times</span>
+                        <span>Used {c.current_uses || c.times_used || 0} / {c.max_uses} times</span>
                       )}
                       {!c.max_uses && (
-                        <span>Used {c.times_used || 0} times (unlimited)</span>
+                        <span>Used {c.current_uses || c.times_used || 0} times (unlimited)</span>
                       )}
                       {c.expires_at && (
                         <span>Expires {new Date(c.expires_at).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })}</span>

@@ -230,7 +230,7 @@ export default function CheckoutPage() {
       }
 
       // Check usage limit
-      if (data.max_uses && data.times_used >= data.max_uses) {
+      if (data.max_uses && (data.current_uses || data.times_used || 0) >= data.max_uses) {
         setPromoError('This promo code has reached its usage limit');
         setPromoLoading(false);
         return;

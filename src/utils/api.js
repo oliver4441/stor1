@@ -499,6 +499,7 @@ export async function createOrder({ items, total, customerName, phone, email, ad
       delivery_discount: isFreeDelivery ? 1 : 0,
       loyalty_points_used: loyaltyPointsUsed || 0,
       referral_code: referralCode || null,
+      referral_order: referralCode || null,
     })
     .select('*')
     .single()
@@ -591,9 +592,9 @@ export async function createOrder({ items, total, customerName, phone, email, ad
       const { error: rpcError } = await supabase.rpc('increment_promo_usage', { promo_id: promoCodeId });
       if (rpcError) {
         // Fallback: direct update (still has race condition but better than nothing)
-        const { data: current } = await supabase.from('promo_codes').select('times_used').eq('id', promoCodeId).single();
+        const { data: current } = await supabase.from('promo_codes').select('current_uses').eq('id', promoCodeId).single();
         if (current) {
-          await supabase.from('promo_codes').update({ times_used: (current.times_used || 0) + 1 }).eq('id', promoCodeId);
+          await supabase.from('promo_codes').update({ current_uses: (current.current_uses || 0) + 1 }).eq('id', promoCodeId);
         }
       }
     } catch (e) {
