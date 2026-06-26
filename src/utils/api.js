@@ -517,7 +517,6 @@ export async function createOrder({ items, total, customerName, phone, email, ad
       delivery_discount: isFreeDelivery ? 1 : 0,
       loyalty_points_used: loyaltyPointsUsed || 0,
       referral_code: referralCode || null,
-      referral_order: referralCode || null,
     })
     .select('*')
     .single()

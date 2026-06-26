@@ -4,7 +4,6 @@ import { signIn } from '../utils/api';
 import { useLang } from '../utils/lang';
 import { supabase } from '../utils/supabase';
 import { checkRateLimit, recordActionAttempt, clearRateLimit } from '../utils/rateLimit';
-import { Chrome } from 'lucide-react';
 import { trackUserLogin, trackError } from '../utils/analytics';
 
 function Login() {
@@ -13,22 +12,6 @@ function Login() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [needsVerification, setNeedsVerification] = useState(false);
-
-  const handleGoogleLogin = async () => {
-    setLoading(true);
-    setError('');
-    try {
-      const { error } = await supabase.auth.signInWithOAuth({
-        provider: 'google',
-        options: { redirectTo: window.location.origin },
-      });
-      if (error) throw error;
-    } catch (err) {
-      trackError(err.message || 'Google sign-in failed', 'Login.handleGoogleLogin');
-      setError(err.message || 'Google sign-in failed');
-      setLoading(false);
-    }
-  };
 
   const handleLogin = async (e) => {
     e.preventDefault();
@@ -119,10 +102,9 @@ function Login() {
           <div className="relative flex justify-center text-sm"><span className="px-2 bg-white dark:bg-zinc-950 text-zinc-500">{t('auth.or') || 'or'}</span></div>
         </div>
 
-        <button type="button" onClick={handleGoogleLogin} disabled={loading}
-          className="w-full flex items-center justify-center gap-2 bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-700 text-zinc-700 dark:text-zinc-200 font-bold py-3.5 rounded-2xl hover:bg-zinc-50 dark:hover:bg-zinc-800 transition-all disabled:opacity-50">
-          <Chrome className="w-5 h-5" />
-          {t('auth.signInWithGoogle') || 'Sign in with Google'}
+        <button type="button" disabled
+          className="w-full flex items-center justify-center gap-2 bg-zinc-100 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 text-zinc-400 dark:text-zinc-500 font-bold py-3.5 rounded-2xl cursor-not-allowed">
+          <span className="text-xs tracking-widest uppercase">Coming Soon</span>
         </button>
       </form>
 

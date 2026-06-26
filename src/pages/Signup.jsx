@@ -2,7 +2,7 @@ import { useState, useEffect, useRef } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { signUp } from '../utils/api';
 import { useLang } from '../utils/lang';
-import { User, Mail, Lock, CheckCircle2, ShoppingBag, Chrome } from 'lucide-react';
+import { User, Mail, Lock, CheckCircle2, ShoppingBag } from 'lucide-react';
 import { supabase } from '../utils/supabase';
 import { checkRateLimit, recordActionAttempt, clearRateLimit } from '../utils/rateLimit';
 import { trackUserSignup, trackError } from '../utils/analytics';
@@ -28,22 +28,6 @@ function Signup() {
   }, []);
 
   const updateField = (field, value) => setFormData(prev => ({ ...prev, [field]: value }));
-
-  const handleGoogleSignup = async () => {
-    setLoading(true);
-    setError('');
-    try {
-      const { error } = await supabase.auth.signInWithOAuth({
-        provider: 'google',
-        options: { redirectTo: window.location.origin },
-      });
-      if (error) throw error;
-    } catch (err) {
-      trackError(err.message || 'Google sign-up failed', 'Signup.handleGoogleSignup');
-      setError(err.message || 'Google sign-up failed');
-      setLoading(false);
-    }
-  };
 
   const handleSignup = async (e) => {
     e.preventDefault();
@@ -164,10 +148,9 @@ function Signup() {
           <div className="relative flex justify-center text-sm"><span className="px-2 bg-white dark:bg-zinc-950 text-zinc-500">{t('auth.or') || 'or'}</span></div>
         </div>
 
-        <button type="button" onClick={handleGoogleSignup} disabled={loading}
-          className="w-full flex items-center justify-center gap-2 bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-700 text-zinc-700 dark:text-zinc-200 font-bold py-3.5 rounded-2xl hover:bg-zinc-50 dark:hover:bg-zinc-800 transition-all disabled:opacity-50">
-          <Chrome className="w-5 h-5" />
-          {t('auth.signUpWithGoogle') || 'Sign up with Google'}
+        <button type="button" disabled
+          className="w-full flex items-center justify-center gap-2 bg-zinc-100 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 text-zinc-400 dark:text-zinc-500 font-bold py-3.5 rounded-2xl cursor-not-allowed">
+          <span className="text-xs tracking-widest uppercase">Coming Soon</span>
         </button>
       </form>
 
