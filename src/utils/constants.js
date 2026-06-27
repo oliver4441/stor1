@@ -76,7 +76,7 @@ export function formatKES(amount) {
   return new Intl.NumberFormat('en-KE', { style: 'currency', currency: 'KES', minimumFractionDigits: 0, maximumFractionDigits: 2 }).format(amount);
 }
 
-// ── Size Presets per category ──────────────────────────────
+// Category → default size presets (empty array = free text input)
 export const SIZE_PRESETS = {
   'Clothing': ['XS', 'S', 'M', 'L', 'XL', 'XXL', '3XL'],
   'T-Shirts': ['S', 'M', 'L', 'XL', 'XXL'],
@@ -86,7 +86,20 @@ export const SIZE_PRESETS = {
   'Pants': ['28', '30', '32', '34', '36', '38', '40', '42'],
   'Belts': ['S', 'M', 'L', 'XL'],
   'Hats': ['S', 'M', 'L', 'XL', 'One Size'],
-  'Jewelry': ['One Size'],
+  'Jewelry': ['One Size', 'S', 'M', 'L'],
+  'Electronics': ['Standard', 'Compact', 'Pro', 'Max'],
+  'Furniture': ['Small', 'Medium', 'Large', 'XL'],
+  'Sports': ['S', 'M', 'L', 'XL', 'XXL'],
+  'Home & Garden': ['Small', 'Medium', 'Large'],
+  'Books': [],
+  'Services': [],
+  'Vehicles': [],
+  'Health & Beauty': ['30ml', '50ml', '100ml', '150ml', '200ml', '250ml', '500ml'],
+  'Food': ['Small', 'Medium', 'Large', 'Family'],
+  'Drinks': ['250ml', '300ml', '500ml', '750ml', '1L', '1.5L', '2L'],
+  'Snacks': ['Small', 'Medium', 'Large', 'Family Pack'],
+  'Bakery': ['Small', 'Medium', 'Large', 'Whole'],
+  'Others': [],
 };
 
 // Get size preset for a category, fallback to generic
@@ -96,7 +109,8 @@ export function getPresetSizes(category) {
   for (const [key, sizes] of Object.entries(SIZE_PRESETS)) {
     if (category.toLowerCase().includes(key.toLowerCase().replace(/ *\(.*\)/, ''))) return sizes;
   }
-  return null; // No preset — free text input
+  // Empty array means free-text sizes (no presets) — still allow adding custom sizes
+  return [];
 }
 
 // ── Color Palette ──────────────────────────────────────────

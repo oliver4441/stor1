@@ -52,6 +52,20 @@ function Signup() {
       if (result.success) {
         clearRateLimit('signup');
         trackUserSignup('email', result.user.id);
+
+        // Send welcome email (fire and forget)
+        try {
+          const API_BASE = import.meta.env.VITE_API_URL || 'https://stor1-api.onrender.com';
+          const apiKey = import.meta.env.VITE_OMIX_API_KEY;
+          if (apiKey) {
+            fetch(`${API_BASE}/api/email/welcome`, {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json', 'x-api-key': apiKey },
+              body: JSON.stringify({ to: formData.email, name: formData.fullName }),
+            }).catch(() => {});
+          }
+        } catch {}
+
         if (result.session) { setSuccess(true); successTimer.current = setTimeout(() => navigate('/account'), 1500); }
         else { setNeedsVerification(true); setRegisteredEmail(formData.email); setLoading(false); }
       } else { setError(result.error); setLoading(false); }

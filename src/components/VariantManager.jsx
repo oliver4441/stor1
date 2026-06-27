@@ -160,14 +160,13 @@ export default function VariantManager({ category, basePrice, baseSku, value = [
 
       {expanded && (
         <div className="p-4 space-y-5">
-          {!isClothing && (
-            <div className="flex items-start gap-2 p-3 bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800 rounded-xl">
-              <AlertCircle className="w-4 h-4 text-amber-500 mt-0.5 flex-shrink-0" />
-              <p className="text-xs text-amber-700 dark:text-amber-400">
-                Variants work best with Clothing, Shoes, and Apparel categories. For other categories, use the single color/size fields above, or add variants manually.
-              </p>
-            </div>
-          )}
+          {/* Universal info about variants */}
+          <div className="flex items-start gap-2 p-3 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-xl">
+            <AlertCircle className="w-4 h-4 text-blue-500 mt-0.5 flex-shrink-0" />
+            <p className="text-xs text-blue-700 dark:text-blue-400">
+              Add size options so customers can pick the right variant (e.g. S/M/L/XL, 30ml/50ml/100ml, Small/Medium/Large). Click preset sizes below or type custom ones.
+            </p>
+          </div>
 
           {/* Step 1: Select Colors */}
           <div>

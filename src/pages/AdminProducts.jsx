@@ -198,16 +198,6 @@ export default function AdminProducts() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
-    // Validate: apparel categories must have size variants
-    const apparelCategories = ['Clothing'];
-    if (apparelCategories.includes(form.category) && form.has_variants && form.variants.length === 0) {
-      setErrorMsg('Clothing items require at least one size variant. Add sizes in the Product Variants section below.');
-      errorTimer.current = setTimeout(() => setErrorMsg(''), 8000);
-      setSubmitting(false);
-      return;
-    }
-    
     setSubmitting(true);
     const payload = {
       title: form.title, description: form.description, price: parseFloat(form.price) || 0,
@@ -601,11 +591,11 @@ export default function AdminProducts() {
                 </div>
               </div>
 
-              {/* Variant Manager — size/color variants for clothing, shoes, etc. */}
-              {['Clothing'].includes(form.category) && form.variants.length === 0 && (
+              {/* Variant Manager — size/color variants for ALL products */}
+              {form.variants.length === 0 && (
                 <div className="flex items-center gap-2 p-3 bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800 rounded-xl">
                   <AlertTriangle className="w-4 h-4 text-amber-500 flex-shrink-0" />
-                  <p className="text-xs text-amber-700 dark:text-amber-400">Clothing items should have size variants. Add sizes below so customers can pick their size when buying.</p>
+                  <p className="text-xs text-amber-700 dark:text-amber-400">Adding size/variant options helps customers pick exactly what they need. Add sizes in the Product Variants section below.</p>
                 </div>
               )}
               <VariantManager
