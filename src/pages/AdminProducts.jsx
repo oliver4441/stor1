@@ -6,7 +6,10 @@ import { formatKES, CATEGORIES, generateSKU, COLOR_PALETTE, SIZE_PRESETS, getPre
 import { uploadImage } from '../utils/api';
 import VariantManager from '../components/VariantManager';
 
-const CONDITIONS = ['New', 'Like New', 'Good', 'Fair', 'For Parts'];
+const CONDITIONS = [
+  { value: 'new', label: 'New' },
+  { value: 'like-new', label: 'Like New' },
+];
 const MAX_IMAGES = 5;
 
 export default function AdminProducts() {
@@ -24,7 +27,7 @@ export default function AdminProducts() {
   const [modalOpen, setModalOpen] = useState(false);
   const [editingId, setEditingId] = useState(null);
   const [form, setForm] = useState({
-    title: '', price: '', description: '', category: 'Electronics', condition: 'New', location: 'CBD',
+    title: '', price: '', description: '', category: 'Electronics', condition: 'new', location: 'CBD',
     images: [], brand: '', model: '', color: '', weight: '', sku: '', status: 'active', tags: '',
     has_variants: false, variants: [], size_guide: '',
   });
@@ -132,7 +135,7 @@ export default function AdminProducts() {
     const cat = 'Electronics';
     setEditingId(null);
     setForm({
-      title: '', price: '', description: '', category: cat, condition: 'New', location: 'CBD',
+      title: '', price: '', description: '', category: cat, condition: 'new', location: 'CBD',
       images: [], brand: '', model: '', color: '', weight: '',
       sku: generateSKU(cat), status: 'active', tags: '',
       has_variants: false, variants: [], size_guide: '',
@@ -144,7 +147,7 @@ export default function AdminProducts() {
     setEditingId(listing.id);
     setForm({
       title: listing.title, price: String(listing.price), description: listing.description || '',
-      category: listing.category || 'Electronics', condition: listing.condition || 'New',
+      category: listing.category || 'Electronics', condition: listing.condition || 'new',
       location: listing.location_city || 'CBD', images: listing.images || [],
       brand: listing.brand || '', model: listing.model || '',
       color: listing.color || '', weight: listing.weight || '', sku: listing.sku || '',
@@ -346,7 +349,8 @@ export default function AdminProducts() {
           className="px-4 py-2.5 rounded-xl bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 text-sm text-zinc-900 dark:text-white appearance-none">
           <option value="All">All Status</option>
           <option value="active">Active</option>
-          <option value="draft">Draft</option>
+          <option value="sold">Sold</option>
+          <option value="archived">Archived</option>
         </select>
       </div>
 
@@ -358,7 +362,8 @@ export default function AdminProducts() {
             className="px-3 py-1.5 rounded-lg bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 text-sm text-zinc-900 dark:text-white">
             <option value="">Bulk action...</option>
             <option value="active">Set Active</option>
-            <option value="draft">Set Draft</option>
+            <option value="sold">Set Sold</option>
+            <option value="archived">Set Archived</option>
             <option value="delete">Delete</option>
           </select>
           <button onClick={handleBulkAction} disabled={!bulkAction || processing}
@@ -566,14 +571,15 @@ export default function AdminProducts() {
                 <div>
                   <label className="block text-sm font-bold mb-1.5 text-zinc-700 dark:text-zinc-300">Condition</label>
                   <select value={form.condition} onChange={e => setForm({...form, condition: e.target.value})} className="w-full px-4 py-2.5 rounded-xl bg-zinc-100 dark:bg-zinc-800 border border-transparent focus:border-[#ff385c] focus:outline-none text-zinc-900 dark:text-white text-sm appearance-none">
-                    {CONDITIONS.map(c => <option key={c} value={c}>{c}</option>)}
+                    {CONDITIONS.map(c => <option key={c.value} value={c.value}>{c.label}</option>)}
                   </select>
                 </div>
                 <div>
                   <label className="block text-sm font-bold mb-1.5 text-zinc-700 dark:text-zinc-300">Status</label>
                   <select value={form.status} onChange={e => setForm({...form, status: e.target.value})} className="w-full px-4 py-2.5 rounded-xl bg-zinc-100 dark:bg-zinc-800 border border-transparent focus:border-[#ff385c] focus:outline-none text-zinc-900 dark:text-white text-sm appearance-none">
                     <option value="active">Active</option>
-                    <option value="draft">Draft</option>
+                    <option value="sold">Sold</option>
+                    <option value="archived">Archived</option>
                   </select>
                 </div>
               </div>
