@@ -17,6 +17,10 @@ const port = process.env.PORT || 3000;
 const PAYSTACK_SECRET_KEY = process.env.PAYSTACK_SECRET_KEY || '';
 const PAYSTACK_PUBLIC_KEY = process.env.VITE_PAYSTACK_PUBLIC_KEY || '';
 
+// ── Supabase Admin Key (for server-side order updates, bypasses RLS) ──
+const SUPABASE_SERVICE_KEY = process.env.SUPABASE_SERVICE_KEY || process.env.VITE_SUPABASE_ANON_KEY || '';
+const SUPABASE_URL = process.env.SUPABASE_URL || process.env.VITE_SUPABASE_URL || '';
+
 // ── VAPID Keys for Push Notifications ──────────────────────────────
 const VAPID_PUBLIC_KEY = process.env.VITE_VAPID_PUBLIC_KEY || '';
 const VAPID_PRIVATE_KEY = process.env.VAPID_PRIVATE_KEY || '';
@@ -93,19 +97,18 @@ app.get('/api/paystack/verify/:reference', async (req, res) => {
 
     const data = await response.json();
 
-    // If payment successful, update the order in Supabase
+    // If payment successful, update the order in Supabase (using service_role key to bypass RLS)
     if (data.status && data.data?.status === 'success') {
-      const supabaseUrl = process.env.VITE_SUPABASE_URL || '';
-      const supabaseKey = process.env.VITE_SUPABASE_ANON_KEY || '';
+      const supabaseUrl = SUPABASE_URL;
       const orderId = data.data?.metadata?.order_id;
 
-      if (orderId && supabaseUrl) {
+      if (orderId && supabaseUrl && SUPABASE_SERVICE_KEY) {
         try {
           await fetch(`${supabaseUrl}/rest/v1/omix_orders?id=eq.${orderId}`, {
             method: 'PATCH',
             headers: {
-              'apikey': supabaseKey,
-              'Authorization': `Bearer ${supabaseKey}`,
+              'apikey': SUPABASE_SERVICE_KEY,
+              'Authorization': `Bearer ${SUPABASE_SERVICE_KEY}`,
               'Content-Type': 'application/json',
               'Prefer': 'return=minimal',
             },
@@ -152,16 +155,15 @@ app.post('/api/paystack/webhook', express.raw({ type: 'application/json' }), (re
       const orderId = metadata?.order_id;
       console.log(`[Paystack Webhook] Payment success: ref=${reference} order=${orderId}`);
 
-      // Update order asynchronously
-      const supabaseUrl = process.env.VITE_SUPABASE_URL || '';
-      const supabaseKey = process.env.VITE_SUPABASE_ANON_KEY || '';
+      // Update order asynchronously (using service_role key to bypass RLS)
+      const supabaseUrl = SUPABASE_URL;
 
-      if (orderId && supabaseUrl) {
+      if (orderId && supabaseUrl && SUPABASE_SERVICE_KEY) {
         fetch(`${supabaseUrl}/rest/v1/omix_orders?id=eq.${orderId}`, {
           method: 'PATCH',
           headers: {
-            'apikey': supabaseKey,
-            'Authorization': `Bearer ${supabaseKey}`,
+            'apikey': SUPABASE_SERVICE_KEY,
+            'Authorization': `Bearer ${SUPABASE_SERVICE_KEY}`,
             'Content-Type': 'application/json',
             'Prefer': 'return=minimal',
           },
@@ -197,10 +199,9 @@ app.post('/api/push/broadcast', async (req, res) => {
   }
 
   try {
-    // Fetch all subscriptions from Supabase
-    // Note: We use fetch directly to avoid importing supabase-js in Node ESM
-    const supabaseUrl = process.env.VITE_SUPABASE_URL || 'https://xmdyovfcjogkarwxiyhb.supabase.co';
-    const supabaseKey = process.env.VITE_SUPABASE_ANON_KEY || '';
+    // Fetch all subscriptions from Supabase (using service_role for server-side access)
+    const supabaseUrl = SUPABASE_URL;
+    const supabaseKey = SUPABASE_SERVICE_KEY;
 
     const subResponse = await fetch(`${supabaseUrl}/rest/v1/push_subscriptions?select=*`, {
       headers: {
