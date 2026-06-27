@@ -1,7 +1,7 @@
 import React from 'react';
 import { Navigate, Outlet, useLocation, Link, useNavigate } from 'react-router-dom';
 import { supabase } from '../utils/supabase';
-import { isAdmin, clearAdminCache } from '../utils/api';
+import { isAdmin } from '../utils/api';
 import {
   LayoutDashboard, Package, ShoppingBag, Users, BarChart3, Settings,
   LogOut, Shield, Menu, X, ChevronRight, Tag, Bell
@@ -45,7 +45,6 @@ export default function AdminLayout() {
 
   const handleLogout = async () => {
     await supabase.auth.signOut();
-    clearAdminCache();
     navigate('/login');
   };
 

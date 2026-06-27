@@ -71,7 +71,6 @@ export async function signIn({ email, password }) {
 
 export async function signOut() {
   await supabase.auth.signOut();
-  clearAdminCache();
   return { success: true };
 }
 
@@ -602,17 +601,12 @@ export async function createOrder({ items, total, customerName, phone, email, ad
     }
   } catch {}
 
-  // Increment promo code usage — use atomic DB function if available
+  // Increment promo code usage — atomic via DB function
   if (promoCodeId) {
     try {
-      // Prefer atomic increment via RPC (requires create_promo_increment_fn in DB)
       const { error: rpcError } = await supabase.rpc('increment_promo_usage', { promo_id: promoCodeId });
       if (rpcError) {
-        // Fallback: direct update (still has race condition but better than nothing)
-        const { data: current } = await supabase.from('promo_codes').select('current_uses').eq('id', promoCodeId).single();
-        if (current) {
-          await supabase.from('promo_codes').update({ current_uses: (current.current_uses || 0) + 1 }).eq('id', promoCodeId);
-        }
+        console.warn('Promo usage increment failed (RPC not available):', rpcError.message);
       }
     } catch (e) {
       console.warn('Failed to increment promo usage:', e.message);
@@ -801,9 +795,6 @@ export async function updateOrderStatus(orderId, status) {
   return { success: true };
 }
 
-// No-op: admin cache removed for security (isAdmin now always checks server-side)
-export function clearAdminCache() {}
-
 export async function isAdmin() {
   try {
     const { data: { user } } = await supabase.auth.getUser();
@@ -831,7 +822,7 @@ export async function createListingPayment(formData) {
       .from('listing_payments')
       .insert({
         user_id: user.id,
-        amount: 500, // KES 5.00 in cents
+        amount: 50000, // KES 500.00 in cents
         currency: 'KES',
         status: 'pending',
         listing_data: formData,

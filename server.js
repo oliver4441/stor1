@@ -1,6 +1,7 @@
 // Simple server to serve the Vite-built Omix frontend
 import express from 'express';
 import crypto from 'crypto';
+import helmet from 'helmet';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import fetch from 'node-fetch';
@@ -10,6 +11,10 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 const app = express();
+app.use(helmet({
+  contentSecurityPolicy: false, // Allow Paystack inline scripts
+  crossOriginEmbedderPolicy: false, // Allow third-party resources
+}));
 app.use(express.json({ limit: '1mb' }));
 const port = process.env.PORT || 3000;
 
