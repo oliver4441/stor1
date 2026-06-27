@@ -5,7 +5,7 @@ import {
   ChevronDown, ChevronUp, Clock, Gift, Copy, Check, Star, ChevronRight,
   ExternalLink, Users, Bookmark, X, Bell, BellRing, BellOff,
   User, Mail, Phone, Camera, Edit2, MapPin, Plus, Trash2, AlertTriangle,
-  Loader2, CheckCircle2, Shield, CreditCard, Settings, Home,
+  Loader2, CheckCircle2, Shield, Lock, CreditCard, Settings, Home,
 } from 'lucide-react';
 import { supabase } from '../utils/supabase';
 import {
@@ -327,6 +327,11 @@ function UserDashboard() {
   const [notifBusy, setNotifBusy] = useState(false);
   const [notifMsg, setNotifMsg] = useState(null);
 
+  // Password change
+  const [pwForm, setPwForm] = useState({ current: '', newPw: '', confirm: '' });
+  const [pwBusy, setPwBusy] = useState(false);
+  const [pwMsg, setPwMsg] = useState({ type: 'success', text: '' });
+
   // Products (for browsing)
   const [products, setProducts] = useState([]);
   const [activeCategory, setActiveCategory] = useState('All');
@@ -409,6 +414,31 @@ function UserDashboard() {
   };
 
   const handleLogout = async () => { await supabase.auth.signOut(); navigate('/login'); };
+
+  // ── Change Password ──────────────────────────────────────────────
+  const handleChangePassword = async (e) => {
+    e.preventDefault();
+    setPwBusy(true);
+    setPwMsg({ type: 'success', text: '' });
+    try {
+      if (pwForm.newPw.length < 6) {
+        setPwMsg({ type: 'error', text: 'New password must be at least 6 characters.' });
+        return;
+      }
+      if (pwForm.newPw !== pwForm.confirm) {
+        setPwMsg({ type: 'error', text: 'Passwords do not match.' });
+        return;
+      }
+      const { error } = await supabase.auth.updateUser({ password: pwForm.newPw });
+      if (error) throw error;
+      setPwMsg({ type: 'success', text: 'Password changed successfully!' });
+      setPwForm({ current: '', newPw: '', confirm: '' });
+    } catch (err) {
+      setPwMsg({ type: 'error', text: err.message || 'Failed to change password.' });
+    } finally {
+      setPwBusy(false);
+    }
+  };
 
   // ── Profile Save ──────────────────────────────────────────────────
   const handleSaveProfile = async () => {
@@ -965,6 +995,71 @@ function UserDashboard() {
                   <p className="text-sm text-zinc-500">No saved searches yet</p>
                 </div>
               )}
+            </div>
+
+            {/* Security */}
+            <div className="bg-white dark:bg-zinc-900 rounded-2xl border border-zinc-200 dark:border-zinc-800 p-6">
+              <div className="flex items-center gap-3 mb-4">
+                <div className="w-10 h-10 rounded-xl bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center">
+                  <Shield className="w-5 h-5 text-blue-500" />
+                </div>
+                <h2 className="text-lg font-bold text-zinc-900 dark:text-white">Security</h2>
+              </div>
+              <form onSubmit={handleChangePassword} className="space-y-3">
+                <div>
+                  <label className="text-xs font-bold text-zinc-500 dark:text-zinc-400 uppercase tracking-wider mb-1.5 block">
+                    Current Password
+                  </label>
+                  <input
+                    type="password"
+                    value={pwForm.current}
+                    onChange={e => setPwForm(f => ({ ...f, current: e.target.value }))}
+                    placeholder="Enter current password"
+                    className="w-full px-3 py-2.5 rounded-xl bg-zinc-50 dark:bg-zinc-800/50 border border-zinc-200 dark:border-zinc-700 text-sm text-zinc-900 dark:text-white placeholder:text-zinc-400 focus:outline-none focus:border-blue-400 transition-colors"
+                  />
+                </div>
+                <div>
+                  <label className="text-xs font-bold text-zinc-500 dark:text-zinc-400 uppercase tracking-wider mb-1.5 block">
+                    New Password
+                  </label>
+                  <input
+                    type="password"
+                    value={pwForm.newPw}
+                    onChange={e => setPwForm(f => ({ ...f, newPw: e.target.value }))}
+                    placeholder="Min 6 characters"
+                    className="w-full px-3 py-2.5 rounded-xl bg-zinc-50 dark:bg-zinc-800/50 border border-zinc-200 dark:border-zinc-700 text-sm text-zinc-900 dark:text-white placeholder:text-zinc-400 focus:outline-none focus:border-blue-400 transition-colors"
+                  />
+                </div>
+                <div>
+                  <label className="text-xs font-bold text-zinc-500 dark:text-zinc-400 uppercase tracking-wider mb-1.5 block">
+                    Confirm New Password
+                  </label>
+                  <input
+                    type="password"
+                    value={pwForm.confirm}
+                    onChange={e => setPwForm(f => ({ ...f, confirm: e.target.value }))}
+                    placeholder="Re-enter new password"
+                    className="w-full px-3 py-2.5 rounded-xl bg-zinc-50 dark:bg-zinc-800/50 border border-zinc-200 dark:border-zinc-700 text-sm text-zinc-900 dark:text-white placeholder:text-zinc-400 focus:outline-none focus:border-blue-400 transition-colors"
+                  />
+                </div>
+                {pwMsg.text && (
+                  <div className={`text-xs font-semibold px-3 py-2 rounded-xl ${
+                    pwMsg.type === 'success'
+                      ? 'bg-green-50 dark:bg-green-900/20 text-green-600 dark:text-green-400'
+                      : 'bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-400'
+                  }`}>
+                    {pwMsg.text}
+                  </div>
+                )}
+                <button
+                  type="submit"
+                  disabled={pwBusy}
+                  className="w-full py-3 rounded-xl bg-blue-500 text-white font-bold text-sm hover:bg-blue-600 transition-colors disabled:opacity-50 flex items-center justify-center gap-2"
+                >
+                  {pwBusy ? <Loader2 className="w-4 h-4 animate-spin" /> : <Lock className="w-4 h-4" />}
+                  {pwBusy ? 'Changing...' : 'Change Password'}
+                </button>
+              </form>
             </div>
 
             {/* Account Actions */}

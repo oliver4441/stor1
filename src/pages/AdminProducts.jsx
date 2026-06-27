@@ -32,6 +32,9 @@ export default function AdminProducts() {
   const [successMsg, setSuccessMsg] = useState('');
   const [errorMsg, setErrorMsg] = useState('');
   const [deleteTarget, setDeleteTarget] = useState(null);
+  const [deleteAllModal, setDeleteAllModal] = useState(false);
+  const [deleteAllBusy, setDeleteAllBusy] = useState(false);
+  const [deleteAllConfirmText, setDeleteAllConfirmText] = useState('');
   const [imageUploading, setImageUploading] = useState(false);
   const [processing, setProcessing] = useState(false);
   const fileInputRef = useRef(null);
@@ -241,6 +244,28 @@ export default function AdminProducts() {
     }
   };
 
+  const handleDeleteAll = async () => {
+    if (deleteAllConfirmText !== 'DELETE ALL') return;
+    setDeleteAllBusy(true);
+    try {
+      const allIds = listings.map(l => l.id);
+      const result = await bulkDeleteListings(allIds);
+      if (result.success) {
+        setSuccessMsg(`All ${allIds.length} products deleted!`);
+        setDeleteAllModal(false);
+        setDeleteAllConfirmText('');
+        setSelectedIds([]);
+        await loadData();
+        successTimer.current = setTimeout(() => setSuccessMsg(''), 3000);
+      } else {
+        setErrorMsg('Delete all failed: ' + (result.error || 'Unknown error'));
+        errorTimer.current = setTimeout(() => setErrorMsg(''), 5000);
+      }
+    } finally {
+      setDeleteAllBusy(false);
+    }
+  };
+
   // Quick edit handlers
   const startQuickEdit = (id, field, value) => {
     setQuickEditId(id);
@@ -290,9 +315,16 @@ export default function AdminProducts() {
           <h2 className="text-xl font-bold text-zinc-900 dark:text-white">Products</h2>
           <p className="text-sm text-zinc-500">{listings.length} total • {filteredListings.length} shown</p>
         </div>
-        <button onClick={openAddModal} className="flex items-center gap-2 bg-[#ff385c] text-white px-5 py-2.5 rounded-xl font-bold text-sm hover:bg-[#e03150] shadow-lg shadow-[#ff385c]/20 transition-all">
-          <Plus className="w-4 h-4" /> Add Product
-        </button>
+        <div className="flex items-center gap-2">
+          {listings.length > 0 && (
+            <button onClick={() => { setDeleteAllModal(true); setDeleteAllConfirmText(''); }} className="flex items-center gap-2 bg-red-600 text-white px-4 py-2.5 rounded-xl font-bold text-sm hover:bg-red-700 shadow-lg shadow-red-600/20 transition-all">
+              <Trash2 className="w-4 h-4" /> Delete All
+            </button>
+          )}
+          <button onClick={openAddModal} className="flex items-center gap-2 bg-[#ff385c] text-white px-5 py-2.5 rounded-xl font-bold text-sm hover:bg-[#e03150] shadow-lg shadow-[#ff385c]/20 transition-all">
+            <Plus className="w-4 h-4" /> Add Product
+          </button>
+        </div>
       </div>
 
       {/* Filters + Bulk Actions */}
@@ -641,6 +673,39 @@ export default function AdminProducts() {
               <button onClick={() => !processing && setDeleteTarget(null)} disabled={processing} className="flex-1 bg-zinc-100 dark:bg-zinc-800 text-zinc-700 dark:text-zinc-300 font-bold py-2.5 rounded-xl text-sm disabled:opacity-50">Cancel</button>
               <button onClick={handleDelete} disabled={processing} className="flex-1 bg-red-500 text-white font-bold py-2.5 rounded-xl text-sm hover:bg-red-600 disabled:opacity-50 flex items-center justify-center gap-2">
                 {processing ? <><Loader2 className="w-4 h-4 animate-spin" /> Deleting...</> : 'Delete'}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Delete All Products Confirmation */}
+      {deleteAllModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+          <div className="absolute inset-0 bg-black/50 backdrop-blur-sm" onClick={() => !deleteAllBusy && setDeleteAllModal(false)} />
+          <div className="relative bg-white dark:bg-zinc-900 rounded-2xl border border-red-200 dark:border-red-900/50 p-6 w-full max-w-md shadow-2xl text-center">
+            <div className="w-14 h-14 bg-red-100 dark:bg-red-900/40 rounded-full flex items-center justify-center mx-auto mb-4"><AlertTriangle className="w-7 h-7 text-red-600" /></div>
+            <h3 className="text-lg font-bold text-zinc-900 dark:text-white mb-2">Delete All Products</h3>
+            <p className="text-sm text-zinc-500 dark:text-zinc-400 mb-5">
+              This will permanently delete ALL <span className="font-bold text-red-600">{listings.length}</span> products. This cannot be undone.
+            </p>
+            <div className="mb-5">
+              <label className="block text-xs font-bold text-zinc-600 dark:text-zinc-400 mb-1.5 text-left">
+                Type <span className="font-mono text-red-600">DELETE ALL</span> to confirm
+              </label>
+              <input
+                type="text"
+                value={deleteAllConfirmText}
+                onChange={e => setDeleteAllConfirmText(e.target.value)}
+                placeholder="DELETE ALL"
+                disabled={deleteAllBusy}
+                className="w-full px-4 py-2.5 rounded-xl bg-zinc-100 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 focus:border-red-500 focus:outline-none text-zinc-900 dark:text-white text-sm font-mono tracking-widest placeholder:text-zinc-400"
+              />
+            </div>
+            <div className="flex gap-3">
+              <button onClick={() => { setDeleteAllModal(false); setDeleteAllConfirmText(''); }} disabled={deleteAllBusy} className="flex-1 bg-zinc-100 dark:bg-zinc-800 text-zinc-700 dark:text-zinc-300 font-bold py-2.5 rounded-xl text-sm disabled:opacity-50">Cancel</button>
+              <button onClick={handleDeleteAll} disabled={deleteAllBusy || deleteAllConfirmText !== 'DELETE ALL'} className="flex-1 bg-red-600 text-white font-bold py-2.5 rounded-xl text-sm hover:bg-red-700 disabled:opacity-40 flex items-center justify-center gap-2">
+                {deleteAllBusy ? <><Loader2 className="w-4 h-4 animate-spin" /> Deleting...</> : 'Delete All'}
               </button>
             </div>
           </div>
