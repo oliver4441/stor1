@@ -537,11 +537,12 @@ export async function createOrder({ items, total, customerName, phone, email, ad
     order_id: order.id,
     product_id: item.product_id || null,
     product_name: item.product_name,
-    product_sku: item.product_sku || null,
+    product_sku: item.variant_sku || item.product_sku || null,
     product_image: item.product_image || null,
     price: item.price,
     quantity: item.quantity,
     subtotal: item.subtotal || (item.price * item.quantity),
+    variant: item.variant || null,
   }))
 
   if (orderItems.length > 0) {

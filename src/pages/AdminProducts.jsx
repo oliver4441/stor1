@@ -198,6 +198,16 @@ export default function AdminProducts() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    
+    // Validate: apparel categories must have size variants
+    const apparelCategories = ['Clothing'];
+    if (apparelCategories.includes(form.category) && form.has_variants && form.variants.length === 0) {
+      setErrorMsg('Clothing items require at least one size variant. Add sizes in the Product Variants section below.');
+      errorTimer.current = setTimeout(() => setErrorMsg(''), 8000);
+      setSubmitting(false);
+      return;
+    }
+    
     setSubmitting(true);
     const payload = {
       title: form.title, description: form.description, price: parseFloat(form.price) || 0,
@@ -518,11 +528,14 @@ export default function AdminProducts() {
                   <label className="block text-sm font-bold mb-1.5 text-zinc-700 dark:text-zinc-300">Category</label>
                   <select value={form.category} onChange={e => {
                     const newCat = e.target.value;
+                    const needsVariants = ['Clothing', 'T-Shirts', 'Shoes (Men)', 'Shoes (Women)', 'Shoes (Kids)', 'Pants', 'Belts', 'Hats'].includes(newCat);
                     setForm(prev => ({
                       ...prev,
                       category: newCat,
                       // Auto-regenerate SKU when category changes (only for new products)
                       sku: editingId ? prev.sku : generateSKU(newCat),
+                      // Auto-enable variants for apparel categories
+                      has_variants: needsVariants ? true : prev.has_variants,
                     }));
                   }} className="w-full px-4 py-2.5 rounded-xl bg-zinc-100 dark:bg-zinc-800 border border-transparent focus:border-[#ff385c] focus:outline-none text-zinc-900 dark:text-white text-sm appearance-none">
                     {CATEGORIES.filter(c => c !== 'All').map(c => <option key={c} value={c}>{c}</option>)}
@@ -589,6 +602,12 @@ export default function AdminProducts() {
               </div>
 
               {/* Variant Manager — size/color variants for clothing, shoes, etc. */}
+              {['Clothing'].includes(form.category) && form.variants.length === 0 && (
+                <div className="flex items-center gap-2 p-3 bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800 rounded-xl">
+                  <AlertTriangle className="w-4 h-4 text-amber-500 flex-shrink-0" />
+                  <p className="text-xs text-amber-700 dark:text-amber-400">Clothing items should have size variants. Add sizes below so customers can pick their size when buying.</p>
+                </div>
+              )}
               <VariantManager
                 category={form.category}
                 basePrice={form.price}

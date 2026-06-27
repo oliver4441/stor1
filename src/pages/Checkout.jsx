@@ -408,6 +408,10 @@ export default function CheckoutPage() {
           price: item.price,
           quantity: item.quantity,
           subtotal: item.price * item.quantity,
+          variant: item.variant || null,
+          variant_size: item.variant?.size || null,
+          variant_color: item.variant?.colorName || null,
+          variant_sku: item.variant?.sku || null,
         })),
         total: currentDiscounted,
         customerName: form.fullName.trim(),
@@ -587,6 +591,19 @@ export default function CheckoutPage() {
                   </div>
                   <div className="flex-grow min-w-0">
                     <h4 className="font-bold text-sm truncate" style={{ color: C.text }}>{item.name}</h4>
+                    {item.variant && (
+                      <div className="flex items-center gap-1.5 mt-0.5">
+                        {item.variant.size && (
+                          <span className="text-[9px] font-bold px-1.5 py-0.5 rounded" style={{ backgroundColor: C.bgGray, color: C.textMuted }}>Size: {item.variant.size}</span>
+                        )}
+                        {item.variant.color && item.variant.colorName && (
+                          <span className="flex items-center gap-0.5 text-[9px] font-bold px-1.5 py-0.5 rounded" style={{ backgroundColor: C.bgGray, color: C.textMuted }}>
+                            <span className="w-2 h-2 rounded-full inline-block" style={{ backgroundColor: item.variant.color?.startsWith('#') ? item.variant.color : '#ccc', border: '1px solid #d4d4d8' }} />
+                            {item.variant.colorName}
+                          </span>
+                        )}
+                      </div>
+                    )}
                     <p className="text-xs font-bold" style={{ color: C.accent }}>{formatKES(item.price)}</p>
                   </div>
                   <div className="flex items-center gap-1.5 flex-shrink-0">

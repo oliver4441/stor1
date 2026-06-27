@@ -79,15 +79,22 @@ function cartReducer(state, action) {
       return action.payload;
 
     case 'ADD_ITEM': {
-      const existing = state.find(item => item.id === action.payload.id);
+      const payload = action.payload;
+      // Deduplicate by product ID + variant (size+color) so same product in different sizes is separate
+      const variantKey = payload.variant ? `${payload.variant.size || ''}_${payload.variant.color || ''}` : '';
+      const existing = state.find(item => {
+        const itemVariantKey = item.variant ? `${item.variant.size || ''}_${item.variant.color || ''}` : '';
+        return item.id === payload.id && itemVariantKey === variantKey;
+      });
       if (existing) {
         return state.map(item =>
-          item.id === action.payload.id
-            ? { ...item, quantity: item.quantity + (action.payload.quantity || 1) }
+          (item.id === payload.id && (item.variant ? `${item.variant.size || ''}_${item.variant.color || ''}` : '') === variantKey)
+            ? { ...item, quantity: item.quantity + (payload.quantity || 1) }
             : item
         );
       }
-      return [...state, { ...action.payload, quantity: action.payload.quantity || 1 }];
+      // Store a unique cart key for variant-based items
+      return [...state, { ...payload, quantity: payload.quantity || 1, _cartKey: payload.id + '_' + variantKey }];
     }
 
     case 'REMOVE_ITEM':

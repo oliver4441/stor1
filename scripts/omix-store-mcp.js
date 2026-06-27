@@ -10,8 +10,8 @@
  * 
  * Environment variables:
  *   SUPABASE_PAT          Supabase Personal Access Token
- *   SUPABASE_PROJECT_REF  Project ref (xmdyovfcjogkarwxiyhb)
- *   SUPABASE_URL          Supabase URL (https://xmdyovfcjogkarwxiyhb.supabase.co)
+ *   SUPABASE_PROJECT_REF  Project ref (fdwoezyataxhdtgjlfxt)
+ *   SUPABASE_URL          Supabase URL (https://fdwoezyataxhdtgjlfxt.supabase.co)
  *   SUPABASE_SERVICE_KEY  Supabase service_role key (for REST queries)
  *   RENDER_API_KEY        Render API key
  *   RENDER_FRONTEND_SERVICE_ID  stor1-web service ID
@@ -23,10 +23,10 @@ const http = require("http");
 
 // ── Config ──────────────────────────────────────────────────────
 const SUPABASE_PAT       = process.env.SUPABASE_PAT;
-const PROJECT_REF        = process.env.SUPABASE_PROJECT_REF || "xmdyovfcjogkarwxiyhb";
+const PROJECT_REF        = process.env.SUPABASE_PROJECT_REF || "fdwoezyataxhdtgjlfxt";
 const SUPABASE_URL       = process.env.SUPABASE_URL || `https://${PROJECT_REF}.supabase.co`;
 const SUPABASE_SR_KEY    = process.env.SUPABASE_SERVICE_KEY || "";
-const RENDER_API_KEY     = process.env.RENDER_API_KEY || "rnd_SQSOckXEtPMK8QL1N2HQ1ZfamzOs";
+const RENDER_API_KEY     = process.env.RENDER_API_KEY || "";
 const RENDER_FRONTEND_ID = process.env.RENDER_FRONTEND_SERVICE_ID || "srv-d8i6ah8jo6nc73cvc460";
 const RENDER_BACKEND_ID  = process.env.RENDER_BACKEND_SERVICE_ID || "srv-d8ijdpe47okc739etglg";
 const RENDER_DEPLOY_KEY  = process.env.RENDER_DEPLOY_KEY || "BoiewTvWfqU";

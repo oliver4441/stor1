@@ -52,6 +52,19 @@ export default function CartPage() {
                 <Link to={`/listing/${item.id}`} className="font-bold text-zinc-900 dark:text-white hover:text-[var(--seasonal-primary,#ff385c)] transition-colors">
                   {item.name}
                 </Link>
+                {item.variant && (
+                  <div className="flex items-center gap-2 mt-0.5">
+                    {item.variant.size && (
+                      <span className="text-[10px] font-bold bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-400 px-1.5 py-0.5 rounded-md">Size: {item.variant.size}</span>
+                    )}
+                    {item.variant.color && item.variant.colorName && (
+                      <span className="flex items-center gap-1 text-[10px] font-bold bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-400 px-1.5 py-0.5 rounded-md">
+                        <span className="w-2.5 h-2.5 rounded-full border border-zinc-300 dark:border-zinc-600 inline-block" style={{ backgroundColor: item.variant.color?.startsWith('#') ? item.variant.color : '#ccc' }} />
+                        {item.variant.colorName}
+                      </span>
+                    )}
+                  </div>
+                )}
                 <p className="text-[var(--seasonal-primary,#ff385c)] font-bold">{formatKES(item.price)}</p>
                 <div className="flex items-center gap-3 mt-2">
                   <div className="flex items-center gap-2">
