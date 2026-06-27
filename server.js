@@ -133,7 +133,7 @@ app.get('/api/paystack/verify/:reference', async (req, res) => {
 });
 
 // Paystack webhook
-app.post('/api/paystack/webhook', express.raw({ type: 'application/json' }), (req, res) => {
+app.post('/api/paystack/webhook', express.raw({ type: 'application/json' }), async (req, res) => {
   const signature = req.headers['x-paystack-signature'];
 
   if (!PAYSTACK_SECRET_KEY || !signature) {
@@ -159,20 +159,37 @@ app.post('/api/paystack/webhook', express.raw({ type: 'application/json' }), (re
       const supabaseUrl = SUPABASE_URL;
 
       if (orderId && supabaseUrl && SUPABASE_SERVICE_KEY) {
-        fetch(`${supabaseUrl}/rest/v1/omix_orders?id=eq.${orderId}`, {
-          method: 'PATCH',
-          headers: {
-            'apikey': SUPABASE_SERVICE_KEY,
-            'Authorization': `Bearer ${SUPABASE_SERVICE_KEY}`,
-            'Content-Type': 'application/json',
-            'Prefer': 'return=minimal',
-          },
-          body: JSON.stringify({
-            status: 'paid',
-            paystack_reference: reference,
-            paid_at: new Date().toISOString(),
-          }),
-        }).catch(err => console.error('[Paystack Webhook] DB error:', err.message));
+        try {
+          const response = await fetch(`${supabaseUrl}/rest/v1/omix_orders?id=eq.${orderId}&select=id,status`, {
+            method: 'GET',
+            headers: {
+              'apikey': SUPABASE_SERVICE_KEY,
+              'Authorization': `Bearer ${SUPABASE_SERVICE_KEY}`,
+            },
+          });
+          const orders = await response.json();
+          if (orders?.length && orders[0].status !== 'paid') {
+            await fetch(`${supabaseUrl}/rest/v1/omix_orders?id=eq.${orderId}`, {
+              method: 'PATCH',
+              headers: {
+                'apikey': SUPABASE_SERVICE_KEY,
+                'Authorization': `Bearer ${SUPABASE_SERVICE_KEY}`,
+                'Content-Type': 'application/json',
+                'Prefer': 'return=minimal',
+              },
+              body: JSON.stringify({
+                status: 'paid',
+                paystack_reference: reference,
+                paid_at: new Date().toISOString(),
+              }),
+            });
+            console.log(`[Paystack Webhook] Order ${orderId} marked as paid`);
+          } else {
+            console.log(`[Paystack Webhook] Order ${orderId} already paid, skipping`);
+          }
+        } catch (err) {
+          console.error('[Paystack Webhook] DB error:', err.message);
+        }
       }
     }
 

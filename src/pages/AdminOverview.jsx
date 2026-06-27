@@ -8,12 +8,19 @@ export default function AdminOverview() {
   const [listings, setListings] = useState([]);
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
 
   const loadData = useCallback(async () => {
-    const [allListings, allOrders] = await Promise.all([fetchAllListings(), fetchAllOrders()]);
-    setListings(allListings);
-    setOrders(allOrders);
-    setLoading(false);
+    try {
+      const [allListings, allOrders] = await Promise.all([fetchAllListings(), fetchAllOrders()]);
+      setListings(allListings);
+      setOrders(allOrders);
+    } catch (err) {
+      console.error('Failed to load admin data:', err);
+      setError('Failed to load dashboard data. Please refresh the page.');
+    } finally {
+      setLoading(false);
+    }
   }, []);
 
   useEffect(() => { loadData(); }, [loadData]);

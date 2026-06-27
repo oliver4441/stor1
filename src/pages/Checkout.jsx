@@ -307,7 +307,7 @@ export default function CheckoutPage() {
     } else {
       // Kenyan phone validation: 07XX XXX XXX or 2547XX XXX XXX
       const cleaned = form.phone.trim().replace(/[^0-9]/g, '');
-      if (!/^(?:254|0)?7[0-9]{8}$/.test(cleaned)) {
+      if (!/^(?:254|0)?[17][0-9]{8}$/.test(cleaned)) {
         errs.phone = 'Enter a valid Kenyan M-Pesa number (e.g. 07XXXXXXXX)';
       }
     }
@@ -336,14 +336,18 @@ export default function CheckoutPage() {
     const currentItems = getItems();
     const currentTotal = getTotal();
     const currentDiscounted = (() => {
-      if (!promoApplied) return currentTotal;
-      if (promoApplied.discount_type === 'percentage') {
-        return Math.round(currentTotal * (1 - promoApplied.discount_value / 100));
+      let t = currentTotal;
+      if (promoApplied) {
+        if (promoApplied.discount_type === 'percentage') {
+          t = Math.round(t * (1 - promoApplied.discount_value / 100));
+        } else if (promoApplied.discount_type === 'fixed') {
+          t = Math.max(0, t - promoApplied.discount_value);
+        }
       }
-      if (promoApplied.discount_type === 'fixed') {
-        return Math.max(0, currentTotal - promoApplied.discount_value);
+      if (redeemPoints) {
+        t = Math.max(0, t - computedPtsDiscount);
       }
-      return currentTotal;
+      return t;
     })();
 
     try {
@@ -405,7 +409,7 @@ export default function CheckoutPage() {
           quantity: item.quantity,
           subtotal: item.price * item.quantity,
         })),
-        total: currentTotal,
+        total: currentDiscounted,
         customerName: form.fullName.trim(),
         phone: form.phone.trim(),
         email: form.email.trim(),
@@ -468,6 +472,7 @@ export default function CheckoutPage() {
             }
           },
           onClose: function() {
+            orderCreated.current = false;
             setLoading(false);
             setError('Payment was not completed. Your order is saved — you can try again from My Account.');
           },
@@ -482,6 +487,7 @@ export default function CheckoutPage() {
       console.error('Checkout error:', err);
       trackError(err.message || 'Checkout failed', 'Checkout.handleSubmit');
       setError(err.message || 'Something went wrong during checkout. Please try again.');
+      orderCreated.current = false;
       setLoading(false);
     }
   };

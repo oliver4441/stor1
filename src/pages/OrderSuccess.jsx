@@ -9,12 +9,15 @@ export default function OrderSuccess() {
 
   // Track purchase on page load
   React.useEffect(() => {
-    // Get order details from localStorage or sessionStorage if available
-    const orderData = sessionStorage.getItem(`omix_order_${orderId}`);
+    // Get order details from sessionStorage if available
+    const storageKey = `omix_order_${orderId}`;
+    const orderData = sessionStorage.getItem(storageKey);
     if (orderData) {
       try {
         const order = JSON.parse(orderData);
         trackPurchase(orderId, order.total, order.items || []);
+        // Remove after reading to prevent duplicate tracking on refresh
+        sessionStorage.removeItem(storageKey);
       } catch (e) {
         console.warn('Failed to parse order data for tracking:', e);
       }

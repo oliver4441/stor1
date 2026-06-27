@@ -42,6 +42,7 @@ const CANCELLABLE_STATUSES = ['pending', 'processing'];
 // ── Cancel Modal ──────────────────────────────────────────────────────
 function CancelModal({ order, onClose, onConfirm, busy }) {
   const [reason, setReason] = useState('');
+  const [customReason, setCustomReason] = useState('');
   const reasons = [
     'Changed my mind',
     'Found a better price',
@@ -92,8 +93,8 @@ function CancelModal({ order, onClose, onConfirm, busy }) {
           </div>
           {reason === 'Other' && (
             <textarea
-              value={reason === 'Other' ? reason : ''}
-              onChange={e => setReason(e.target.value)}
+              value={customReason}
+              onChange={e => setCustomReason(e.target.value)}
               placeholder="Tell us why..."
               className="w-full mt-2 px-3 py-2 rounded-xl bg-zinc-50 dark:bg-zinc-800/50 border border-zinc-200 dark:border-zinc-700 text-sm text-zinc-900 dark:text-white resize-none h-20 focus:outline-none focus:border-red-400"
             />
@@ -108,7 +109,7 @@ function CancelModal({ order, onClose, onConfirm, busy }) {
             Keep Order
           </button>
           <button
-            onClick={() => onConfirm(reason)}
+            onClick={() => onConfirm(reason === 'Other' ? customReason || 'Other' : reason)}
             disabled={busy}
             className="flex-1 py-3 rounded-xl bg-red-500 text-white font-bold text-sm hover:bg-red-600 transition-colors disabled:opacity-50 flex items-center justify-center gap-2"
           >

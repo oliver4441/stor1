@@ -28,12 +28,18 @@ export default function AdminLayout() {
 
   useEffect(() => {
     (async () => {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) { navigate('/login'); return; }
-      const admin = await isAdmin();
-      if (!admin) { navigate('/account'); return; }
-      setUser(user);
-      setLoading(false);
+      try {
+        const { data: { user } } = await supabase.auth.getUser();
+        if (!user) { navigate('/login'); return; }
+        const admin = await isAdmin();
+        if (!admin) { navigate('/account'); return; }
+        setUser(user);
+      } catch (err) {
+        console.error('Admin auth check failed:', err);
+        navigate('/login');
+      } finally {
+        setLoading(false);
+      }
     })();
   }, [navigate]);
 
