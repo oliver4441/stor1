@@ -13,6 +13,7 @@ import BackToTop from './components/BackToTop';
 import ScrollToTop from './components/ScrollToTop';
 import FloatingCartButton from './components/FloatingCartButton';
 import NiaChat from './components/NiaChat';
+import NiaFloatingButton from './components/NiaFloatingButton';
 import InstallBanner from './components/InstallBanner';
 import PushNudge from './components/PushNudge';
 import CartReminder from './components/CartReminder';
@@ -117,6 +118,7 @@ function App() {
         <MobileBottomNav />
         <BackToTop />
         <FloatingCartButton />
+        <NiaFloatingButton />
         <NiaChat />
         <InstallBanner />
         <PushNudge />

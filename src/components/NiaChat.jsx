@@ -43,7 +43,7 @@ export default function NiaChat() {
 
   return (
     <div
-      className="fixed bottom-20 right-4 z-[60] w-[380px] max-w-[calc(100vw-2rem)] flex flex-col rounded-2xl shadow-2xl overflow-hidden border transition-all duration-300 ease-out origin-bottom-right"
+      className="fixed bottom-36 sm:bottom-40 right-4 sm:right-6 z-[60] w-[380px] max-w-[calc(100vw-2rem)] flex flex-col rounded-2xl shadow-2xl overflow-hidden border transition-all duration-300 ease-out origin-bottom-right"
       style={{
         backgroundColor: '#18181b',
         borderColor: '#27272a',

@@ -154,13 +154,13 @@ function Home() {
             )}
 
             <div className="flex flex-col sm:flex-row items-center justify-center gap-3 mb-8">
-              <Link
-                to="/"
-                className="px-6 py-3 rounded-xl font-bold text-sm transition-all shadow-lg"
+              <button
+                onClick={() => document.getElementById('products-section')?.scrollIntoView({ behavior: 'smooth' })}
+                className="px-6 py-3 rounded-xl font-bold text-sm transition-all shadow-lg cursor-pointer"
                 style={{ backgroundColor: ctaBg, color: ctaText }}
               >
                 {t('home.browseListings') || 'Browse Products'}
-              </Link>
+              </button>
               <Link
                 to={user ? '/account' : '/signup'}
                 className="px-6 py-3 rounded-xl bg-white/15 backdrop-blur-sm text-white font-bold text-sm hover:bg-white/25 transition-all border border-white/20"
@@ -257,7 +257,7 @@ function Home() {
         </p>
       </div>
 
-      <div className="max-w-7xl mx-auto px-4">
+      <div className="max-w-7xl mx-auto px-4" id="products-section">
         {/* Featured Products - Auto Scroll Carousel */}
         {featuredProducts.length > 0 && activeCategory === 'All' && !searchQuery && (
           <div className="mb-10">
