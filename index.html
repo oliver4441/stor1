@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="dark">
   <head>
     <meta charset="UTF-8" />
     <link rel="icon" type="image/jpeg" href="/logo.jpg" />
@@ -9,6 +9,33 @@
     <meta name="theme-color" content="#ff385c" />
     <title>Omix Store — Your Online Store in Kericho</title>
     <meta name="description" content="Shop online in Kericho, Kenya. Browse products, add to cart, and pay via M-Pesa. Fast delivery to your doorstep." />
+    <script>
+      // Permanently force dark mode
+      (function() {
+        document.documentElement.classList.add('dark');
+        // Override localStorage to prevent any theme switching
+        var origSetItem = localStorage.setItem.bind(localStorage);
+        var origRemoveItem = localStorage.removeItem.bind(localStorage);
+        localStorage.setItem = function(key, value) {
+          if (key === 'theme') {
+            value = 'dark';
+          }
+          return origSetItem(key, value);
+        };
+        localStorage.removeItem = function(key) {
+          if (key === 'theme') {
+            // Don't allow removing theme key
+            return;
+          }
+          return origRemoveItem(key);
+        };
+        // Also intercept any direct class manipulation on documentElement
+        var observer = new MutationObserver(function() {
+          document.documentElement.classList.add('dark');
+        });
+        observer.observe(document.documentElement, { attributes: true, attributeFilter: ['class'] });
+      })();
+    </script>
     <style>
       /* Critical: show loading state immediately */
       #root:empty::before {

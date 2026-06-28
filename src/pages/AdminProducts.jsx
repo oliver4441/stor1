@@ -258,12 +258,19 @@ export default function AdminProducts() {
       const allIds = listings.map(l => l.id);
       const result = await bulkDeleteListings(allIds);
       if (result.success) {
-        setSuccessMsg(`All ${allIds.length} products deleted!`);
+        setSuccessMsg(`All ${result.deletedCount || allIds.length} products deleted!`);
         setDeleteAllModal(false);
         setDeleteAllConfirmText('');
         setSelectedIds([]);
         await loadData();
         successTimer.current = setTimeout(() => setSuccessMsg(''), 3000);
+      } else if (result.partial) {
+        setSuccessMsg(`Partially deleted: ${result.deletedCount} of ${result.totalCount} products removed.`);
+        setDeleteAllModal(false);
+        setDeleteAllConfirmText('');
+        setSelectedIds([]);
+        await loadData();
+        errorTimer.current = setTimeout(() => setErrorMsg('Some deletions failed: ' + (result.error || '')), 5000);
       } else {
         setErrorMsg('Delete all failed: ' + (result.error || 'Unknown error'));
         errorTimer.current = setTimeout(() => setErrorMsg(''), 5000);

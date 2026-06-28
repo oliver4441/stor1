@@ -2,6 +2,9 @@
 import { supabase } from './supabase'
 import { CATEGORY_TO_ID, ID_TO_CATEGORY } from './constants'
 
+// Batch chunk size for bulk operations to avoid Supabase REST API URL length limits
+const BATCH_SIZE = 200;
+
 // Helper: add virtual 'category' text field from category_id
 function mapCategoryName(listing) {
   if (listing && listing.category_id != null && !listing.category) {
@@ -373,51 +376,111 @@ export async function updateListing(id, formData) {
 }
 
 // Bulk update listing status — only seller or admin
+// Batches in chunks of 200 to avoid Supabase REST API URL length limits
 export async function bulkUpdateListingStatus(ids, status) {
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return { success: false, error: 'Authentication required' };
 
-  // Verify ownership or admin
-  const { data: listings } = await supabase.from('listings').select('seller_id').in('id', ids);
-  if (listings && listings.length > 0) {
-    const allOwned = listings.every(l => l.seller_id === user.id);
-    if (!allOwned) {
-      const admin = await isAdmin();
-      if (!admin) return { success: false, error: 'You can only update your own listings' };
+  // Verify ownership or admin — batched SELECT to avoid URL too long
+  let allOwned = true;
+  for (let i = 0; i < ids.length; i += BATCH_SIZE) {
+    const chunk = ids.slice(i, i + BATCH_SIZE);
+    const { data: listings } = await supabase.from('listings').select('seller_id').in('id', chunk);
+    if (listings && listings.length > 0) {
+      if (!listings.every(l => l.seller_id === user.id)) {
+        allOwned = false;
+        break;
+      }
     }
   }
 
-  const { error } = await supabase
-    .from('listings')
-    .update({ status })
-    .in('id', ids)
+  if (!allOwned) {
+    const admin = await isAdmin();
+    if (!admin) return { success: false, error: 'You can only update your own listings' };
+  }
 
-  if (error) return { success: false, error: error.message }
-  return { success: true }
+  // Batch update in chunks of 200
+  const errors = [];
+  let updatedCount = 0;
+  for (let i = 0; i < ids.length; i += BATCH_SIZE) {
+    const chunk = ids.slice(i, i + BATCH_SIZE);
+    const { error } = await supabase
+      .from('listings')
+      .update({ status })
+      .in('id', chunk);
+
+    if (error) {
+      errors.push(error.message);
+    } else {
+      updatedCount += chunk.length;
+    }
+  }
+
+  if (errors.length > 0) {
+    return {
+      success: false,
+      error: `Failed to update ${ids.length - updatedCount} of ${ids.length} listings: ${errors.join('; ')}`,
+      partial: true,
+      updatedCount,
+      totalCount: ids.length,
+    };
+  }
+
+  return { success: true, updatedCount, totalCount: ids.length };
 }
 
 // Bulk delete listings — only seller or admin
+// Batches in chunks of 200 to avoid Supabase REST API URL length limits
 export async function bulkDeleteListings(ids) {
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return { success: false, error: 'Authentication required' };
 
-  // Verify ownership or admin
-  const { data: listings } = await supabase.from('listings').select('seller_id').in('id', ids);
-  if (listings && listings.length > 0) {
-    const allOwned = listings.every(l => l.seller_id === user.id);
-    if (!allOwned) {
-      const admin = await isAdmin();
-      if (!admin) return { success: false, error: 'You can only delete your own listings' };
+  // Verify ownership or admin — batched SELECT to avoid URL too long
+  let allOwned = true;
+  for (let i = 0; i < ids.length; i += BATCH_SIZE) {
+    const chunk = ids.slice(i, i + BATCH_SIZE);
+    const { data: listings } = await supabase.from('listings').select('seller_id').in('id', chunk);
+    if (listings && listings.length > 0) {
+      if (!listings.every(l => l.seller_id === user.id)) {
+        allOwned = false;
+        break;
+      }
     }
   }
 
-  const { error } = await supabase
-    .from('listings')
-    .delete()
-    .in('id', ids)
+  if (!allOwned) {
+    const admin = await isAdmin();
+    if (!admin) return { success: false, error: 'You can only delete your own listings' };
+  }
 
-  if (error) return { success: false, error: error.message }
-  return { success: true }
+  // Batch delete in chunks of 200
+  const errors = [];
+  let deletedCount = 0;
+  for (let i = 0; i < ids.length; i += BATCH_SIZE) {
+    const chunk = ids.slice(i, i + BATCH_SIZE);
+    const { error } = await supabase
+      .from('listings')
+      .delete()
+      .in('id', chunk);
+
+    if (error) {
+      errors.push(error.message);
+    } else {
+      deletedCount += chunk.length;
+    }
+  }
+
+  if (errors.length > 0) {
+    return {
+      success: false,
+      error: `Failed to delete ${ids.length - deletedCount} of ${ids.length} listings: ${errors.join('; ')}`,
+      partial: true,
+      deletedCount,
+      totalCount: ids.length,
+    };
+  }
+
+  return { success: true, deletedCount, totalCount: ids.length };
 }
 
 // Delete listing — only seller or admin can delete

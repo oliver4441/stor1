@@ -291,10 +291,7 @@ const translations = {
       view: 'View',
       share: 'Share',
       whatsapp: 'WhatsApp',
-      light: 'Light',
-      dark: 'Dark',
       toggleLanguage: 'Toggle language',
-      toggleTheme: 'Toggle theme',
     },
 
     // ── Cart ──
@@ -869,10 +866,7 @@ const translations = {
       view: 'Ona',
       share: 'Sambaza',
       whatsapp: 'WhatsApp',
-      light: 'Mwanga',
-      dark: 'Giza',
       toggleLanguage: 'Badilisha lugha',
-      toggleTheme: 'Badilisha mandhari',
     },
 
     // ── Cart ──

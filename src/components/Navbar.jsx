@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Sun, Moon, User, Globe, Shield, Package, HelpCircle, Info, LogIn, UserPlus, Menu, X, Download, ShoppingCart, ChevronDown, LogOut } from 'lucide-react';
+import { User, Globe, Shield, Package, HelpCircle, Info, LogIn, UserPlus, Menu, X, Download, ShoppingCart, ChevronDown, LogOut } from 'lucide-react';
 import { supabase } from '../utils/supabase';
 import { useLang } from '../utils/lang';
 import { isAdmin } from '../utils/api';
@@ -80,11 +80,6 @@ function Navbar() {
     return () => { document.body.style.overflow = ''; };
   }, [menuOpen]);
 
-  const toggleTheme = () => {
-    const isDark = document.documentElement.classList.toggle('dark');
-    localStorage.setItem('theme', isDark ? 'dark' : 'light');
-  };
-
   const handleLogout = async () => {
     await supabase.auth.signOut();
     setMenuOpen(false);
@@ -139,11 +134,6 @@ function Navbar() {
 
         {/* Desktop (lg+): Right side */}
         <div className="hidden lg:flex items-center gap-2">
-          <button onClick={toggleTheme} className="p-2 rounded-full hover:bg-zinc-100 dark:hover:bg-zinc-800 text-zinc-600 dark:text-zinc-300 transition-colors" aria-label={t('common.toggleTheme')}>
-            <Sun className="w-5 h-5 hidden dark:block" />
-            <Moon className="w-5 h-5 block dark:hidden" />
-          </button>
-
           <button onClick={toggleLang} className="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold border border-zinc-200 dark:border-zinc-700 bg-white dark:bg-zinc-900 text-zinc-700 dark:text-zinc-300 hover:border-[var(--seasonal-primary,#ff385c)] hover:text-[var(--seasonal-primary,#ff385c)] transition-all" aria-label={t('common.toggleLanguage')}>
             <Globe className="w-3.5 h-3.5" />
             {lang === 'en' ? 'EN' : 'SW'}
@@ -301,12 +291,6 @@ function Navbar() {
 
             {/* Utility buttons */}
             <div className="flex gap-2">
-              <button onClick={toggleTheme} className="flex-1 flex items-center justify-center gap-2 px-4 py-3 rounded-2xl text-sm font-bold border border-zinc-200 dark:border-zinc-700 text-zinc-600 dark:text-zinc-300">
-                <Sun className="w-4 h-4 hidden dark:block" />
-                <Moon className="w-4 h-4 block dark:hidden" />
-                <span className="hidden dark:inline">Dark</span>
-                <span className="dark:hidden">Light</span>
-              </button>
               <button onClick={toggleLang} className="flex-1 flex items-center justify-center gap-2 px-4 py-3 rounded-2xl text-sm font-bold border border-zinc-200 dark:border-zinc-700 text-zinc-600 dark:text-zinc-300">
                 <Globe className="w-4 h-4" />
                 {lang === 'en' ? 'English' : 'Swahili'}
