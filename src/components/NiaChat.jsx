@@ -1,6 +1,7 @@
 import { useState, useRef, useEffect } from 'react';
 import { X, Send } from 'lucide-react';
 import { useNiaChat } from '../context/NiaChatContext';
+import { useAuth } from '../context/AuthContext';
 
 const QUICK_ACTIONS = ['Track my order', 'Find a product', 'Help'];
 
@@ -11,6 +12,9 @@ export default function NiaChat() {
     handleUserInput,
     messagesEndRef, COLORS,
   } = useNiaChat();
+  const { user } = useAuth();
+
+  if (!user || !isOpen) return null;
 
   const [inputText, setInputText] = useState('');
   const inputRef = useRef(null);
