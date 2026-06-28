@@ -4,7 +4,7 @@
 
 import { supabase } from './supabase';
 
-const EDGE_FUNCTION_URL = import.meta.env.VITE_PUSH_FUNCTION_URL || '';
+const EDGE_FUNCTION_URL = import.meta.env.VITE_API_URL + '/api/push/send' || '';
 const VAPID_PRIVATE_KEY = import.meta.env.VITE_VAPID_PRIVATE_KEY || '';
 const VAPID_PUBLIC_KEY = import.meta.env.VITE_VAPID_PUBLIC_KEY || '';
 const VAPID_CLAIMS = { sub: 'mailto:admin@omix.store' };
@@ -56,6 +56,7 @@ export async function sendPushToAll(payload) {
         headers: {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${session?.access_token || ''}`,
+          'x-api-key': import.meta.env.VITE_OMIX_API_KEY || '',
         },
         body: JSON.stringify({
           subscriptions,
