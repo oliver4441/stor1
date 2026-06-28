@@ -327,7 +327,7 @@ export default function AdminProducts() {
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div>
           <h2 className="text-xl font-bold text-white">Products</h2>
-          <p className="text-sm text-zinc-500">{listings.length} total • {filteredListings.length} shown</p>
+          <p className="text-sm text-zinc-400">{listings.length} total • {filteredListings.length} shown</p>
         </div>
         <div className="flex items-center gap-2">
           {listings.length > 0 && (
@@ -385,7 +385,7 @@ export default function AdminProducts() {
             className="px-4 py-1.5 bg-primary text-white rounded-lg text-sm font-bold disabled:opacity-50 hover:bg-primary-hover flex items-center gap-2">
             {processing ? <><Loader2 className="w-3.5 h-3.5 animate-spin" /> Processing...</> : 'Apply'}
           </button>
-          <button onClick={() => setSelectedIds([])} className="text-xs text-zinc-500 hover:text-zinc-700 ml-auto">Clear selection</button>
+          <button onClick={() => setSelectedIds([])} className="text-xs text-zinc-400 hover:text-zinc-700 ml-auto">Clear selection</button>
         </div>
       )}
 
@@ -405,11 +405,11 @@ export default function AdminProducts() {
                       {allFilteredSelected ? <CheckSquare className="w-4 h-4" /> : <Square className="w-4 h-4" />}
                     </button>
                   </th>
-                  <th className="text-left text-xs font-bold text-zinc-500 uppercase px-4 py-3">Product</th>
-                  <th className="text-left text-xs font-bold text-zinc-500 uppercase px-4 py-3 hidden md:table-cell">Category</th>
-                  <th className="text-left text-xs font-bold text-zinc-500 uppercase px-4 py-3">Price</th>
-                  <th className="text-left text-xs font-bold text-zinc-500 uppercase px-4 py-3 hidden lg:table-cell">Status</th>
-                  <th className="text-right text-xs font-bold text-zinc-500 uppercase px-4 py-3">Actions</th>
+                  <th className="text-left text-xs font-bold text-zinc-400 uppercase px-4 py-3">Product</th>
+                  <th className="text-left text-xs font-bold text-zinc-400 uppercase px-4 py-3 hidden md:table-cell">Category</th>
+                  <th className="text-left text-xs font-bold text-zinc-400 uppercase px-4 py-3">Price</th>
+                  <th className="text-left text-xs font-bold text-zinc-400 uppercase px-4 py-3 hidden lg:table-cell">Status</th>
+                  <th className="text-right text-xs font-bold text-zinc-400 uppercase px-4 py-3">Actions</th>
                 </tr>
               </thead>
               <tbody>
@@ -490,7 +490,7 @@ export default function AdminProducts() {
         <div className="bg-zinc-900 rounded-2xl border-2 border-dashed border-zinc-800 p-12 text-center">
           <ImageIcon className="w-10 h-10 text-zinc-300 mx-auto mb-3" />
           <h3 className="text-lg font-bold text-white mb-1">No products found</h3>
-          <p className="text-sm text-zinc-500 mb-4">{searchQuery || filterCategory !== 'All' || filterStatus !== 'All' ? 'Try adjusting your filters' : 'Get started by adding your first product'}</p>
+          <p className="text-sm text-zinc-400 mb-4">{searchQuery || filterCategory !== 'All' || filterStatus !== 'All' ? 'Try adjusting your filters' : 'Get started by adding your first product'}</p>
           {!searchQuery && filterCategory === 'All' && filterStatus === 'All' && (
             <button onClick={openAddModal} className="text-primary font-bold text-sm hover:underline">Add Product</button>
           )}
@@ -551,7 +551,7 @@ export default function AdminProducts() {
                   )}
                 </div>
                 <input ref={fileInputRef} type="file" accept="image/*" multiple onChange={handleImageSelect} className="hidden" />
-                <p className="text-xs text-zinc-500 mt-2">JPG, PNG or WebP. Max 5MB each. First image is the cover.</p>
+                <p className="text-xs text-zinc-400 mt-2">JPG, PNG or WebP. Max 5MB each. First image is the cover.</p>
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -633,7 +633,7 @@ export default function AdminProducts() {
                     <button
                       type="button"
                       onClick={() => setForm(prev => ({ ...prev, sku: generateSKU(form.category) }))}
-                      className="px-3 py-2.5 rounded-xl bg-zinc-800 border border-zinc-700 text-zinc-500 hover:text-primary hover:border-primary transition-colors text-sm font-bold"
+                      className="px-3 py-2.5 rounded-xl bg-zinc-800 border border-zinc-700 text-zinc-400 hover:text-primary hover:border-primary transition-colors text-sm font-bold"
                       title="Regenerate SKU"
                     >
                       Refresh

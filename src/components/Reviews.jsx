@@ -74,7 +74,7 @@ export function ReviewList({ listingId }) {
         <div className="flex items-center gap-2">
           <StarRating rating={Math.round(avgRating)} size="sm" />
           <span className="text-sm font-bold">{avgRating.toFixed(1)}</span>
-          <span className="text-sm text-zinc-500">({reviews.length})</span>
+          <span className="text-sm text-zinc-400">({reviews.length})</span>
         </div>
       </div>
 

@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import ProductCard from '../components/ProductCard';
 import InstallBanner from '../components/InstallBanner';
 import { CATEGORIES } from '../utils/constants';
-import { fetchListings } from '../utils/api';
+import { fetchListings, mapListingCategories } from '../utils/api';
 import { useLang } from '../utils/lang';
 import { supabase } from '../utils/supabase';
 import NiaContextualTrigger from '../components/NiaContextualTrigger';
@@ -27,7 +27,10 @@ function Home() {
   const [page, setPage] = useState(1);
   const [totalCount, setTotalCount] = useState(0);
   const [hasMore, setHasMore] = useState(false);
+  const [popularProducts, setPopularProducts] = useState([]);
   const theme = useActiveTheme();
+  const [isAiMode, setIsAiMode] = useState(false);
+  const [quickViewListing, setQuickViewListing] = useState(null);
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
@@ -38,8 +41,26 @@ function Home() {
     });
     return () => subscription.unsubscribe();
   }, []);
-  const [isAiMode, setIsAiMode] = useState(false);
-  const [quickViewListing, setQuickViewListing] = useState(null);
+
+  // Fetch popular products (sorted by purchase_count)
+  useEffect(() => {
+    const fetchPopular = async () => {
+      try {
+        const { data, error } = await supabase
+          .from('listings')
+          .select('*')
+          .eq('status', 'active')
+          .order('purchase_count', { ascending: false })
+          .limit(8);
+        if (!error && data) {
+          setPopularProducts(mapListingCategories(data));
+        }
+      } catch (e) {
+        console.warn('Failed to fetch popular products:', e.message);
+      }
+    };
+    fetchPopular();
+  }, []);
 
   useEffect(() => {
     setLoading(true);
@@ -269,6 +290,20 @@ function Home() {
                 <ProductCard key={product.id} listing={product} />
               ))}
             </AutoScrollCarousel>
+          </div>
+        )}
+
+        {/* Popular Products */}
+        {popularProducts.length > 0 && activeCategory === 'All' && !searchQuery && (
+          <div className="mb-10">
+            <div className="flex items-center justify-between mb-4">
+              <h2 className="text-xl font-bold text-white">🔥 Popular Right Now</h2>
+            </div>
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
+              {popularProducts.map((product) => (
+                <ProductCard key={product.id} listing={product} />
+              ))}
+            </div>
           </div>
         )}
 

@@ -60,12 +60,14 @@ export default function ImageLightbox({ images, initialIndex = 0, onClose }) {
             onClick={(e) => { e.stopPropagation(); setZoomed(!zoomed); }}
             className="p-2 rounded-full hover:bg-white/10 transition-colors"
             title={zoomed ? 'Zoom out' : 'Zoom in'}
+            aria-label={zoomed ? 'Zoom out' : 'Zoom in'}
           >
             {zoomed ? <ZoomOut className="w-5 h-5" /> : <ZoomIn className="w-5 h-5" />}
           </button>
           <button
             onClick={onClose}
             className="p-2 rounded-full hover:bg-white/10 transition-colors"
+            aria-label="Close image viewer"
           >
             <X className="w-6 h-6" />
           </button>

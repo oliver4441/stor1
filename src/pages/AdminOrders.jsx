@@ -193,7 +193,7 @@ export default function AdminOrders() {
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div>
           <h2 className="text-xl font-bold text-white">Orders</h2>
-          <p className="text-sm text-zinc-500">{filteredOrders.length} orders - {formatKES(totalAmount)} total</p>
+          <p className="text-sm text-zinc-400">{filteredOrders.length} orders - {formatKES(totalAmount)} total</p>
         </div>
         <div className="flex items-center gap-2">
           <button onClick={handleExportCSV} className="flex items-center gap-2 px-4 py-2 rounded-xl bg-zinc-900 border border-zinc-800 text-sm font-semibold text-zinc-300 hover:bg-zinc-50 dark:hover:bg-zinc-800">
@@ -208,15 +208,15 @@ export default function AdminOrders() {
       {/* Summary Cards */}
       <div className="grid grid-cols-3 gap-3">
         <div className="bg-zinc-900 rounded-xl border border-zinc-800 p-4">
-          <p className="text-xs text-zinc-500 mb-1">Total Orders</p>
+          <p className="text-xs text-zinc-400 mb-1">Total Orders</p>
           <p className="text-xl font-black text-white">{filteredOrders.length}</p>
         </div>
         <div className="bg-zinc-900 rounded-xl border border-zinc-800 p-4">
-          <p className="text-xs text-zinc-500 mb-1">Pending</p>
+          <p className="text-xs text-zinc-400 mb-1">Pending</p>
           <p className="text-xl font-black text-amber-500">{pendingCount}</p>
         </div>
         <div className="bg-zinc-900 rounded-xl border border-zinc-800 p-4">
-          <p className="text-xs text-zinc-500 mb-1">Cancelled</p>
+          <p className="text-xs text-zinc-400 mb-1">Cancelled</p>
           <p className="text-xl font-black text-red-500">{cancelledCount}</p>
         </div>
       </div>
@@ -253,12 +253,12 @@ export default function AdminOrders() {
             <table className="w-full">
               <thead>
                 <tr className="border-b border-zinc-800">
-                  <th className="text-left text-xs font-bold text-zinc-500 uppercase px-4 py-3">Order</th>
-                  <th className="text-left text-xs font-bold text-zinc-500 uppercase px-4 py-3 hidden md:table-cell">Customer</th>
-                  <th className="text-left text-xs font-bold text-zinc-500 uppercase px-4 py-3">Total</th>
-                  <th className="text-left text-xs font-bold text-zinc-500 uppercase px-4 py-3 hidden sm:table-cell">Date</th>
-                  <th className="text-left text-xs font-bold text-zinc-500 uppercase px-4 py-3">Status</th>
-                  <th className="text-right text-xs font-bold text-zinc-500 uppercase px-4 py-3">Actions</th>
+                  <th className="text-left text-xs font-bold text-zinc-400 uppercase px-4 py-3">Order</th>
+                  <th className="text-left text-xs font-bold text-zinc-400 uppercase px-4 py-3 hidden md:table-cell">Customer</th>
+                  <th className="text-left text-xs font-bold text-zinc-400 uppercase px-4 py-3">Total</th>
+                  <th className="text-left text-xs font-bold text-zinc-400 uppercase px-4 py-3 hidden sm:table-cell">Date</th>
+                  <th className="text-left text-xs font-bold text-zinc-400 uppercase px-4 py-3">Status</th>
+                  <th className="text-right text-xs font-bold text-zinc-400 uppercase px-4 py-3">Actions</th>
                 </tr>
               </thead>
               <tbody>
@@ -270,13 +270,13 @@ export default function AdminOrders() {
                     </td>
                     <td className="px-4 py-3 hidden md:table-cell">
                       <p className="text-sm font-semibold text-white">{order.customer_name || 'Guest'}</p>
-                      <p className="text-xs text-zinc-500">{order.phone || order.email || 'No contact'}</p>
+                      <p className="text-xs text-zinc-400">{order.phone || order.email || 'No contact'}</p>
                     </td>
                     <td className="px-4 py-3">
                       <span className="text-sm font-bold text-primary">{formatKES(order.total_amount)}</span>
                     </td>
                     <td className="px-4 py-3 hidden sm:table-cell">
-                      <p className="text-xs text-zinc-500">{new Date(order.created_at).toLocaleDateString('en-KE', { month: 'short', day: 'numeric', year: 'numeric' })}</p>
+                      <p className="text-xs text-zinc-400">{new Date(order.created_at).toLocaleDateString('en-KE', { month: 'short', day: 'numeric', year: 'numeric' })}</p>
                       <p className="text-xs text-zinc-400">{new Date(order.created_at).toLocaleTimeString('en-KE', { hour: '2-digit', minute: '2-digit' })}</p>
                     </td>
                     <td className="px-4 py-3">
@@ -307,7 +307,7 @@ export default function AdminOrders() {
         <div className="bg-zinc-900 rounded-2xl border-2 border-dashed border-zinc-800 p-12 text-center">
           <Package className="w-10 h-10 text-zinc-300 mx-auto mb-3" />
           <h3 className="text-lg font-bold text-white mb-1">No orders found</h3>
-          <p className="text-sm text-zinc-500">{searchQuery || filterStatus !== 'All' || dateRange !== 'all' ? 'Try adjusting your filters' : 'Orders will appear here when customers place them'}</p>
+          <p className="text-sm text-zinc-400">{searchQuery || filterStatus !== 'All' || dateRange !== 'all' ? 'Try adjusting your filters' : 'Orders will appear here when customers place them'}</p>
         </div>
       )}
 
@@ -319,7 +319,7 @@ export default function AdminOrders() {
             <div className="flex items-center justify-between mb-6">
               <div>
                 <h3 className="text-lg font-bold text-white">Order Details</h3>
-                <p className="text-sm font-mono text-zinc-500">#{String(selectedOrder.id).slice(0, 8).toUpperCase()}</p>
+                <p className="text-sm font-mono text-zinc-400">#{String(selectedOrder.id).slice(0, 8).toUpperCase()}</p>
               </div>
               <button onClick={() => setSelectedOrder(null)} className="p-2 rounded-full hover:bg-zinc-800 text-zinc-400"><X className="w-5 h-5" /></button>
             </div>
@@ -384,7 +384,7 @@ export default function AdminOrders() {
                         )}
                         <div>
                           <p className="text-sm font-semibold text-white">{item.product_name}</p>
-                          <p className="text-xs text-zinc-500">Qty: {item.quantity} x {formatKES(item.price)}</p>
+                          <p className="text-xs text-zinc-400">Qty: {item.quantity} x {formatKES(item.price)}</p>
                         </div>
                       </div>
                       <p className="text-sm font-bold text-white">{formatKES(item.price * item.quantity)}</p>

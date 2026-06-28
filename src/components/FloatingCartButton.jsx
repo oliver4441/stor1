@@ -33,12 +33,12 @@ export default function FloatingCartButton() {
       {/* Floating Cart Button */}
       <button
         onClick={() => setCartOpen(!cartOpen)}
-        className={`fixed bottom-32 right-4 sm:right-6 z-50 w-14 h-14 rounded-full flex items-center justify-center shadow-2xl hover:scale-110 transition-all duration-300 bg-zinc-900 dark:bg-white ${bump ? 'animate-bounce-once' : ''}`}
-        aria-label="View cart"
+        className={`fixed bottom-40 right-4 sm:bottom-44 sm:right-6 z-50 w-14 h-14 rounded-full flex items-center justify-center shadow-2xl hover:scale-110 transition-all duration-300 bg-zinc-900 dark:bg-white ${bump ? 'animate-bounce-once' : ''}`}
+        aria-label={`Shopping cart, ${cartCount} items`}
       >
         <ShoppingCart className="w-6 h-6 text-white dark:text-zinc-900" />
         {cartCount > 0 && (
-          <span className={`absolute -top-1 -right-1 w-5 h-5 text-white text-[10px] font-bold rounded-full flex items-center justify-center transition-all duration-300 ${bump ? 'scale-125' : 'scale-100'} bg-[var(--seasonal-primary,#1a5632)]`}>
+          <span className={`absolute -top-1 -right-1 w-5 h-5 text-white text-[10px] font-bold rounded-full flex items-center justify-center transition-all duration-300 ${bump ? 'scale-125' : 'scale-100'} bg-emerald-400 text-black`}>
             {cartCount > 9 ? '9+' : cartCount}
           </span>
         )}
@@ -48,10 +48,10 @@ export default function FloatingCartButton() {
       {cartOpen && (
         <>
           <div className="fixed inset-0 z-40" onClick={() => setCartOpen(false)} />
-          <div className="fixed bottom-36 right-4 sm:right-6 w-[calc(100%-2rem)] sm:w-[380px] bg-zinc-900 rounded-2xl shadow-2xl border border-zinc-800 z-50 overflow-hidden">
+          <div className="fixed bottom-44 right-4 sm:bottom-48 sm:right-6 w-[calc(100%-2rem)] sm:w-[380px] bg-zinc-900 rounded-2xl shadow-2xl border border-zinc-800 z-50 overflow-hidden">
             <div className="flex items-center justify-between px-5 py-4 border-b border-zinc-100 dark:border-zinc-800">
               <h3 className="font-black text-lg text-white">Cart ({cartCount})</h3>
-              <button onClick={() => setCartOpen(false)} className="p-1.5 rounded-lg hover:bg-zinc-800 text-zinc-400">
+              <button onClick={() => setCartOpen(false)} className="p-1.5 rounded-lg hover:bg-zinc-800 text-zinc-400" aria-label="Close cart popup">
                 <X className="w-4 h-4" />
               </button>
             </div>
@@ -83,14 +83,14 @@ export default function FloatingCartButton() {
                         <p className="text-[var(--seasonal-primary,#1a5632)] font-bold text-sm">{formatKES(item.price * item.quantity)}</p>
                       </div>
                       <div className="flex items-center gap-1 flex-shrink-0">
-                        <button onClick={() => updateQuantity(item.id, Math.max(0, item.quantity - 1))} className="w-7 h-7 rounded-lg bg-zinc-800 flex items-center justify-center hover:bg-zinc-700">
+                        <button onClick={() => updateQuantity(item.id, Math.max(0, item.quantity - 1))} className="w-7 h-7 rounded-lg bg-zinc-800 flex items-center justify-center hover:bg-zinc-700" aria-label={`Decrease quantity of ${item.name}`}>
                           <Minus className="w-3 h-3 text-zinc-300" />
                         </button>
                         <span className="text-sm font-bold w-6 text-center text-white">{item.quantity}</span>
-                        <button onClick={() => updateQuantity(item.id, item.quantity + 1)} className="w-7 h-7 rounded-lg bg-zinc-800 flex items-center justify-center hover:bg-zinc-700">
+                        <button onClick={() => updateQuantity(item.id, item.quantity + 1)} className="w-7 h-7 rounded-lg bg-zinc-800 flex items-center justify-center hover:bg-zinc-700" aria-label={`Increase quantity of ${item.name}`}>
                           <Plus className="w-3 h-3 text-zinc-300" />
                         </button>
-                        <button onClick={() => removeItem(item.id)} className="w-7 h-7 rounded-lg flex items-center justify-center text-zinc-400 hover:text-red-500 hover:bg-red-900/20 ml-1">
+                        <button onClick={() => removeItem(item.id)} className="w-7 h-7 rounded-lg flex items-center justify-center text-zinc-400 hover:text-red-500 hover:bg-red-900/20 ml-1" aria-label={`Remove ${item.name} from cart`}>
                           <Trash2 className="w-3 h-3" />
                         </button>
                       </div>
@@ -117,7 +117,7 @@ export default function FloatingCartButton() {
                 <Link
                   to="/cart"
                   onClick={() => setCartOpen(false)}
-                  className="block text-center text-sm text-zinc-500 hover:text-[var(--seasonal-primary,#1a5632)] font-medium"
+                  className="block text-center text-sm text-zinc-400 hover:text-[var(--seasonal-primary,#1a5632)] font-medium"
                 >
                   View Full Cart
                 </Link>

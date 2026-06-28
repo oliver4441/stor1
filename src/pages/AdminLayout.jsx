@@ -117,7 +117,7 @@ export default function AdminLayout() {
               </div>
               <div className="flex-1 min-w-0">
                 <p className="text-sm font-semibold text-white truncate">{user?.email}</p>
-                <p className="text-xs text-zinc-500">Administrator</p>
+                <p className="text-xs text-zinc-400">Administrator</p>
               </div>
             </div>
             <button
@@ -142,7 +142,7 @@ export default function AdminLayout() {
             <h1 className="text-lg font-bold text-white">{currentPage.label}</h1>
           </div>
           <div className="flex items-center gap-2">
-            <Link to="/" className="text-xs font-semibold text-zinc-500 hover:text-primary transition-colors hidden sm:block">
+            <Link to="/" className="text-xs font-semibold text-zinc-400 hover:text-primary transition-colors hidden sm:block">
               View Store
             </Link>
           </div>

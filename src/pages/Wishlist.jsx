@@ -95,7 +95,7 @@ export default function Wishlist() {
       <div className="max-w-md mx-auto px-4 py-20 text-center">
         <Heart className="w-16 h-16 text-zinc-600 mx-auto mb-4" />
         <h1 className="text-2xl font-black mb-2">Saved Items</h1>
-        <p className="text-zinc-500 mb-8">Sign in to save your favorite items and get notified about price drops.</p>
+        <p className="text-zinc-400 mb-8">Sign in to save your favorite items and get notified about price drops.</p>
         <Link to="/login" className="bg-[var(--seasonal-primary,#1a5632)] text-white font-bold px-8 py-3 rounded-xl inline-block">Sign In</Link>
       </div>
     );
@@ -108,14 +108,14 @@ export default function Wishlist() {
         <h1 className="text-2xl font-black flex items-center gap-2">
           <Heart className="w-6 h-6 text-[var(--seasonal-primary,#1a5632)]" /> Saved Items
         </h1>
-        <span className="text-sm text-zinc-500">{items.length} item{items.length !== 1 ? 's' : ''}</span>
+        <span className="text-sm text-zinc-400">{items.length} item{items.length !== 1 ? 's' : ''}</span>
       </div>
 
       {items.length === 0 ? (
         <div className="text-center py-16">
           <Heart className="w-16 h-16 text-zinc-600 mx-auto mb-4" />
           <h2 className="text-lg font-bold mb-2">Your wishlist is empty</h2>
-          <p className="text-zinc-500 mb-6">Start saving items you love! Tap the heart on any product.</p>
+          <p className="text-zinc-400 mb-6">Start saving items you love! Tap the heart on any product.</p>
           <Link to="/" className="bg-[var(--seasonal-primary,#1a5632)] text-white font-bold px-8 py-3 rounded-xl inline-flex items-center gap-2">
             <ArrowLeft className="w-4 h-4" /> Browse Products
           </Link>
@@ -135,7 +135,7 @@ export default function Wishlist() {
                   {listing.images?.[0] ? (
                     <img src={listing.images[0]} alt={listing.title} className="w-full h-full object-cover" />
                   ) : (
-                    <div className="w-full h-full flex items-center justify-center"><Package className="w-6 h-6 text-zinc-500" /></div>
+                    <div className="w-full h-full flex items-center justify-center"><Package className="w-6 h-6 text-zinc-400" /></div>
                   )}
                 </Link>
 
@@ -192,7 +192,8 @@ export default function Wishlist() {
 
                     <button
                       onClick={() => removeItem(listing.id)}
-                      className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold text-zinc-500 hover:text-red-400 hover:bg-red-900/20 transition-all ml-auto"
+                      className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold text-zinc-400 hover:text-red-400 hover:bg-red-900/20 transition-all ml-auto"
+                      aria-label={`Remove ${listing.title} from wishlist`}
                     >
                       <Trash2 className="w-3 h-3" /> Remove
                     </button>

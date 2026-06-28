@@ -106,7 +106,7 @@ function Navbar() {
         {/* Logo */}
         <Link to="/" className="flex items-center gap-2 shrink-0">
           {sticker && <span className="theme-sticker text-lg">{sticker}</span>}
-          <span className="text-xl font-bold tracking-tight" style={{ color: navAccentColor }}>
+          <span className="text-xl font-bold tracking-tight text-white" style={{ color: navAccentText || '#ffffff' }}>
             Omix Store
           </span>
           {badgeText && (
@@ -149,11 +149,11 @@ function Navbar() {
 
         {/* Desktop (lg+): Right side */}
         <div className="hidden lg:flex items-center gap-2">
-          <Link to="/cart" className="relative p-2 rounded-full hover:bg-zinc-800 text-zinc-300 transition-colors">
+          <Link to="/cart" className="relative p-2 rounded-full hover:bg-zinc-800 text-zinc-300 transition-colors" aria-label={`Shopping cart, ${cartCount} items`}>
             <ShoppingCart className="w-5 h-5" />
             {cartCount > 0 && (
-              <span className="absolute -top-1 -right-1 w-5 h-5 text-white text-[10px] font-bold rounded-full flex items-center justify-center"
-                style={{ backgroundColor: navAccentColor }}
+              <span className="absolute -top-1 -right-1 w-5 h-5 text-zinc-900 text-[10px] font-bold rounded-full flex items-center justify-center"
+                style={{ backgroundColor: '#34d399' }}
               >
                 {cartCount > 9 ? '9+' : cartCount}
               </span>
@@ -198,11 +198,11 @@ function Navbar() {
         {/* Below lg: Compact controls + Hamburger */}
         <div className="flex lg:hidden items-center gap-1">
           {/* Cart icon always visible on mobile */}
-          <Link to="/cart" className="relative p-2 rounded-full hover:bg-zinc-800 text-zinc-300 transition-colors">
+          <Link to="/cart" className="relative p-2 rounded-full hover:bg-zinc-800 text-zinc-300 transition-colors" aria-label={`Shopping cart, ${cartCount} items`}>
             <ShoppingCart className="w-5 h-5" />
             {cartCount > 0 && (
-              <span className="absolute -top-1 -right-1 w-5 h-5 text-white text-[10px] font-bold rounded-full flex items-center justify-center"
-                style={{ backgroundColor: navAccentColor }}
+              <span className="absolute -top-1 -right-1 w-5 h-5 text-zinc-900 text-[10px] font-bold rounded-full flex items-center justify-center"
+                style={{ backgroundColor: '#34d399' }}
               >
                 {cartCount > 9 ? '9+' : cartCount}
               </span>

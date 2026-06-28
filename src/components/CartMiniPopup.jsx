@@ -60,7 +60,7 @@ export default function CartMiniPopup() {
               <ShoppingCart className="w-4 h-4 text-[var(--seasonal-primary,#1a5632)]" />
               <span className="font-bold text-sm text-white">Cart ({count})</span>
             </div>
-            <button onClick={() => setOpen(false)} className="p-1 rounded-lg hover:bg-zinc-800 text-zinc-400">
+            <button onClick={() => setOpen(false)} className="p-1 rounded-lg hover:bg-zinc-800 text-zinc-400" aria-label="Close cart popup">
               <X className="w-4 h-4" />
             </button>
           </div>
@@ -70,7 +70,7 @@ export default function CartMiniPopup() {
             {cart.length === 0 ? (
               <div className="py-8 text-center">
                 <ShoppingCart className="w-10 h-10 text-zinc-300 dark:text-zinc-600 mx-auto mb-2" />
-                <p className="text-sm text-zinc-500">Your cart is empty</p>
+                <p className="text-sm text-zinc-400">Your cart is empty</p>
                 <Link
                   to="/"
                   onClick={() => setOpen(false)}
@@ -106,6 +106,7 @@ export default function CartMiniPopup() {
                       <button
                         onClick={() => updateQuantity(item.id, item.quantity - 1)}
                         className="w-6 h-6 rounded-md bg-zinc-200 dark:bg-zinc-700 flex items-center justify-center text-zinc-300 hover:bg-zinc-300 dark:hover:bg-zinc-600"
+                        aria-label={`Decrease quantity of ${item.name}`}
                       >
                         <Minus className="w-3 h-3" />
                       </button>
@@ -113,12 +114,14 @@ export default function CartMiniPopup() {
                       <button
                         onClick={() => updateQuantity(item.id, item.quantity + 1)}
                         className="w-6 h-6 rounded-md bg-zinc-200 dark:bg-zinc-700 flex items-center justify-center text-zinc-300 hover:bg-zinc-300 dark:hover:bg-zinc-600"
+                        aria-label={`Increase quantity of ${item.name}`}
                       >
                         <Plus className="w-3 h-3" />
                       </button>
                       <button
                         onClick={() => removeItem(item.id)}
                         className="w-6 h-6 rounded-md flex items-center justify-center text-zinc-400 hover:text-red-500 hover:bg-red-900/20 ml-1"
+                        aria-label={`Remove ${item.name} from cart`}
                       >
                         <Trash2 className="w-3 h-3" />
                       </button>
@@ -133,7 +136,7 @@ export default function CartMiniPopup() {
           {cart.length > 0 && (
             <div className="border-t border-zinc-800 p-3 space-y-2 bg-zinc-900/50">
               <div className="flex items-center justify-between px-1">
-                <span className="text-xs text-zinc-500">Subtotal</span>
+                <span className="text-xs text-zinc-400">Subtotal</span>
                 <span className="font-bold text-sm text-white">{formatKES(total)}</span>
               </div>
               <div className="flex gap-2">

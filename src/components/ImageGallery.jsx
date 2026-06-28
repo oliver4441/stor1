@@ -149,18 +149,21 @@ export default function ImageGallery({ images, title, condition }) {
               <button
                 onClick={(e) => { e.stopPropagation(); handleZoomOut(); }}
                 className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center text-white hover:bg-white/20 transition-colors"
+                aria-label="Zoom out"
               >
                 <ZoomOut className="w-5 h-5" />
               </button>
               <button
                 onClick={(e) => { e.stopPropagation(); handleZoomIn(); }}
                 className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center text-white hover:bg-white/20 transition-colors"
+                aria-label="Zoom in"
               >
                 <ZoomIn className="w-5 h-5" />
               </button>
               <button
                 onClick={closeZoom}
                 className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center text-white hover:bg-white/20 transition-colors ml-2"
+                aria-label="Close image viewer"
               >
                 <X className="w-5 h-5" />
               </button>

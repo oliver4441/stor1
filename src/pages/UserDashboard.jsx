@@ -86,7 +86,7 @@ function CancelModal({ order, onClose, onConfirm, busy }) {
           </div>
           <div>
             <h3 className="text-lg font-bold text-white">Cancel Order</h3>
-            <p className="text-xs text-zinc-500">#{String(order.id).slice(0, 8).toUpperCase()}</p>
+            <p className="text-xs text-zinc-400">#{String(order.id).slice(0, 8).toUpperCase()}</p>
           </div>
         </div>
 
@@ -165,7 +165,7 @@ function OrderCard({ order, onCancel, isExpanded, onToggle }) {
             <span className="font-mono text-xs text-zinc-400">#{String(order.id).slice(0, 8).toUpperCase()}</span>
             <div className="flex items-center gap-2 mt-0.5">
               <Clock className="w-3 h-3 text-zinc-400 flex-shrink-0" />
-              <p className="text-xs text-zinc-500 truncate">
+              <p className="text-xs text-zinc-400 truncate">
                 {new Date(order.created_at).toLocaleDateString('en-KE', { month: 'short', day: 'numeric', year: 'numeric' })}
               </p>
             </div>
@@ -197,7 +197,7 @@ function OrderCard({ order, onCancel, isExpanded, onToggle }) {
                   )}
                   <div className="flex-1 min-w-0">
                     <p className="text-sm font-bold text-white truncate">{item.product_name}</p>
-                    <p className="text-xs text-zinc-500">Qty: {item.quantity}</p>
+                    <p className="text-xs text-zinc-400">Qty: {item.quantity}</p>
                   </div>
                   <span className="text-sm font-bold text-white flex-shrink-0">{formatKES(item.price * item.quantity)}</span>
                 </div>
@@ -423,6 +423,9 @@ function UserDashboard() {
   }, []);
 
   // Load notification preferences from user_settings
+  // Gracefully handles 404 (no row yet) by falling back to defaults
+  // Once the DB trigger is installed (on_auth_user_created), new users
+  // will always have a row — this fallback is for backward compatibility
   useEffect(() => {
     if (!user) return;
     let cancelled = false;
@@ -433,7 +436,12 @@ function UserDashboard() {
           .select('order_updates, price_drops, back_in_stock, promotions')
           .eq('user_id', user.id)
           .maybeSingle();
+
         if (cancelled) return;
+
+        // .maybeSingle() returns error only for real failures (network, RLS, etc.)
+        // No row = { data: null, error: null } — NOT a 404
+        // This avoids the PGRST116 (404) crash that .single() would cause
         if (error) {
           // Table might not exist yet — silently use defaults
           console.warn('Notification preferences unavailable (table may not exist):', error.message);
@@ -445,14 +453,16 @@ function UserDashboard() {
             promotions: data.promotions ?? false,
           });
         } else {
-          // No row yet — try upserting defaults (silently fail if table missing)
+          // No row yet (new user before trigger runs) — upsert defaults
+          // Using .upsert() with ON CONFLICT is safe and idempotent
           await supabase
             .from('user_settings')
             .upsert({ user_id: user.id, order_updates: true, price_drops: true, back_in_stock: true, promotions: false }, { onConflict: 'user_id' })
-            .catch(() => {});
+            .catch(() => {}); // Silently fail if table doesn't exist yet
         }
       } catch (err) {
         console.warn('Failed to load notification preferences:', err.message);
+        // State already has defaults from useState — UI stays functional
       } finally {
         if (!cancelled) setNotifPrefsLoaded(true);
       }
@@ -633,7 +643,7 @@ function UserDashboard() {
     return (
       <div className="max-w-7xl mx-auto px-4 py-20 text-center">
         <div className="inline-block w-8 h-8 border-4 border-[var(--seasonal-primary,#1a5632)] border-t-transparent rounded-full animate-spin mb-4" />
-        <p className="text-zinc-500">Loading your account...</p>
+        <p className="text-zinc-400">Loading your account...</p>
       </div>
     );
   }
@@ -659,7 +669,7 @@ function UserDashboard() {
                 />
                 <div className="flex-1 text-center sm:text-left">
                   <h2 className="text-xl font-bold text-white">{userName}</h2>
-                  <p className="text-sm text-zinc-500">{user?.email}</p>
+                  <p className="text-sm text-zinc-400">{user?.email}</p>
                   <p className="text-xs text-zinc-400 mt-1 capitalize">{profile?.role || 'Customer'}</p>
                 </div>
                 {!editing ? (
@@ -727,22 +737,22 @@ function UserDashboard() {
               <div className="bg-zinc-900 rounded-2xl border border-zinc-800 p-4 text-center">
                 <ShoppingBag className="w-5 h-5 text-[var(--seasonal-primary,#1a5632)] mx-auto mb-1" />
                 <p className="text-2xl font-black text-white">{orders.length}</p>
-                <p className="text-xs text-zinc-500">Orders</p>
+                <p className="text-xs text-zinc-400">Orders</p>
               </div>
               <div className="bg-zinc-900 rounded-2xl border border-zinc-800 p-4 text-center">
                 <Star className="w-5 h-5 text-amber-500 mx-auto mb-1" />
                 <p className="text-2xl font-black text-white">{loyaltyPoints}</p>
-                <p className="text-xs text-zinc-500">Points</p>
+                <p className="text-xs text-zinc-400">Points</p>
               </div>
               <div className="bg-zinc-900 rounded-2xl border border-zinc-800 p-4 text-center">
                 <MapPin className="w-5 h-5 text-emerald-500 mx-auto mb-1" />
                 <p className="text-2xl font-black text-white">{addresses.length}</p>
-                <p className="text-xs text-zinc-500">Addresses</p>
+                <p className="text-xs text-zinc-400">Addresses</p>
               </div>
               <div className="bg-zinc-900 rounded-2xl border border-zinc-800 p-4 text-center">
                 <Gift className="w-5 h-5 text-purple-500 mx-auto mb-1" />
                 <p className="text-2xl font-black text-white">{referralCount}</p>
-                <p className="text-xs text-zinc-500">Referrals</p>
+                <p className="text-xs text-zinc-400">Referrals</p>
               </div>
             </div>
 
@@ -751,14 +761,14 @@ function UserDashboard() {
               <Link to="/track-order" className="bg-zinc-900 rounded-2xl border border-zinc-800 p-4 flex items-center justify-between group hover:border-[var(--seasonal-primary,#1a5632)]/30 transition-colors">
                 <div>
                   <p className="font-bold text-white text-sm">Track Order</p>
-                  <p className="text-xs text-zinc-500">Check delivery status</p>
+                  <p className="text-xs text-zinc-400">Check delivery status</p>
                 </div>
                 <Package className="w-6 h-6 text-[var(--seasonal-primary,#1a5632)] group-hover:scale-110 transition-transform" />
               </Link>
               <Link to="/wishlist" className="bg-zinc-900 rounded-2xl border border-zinc-800 p-4 flex items-center justify-between group hover:border-[var(--seasonal-primary,#1a5632)]/30 transition-colors">
                 <div>
                   <p className="font-bold text-white text-sm">Wishlist</p>
-                  <p className="text-xs text-zinc-500">Saved items</p>
+                  <p className="text-xs text-zinc-400">Saved items</p>
                 </div>
                 <Bookmark className="w-6 h-6 text-[var(--seasonal-primary,#1a5632)] group-hover:scale-110 transition-transform" />
               </Link>
@@ -768,29 +778,46 @@ function UserDashboard() {
 
       // ═══════════════ ORDERS ════════════════
       case 'orders':
+        const hiddenOrders = JSON.parse(localStorage.getItem('omix_hidden_orders') || '[]');
+        const visibleOrders = orders.filter(o => !hiddenOrders.includes(o.id));
         return (
           <div className="space-y-4">
             <div className="flex items-center justify-between">
               <div>
                 <h2 className="text-lg font-bold text-white">Order History</h2>
-                <p className="text-xs text-zinc-500">{orders.length} order{orders.length !== 1 ? 's' : ''}</p>
+                <p className="text-xs text-zinc-400">{visibleOrders.length} order{visibleOrders.length !== 1 ? 's' : ''}</p>
               </div>
-              {orders.length > 3 && (
-                <button
-                  onClick={() => setExpandedOrders(
-                    Object.keys(expandedOrders).length === orders.length ? {} :
-                    Object.fromEntries(orders.map(o => [o.id, true]))
-                  )}
-                  className="text-xs font-bold text-[var(--seasonal-primary,#1a5632)] hover:underline"
-                >
-                  {Object.keys(expandedOrders).length === orders.length ? 'Collapse all' : 'Expand all'}
-                </button>
-              )}
+              <div className="flex items-center gap-2">
+                {visibleOrders.length > 3 && (
+                  <button
+                    onClick={() => setExpandedOrders(
+                      Object.keys(expandedOrders).length === visibleOrders.length ? {} :
+                      Object.fromEntries(visibleOrders.map(o => [o.id, true]))
+                    )}
+                    className="text-xs font-bold text-[var(--seasonal-primary,#1a5632)] hover:underline"
+                  >
+                    {Object.keys(expandedOrders).length === visibleOrders.length ? 'Collapse all' : 'Expand all'}
+                  </button>
+                )}
+                {visibleOrders.length > 0 && (
+                  <button
+                    onClick={() => {
+                      const allIds = visibleOrders.map(o => o.id);
+                      const existing = JSON.parse(localStorage.getItem('omix_hidden_orders') || '[]');
+                      localStorage.setItem('omix_hidden_orders', JSON.stringify([...new Set([...existing, ...allIds])]));
+                      setOrders(prev => [...prev]); // force re-render via new array ref
+                    }}
+                    className="text-xs font-bold text-red-400 hover:text-red-300 hover:underline"
+                  >
+                    Clear history
+                  </button>
+                )}
+              </div>
             </div>
 
-            {orders.length > 0 ? (
+            {visibleOrders.length > 0 ? (
               <div className="space-y-3">
-                {orders.map(order => (
+                {visibleOrders.map(order => (
                   <OrderCard
                     key={order.id}
                     order={order}
@@ -804,7 +831,7 @@ function UserDashboard() {
               <div className="text-center py-12 bg-zinc-900 rounded-2xl border border-zinc-800">
                 <Package className="w-12 h-12 text-zinc-300 mx-auto mb-3" />
                 <h3 className="font-bold text-white mb-1">No orders yet</h3>
-                <p className="text-sm text-zinc-500 mb-4">When you place an order, it will appear here.</p>
+                <p className="text-sm text-zinc-400 mb-4">{hiddenOrders.length > 0 ? 'All orders cleared. New orders will appear here.' : 'When you place an order, it will appear here.'}</p>
                 <Link to="/" className="inline-flex items-center gap-2 bg-[var(--seasonal-primary,#1a5632)] text-white font-bold px-6 py-3 rounded-xl text-sm hover:bg-[var(--seasonal-secondary,#14472a)] transition-colors">
                   Start Shopping <ArrowRight className="w-4 h-4" />
                 </Link>
@@ -852,7 +879,7 @@ function UserDashboard() {
                               <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-[var(--seasonal-primary,#1a5632)]/10 text-[var(--seasonal-primary,#1a5632)]">Default</span>
                             )}
                           </div>
-                          <p className="text-xs text-zinc-500 mt-0.5">{addr.area}{addr.landmark ? `, ${addr.landmark}` : ''}</p>
+                          <p className="text-xs text-zinc-400 mt-0.5">{addr.area}{addr.landmark ? `, ${addr.landmark}` : ''}</p>
                           {addr.phone && <p className="text-xs text-zinc-400 mt-0.5">{addr.phone}</p>}
                         </div>
                       </div>
@@ -874,7 +901,7 @@ function UserDashboard() {
               <div className="text-center py-12 bg-zinc-900 rounded-2xl border border-zinc-800">
                 <MapPin className="w-10 h-10 text-zinc-300 mx-auto mb-3" />
                 <h3 className="font-bold text-white mb-1">No addresses saved</h3>
-                <p className="text-sm text-zinc-500">Save your delivery addresses for faster checkout.</p>
+                <p className="text-sm text-zinc-400">Save your delivery addresses for faster checkout.</p>
               </div>
             )}
           </div>
@@ -904,7 +931,7 @@ function UserDashboard() {
                       onClick={() => { navigator.clipboard.writeText(referralCode); setCopied(true); setTimeout(() => setCopied(false), 2000); }}
                       className="ml-auto p-2 rounded-lg bg-zinc-200 dark:bg-zinc-700 hover:bg-zinc-300 dark:hover:bg-zinc-600 transition-colors"
                     >
-                      {copied ? <Check className="w-4 h-4 text-green-500" /> : <Copy className="w-4 h-4 text-zinc-500" />}
+                      {copied ? <Check className="w-4 h-4 text-green-500" /> : <Copy className="w-4 h-4 text-zinc-400" />}
                     </button>
                   </div>
                 </div>
@@ -956,7 +983,7 @@ function UserDashboard() {
                           </div>
                           <div>
                             <p className="text-sm font-bold text-white">{entry.description || 'Points update'}</p>
-                            <p className="text-xs text-zinc-500">{new Date(entry.created_at).toLocaleDateString('en-KE', { month: 'short', day: 'numeric' })}</p>
+                            <p className="text-xs text-zinc-400">{new Date(entry.created_at).toLocaleDateString('en-KE', { month: 'short', day: 'numeric' })}</p>
                           </div>
                         </div>
                         <span className={`font-bold text-sm ${entry.points > 0 ? 'text-green-400' : 'text-red-400'}`}>
@@ -992,7 +1019,7 @@ function UserDashboard() {
                 <div className="flex items-center justify-between">
                   <div className="flex-1 min-w-0 mr-4">
                     <p className="text-sm font-semibold text-white">Push Notifications</p>
-                    <p className="text-xs text-zinc-500 mt-0.5">
+                    <p className="text-xs text-zinc-400 mt-0.5">
                       {notifStatus === 'loading'
                         ? 'Checking support...'
                         : notifStatus === 'on'
@@ -1008,7 +1035,7 @@ function UserDashboard() {
                   {notifStatus === 'loading' ? (
                     <div className="w-5 h-5 border-2 border-zinc-300 border-t-transparent rounded-full animate-spin flex-shrink-0" />
                   ) : notifStatus === 'blocked' ? (
-                    <span className="text-xs text-zinc-500 flex-shrink-0">Blocked</span>
+                    <span className="text-xs text-zinc-400 flex-shrink-0">Blocked</span>
                   ) : notifStatus === 'unsupported' ? (
                     <span className="text-xs text-zinc-400 flex-shrink-0">Unsupported</span>
                   ) : (
@@ -1040,7 +1067,7 @@ function UserDashboard() {
                   <div className="flex items-center justify-between py-2">
                     <div className="flex-1 min-w-0 mr-4">
                       <p className="text-sm font-medium text-white">Order Updates</p>
-                      <p className="text-xs text-zinc-500">Status changes, shipping, delivery</p>
+                      <p className="text-xs text-zinc-400">Status changes, shipping, delivery</p>
                     </div>
                     <ToggleSwitch
                       checked={notifPrefs.order_updates}
@@ -1052,7 +1079,7 @@ function UserDashboard() {
                   <div className="flex items-center justify-between py-2">
                     <div className="flex-1 min-w-0 mr-4">
                       <p className="text-sm font-medium text-white">Price Drops</p>
-                      <p className="text-xs text-zinc-500">Items you viewed or saved go on sale</p>
+                      <p className="text-xs text-zinc-400">Items you viewed or saved go on sale</p>
                     </div>
                     <ToggleSwitch
                       checked={notifPrefs.price_drops}
@@ -1064,7 +1091,7 @@ function UserDashboard() {
                   <div className="flex items-center justify-between py-2">
                     <div className="flex-1 min-w-0 mr-4">
                       <p className="text-sm font-medium text-white">Back in Stock</p>
-                      <p className="text-xs text-zinc-500">Out-of-stock items become available</p>
+                      <p className="text-xs text-zinc-400">Out-of-stock items become available</p>
                     </div>
                     <ToggleSwitch
                       checked={notifPrefs.back_in_stock}
@@ -1076,7 +1103,7 @@ function UserDashboard() {
                   <div className="flex items-center justify-between py-2">
                     <div className="flex-1 min-w-0 mr-4">
                       <p className="text-sm font-medium text-white">Promotions</p>
-                      <p className="text-xs text-zinc-500">Deals, discounts, and special offers</p>
+                      <p className="text-xs text-zinc-400">Deals, discounts, and special offers</p>
                     </div>
                     <ToggleSwitch
                       checked={notifPrefs.promotions}
@@ -1129,7 +1156,7 @@ function UserDashboard() {
               ) : (
                 <div className="text-center py-6">
                   <Search className="w-8 h-8 text-zinc-300 mx-auto mb-2" />
-                  <p className="text-sm text-zinc-500">No saved searches yet</p>
+                  <p className="text-sm text-zinc-400">No saved searches yet</p>
                 </div>
               )}
             </div>
@@ -1323,7 +1350,7 @@ function AddressForm({ onSave, onClose }) {
           {['Home', 'Work', 'Other'].map(l => (
             <button key={l} type="button" onClick={() => setForm({ ...form, label: l })}
               className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all ${
-                form.label === l ? 'bg-zinc-900 text-white dark:bg-white dark:text-zinc-900' : 'bg-zinc-800 text-zinc-500'
+                form.label === l ? 'bg-zinc-900 text-white dark:bg-white dark:text-zinc-900' : 'bg-zinc-800 text-zinc-400'
               }`}>{l}</button>
           ))}
         </div>

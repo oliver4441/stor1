@@ -12,7 +12,7 @@ function mapCategoryName(listing) {
   }
   return listing;
 }
-function mapListingCategories(listings) {
+export function mapListingCategories(listings) {
   if (Array.isArray(listings)) return listings.map(mapCategoryName);
   if (listings) mapCategoryName(listings);
   return listings;
@@ -56,6 +56,34 @@ export async function signUp({ email, password, fullName, phone, refCode }) {
       // Note: auth user cleanup should be handled by a DB trigger or edge function,
       // never call admin methods from the client
       return { success: false, error: 'Account creation failed. Please try again.' };
+    }
+
+    // Award 1 loyalty point to the referrer (if valid referral code was used)
+    if (referredBy) {
+      try {
+        await supabase.from('points_transactions').insert({
+          user_id: referredBy,
+          points: 1,
+          description: `Referral reward: ${fullName || email} signed up`,
+          reference_type: 'referral',
+          reference_id: data.user.id,
+        });
+        // Update referrer's loyalty_points total
+        const { data: referrerProfile } = await supabase
+          .from('profiles')
+          .select('loyalty_points')
+          .eq('id', referredBy)
+          .single();
+        if (referrerProfile) {
+          await supabase
+            .from('profiles')
+            .update({ loyalty_points: (referrerProfile.loyalty_points || 0) + 1 })
+            .eq('id', referredBy);
+        }
+      } catch (refErr) {
+        console.warn('Referral point award failed:', refErr.message);
+        // Don't fail signup if referral reward fails
+      }
     }
   }
   // Return session if auto-signed in (email confirmation disabled), null if verification needed
@@ -621,49 +649,9 @@ export async function createOrder({ items, total, customerName, phone, email, ad
     }
   }
 
-  // Award loyalty points (1 point per KES 100)
-  if (user) {
-    const pointsEarned = Math.floor(total / 100);
-    if (pointsEarned > 0) {
-      const { error: ptsTxError } = await supabase.from('points_transactions').insert({
-        user_id: user.id,
-        points: pointsEarned,
-        description: `Order #${order.id}`,
-        reference_type: 'order',
-        reference_id: order.id,
-      });
-      if (ptsTxError) console.warn('Points transaction failed:', ptsTxError.message);
-
-      const { data: currentProfile } = await supabase
-        .from('profiles').select('loyalty_points').eq('id', user.id).single();
-      const { error: ptsUpdateError } = await supabase.from('profiles').update({
-        loyalty_points: (currentProfile?.loyalty_points || 0) + pointsEarned
-      }).eq('id', user.id);
-      if (ptsUpdateError) console.warn('Loyalty points update failed:', ptsUpdateError.message);
-    }
-  }
-
-  // Check if referee -> award referral reward
-  try {
-    const { data: profile } = await supabase.from('profiles').select('referred_by').eq('id', user.id).single();
-    if (profile?.referred_by) {
-      const { data: existing } = await supabase
-        .from('referral_rewards')
-        .select('id')
-        .eq('referee_id', user.id)
-        .maybeSingle();
-      if (!existing) {
-        const { error: refError } = await supabase.from('referral_rewards').insert({
-          referrer_id: profile.referred_by,
-          referee_id: user.id,
-          order_id: order.id,
-          reward_amount: 100,
-          status: 'pending',
-        });
-        if (refError) console.warn('Referral reward failed:', refError.message);
-      }
-    }
-  } catch {}
+  // NOTE: Loyalty points and referral rewards are NOT awarded here.
+  // They are awarded on confirmed payment only (via Paystack webhook/server).
+  // See server.js for the payment confirmation logic.
 
   // Increment promo code usage — atomic via DB function
   if (promoCodeId) {

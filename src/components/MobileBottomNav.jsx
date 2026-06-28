@@ -62,13 +62,14 @@ export default function MobileBottomNav() {
               className={`relative flex flex-col items-center justify-center gap-0.5 min-w-[64px] py-1 transition-all duration-150 ${
                 active
                   ? 'text-[var(--seasonal-primary,#1a5632)]'
-                  : 'text-zinc-500 active:scale-90'
+                  : 'text-zinc-400 active:scale-90'
               }`}
+              aria-label={item.label}
             >
               <div className={`relative transition-transform duration-150 ${active ? 'scale-110 -translate-y-0.5' : ''}`}>
                 <Icon className="w-5 h-5 transition-transform duration-150" />
                 {badge > 0 && (
-                  <span className="absolute -top-1.5 -right-2.5 min-w-[16px] h-4 px-1 bg-[var(--seasonal-primary,#1a5632)] text-white text-[9px] font-bold rounded-full flex items-center justify-center transition-transform duration-150 active:scale-90">
+                  <span className="absolute -top-1.5 -right-2.5 min-w-[16px] h-4 px-1 bg-emerald-400 text-black text-[9px] font-bold rounded-full flex items-center justify-center transition-transform duration-150 active:scale-90">
                     {badge > 99 ? '99+' : badge}
                   </span>
                 )}

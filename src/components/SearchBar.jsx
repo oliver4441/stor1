@@ -139,6 +139,7 @@ export default function SearchBar({ onSearch, initialValue = '' }) {
             type="button"
             onClick={() => { setQuery(''); onSearch(''); inputRef.current?.focus(); }}
             className="absolute right-[8.5rem] top-1/2 -translate-y-1/2 p-1 rounded-full hover:bg-zinc-800 text-zinc-400"
+            aria-label="Clear search"
           >
             <X className="w-4 h-4" />
           </button>
@@ -149,6 +150,7 @@ export default function SearchBar({ onSearch, initialValue = '' }) {
           className={`absolute right-[5.5rem] top-1/2 -translate-y-1/2 p-1.5 rounded-full transition-colors ${
             listening ? 'bg-[var(--seasonal-primary,#1a5632)] text-white animate-pulse' : 'text-zinc-400 hover:bg-zinc-800'
           }`}
+          aria-label={listening ? 'Listening...' : 'Search by voice'}
           title={listening ? 'Listening...' : 'Search by voice'}
         >
           <Mic className="w-4 h-4" />

@@ -79,6 +79,7 @@ export default function QuickViewModal({ listing, onClose }) {
         <button
           onClick={onClose}
           className="absolute top-4 right-4 z-10 w-8 h-8 rounded-full bg-white/90 dark:bg-zinc-800/90 flex items-center justify-center text-zinc-300 hover:bg-zinc-700 shadow-sm"
+          aria-label="Close quick view"
         >
           <X className="w-4 h-4" />
         </button>
@@ -98,12 +99,14 @@ export default function QuickViewModal({ listing, onClose }) {
                     <button
                       onClick={() => setImgIndex(i => (i - 1 + images.length) % images.length)}
                       className="absolute left-2 top-1/2 -translate-y-1/2 w-8 h-8 rounded-full bg-white/90 dark:bg-zinc-800/90 flex items-center justify-center shadow-sm"
+                      aria-label="Previous image"
                     >
                       <ChevronLeft className="w-4 h-4" />
                     </button>
                     <button
                       onClick={() => setImgIndex(i => (i + 1) % images.length)}
                       className="absolute right-2 top-1/2 -translate-y-1/2 w-8 h-8 rounded-full bg-white/90 dark:bg-zinc-800/90 flex items-center justify-center shadow-sm"
+                      aria-label="Next image"
                     >
                       <ChevronRight className="w-4 h-4" />
                     </button>
@@ -163,7 +166,7 @@ export default function QuickViewModal({ listing, onClose }) {
             )}
 
             {listing.location && (
-              <div className="flex items-center gap-1.5 text-xs text-zinc-500 mb-4">
+              <div className="flex items-center gap-1.5 text-xs text-zinc-400 mb-4">
                 <MapPin className="w-3.5 h-3.5" />
                 <span>{listing.location}</span>
               </div>
@@ -188,7 +191,8 @@ export default function QuickViewModal({ listing, onClose }) {
               )}
               <button
                 onClick={handleShare}
-                className="w-12 h-12 rounded-xl border border-zinc-700 flex items-center justify-center text-zinc-500 hover:bg-[#25D366] hover:text-white hover:border-[#25D366] transition-all"
+                className="w-12 h-12 rounded-xl border border-zinc-700 flex items-center justify-center text-zinc-400 hover:bg-[#25D366] hover:text-white hover:border-[#25D366] transition-all"
+                aria-label="Share on WhatsApp"
               >
                 <Share2 className="w-4 h-4" />
               </button>

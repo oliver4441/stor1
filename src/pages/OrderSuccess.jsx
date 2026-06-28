@@ -38,7 +38,7 @@ export default function OrderSuccess() {
             <Package className="w-5 h-5 text-[var(--seasonal-primary,#1a5632)]" />
             <span>Order ID: <strong className="text-white font-mono">{String(orderId).slice(0, 8).toUpperCase()}</strong></span>
           </div>
-          <p className="text-xs text-zinc-500 mt-2">Estimated delivery: 2-5 business days</p>
+          <p className="text-xs text-zinc-400 mt-2">Estimated delivery: 2-5 business days</p>
         </div>
 
         <div className="flex flex-col sm:flex-row gap-3 justify-center mt-8">

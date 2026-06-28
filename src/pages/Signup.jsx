@@ -18,7 +18,8 @@ function Signup() {
   const [needsVerification, setNeedsVerification] = useState(false);
   const [registeredEmail, setRegisteredEmail] = useState('');
   const [agreed, setAgreed] = useState(false);
-  const [formData, setFormData] = useState({ fullName: '', email: '', password: '', confirmPassword: '' });
+  const [formData, setFormData] = useState({ fullName: '', email: '', password: '', confirmPassword: '', referralCode: '' });
+  const [showReferralInput, setShowReferralInput] = useState(false);
   const successTimer = useRef(null);
 
   useEffect(() => {
@@ -47,8 +48,9 @@ function Signup() {
     setError('');
 
     try {
+      const refCodeToUse = formData.referralCode?.trim() || refCode;
       recordActionAttempt('signup');
-      const result = await signUp({ email: formData.email, password: formData.password, fullName: formData.fullName, refCode });
+      const result = await signUp({ email: formData.email, password: formData.password, fullName: formData.fullName, refCode: refCodeToUse });
       if (result.success) {
         clearRateLimit('signup');
         trackUserSignup('email', result.user.id);
@@ -140,6 +142,31 @@ function Signup() {
             <input required name="confirmPassword" type="password" value={formData.confirmPassword} onChange={e => updateField('confirmPassword', e.target.value)} placeholder="Repeat your password" minLength={6} className="w-full pl-12 pr-4 py-3.5 rounded-xl bg-zinc-900 border border-transparent focus:border-[var(--seasonal-primary,#1a5632)] focus:bg-white dark:focus:bg-zinc-950 focus:outline-none text-white transition-all shadow-sm" />
           </div>
         </div>
+        <div>
+          <label className="flex items-center gap-2 text-sm font-bold mb-2 text-zinc-300">
+            Referral Code
+            <button
+              type="button"
+              onClick={() => setShowReferralInput(prev => !prev)}
+              className="text-[var(--seasonal-primary,#1a5632)] text-xs font-semibold hover:underline"
+            >
+              {showReferralInput ? '(hide)' : '(optional)'}
+            </button>
+          </label>
+          {showReferralInput && (
+            <div className="relative">
+              <div className="absolute left-4 top-1/2 -translate-y-1/2 z-10">🎁</div>
+              <input
+                type="text"
+                value={formData.referralCode}
+                onChange={e => updateField('referralCode', e.target.value.toUpperCase())}
+                placeholder="Enter referral code (e.g. ABC12345)"
+                maxLength={12}
+                className="w-full pl-10 pr-4 py-3.5 rounded-xl bg-zinc-900 border border-transparent focus:border-[var(--seasonal-primary,#1a5632)] focus:bg-white dark:focus:bg-zinc-950 focus:outline-none text-white transition-all shadow-sm font-mono uppercase tracking-wider"
+              />
+            </div>
+          )}
+        </div>
 
         <label className="flex items-start gap-3 cursor-pointer group pt-2">
           <div className="relative mt-0.5">
@@ -159,16 +186,16 @@ function Signup() {
 
         <div className="relative my-6">
           <div className="absolute inset-0 flex items-center"><div className="w-full border-t border-zinc-700"></div></div>
-          <div className="relative flex justify-center text-sm"><span className="px-2 bg-zinc-950 text-zinc-500">{t('auth.or') || 'or'}</span></div>
+          <div className="relative flex justify-center text-sm"><span className="px-2 bg-zinc-950 text-zinc-400">{t('auth.or') || 'or'}</span></div>
         </div>
 
         <button type="button" disabled
-          className="w-full flex items-center justify-center gap-2 bg-zinc-800 border border-zinc-700 text-zinc-500 font-bold py-3.5 rounded-2xl cursor-not-allowed">
+          className="w-full flex items-center justify-center gap-2 bg-zinc-800 border border-zinc-700 text-zinc-400 font-bold py-3.5 rounded-2xl cursor-not-allowed">
           <span className="text-xs tracking-widest uppercase">Coming Soon</span>
         </button>
       </form>
 
-      <p className="mt-8 text-center text-zinc-500 text-sm">
+      <p className="mt-8 text-center text-zinc-400 text-sm">
         Already have an account? <Link to="/login" className="text-[var(--seasonal-primary,#1a5632)] font-bold hover:underline">Log In</Link>
       </p>
     </div>

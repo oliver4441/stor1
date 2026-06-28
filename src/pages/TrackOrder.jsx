@@ -124,7 +124,7 @@ export default function TrackOrder() {
                   </div>
                   <div className="flex-grow">
                     <p className="font-bold text-white text-sm">{item.product_name}</p>
-                    <p className="text-xs text-zinc-500">Qty: {item.quantity}</p>
+                    <p className="text-xs text-zinc-400">Qty: {item.quantity}</p>
                   </div>
                   <p className="font-bold text-white text-sm">{formatKES(item.price * item.quantity)}</p>
                 </div>
@@ -135,7 +135,7 @@ export default function TrackOrder() {
       )}
 
       {!order && !error && searched && (
-        <div className="text-center py-12 text-zinc-500">No order found with that ID.</div>
+        <div className="text-center py-12 text-zinc-400">No order found with that ID.</div>
       )}
     </div>
   );

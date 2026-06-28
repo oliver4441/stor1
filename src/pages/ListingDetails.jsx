@@ -253,7 +253,7 @@ function ListingDetails() {
                     <div key={i} className="flex items-center gap-2 bg-zinc-900/60 border border-zinc-800 rounded-xl px-3 py-2.5 flex-shrink-0">
                       <Icon className="w-4 h-4 text-[var(--seasonal-primary,#1a5632)]" />
                       <div className="leading-tight">
-                        <p className="text-[10px] text-zinc-500 uppercase tracking-wider">{spec.label}</p>
+                        <p className="text-[10px] text-zinc-400 uppercase tracking-wider">{spec.label}</p>
                         <p className="text-xs font-bold text-white">{spec.value}</p>
                       </div>
                     </div>
@@ -422,7 +422,7 @@ function ListingDetails() {
                     <span className="text-red-500 font-bold">Out of stock</span>
                   )}
                   {selectedVariantObj.priceAdjustment !== 0 && (
-                    <span className="text-zinc-500">
+                    <span className="text-zinc-400">
                       {selectedVariantObj.priceAdjustment > 0 ? '+' : ''}{formatKES(selectedVariantObj.priceAdjustment)} from base
                     </span>
                   )}
@@ -456,12 +456,14 @@ function ListingDetails() {
             )}
             <div className="flex items-center gap-3">
               <button type="button" onClick={() => setQuantity(Math.max(1, quantity - 1))}
-                className="w-12 h-12 rounded-2xl bg-zinc-800 flex items-center justify-center hover:bg-zinc-700 transition-colors">
+                className="w-12 h-12 rounded-2xl bg-zinc-800 flex items-center justify-center hover:bg-zinc-700 transition-colors"
+                aria-label="Decrease quantity">
                 <Minus className="w-5 h-5" />
               </button>
               <span className="text-2xl font-black text-white w-12 text-center">{quantity}</span>
               <button type="button" onClick={() => setQuantity(quantity + 1)}
-                className="w-12 h-12 rounded-2xl bg-zinc-800 flex items-center justify-center hover:bg-zinc-700 transition-colors">
+                className="w-12 h-12 rounded-2xl bg-zinc-800 flex items-center justify-center hover:bg-zinc-700 transition-colors"
+                aria-label="Increase quantity">
                 <Plus className="w-5 h-5" />
               </button>
             </div>

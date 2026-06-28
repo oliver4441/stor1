@@ -76,7 +76,7 @@ export default function AdminOverview() {
                 </div>
               </div>
               <p className="text-2xl font-black text-white">{stat.value}</p>
-              <p className="text-xs text-zinc-500 mt-1">{stat.label}</p>
+              <p className="text-xs text-zinc-400 mt-1">{stat.label}</p>
               <p className="text-xs text-zinc-400 mt-0.5">{stat.change}</p>
             </div>
           );
@@ -98,7 +98,7 @@ export default function AdminOverview() {
                     <p className="text-sm font-semibold text-white">
                       #{String(order.id).slice(0, 8).toUpperCase()}
                     </p>
-                    <p className="text-xs text-zinc-500">{order.customer_name || 'Guest'} • {order.phone || 'No phone'}</p>
+                    <p className="text-xs text-zinc-400">{order.customer_name || 'Guest'} • {order.phone || 'No phone'}</p>
                   </div>
                   <div className="text-right">
                     <p className="text-sm font-bold text-primary">{formatKES(order.total_amount)}</p>
@@ -131,10 +131,10 @@ export default function AdminOverview() {
               {topProducts.map((product, i) => (
                 <div key={product.name} className="flex items-center justify-between py-2 border-b border-zinc-100 dark:border-zinc-800 last:border-0">
                   <div className="flex items-center gap-3">
-                    <span className="w-6 h-6 rounded-lg bg-zinc-800 flex items-center justify-center text-xs font-bold text-zinc-500">{i + 1}</span>
+                    <span className="w-6 h-6 rounded-lg bg-zinc-800 flex items-center justify-center text-xs font-bold text-zinc-400">{i + 1}</span>
                     <div>
                       <p className="text-sm font-semibold text-white truncate max-w-[180px]">{product.name}</p>
-                      <p className="text-xs text-zinc-500">{product.count} sold</p>
+                      <p className="text-xs text-zinc-400">{product.count} sold</p>
                     </div>
                   </div>
                   <p className="text-sm font-bold text-emerald-600">{formatKES(product.revenue)}</p>

@@ -47,7 +47,7 @@ export default function NiaChat() {
 
   return (
     <div
-      className="fixed bottom-36 sm:bottom-40 right-4 sm:right-6 z-[60] w-[380px] max-w-[calc(100vw-2rem)] flex flex-col rounded-2xl shadow-2xl overflow-hidden border transition-all duration-300 ease-out origin-bottom-right"
+      className="fixed bottom-44 right-4 sm:bottom-48 sm:right-6 z-[60] w-[380px] max-w-[calc(100vw-2rem)] flex flex-col rounded-2xl shadow-2xl overflow-hidden border transition-all duration-300 ease-out origin-bottom-right"
       style={{
         backgroundColor: '#18181b',
         borderColor: '#27272a',
@@ -134,6 +134,7 @@ export default function NiaChat() {
             disabled={!inputText.trim() || isTyping}
             className="p-2.5 rounded-xl text-white transition-all disabled:opacity-40 hover:opacity-90 active:scale-95"
             style={{ backgroundColor: COLORS.accent }}
+            aria-label="Send message"
           >
             <Send className="w-4 h-4" />
           </button>

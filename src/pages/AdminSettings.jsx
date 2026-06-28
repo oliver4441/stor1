@@ -201,7 +201,7 @@ export default function AdminSettings() {
     <div className="space-y-6 max-w-3xl">
       <div>
         <h2 className="text-xl font-bold text-white">Settings</h2>
-        <p className="text-sm text-zinc-500">Configure your store</p>
+        <p className="text-sm text-zinc-400">Configure your store</p>
       </div>
 
       {saved && (
@@ -263,7 +263,7 @@ export default function AdminSettings() {
             <label className="block text-sm font-bold mb-1.5 text-zinc-300">Free Shipping Threshold (KES)</label>
             <input type="number" value={form.freeShippingThreshold} onChange={e => updateField('freeShippingThreshold', e.target.value)}
               className="w-full md:w-1/3 px-4 py-2.5 rounded-xl bg-zinc-800 border border-transparent focus:border-primary focus:outline-none text-white text-sm" />
-            <p className="text-xs text-zinc-500 mt-1">Orders above this amount get free delivery</p>
+            <p className="text-xs text-zinc-400 mt-1">Orders above this amount get free delivery</p>
           </div>
         </div>
       </div>
@@ -278,7 +278,7 @@ export default function AdminSettings() {
           <label className="flex items-center justify-between cursor-pointer">
             <div>
               <p className="text-sm font-semibold text-white">Email Notifications</p>
-              <p className="text-xs text-zinc-500">Receive email for new orders</p>
+              <p className="text-xs text-zinc-400">Receive email for new orders</p>
             </div>
             <div className={`w-11 h-6 rounded-full transition-colors relative ${form.emailNotifications ? 'bg-primary' : 'bg-zinc-300 dark:bg-zinc-700'}`}
               onClick={() => updateField('emailNotifications', !form.emailNotifications)}>
@@ -306,7 +306,7 @@ export default function AdminSettings() {
         <label className="flex items-center justify-between cursor-pointer">
           <div>
             <p className="text-sm font-semibold text-white">Maintenance Mode</p>
-            <p className="text-xs text-zinc-500">Temporarily disable purchases for customers</p>
+            <p className="text-xs text-zinc-400">Temporarily disable purchases for customers</p>
           </div>
           <div className={`w-11 h-6 rounded-full transition-colors relative ${
             form.maintenanceMode ? 'bg-amber-500' : 'bg-zinc-300 dark:bg-zinc-700'
@@ -332,7 +332,7 @@ export default function AdminSettings() {
           <Palette className="w-5 h-5 text-pink-500" />
           <h3 className="text-base font-bold text-white">Seasonal Themes</h3>
         </div>
-        <p className="text-xs text-zinc-500 mb-4">
+        <p className="text-xs text-zinc-400 mb-4">
           Automatically transform the app look for holidays and events. Active theme changes based on date.
         </p>
 
@@ -345,7 +345,7 @@ export default function AdminSettings() {
                 {activeTheme.name} is active now
               </span>
             </div>
-            <p className="text-xs text-zinc-500 mt-1">
+            <p className="text-xs text-zinc-400 mt-1">
               {activeTheme.dateRange.start} — {activeTheme.dateRange.end}
               {activeTheme.particleType && activeTheme.particleType !== 'none' && ` · ${activeTheme.particleType} particles`}
             </p>
@@ -354,7 +354,7 @@ export default function AdminSettings() {
 
         {!activeTheme && (
           <div className="mb-4 p-3 rounded-xl bg-zinc-800/50 border border-zinc-700">
-            <p className="text-xs text-zinc-500">No seasonal theme is currently active. Enable one below to get started.</p>
+            <p className="text-xs text-zinc-400">No seasonal theme is currently active. Enable one below to get started.</p>
           </div>
         )}
 
@@ -379,7 +379,7 @@ export default function AdminSettings() {
                   </div>
                   <div>
                     <p className="text-sm font-semibold text-white">{theme.name}</p>
-                    <div className="flex items-center gap-2 text-[11px] text-zinc-500">
+                    <div className="flex items-center gap-2 text-[11px] text-zinc-400">
                       <Calendar className="w-3 h-3" />
                       {theme.dateRange.start} — {theme.dateRange.end}
                       {theme.particleType && theme.particleType !== 'none' && (
@@ -424,7 +424,7 @@ export default function AdminSettings() {
               </div>
               <button
                 onClick={() => setPreviewTheme(null)}
-                className="mt-2 text-xs text-zinc-500 hover:text-zinc-700"
+                className="mt-2 text-xs text-zinc-400 hover:text-zinc-700"
               >
                 Close preview
               </button>
@@ -439,7 +439,7 @@ export default function AdminSettings() {
           <Megaphone className="w-5 h-5 text-purple-500" />
           <h3 className="text-base font-bold text-white">Broadcast Update</h3>
         </div>
-        <p className="text-xs text-zinc-500 mb-3">
+        <p className="text-xs text-zinc-400 mb-3">
           Send a push notification to all users who have enabled notifications. Use for new features, promotions, or important announcements.
         </p>
         <textarea

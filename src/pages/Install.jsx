@@ -149,6 +149,10 @@ export default function Install() {
 
   const handleInstall = useCallback(async () => {
     if (isIOS) { setShowIOSModal(true); return; }
+    if (window.matchMedia('(display-mode: standalone)').matches) {
+      setInstallState('installed');
+      return;
+    }
     if (deferredPrompt) {
       setInstallState('installing');
       try {
@@ -159,6 +163,7 @@ export default function Install() {
       setDeferredPrompt(null);
       return;
     }
+    // Desktop or unsupported — show instructions tab
     if (isAndroid) setActiveTab('android');
     else setActiveTab('desktop');
   }, [deferredPrompt, isIOS, isAndroid]);
@@ -166,15 +171,36 @@ export default function Install() {
   const tabData = STEPS[activeTab];
 
   const renderInstallButton = () => {
-    if (installState === 'installed') return (
-      <div className="flex items-center gap-3 backdrop-blur-xl bg-green-500/10 border border-green-500/20 px-8 py-4 rounded-2xl shadow-lg shadow-green-500/10 animate-scale-in">
-        <CheckCircle2 className="w-6 h-6 text-green-500" />
-        <div className="text-left">
-          <span className="font-bold text-green-400 text-sm block">App Installed!</span>
-          <span className="text-green-500 text-xs">Open Omix from your home screen</span>
+    if (window.matchMedia('(display-mode: standalone)').matches || installState === 'installed') {
+      return (
+        <div className="flex items-center justify-center gap-3 backdrop-blur-xl bg-green-500/10 border border-green-500/20 px-8 py-4 rounded-2xl shadow-lg shadow-green-500/10 animate-scale-in">
+          <CheckCircle2 className="w-6 h-6 text-green-500" />
+          <div className="text-left">
+            <span className="font-bold text-green-400 text-sm block">
+              {window.matchMedia('(display-mode: standalone)').matches ? 'App is Installed!' : 'App Installed!'}
+            </span>
+            <span className="text-green-500 text-xs">
+              {window.matchMedia('(display-mode: standalone)').matches ? 'Open Omix from your taskbar or start menu' : 'Open Omix from your home screen'}
+            </span>
+          </div>
         </div>
-      </div>
-    );
+      );
+    }
+    // No prompt available (e.g. desktop) — show instructions
+    if (!deferredPrompt && !isIOS && !isAndroid) {
+      return (
+        <button onClick={handleInstall} className="group relative flex items-center gap-3 bg-gradient-to-r from-[var(--seasonal-primary,#1a5632)] to-[var(--seasonal-secondary,#14472a)] text-white px-8 py-4 rounded-2xl font-black text-lg shadow-2xl shadow-[var(--seasonal-primary,#1a5632)]/30 hover:shadow-[var(--seasonal-primary,#1a5632)]/50 transition-all duration-300 hover:scale-105 active:scale-95 overflow-hidden">
+          <div className="absolute inset-0 bg-white/10 opacity-0 group-hover:opacity-100 transition-opacity" />
+          <Monitor className="w-6 h-6 relative z-10 group-hover:animate-bounce" />
+          <span className="text-left relative z-10">
+            <span className="block">How to Install on Desktop</span>
+            <span className="text-white/70 text-xs font-medium block">
+              View step-by-step instructions for Chrome/Edge
+            </span>
+          </span>
+        </button>
+      );
+    }
     if (installState === 'installing') return (
       <div className="flex items-center gap-3 backdrop-blur-xl bg-[var(--seasonal-primary,#1a5632)]/10 border border-[var(--seasonal-primary,#1a5632)]/20 px-8 py-4 rounded-2xl">
         <div className="w-6 h-6 border-2 border-[var(--seasonal-primary,#1a5632)] border-t-transparent rounded-full animate-spin" />
@@ -237,7 +263,7 @@ export default function Install() {
             <div className="backdrop-blur-xl bg-white/50 dark:bg-zinc-900/50 border border-white/60 dark:border-zinc-700/50 rounded-3xl p-8 shadow-2xl shadow-zinc-900/5 space-y-4">
               <div className="flex flex-col items-center gap-4">
                 {renderInstallButton()}
-                <p className="text-xs text-zinc-500">
+                <p className="text-xs text-zinc-400">
                   {isIOS ? "You're on iPhone — tap above for easy install steps" : isAndroid ? "You're on Android — tap above to install" : "You're on desktop — tap above to install"}
                 </p>
               </div>
@@ -245,7 +271,7 @@ export default function Install() {
               {/* Glass divider */}
               <div className="relative">
                 <div className="absolute inset-0 flex items-center"><div className="w-full border-t border-zinc-700/50" /></div>
-                <div className="relative flex justify-center"><span className="px-3 text-xs text-zinc-500 bg-white/50 dark:bg-zinc-900/50 backdrop-blur-sm">or visit on</span></div>
+                <div className="relative flex justify-center"><span className="px-3 text-xs text-zinc-400 bg-white/50 dark:bg-zinc-900/50 backdrop-blur-sm">or visit on</span></div>
               </div>
 
               {/* App Store badges */}
@@ -407,7 +433,12 @@ export default function Install() {
               Join thousands of buyers on Kericho's cleanest online store.
             </p>
             <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
-              {installState !== 'installed' && (
+              {installState === 'installed' || window.matchMedia('(display-mode: standalone)').matches ? (
+                <div className="flex items-center gap-3 bg-green-500/10 border border-green-500/20 px-6 py-4 rounded-2xl">
+                  <CheckCircle2 className="w-5 h-5 text-green-500" />
+                  <span className="font-bold text-green-400 text-sm">App Installed!</span>
+                </div>
+              ) : (
                 <button onClick={handleInstall} className="group relative flex items-center gap-2 bg-gradient-to-r from-[var(--seasonal-primary,#1a5632)] to-[var(--seasonal-secondary,#14472a)] text-white px-8 py-4 rounded-2xl font-black shadow-2xl shadow-[var(--seasonal-primary,#1a5632)]/25 hover:shadow-[var(--seasonal-primary,#1a5632)]/40 transition-all duration-300 hover:scale-105 active:scale-95 overflow-hidden">
                   <div className="absolute inset-0 bg-white/10 opacity-0 group-hover:opacity-100 transition-opacity" />
                   <Download className="w-5 h-5 relative z-10 group-hover:animate-bounce" />

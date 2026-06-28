@@ -78,7 +78,7 @@ export default function AdminCustomers() {
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div>
           <h2 className="text-xl font-bold text-white">Customers</h2>
-          <p className="text-sm text-zinc-500">{customers.length} customers</p>
+          <p className="text-sm text-zinc-400">{customers.length} customers</p>
         </div>
         <button onClick={handleExportCSV} className="flex items-center gap-2 px-4 py-2 rounded-xl bg-zinc-900 border border-zinc-800 text-sm font-semibold text-zinc-300 hover:bg-zinc-50 dark:hover:bg-zinc-800">
           <Download className="w-4 h-4" /> Export CSV
@@ -104,11 +104,11 @@ export default function AdminCustomers() {
             <table className="w-full">
               <thead>
                 <tr className="border-b border-zinc-800">
-                  <th className="text-left text-xs font-bold text-zinc-500 uppercase px-4 py-3">Customer</th>
-                  <th className="text-left text-xs font-bold text-zinc-500 uppercase px-4 py-3 hidden md:table-cell">Contact</th>
-                  <th className="text-left text-xs font-bold text-zinc-500 uppercase px-4 py-3">Orders</th>
-                  <th className="text-left text-xs font-bold text-zinc-500 uppercase px-4 py-3">Total Spent</th>
-                  <th className="text-left text-xs font-bold text-zinc-500 uppercase px-4 py-3 hidden sm:table-cell">Last Order</th>
+                  <th className="text-left text-xs font-bold text-zinc-400 uppercase px-4 py-3">Customer</th>
+                  <th className="text-left text-xs font-bold text-zinc-400 uppercase px-4 py-3 hidden md:table-cell">Contact</th>
+                  <th className="text-left text-xs font-bold text-zinc-400 uppercase px-4 py-3">Orders</th>
+                  <th className="text-left text-xs font-bold text-zinc-400 uppercase px-4 py-3">Total Spent</th>
+                  <th className="text-left text-xs font-bold text-zinc-400 uppercase px-4 py-3 hidden sm:table-cell">Last Order</th>
                 </tr>
               </thead>
               <tbody>
@@ -128,12 +128,12 @@ export default function AdminCustomers() {
                     <td className="px-4 py-3 hidden md:table-cell">
                       <div className="space-y-1">
                         {customer.email && (
-                          <div className="flex items-center gap-1.5 text-xs text-zinc-500">
+                          <div className="flex items-center gap-1.5 text-xs text-zinc-400">
                             <Mail className="w-3 h-3" />{customer.email}
                           </div>
                         )}
                         {customer.phone && (
-                          <div className="flex items-center gap-1.5 text-xs text-zinc-500">
+                          <div className="flex items-center gap-1.5 text-xs text-zinc-400">
                             <Phone className="w-3 h-3" />{customer.phone}
                           </div>
                         )}
@@ -146,7 +146,7 @@ export default function AdminCustomers() {
                       <span className="text-sm font-bold text-emerald-600">{formatKES(customer.totalSpent)}</span>
                     </td>
                     <td className="px-4 py-3 hidden sm:table-cell">
-                      <p className="text-xs text-zinc-500">
+                      <p className="text-xs text-zinc-400">
                         {customer.lastOrder ? new Date(customer.lastOrder).toLocaleDateString('en-KE', { month: 'short', day: 'numeric', year: 'numeric' }) : '-'}
                       </p>
                     </td>
@@ -160,7 +160,7 @@ export default function AdminCustomers() {
         <div className="bg-zinc-900 rounded-2xl border-2 border-dashed border-zinc-800 p-12 text-center">
           <Users className="w-10 h-10 text-zinc-300 mx-auto mb-3" />
           <h3 className="text-lg font-bold text-white mb-1">No customers found</h3>
-          <p className="text-sm text-zinc-500">{searchQuery ? 'Try a different search' : 'Customers will appear here after placing orders'}</p>
+          <p className="text-sm text-zinc-400">{searchQuery ? 'Try a different search' : 'Customers will appear here after placing orders'}</p>
         </div>
       )}
 
@@ -176,7 +176,7 @@ export default function AdminCustomers() {
                 </div>
                 <div>
                   <h3 className="text-lg font-bold text-white">{selectedCustomer.name}</h3>
-                  <p className="text-xs text-zinc-500">{selectedCustomer.orders.length} orders</p>
+                  <p className="text-xs text-zinc-400">{selectedCustomer.orders.length} orders</p>
                 </div>
               </div>
               <button onClick={() => setSelectedCustomer(null)} className="p-2 rounded-full hover:bg-zinc-800 text-zinc-400"><X className="w-5 h-5" /></button>
@@ -186,15 +186,15 @@ export default function AdminCustomers() {
             <div className="grid grid-cols-3 gap-3 mb-6">
               <div className="p-3 rounded-xl bg-zinc-800/50 text-center">
                 <p className="text-lg font-black text-white">{selectedCustomer.orders.length}</p>
-                <p className="text-xs text-zinc-500">Orders</p>
+                <p className="text-xs text-zinc-400">Orders</p>
               </div>
               <div className="p-3 rounded-xl bg-zinc-800/50 text-center">
                 <p className="text-lg font-black text-emerald-600">{formatKES(selectedCustomer.totalSpent)}</p>
-                <p className="text-xs text-zinc-500">Total Spent</p>
+                <p className="text-xs text-zinc-400">Total Spent</p>
               </div>
               <div className="p-3 rounded-xl bg-zinc-800/50 text-center">
                 <p className="text-lg font-black text-white">{formatKES(selectedCustomer.orders.length > 0 ? selectedCustomer.totalSpent / selectedCustomer.orders.length : 0)}</p>
-                <p className="text-xs text-zinc-500">Avg Order</p>
+                <p className="text-xs text-zinc-400">Avg Order</p>
               </div>
             </div>
 
@@ -228,7 +228,7 @@ export default function AdminCustomers() {
                   <div key={order.id} className="flex items-center justify-between p-3 rounded-xl bg-zinc-800/50">
                     <div>
                       <p className="text-sm font-mono font-semibold text-white">#{String(order.id).slice(0, 8).toUpperCase()}</p>
-                      <p className="text-xs text-zinc-500">{new Date(order.created_at).toLocaleDateString('en-KE', { month: 'short', day: 'numeric', year: 'numeric' })}</p>
+                      <p className="text-xs text-zinc-400">{new Date(order.created_at).toLocaleDateString('en-KE', { month: 'short', day: 'numeric', year: 'numeric' })}</p>
                     </div>
                     <div className="text-right">
                       <p className="text-sm font-bold text-primary">{formatKES(order.total_amount)}</p>

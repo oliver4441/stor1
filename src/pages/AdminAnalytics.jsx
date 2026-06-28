@@ -113,7 +113,7 @@ export default function AdminAnalytics() {
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div>
           <h2 className="text-xl font-bold text-white">Analytics</h2>
-          <p className="text-sm text-zinc-500">Sales performance overview</p>
+          <p className="text-sm text-zinc-400">Sales performance overview</p>
         </div>
         <div className="flex items-center gap-3">
           <select value={dateRange} onChange={e => setDateRange(e.target.value)}
@@ -131,22 +131,22 @@ export default function AdminAnalytics() {
         <div className="bg-zinc-900 rounded-2xl border border-zinc-800 p-5">
           <DollarSign className="w-5 h-5 text-emerald-500 mb-2" />
           <p className="text-2xl font-black text-white">{formatKES(totalRevenue)}</p>
-          <p className="text-xs text-zinc-500 mt-1">Revenue</p>
+          <p className="text-xs text-zinc-400 mt-1">Revenue</p>
         </div>
         <div className="bg-zinc-900 rounded-2xl border border-zinc-800 p-5">
           <ShoppingBag className="w-5 h-5 text-blue-500 mb-2" />
           <p className="text-2xl font-black text-white">{filteredOrders.length}</p>
-          <p className="text-xs text-zinc-500 mt-1">Orders</p>
+          <p className="text-xs text-zinc-400 mt-1">Orders</p>
         </div>
         <div className="bg-zinc-900 rounded-2xl border border-zinc-800 p-5">
           <TrendingUp className="w-5 h-5 text-purple-500 mb-2" />
           <p className="text-2xl font-black text-white">{formatKES(avgOrderValue)}</p>
-          <p className="text-xs text-zinc-500 mt-1">Avg Order</p>
+          <p className="text-xs text-zinc-400 mt-1">Avg Order</p>
         </div>
         <div className="bg-zinc-900 rounded-2xl border border-zinc-800 p-5">
           <Package className="w-5 h-5 text-amber-500 mb-2" />
           <p className="text-2xl font-black text-white">{listings.length}</p>
-          <p className="text-xs text-zinc-500 mt-1">Products</p>
+          <p className="text-xs text-zinc-400 mt-1">Products</p>
         </div>
       </div>
 
@@ -206,7 +206,7 @@ export default function AdminAnalytics() {
                     <span className="w-6 h-6 rounded-lg flex items-center justify-center text-xs font-bold" style={{ backgroundColor: `${CHART_COLORS[i]}20`, color: CHART_COLORS[i] }}>{i + 1}</span>
                     <div>
                       <p className="text-sm font-semibold text-white truncate max-w-[180px]">{product.name}</p>
-                      <p className="text-xs text-zinc-500">{product.count} sold</p>
+                      <p className="text-xs text-zinc-400">{product.count} sold</p>
                     </div>
                   </div>
                   <p className="text-sm font-bold text-emerald-600">{formatKES(product.revenue)}</p>

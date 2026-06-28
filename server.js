@@ -109,6 +109,17 @@ app.get('/api/paystack/verify/:reference', async (req, res) => {
 
       if (orderId && supabaseUrl && SUPABASE_SERVICE_KEY) {
         try {
+          // Fetch order total and user_id
+          const orderResp = await fetch(`${supabaseUrl}/rest/v1/omix_orders?id=eq.${orderId}&select=id,status,total_amount,user_id`, {
+            headers: {
+              'apikey': SUPABASE_SERVICE_KEY,
+              'Authorization': `Bearer ${SUPABASE_SERVICE_KEY}`,
+            },
+          });
+          const orders = await orderResp.json();
+          const orderData = orders?.[0];
+          const alreadyPaid = orderData?.status === 'paid';
+
           await fetch(`${supabaseUrl}/rest/v1/omix_orders?id=eq.${orderId}`, {
             method: 'PATCH',
             headers: {
@@ -124,6 +135,134 @@ app.get('/api/paystack/verify/:reference', async (req, res) => {
             }),
           });
           console.log(`[Paystack] Order ${orderId} marked as paid`);
+
+          // Award loyalty points only on first payment (not on repeated verify calls)
+          if (!alreadyPaid && orderData?.user_id && orderData?.total_amount) {
+            const pointsEarned = Math.floor(orderData.total_amount / 100);
+            if (pointsEarned > 0) {
+              await fetch(`${supabaseUrl}/rest/v1/points_transactions`, {
+                method: 'POST',
+                headers: {
+                  'apikey': SUPABASE_SERVICE_KEY,
+                  'Authorization': `Bearer ${SUPABASE_SERVICE_KEY}`,
+                  'Content-Type': 'application/json',
+                  'Prefer': 'return=minimal',
+                },
+                body: JSON.stringify({
+                  user_id: orderData.user_id,
+                  points: pointsEarned,
+                  description: `Order #${orderId.slice(0, 8).toUpperCase()}`,
+                  reference_type: 'order',
+                  reference_id: orderId,
+                }),
+              });
+              // Update profile loyalty_points
+              const profileResp = await fetch(`${supabaseUrl}/rest/v1/profiles?id=eq.${orderData.user_id}&select=loyalty_points`, {
+                headers: {
+                  'apikey': SUPABASE_SERVICE_KEY,
+                  'Authorization': `Bearer ${SUPABASE_SERVICE_KEY}`,
+                },
+              });
+              const profiles = await profileResp.json();
+              if (profiles?.[0]) {
+                await fetch(`${supabaseUrl}/rest/v1/profiles?id=eq.${orderData.user_id}`, {
+                  method: 'PATCH',
+                  headers: {
+                    'apikey': SUPABASE_SERVICE_KEY,
+                    'Authorization': `Bearer ${SUPABASE_SERVICE_KEY}`,
+                    'Content-Type': 'application/json',
+                    'Prefer': 'return=minimal',
+                  },
+                  body: JSON.stringify({
+                    loyalty_points: (profiles[0].loyalty_points || 0) + pointsEarned,
+                  }),
+                });
+              }
+              console.log(`[Paystack] Awarded ${pointsEarned} points to user ${orderData.user_id}`);
+            }
+
+            // Check if this user was referred -> award referral reward
+            try {
+              const refProfileResp = await fetch(`${supabaseUrl}/rest/v1/profiles?id=eq.${orderData.user_id}&select=referred_by`, {
+                headers: {
+                  'apikey': SUPABASE_SERVICE_KEY,
+                  'Authorization': `Bearer ${SUPABASE_SERVICE_KEY}`,
+                },
+              });
+              const refProfiles = await refProfileResp.json();
+              const referredBy = refProfiles?.[0]?.referred_by;
+              if (referredBy) {
+                // Check if referral reward already exists for this order
+                const existingResp = await fetch(`${supabaseUrl}/rest/v1/referral_rewards?order_id=eq.${orderId}&select=id`, {
+                  headers: {
+                    'apikey': SUPABASE_SERVICE_KEY,
+                    'Authorization': `Bearer ${SUPABASE_SERVICE_KEY}`,
+                  },
+                });
+                const existing = await existingResp.json();
+                if (!existing || existing.length === 0) {
+                  await fetch(`${supabaseUrl}/rest/v1/referral_rewards`, {
+                    method: 'POST',
+                    headers: {
+                      'apikey': SUPABASE_SERVICE_KEY,
+                      'Authorization': `Bearer ${SUPABASE_SERVICE_KEY}`,
+                      'Content-Type': 'application/json',
+                      'Prefer': 'return=minimal',
+                    },
+                    body: JSON.stringify({
+                      referrer_id: referredBy,
+                      referee_id: orderData.user_id,
+                      order_id: orderId,
+                      reward_amount: 100,
+                      status: 'confirmed',
+                    }),
+                  });
+                  // Award 1 loyalty point to referrer for confirmed purchase
+                  await fetch(`${supabaseUrl}/rest/v1/points_transactions`, {
+                    method: 'POST',
+                    headers: {
+                      'apikey': SUPABASE_SERVICE_KEY,
+                      'Authorization': `Bearer ${SUPABASE_SERVICE_KEY}`,
+                      'Content-Type': 'application/json',
+                      'Prefer': 'return=minimal',
+                    },
+                    body: JSON.stringify({
+                      user_id: referredBy,
+                      points: 1,
+                      description: `Referral: Order #${orderId.slice(0, 8).toUpperCase()} (confirmed)`,
+                      reference_type: 'referral',
+                      reference_id: orderId,
+                    }),
+                  });
+                  // Update referrer's loyalty points
+                  const refProfileResp2 = await fetch(`${supabaseUrl}/rest/v1/profiles?id=eq.${referredBy}&select=loyalty_points`, {
+                    headers: {
+                      'apikey': SUPABASE_SERVICE_KEY,
+                      'Authorization': `Bearer ${SUPABASE_SERVICE_KEY}`,
+                    },
+                  });
+                  const refProfiles2 = await refProfileResp2.json();
+                  if (refProfiles2?.[0]) {
+                    await fetch(`${supabaseUrl}/rest/v1/profiles?id=eq.${referredBy}`, {
+                      method: 'PATCH',
+                      headers: {
+                        'apikey': SUPABASE_SERVICE_KEY,
+                        'Authorization': `Bearer ${SUPABASE_SERVICE_KEY}`,
+                        'Content-Type': 'application/json',
+                        'Prefer': 'return=minimal',
+                      },
+                      body: JSON.stringify({
+                        loyalty_points: (refProfiles2[0].loyalty_points || 0) + 1,
+                      }),
+                    });
+                  }
+                  console.log(`[Paystack] Referral reward & point awarded to ${referredBy}`);
+                }
+              }
+            } catch (refErr) {
+              console.warn('[Paystack] Referral reward failed:', refErr.message);
+            }
+          }
         } catch (dbErr) {
           console.error('[Paystack] DB update error:', dbErr.message);
         }
@@ -303,7 +442,7 @@ app.post('/api/nia/chat', async (req, res) => {
     return res.status(503).json({ error: 'AI service not configured' });
   }
 
-  const { messages, model = 'mimo-v2.5-free' } = req.body;
+  const { messages, model = 'nemotron-3-ultra-free' } = req.body;
 
   if (!messages || !Array.isArray(messages)) {
     return res.status(400).json({ error: 'Messages array required' });

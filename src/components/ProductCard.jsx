@@ -172,6 +172,27 @@ function ProductCard({ listing, compareMode, onCompareChange }) {
           {listing.condition?.replace('_', ' ')}
         </div>
 
+        {/* Low stock badge */}
+        {listing.status !== 'sold' && listing.stock_quantity !== undefined && listing.stock_quantity > 0 && listing.stock_quantity <= 2 && (
+          <div className="absolute top-2 left-16 bg-orange-500 text-white px-2 py-1 rounded-lg text-[10px] font-bold shadow-sm">
+            Only {listing.stock_quantity} left!
+          </div>
+        )}
+
+        {/* Sold out badge */}
+        {listing.status === 'sold' && (
+          <div className="absolute top-2 left-16 bg-red-600 text-white px-2 py-1 rounded-lg text-[10px] font-bold shadow-sm">
+            Sold Out
+          </div>
+        )}
+
+        {/* Featured badge */}
+        {listing.featured && (
+          <div className="absolute top-2 right-2 bg-amber-500 text-white px-2 py-1 rounded-lg text-[10px] font-bold shadow-sm">
+            ★ Popular
+          </div>
+        )}
+
         {/* Flash sale badge */}
         {listing.flash_sale_ends_at && (
           <div className="absolute top-2 right-12 bg-red-500 text-white px-2 py-1 rounded-lg text-[10px] font-bold shadow-sm flex items-center gap-1">

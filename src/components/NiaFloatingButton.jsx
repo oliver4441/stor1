@@ -9,7 +9,7 @@ export default function NiaFloatingButton() {
   if (!user) return null;
 
   return (
-    <div className="fixed bottom-20 sm:bottom-24 right-4 sm:right-6 z-[55] flex flex-col items-center gap-1.5">
+    <div className="fixed bottom-28 right-4 sm:bottom-32 sm:right-6 z-[55] flex flex-col items-center gap-1.5">
       {/* "Ask Nia" tag above the button */}
       {!isOpen && (
         <span

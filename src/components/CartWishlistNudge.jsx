@@ -103,7 +103,8 @@ export default function CartWishlistNudge() {
         <div className="fixed bottom-20 md:bottom-6 left-4 right-4 z-[60] animate-slide-up">
           <div className="max-w-md mx-auto bg-zinc-900 border border-zinc-700 rounded-2xl shadow-2xl shadow-black/50 p-4">
             <button onClick={dismissCartNudge}
-              className="absolute top-3 right-3 p-1 rounded-full hover:bg-zinc-800 text-zinc-500 transition-colors">
+              className="absolute top-3 right-3 p-1 rounded-full hover:bg-zinc-800 text-zinc-400 transition-colors"
+              aria-label="Dismiss cart notification">
               <X className="w-4 h-4" />
             </button>
             <div className="flex items-start gap-3">
@@ -115,7 +116,7 @@ export default function CartWishlistNudge() {
                 <p className="text-zinc-400 text-xs mt-0.5">
                   {getItemCount()} item{getItemCount() !== 1 ? 's' : ''} &middot; {getTotal().toLocaleString()} KES
                 </p>
-                <div className="flex items-center gap-2 mt-1.5 text-xs text-zinc-500">
+                <div className="flex items-center gap-2 mt-1.5 text-xs text-zinc-400">
                   <Clock className="w-3 h-3" /> Don't miss out — complete your order!
                 </div>
                 <button
@@ -135,7 +136,8 @@ export default function CartWishlistNudge() {
         <div className="fixed bottom-20 md:bottom-6 left-4 right-4 z-[60] animate-slide-up">
           <div className="max-w-md mx-auto bg-zinc-900 border border-zinc-700 rounded-2xl shadow-2xl shadow-black/50 p-4">
             <button onClick={dismissWishNudge}
-              className="absolute top-3 right-3 p-1 rounded-full hover:bg-zinc-800 text-zinc-500 transition-colors">
+              className="absolute top-3 right-3 p-1 rounded-full hover:bg-zinc-800 text-zinc-400 transition-colors"
+              aria-label="Dismiss wishlist notification">
               <X className="w-4 h-4" />
             </button>
             <div className="flex items-start gap-3">
@@ -147,7 +149,7 @@ export default function CartWishlistNudge() {
                 <p className="text-zinc-400 text-xs mt-0.5">
                   {wishlistCount} item{wishlistCount !== 1 ? 's' : ''} in your wishlist
                 </p>
-                <div className="flex items-center gap-2 mt-1.5 text-xs text-zinc-500">
+                <div className="flex items-center gap-2 mt-1.5 text-xs text-zinc-400">
                   <TrendingDown className="w-3 h-3" /> Prices can change — grab yours before it's gone!
                 </div>
                 <button

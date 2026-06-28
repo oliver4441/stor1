@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Routes, Route } from 'react-router-dom';
 import ErrorBoundary from './components/ErrorBoundary';
 import { SeasonalProvider } from './context/SeasonalContext';
@@ -6,6 +6,7 @@ import { LanguageProvider } from './utils/lang';
 import { AuthProvider } from './context/AuthContext';
 import { CartProvider } from './context/CartContext';
 import { NiaChatProvider } from './context/NiaChatContext';
+import { initTracking } from './utils/analytics';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
 import MobileBottomNav from './components/MobileBottomNav';
@@ -62,6 +63,11 @@ import DeliveryTime from './pages/help/DeliveryTime';
 import FlashSale from './pages/help/FlashSale';
 
 function App() {
+  // Initialize tracking cookies and activity monitoring
+  useEffect(() => {
+    initTracking();
+  }, []);
+
   return (
     <SeasonalProvider>
       <ThemeStyles />
@@ -72,8 +78,9 @@ function App() {
     <ErrorBoundary>
       <ScrollToTop />
       <div className="min-h-screen flex flex-col bg-zinc-950">
+        <a href="#main-content" className="sr-only focus:not-sr-only focus:absolute focus:top-2 focus:left-2 focus:z-[100] focus:bg-white focus:text-black focus:px-4 focus:py-2 focus:rounded-lg focus:font-bold">Skip to main content</a>
         <Navbar />
-        <main className="flex-grow">
+        <main id="main-content" className="flex-grow">
           <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/login" element={<Login />} />

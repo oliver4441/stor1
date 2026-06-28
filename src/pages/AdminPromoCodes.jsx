@@ -165,7 +165,7 @@ export default function AdminPromoCodes() {
       ) : codes.length === 0 ? (
         <div className="text-center py-16 rounded-2xl border" style={{ borderColor: '#e4e4e7' }}>
           <Tag className="w-10 h-10 mx-auto mb-3 text-zinc-300" />
-          <p className="text-sm font-medium text-zinc-500">No promo codes yet</p>
+          <p className="text-sm font-medium text-zinc-400">No promo codes yet</p>
           <p className="text-xs text-zinc-400 mt-1">Create your first promo code to get started</p>
         </div>
       ) : (
@@ -228,7 +228,7 @@ export default function AdminPromoCodes() {
                     </div>
 
                     {c.description && (
-                      <p className="text-xs text-zinc-500 mt-1">{c.description}</p>
+                      <p className="text-xs text-zinc-400 mt-1">{c.description}</p>
                     )}
 
                     <div className="flex items-center gap-4 mt-2 text-[11px] text-zinc-400">
@@ -265,7 +265,7 @@ export default function AdminPromoCodes() {
                       className="p-2 rounded-lg hover:bg-zinc-800 transition-colors"
                       title="Edit"
                     >
-                      <Pencil className="w-4 h-4 text-zinc-500" />
+                      <Pencil className="w-4 h-4 text-zinc-400" />
                     </button>
                     <button
                       onClick={() => setDeleteTarget(c)}
@@ -293,7 +293,7 @@ export default function AdminPromoCodes() {
                 {editingId ? 'Edit Promo Code' : 'New Promo Code'}
               </h3>
               <button onClick={() => { setModalOpen(false); resetForm(); }} className="p-1.5 rounded-lg hover:bg-zinc-800">
-                <X className="w-5 h-5 text-zinc-500" />
+                <X className="w-5 h-5 text-zinc-400" />
               </button>
             </div>
 
@@ -450,7 +450,7 @@ export default function AdminPromoCodes() {
               </div>
               <div>
                 <h3 className="text-base font-bold text-white">Delete Promo Code</h3>
-                <p className="text-xs text-zinc-500">This action cannot be undone</p>
+                <p className="text-xs text-zinc-400">This action cannot be undone</p>
               </div>
             </div>
             <p className="text-sm text-zinc-400 mb-5">

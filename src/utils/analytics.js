@@ -1,261 +1,195 @@
-// Google Analytics 4 utility for Omix Store
-// Usage: import { trackEvent, trackPageView } from './utils/analytics'
+// Omix Visitor Tracking & Analytics Utility
+// Browser-side tracking: cookies, localStorage, page views, product views, cart adds, purchases
 
-let gaInitialized = false;
-let measurementId = null;
-let GA_NOT_SUPPORTED = false;
-
-/**
- * Initialize Google Analytics
- * Call this once at app startup
- */
-export function initGA() {
-  if (typeof window === 'undefined') return;
-
-  measurementId = import.meta.env.VITE_GA_MEASUREMENT_ID;
-
-  if (!measurementId || measurementId === 'G-XXXXXXXXXX') {
-    return;
-  }
-
+// ── Cookie helpers ──────────────────────────────────────────
+function setCookie(name, value, days) {
   try {
-    // Load gtag script
-    const script1 = document.createElement('script');
-    script1.async = true;
-    script1.src = `https://www.googletagmanager.com/gtag/js?id=${measurementId}`;
-    script1.onerror = () => { GA_NOT_SUPPORTED = true; };
-    document.head.appendChild(script1);
-
-    // Initialize gtag
-    window.dataLayer = window.dataLayer || [];
-    window.gtag = function gtag() {
-      window.dataLayer.push(arguments);
-    };
-    window.gtag('js', new Date());
-    window.gtag('config', measurementId, {
-      page_path: window.location.pathname,
-      send_page_view: false,
-    });
-
-    gaInitialized = true;
+    const expires = new Date(Date.now() + days * 864e5).toUTCString();
+    document.cookie = `${name}=${encodeURIComponent(value)};expires=${expires};path=/;SameSite=Lax`;
   } catch (e) {
-    // GA blocked (CSP, ad-blocker, etc.) — app still works
-    GA_NOT_SUPPORTED = true;
+    // Silently fail if cookies are blocked
   }
 }
 
-/**
- * Track a custom event
- * @param {string} eventName - Event name (e.g., 'user_login', 'add_to_cart')
- * @param {Object} params - Event parameters
- */
-export function trackEvent(eventName, params = {}) {
-  if (!gaInitialized || !window.gtag) {
-    console.debug('GA4: Not initialized, queuing event:', eventName);
-    return;
+function getCookie(name) {
+  try {
+    return document.cookie.split('; ').reduce((r, v) => {
+      const [k, val] = v.split('=');
+      return k === name ? decodeURIComponent(val) : r;
+    }, null);
+  } catch (e) {
+    return null;
   }
+}
 
-  window.gtag('event', eventName, {
-    ...params,
-    timestamp: new Date().toISOString(),
-    // Omix-specific context
-    app_name: 'Omix Store',
-    app_version: '1.0.0',
+// ── UUID generator ──────────────────────────────────────────
+function generateUUID() {
+  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+    const r = (Math.random() * 16) | 0;
+    const v = c === 'x' ? r : (r & 0x3) | 0x8;
+    return v.toString(16);
   });
 }
 
-/**
- * Track page view (for SPA navigation)
- * @param {string} pagePath - Page path (e.g., '/listing/123')
- * @param {string} pageTitle - Page title
- */
-export function trackPageView(pagePath, pageTitle = document.title) {
-  if (!gaInitialized || !window.gtag) return;
-
-  window.gtag('config', measurementId, {
-    page_path: pagePath,
-    page_title: pageTitle,
-    page_location: window.location.href,
-  });
+// ── Visitor ID (persistent, 365 days) ─────────────────────
+export function getVisitorId() {
+  let visitorId = getCookie('omix_visitor_id');
+  if (!visitorId) {
+    visitorId = generateUUID();
+    setCookie('omix_visitor_id', visitorId, 365);
+  }
+  return visitorId;
 }
 
-/**
- * Track user login
- * @param {string} method - 'google' | 'email' | 'oauth'
- * @param {string} userId - User ID
- */
-export function trackUserLogin(method, userId) {
-  trackEvent('user_login', {
-    login_method: method,
-    user_id: userId,
-  });
+// ── Session ID (30 min, renewed on activity) ───────────────
+export function getSessionId() {
+  let sessionId = getCookie('omix_session_id');
+  const lastActivity = localStorage.getItem('omix_last_activity');
+  const now = Date.now();
+  
+  // If no session or last activity was > 30 min ago, create new session
+  if (!sessionId || !lastActivity || (now - parseInt(lastActivity)) > 30 * 60 * 1000) {
+    sessionId = generateUUID();
+    setCookie('omix_session_id', sessionId, 0.0208); // ~30 min in days
+  }
+  
+  // Renew activity timestamp
+  localStorage.setItem('omix_last_activity', now.toString());
+  // Renew cookie expiry
+  setCookie('omix_session_id', sessionId, 0.0208);
+  
+  return sessionId;
 }
 
-/**
- * Track user signup
- * @param {string} method - 'google' | 'email' | 'oauth'
- * @param {string} userId - User ID
- */
-export function trackUserSignup(method, userId) {
-  trackEvent('user_signup', {
-    signup_method: method,
-    user_id: userId,
-  });
+// ── Track Page View ────────────────────────────────────────
+export function trackPageView() {
+  try {
+    const count = parseInt(localStorage.getItem('omix_page_views') || '0', 10);
+    localStorage.setItem('omix_page_views', (count + 1).toString());
+  } catch (e) {}
 }
 
-/**
- * Track product view
- * @param {Object} product - Product object
- */
-export function trackProductView(product) {
-  trackEvent('view_item', {
-    currency: 'KES',
-    value: product.price || 0,
-    items: [{
-      item_id: product.id,
-      item_name: product.title,
-      item_category: product.category,
-      price: product.price || 0,
-      quantity: 1,
-    }],
-  });
+// ── Track Product View ─────────────────────────────────────
+export function trackProductView(productId) {
+  try {
+    const viewed = JSON.parse(localStorage.getItem('omix_viewed_products') || '[]');
+    if (!viewed.includes(productId)) {
+      viewed.push(productId);
+      // Keep last 100 viewed products
+      if (viewed.length > 100) viewed.shift();
+      localStorage.setItem('omix_viewed_products', JSON.stringify(viewed));
+    }
+  } catch (e) {}
 }
 
-/**
- * Track add to cart
- * @param {string} itemId - Product ID
- * @param {string} itemName - Product name
- * @param {number} price - Product price
- * @param {number} quantity - Quantity added
- */
+// ── Get Viewed Products ────────────────────────────────────
+export function getViewedProducts() {
+  try {
+    return JSON.parse(localStorage.getItem('omix_viewed_products') || '[]');
+  } catch (e) {
+    return [];
+  }
+}
+
+// ── Track Cart Addition ────────────────────────────────────
+export function trackCartAdd(productId) {
+  try {
+    const count = parseInt(localStorage.getItem('omix_cart_adds') || '0', 10);
+    localStorage.setItem('omix_cart_adds', (count + 1).toString());
+    
+    // Also track which products were added to cart
+    const cartProducts = JSON.parse(localStorage.getItem('omix_cart_products') || '[]');
+    if (!cartProducts.includes(productId)) {
+      cartProducts.push(productId);
+      localStorage.setItem('omix_cart_products', JSON.stringify(cartProducts));
+    }
+  } catch (e) {}
+}
+
+// ── Track Add to Cart (GA4 compatibility) ──────────────────
 export function trackAddToCart(itemId, itemName, price, quantity = 1) {
-  trackEvent('add_to_cart', {
-    currency: 'KES',
-    value: (price || 0) * quantity,
-    items: [{
-      item_id: itemId,
-      item_name: itemName,
-      price: price || 0,
-      quantity,
-    }],
-  });
+  // GA4 tracking if available
+  if (typeof window !== 'undefined' && window.gtag) {
+    try {
+      window.gtag('event', 'add_to_cart', {
+        currency: 'KES',
+        value: (price || 0) * quantity,
+        items: [{
+          item_id: itemId,
+          item_name: itemName,
+          price: price || 0,
+          quantity,
+        }],
+      });
+    } catch (e) {}
+  }
+  // Also track in localStorage
+  trackCartAdd(itemId);
 }
 
-/**
- * Track begin checkout
- * @param {Array} items - Cart items
- * @param {number} total - Total amount
- */
-export function trackBeginCheckout(items, total) {
-  trackEvent('begin_checkout', {
-    currency: 'KES',
-    value: total,
-    items: items.map(item => ({
-      item_id: item.product_id || item.id,
-      item_name: item.product_name || item.name,
-      price: item.price,
-      quantity: item.quantity,
-    })),
-  });
+// ── Track Purchase ─────────────────────────────────────────
+export function trackPurchase(productIds) {
+  try {
+    const purchases = JSON.parse(localStorage.getItem('omix_purchases') || '[]');
+    const newPurchases = Array.isArray(productIds) ? productIds : [productIds];
+    purchases.push(...newPurchases);
+    localStorage.setItem('omix_purchases', JSON.stringify(purchases));
+  } catch (e) {}
 }
 
-/**
- * Track purchase
- * @param {string} orderId - Order ID
- * @param {number} total - Total amount
- * @param {Array} items - Order items
- */
-export function trackPurchase(orderId, total, items) {
-  trackEvent('purchase', {
-    transaction_id: orderId,
-    currency: 'KES',
-    value: total,
-    items: items.map(item => ({
-      item_id: item.product_id || item.id,
-      item_name: item.product_name || item.name,
-      price: item.price,
-      quantity: item.quantity,
-    })),
-  });
+// ── Get all tracking data (for analytics API) ──────────────
+export function getTrackingData() {
+  return {
+    visitorId: getVisitorId(),
+    sessionId: getSessionId(),
+    pageViews: parseInt(localStorage.getItem('omix_page_views') || '0', 10),
+    viewedProducts: getViewedProducts(),
+    cartAdds: parseInt(localStorage.getItem('omix_cart_adds') || '0', 10),
+    purchases: JSON.parse(localStorage.getItem('omix_purchases') || '[]'),
+  };
 }
 
-/**
- * Track search
- * @param {string} searchTerm - Search query
- * @param {number} resultsCount - Number of results
- */
-export function trackSearch(searchTerm, resultsCount) {
-  trackEvent('search', {
-    search_term: searchTerm,
-    results_count: resultsCount,
-  });
+// ── Initialize all tracking on app mount ───────────────────
+export function initTracking() {
+  getVisitorId();
+  getSessionId();
+  trackPageView();
 }
 
-/**
- * Track email campaign interaction
- * @param {string} campaignType - Campaign type
- * @param {string} action - 'sent' | 'open' | 'click'
- * @param {string} linkUrl - URL clicked (for click action)
- */
-export function trackEmailCampaign(campaignType, action, linkUrl = null) {
-  trackEvent('email_campaign', {
-    campaign_type: campaignType,
-    campaign_action: action,
-    link_url: linkUrl,
-  });
+// ── User auth tracking events ─────────────────────────────
+export function trackUserLogin() {
+  try { trackAddToCart('__login__', 'Login', 0); } catch (e) {}
 }
 
-/**
- * Track error
- * @param {string} errorMessage - Error message
- * @param {string} errorLocation - Where error occurred
- */
-export function trackError(errorMessage, errorLocation) {
-  trackEvent('exception', {
-    description: errorMessage,
-    fatal: false,
-    error_location: errorLocation,
-  });
+export function trackUserSignup() {
+  try { trackAddToCart('__signup__', 'Signup', 0); } catch (e) {}
 }
 
-/**
- * Set user properties for segmentation
- * @param {Object} properties - User properties
- */
-export function setUserProperties(properties) {
-  if (!gaInitialized || !window.gtag) return;
-
-  window.gtag('set', 'user_properties', {
-    ...properties,
-    app_name: 'Omix Store',
-  });
+export function trackError(error) {
+  try {
+    const errors = JSON.parse(localStorage.getItem('omix_errors') || '[]');
+    errors.push({ message: String(error).slice(0, 200), time: Date.now() });
+    if (errors.length > 50) errors.shift();
+    localStorage.setItem('omix_errors', JSON.stringify(errors));
+  } catch (e) {}
 }
 
-/**
- * Set user ID for cross-device tracking
- * @param {string} userId - User ID
- */
-export function setUserId(userId) {
-  if (!gaInitialized || !window.gtag) return;
-
-  window.gtag('config', measurementId, {
-    user_id: userId,
-  });
+export function trackBeginCheckout() {
+  try {
+    const count = parseInt(localStorage.getItem('omix_checkouts') || '0', 10);
+    localStorage.setItem('omix_checkouts', (count + 1).toString());
+  } catch (e) {}
 }
 
 export default {
-  initGA,
-  trackEvent,
+  getVisitorId,
+  getSessionId,
   trackPageView,
-  trackUserLogin,
-  trackUserSignup,
   trackProductView,
+  getViewedProducts,
+  trackCartAdd,
   trackAddToCart,
-  trackBeginCheckout,
   trackPurchase,
-  trackSearch,
-  trackEmailCampaign,
-  trackError,
-  setUserProperties,
-  setUserId,
+  getTrackingData,
+  initTracking,
 };

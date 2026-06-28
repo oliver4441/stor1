@@ -8,7 +8,6 @@ const COLORS = {
   accent: '#1a5632',
   accentDark: '#14472a',
   bubbleUser: '#1a5632',
-  bubbleUser: '#1a5632',
   bgGray: '#f9fafb',
   bgGrayDark: '#18181b',
   bubbleBot: '#ffffff',
@@ -20,7 +19,6 @@ const COLORS = {
   border: '#e4e4e7',
   borderDark: '#3f3f46',
   chipBorder: 'rgba(26,86,50,0.3)',
-  chipText: '#1a5632',
 };
 
 // ── Provider ──────────────────────────────────────────────────────

@@ -99,16 +99,16 @@ function Login() {
 
         <div className="relative my-6">
           <div className="absolute inset-0 flex items-center"><div className="w-full border-t border-zinc-700"></div></div>
-          <div className="relative flex justify-center text-sm"><span className="px-2 bg-zinc-950 text-zinc-500">{t('auth.or') || 'or'}</span></div>
+          <div className="relative flex justify-center text-sm"><span className="px-2 bg-zinc-950 text-zinc-400">{t('auth.or') || 'or'}</span></div>
         </div>
 
         <button type="button" disabled
-          className="w-full flex items-center justify-center gap-2 bg-zinc-800 border border-zinc-700 text-zinc-500 font-bold py-3.5 rounded-2xl cursor-not-allowed">
+          className="w-full flex items-center justify-center gap-2 bg-zinc-800 border border-zinc-700 text-zinc-400 font-bold py-3.5 rounded-2xl cursor-not-allowed">
           <span className="text-xs tracking-widest uppercase">Coming Soon</span>
         </button>
       </form>
 
-      <p className="mt-8 text-center text-zinc-500 text-sm">
+      <p className="mt-8 text-center text-zinc-400 text-sm">
         {t('auth.noAccount') || "Don't have an account?"} <Link to="/signup" className="text-[var(--seasonal-primary,#1a5632)] font-bold hover:underline">{t('auth.signUp') || 'Sign Up'}</Link>
       </p>
     </div>

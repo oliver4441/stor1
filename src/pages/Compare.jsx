@@ -77,7 +77,7 @@ export default function Compare() {
     return (
       <div className="max-w-7xl mx-auto px-4 py-20 text-center">
         <div className="inline-block w-8 h-8 border-4 border-[var(--seasonal-primary,#1a5632)] border-t-transparent rounded-full animate-spin mb-4" />
-        <p className="text-zinc-500">Loading comparison...</p>
+        <p className="text-zinc-400">Loading comparison...</p>
       </div>
     );
   }
@@ -87,7 +87,7 @@ export default function Compare() {
       <div className="max-w-4xl mx-auto px-4 py-16 text-center">
         <Scale className="w-16 h-16 text-zinc-300 mx-auto mb-4" />
         <h1 className="text-2xl font-black mb-2">Compare Products</h1>
-        <p className="text-zinc-500 mb-8">{error}</p>
+        <p className="text-zinc-400 mb-8">{error}</p>
         <Link to="/" className="inline-flex items-center gap-2 bg-[var(--seasonal-primary,#1a5632)] text-white font-bold px-6 py-3 rounded-xl">
           <ArrowLeft className="w-4 h-4" /> Browse Products
         </Link>
@@ -100,7 +100,7 @@ export default function Compare() {
       <div className="max-w-4xl mx-auto px-4 py-16 text-center">
         <Scale className="w-16 h-16 text-zinc-300 mx-auto mb-4" />
         <h1 className="text-2xl font-black mb-2">No Results</h1>
-        <p className="text-zinc-500 mb-8">Could not find the selected listings.</p>
+        <p className="text-zinc-400 mb-8">Could not find the selected listings.</p>
         <Link to="/" className="inline-flex items-center gap-2 bg-[var(--seasonal-primary,#1a5632)] text-white font-bold px-6 py-3 rounded-xl">
           <ArrowLeft className="w-4 h-4" /> Back to Home
         </Link>
@@ -116,7 +116,7 @@ export default function Compare() {
           <h1 className="text-2xl font-black flex items-center gap-2">
             <Scale className="w-6 h-6 text-[var(--seasonal-primary,#1a5632)]" /> Compare Products
           </h1>
-          <p className="text-zinc-500 text-sm">Comparing {listings.length} product{listings.length !== 1 ? 's' : ''}</p>
+          <p className="text-zinc-400 text-sm">Comparing {listings.length} product{listings.length !== 1 ? 's' : ''}</p>
         </div>
         <Link
           to="/"
