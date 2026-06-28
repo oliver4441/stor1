@@ -26,6 +26,7 @@ import PWAUpdateChecker from './components/PWAUpdateChecker';
 import Home from './pages/Home';
 import Login from './pages/Login';
 import Signup from './pages/Signup';
+import AuthCallback from './pages/AuthCallback';
 import Cart from './pages/Cart';
 import Checkout from './pages/Checkout';
 import OrderSuccess from './pages/OrderSuccess';
@@ -98,6 +99,7 @@ function App() {
             <Route path="/about" element={<About />} />
             <Route path="/privacy" element={<Privacy />} />
             <Route path="/terms" element={<Terms />} />
+            <Route path="/auth/callback" element={<AuthCallback />} />
             <Route path="/qr" element={<QRCodePage />} />
             <Route path="/help" element={<HelpCenter />} />
             <Route path="/help/shopping-guide" element={<ShoppingGuide />} />
