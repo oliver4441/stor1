@@ -434,8 +434,10 @@ function UserDashboard() {
           .eq('user_id', user.id)
           .maybeSingle();
         if (cancelled) return;
-        if (error && error.code !== 'PGRST116') throw error;
-        if (data) {
+        if (error) {
+          // Table might not exist yet — silently use defaults
+          console.warn('Notification preferences unavailable (table may not exist):', error.message);
+        } else if (data) {
           setNotifPrefs({
             order_updates: data.order_updates ?? true,
             price_drops: data.price_drops ?? true,
@@ -443,13 +445,14 @@ function UserDashboard() {
             promotions: data.promotions ?? false,
           });
         } else {
-          // No row yet — upsert defaults so future loads are instant
+          // No row yet — try upserting defaults (silently fail if table missing)
           await supabase
             .from('user_settings')
-            .upsert({ user_id: user.id, order_updates: true, price_drops: true, back_in_stock: true, promotions: false }, { onConflict: 'user_id' });
+            .upsert({ user_id: user.id, order_updates: true, price_drops: true, back_in_stock: true, promotions: false }, { onConflict: 'user_id' })
+            .catch(() => {});
         }
       } catch (err) {
-        console.error('Failed to load notification preferences:', err);
+        console.warn('Failed to load notification preferences:', err.message);
       } finally {
         if (!cancelled) setNotifPrefsLoaded(true);
       }
@@ -461,6 +464,7 @@ function UserDashboard() {
   const handlePrefToggle = async (key) => {
     if (notifPrefsBusy || !user) return;
     const newVal = !notifPrefs[key];
+    const prev = { ...notifPrefs };
     const next = { ...notifPrefs, [key]: newVal };
     setNotifPrefs(next);
     setNotifPrefsBusy(true);
@@ -472,12 +476,12 @@ function UserDashboard() {
       if (error) throw error;
       setNotifPrefsMsg({ type: 'success', text: 'Preference saved.' });
     } catch (err) {
-      // Revert on failure
-      setNotifPrefs(notifPrefs);
-      setNotifPrefsMsg({ type: 'error', text: 'Failed to save preference.' });
+      // Revert on failure (table might not exist yet)
+      setNotifPrefs(prev);
+      setNotifPrefsMsg({ type: 'error', text: 'Preferences not available yet. Run the database migration first.' });
     } finally {
       setNotifPrefsBusy(false);
-      setTimeout(() => setNotifPrefsMsg(null), 3000);
+      setTimeout(() => setNotifPrefsMsg(null), 4000);
     }
   };
 
@@ -1041,7 +1045,7 @@ function UserDashboard() {
                     <ToggleSwitch
                       checked={notifPrefs.order_updates}
                       onChange={() => handlePrefToggle('order_updates')}
-                      disabled={notifPrefsBusy || notifStatus !== 'on'}
+                      disabled={notifPrefsBusy}
                     />
                   </div>
 
@@ -1053,7 +1057,7 @@ function UserDashboard() {
                     <ToggleSwitch
                       checked={notifPrefs.price_drops}
                       onChange={() => handlePrefToggle('price_drops')}
-                      disabled={notifPrefsBusy || notifStatus !== 'on'}
+                      disabled={notifPrefsBusy}
                     />
                   </div>
 
@@ -1065,7 +1069,7 @@ function UserDashboard() {
                     <ToggleSwitch
                       checked={notifPrefs.back_in_stock}
                       onChange={() => handlePrefToggle('back_in_stock')}
-                      disabled={notifPrefsBusy || notifStatus !== 'on'}
+                      disabled={notifPrefsBusy}
                     />
                   </div>
 
@@ -1077,7 +1081,7 @@ function UserDashboard() {
                     <ToggleSwitch
                       checked={notifPrefs.promotions}
                       onChange={() => handlePrefToggle('promotions')}
-                      disabled={notifPrefsBusy || notifStatus !== 'on'}
+                      disabled={notifPrefsBusy}
                     />
                   </div>
                 </div>
@@ -1264,7 +1268,7 @@ function UserDashboard() {
               onClick={() => setActiveTab(tab.id)}
               className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-bold whitespace-nowrap transition-all ${
                 isActive
-                  ? 'bg-zinc-900 dark:bg-white text-white dark:text-zinc-900 shadow-lg shadow-zinc-900/10'
+                  ? 'bg-[var(--seasonal-primary,#1a5632)] text-white shadow-lg shadow-[var(--seasonal-primary,#1a5632)]/20'
                   : 'text-zinc-400 hover:bg-zinc-800'
               }`}
             >
