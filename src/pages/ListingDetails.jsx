@@ -1,9 +1,9 @@
 import { useState, useEffect } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
-import { MapPin, CheckCircle, ShoppingCart, Minus, Plus, Package, Truck, Shield, Tag, Cpu, HardDrive, Monitor, Battery, Camera, Wifi, Bell } from 'lucide-react';
+import { MapPin, CheckCircle, ShoppingCart, Minus, Plus, Package, Truck, Shield, Tag, Cpu, HardDrive, Monitor, Battery, Camera, Wifi, Bell, Heart } from 'lucide-react';
 import ProductCard from '../components/ProductCard';
 import { WhatsAppShareButton } from '../components/WhatsAppButtons';
-import { fetchListing, fetchListings, watchPriceDrop, watchBackInStock } from '../utils/api';
+import { fetchListing, fetchListings, watchPriceDrop, watchBackInStock, addToWishlist, removeFromWishlist, isInWishlist } from '../utils/api';
 import { formatKES } from '../utils/constants';
 import { useCart } from '../context/CartContext';
 import { supabase } from '../utils/supabase';
@@ -32,6 +32,8 @@ function ListingDetails() {
   const [user, setUser] = useState(null);
   const { addItem, cart } = useCart();
   const [notifyMsg, setNotifyMsg] = useState('');
+  const [wishlisted, setWishlisted] = useState(false);
+  const [wishBusy, setWishBusy] = useState(false);
 
   const listingId = Number(id);
   const inCart = cart.find(item => item.id === listingId);
@@ -41,6 +43,32 @@ function ListingDetails() {
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => { setUser(session?.user ?? null); });
     return () => subscription.unsubscribe();
   }, []);
+
+  // Check wishlist status
+  useEffect(() => {
+    if (user && listingId) {
+      isInWishlist(listingId).then(res => {
+        if (res.success) setWishlisted(res.inWishlist);
+      });
+    } else {
+      setWishlisted(false);
+    }
+  }, [user, listingId]);
+
+  const handleWishlist = async () => {
+    if (wishBusy || !user) return navigate('/login?redirect=/listing/' + listingId);
+    setWishBusy(true);
+    try {
+      if (wishlisted) {
+        const res = await removeFromWishlist(listingId);
+        if (res.success) setWishlisted(false);
+      } else {
+        const res = await addToWishlist(listingId);
+        if (res.success) setWishlisted(true);
+      }
+    } catch {}
+    setWishBusy(false);
+  };
 
   useEffect(() => {
     if (!id) { setError('No listing ID'); setLoading(false); return; }
@@ -405,6 +433,22 @@ function ListingDetails() {
 
           {/* Cart Section */}
           <div className="space-y-3">
+            {/* Wishlist + Price Summary row */}
+            <div className="flex items-center gap-2">
+              <button
+                onClick={handleWishlist}
+                disabled={wishBusy}
+                className={`flex items-center gap-2 px-4 py-2.5 rounded-xl font-bold text-sm transition-all ${
+                  wishlisted
+                    ? 'bg-red-900/30 text-red-400 border border-red-800'
+                    : 'bg-zinc-800 text-zinc-300 border border-zinc-700 hover:border-[var(--seasonal-primary,#1a5632)] hover:text-[var(--seasonal-primary,#1a5632)]'
+                }`}
+                aria-label={wishlisted ? 'Remove from wishlist' : 'Save to wishlist'}
+              >
+                <Heart className={`w-4 h-4 ${wishlisted ? 'fill-current' : ''}`} />
+                {wishlisted ? 'Saved' : 'Save'}
+              </button>
+            </div>
             {inCart && user && (
               <div className="flex items-center gap-2 text-sm text-emerald-400 bg-emerald-900/20 px-4 py-2 rounded-xl font-bold border border-emerald-200 dark:border-emerald-800">
                 <ShoppingCart className="w-4 h-4" /> {inCart.quantity} {t('cart.title').toLowerCase()}

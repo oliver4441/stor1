@@ -16,6 +16,7 @@ import NiaChat from './components/NiaChat';
 import InstallBanner from './components/InstallBanner';
 import PushNudge from './components/PushNudge';
 import CartReminder from './components/CartReminder';
+import CartWishlistNudge from './components/CartWishlistNudge';
 import ThemeStyles from './components/ThemeStyles';
 import PWAUpdateChecker from './components/PWAUpdateChecker';
 
@@ -120,6 +121,7 @@ function App() {
         <InstallBanner />
         <PushNudge />
         <CartReminder />
+        <CartWishlistNudge />
         <PWAUpdateChecker />
       </div>
     </ErrorBoundary>

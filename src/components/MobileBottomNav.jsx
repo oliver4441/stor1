@@ -1,25 +1,49 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { Home, Search, ShoppingCart, Heart, User } from 'lucide-react';
+import { useCart } from '../context/CartContext';
+import { supabase } from '../utils/supabase';
 
 const navItems = [
   { to: '/', icon: Home, label: 'Home' },
   { to: '/?search=true', icon: Search, label: 'Search' },
-  { to: '/cart', icon: ShoppingCart, label: 'Cart' },
-  { to: '/wishlist', icon: Heart, label: 'Wishlist' },
+  { to: '/cart', icon: ShoppingCart, label: 'Cart', badge: 'cart' },
+  { to: '/wishlist', icon: Heart, label: 'Wishlist', badge: 'wishlist' },
   { to: '/account', icon: User, label: 'Account' },
 ];
 
 export default function MobileBottomNav() {
   const location = useLocation();
+  const { getItemCount } = useCart();
+  const [wishCount, setWishCount] = useState(0);
+
+  useEffect(() => {
+    let mounted = true;
+    const checkWishCount = async () => {
+      try {
+        const { data: { session } } = await supabase.auth.getSession();
+        if (!session?.user) { if (mounted) setWishCount(0); return; }
+        const { count } = await supabase
+          .from('omix_wishlist')
+          .select('*', { count: 'exact', head: true })
+          .eq('user_id', session.user.id);
+        if (mounted) setWishCount(count || 0);
+      } catch {}
+    };
+    checkWishCount();
+    const interval = setInterval(checkWishCount, 30000);
+    return () => { mounted = false; clearInterval(interval); };
+  }, []);
+
+  const getBadgeCount = (type) => {
+    if (type === 'cart') return getItemCount();
+    if (type === 'wishlist') return wishCount;
+    return 0;
+  };
 
   const isActive = (path) => {
-    if (path === '/') {
-      return location.pathname === '/';
-    }
-    if (path === '/?search=true') {
-      return location.pathname === '/' && location.search === '?search=true';
-    }
+    if (path === '/') return location.pathname === '/';
+    if (path === '/?search=true') return location.pathname === '/' && location.search === '?search=true';
     return location.pathname === path;
   };
 
@@ -29,18 +53,26 @@ export default function MobileBottomNav() {
         {navItems.map((item) => {
           const Icon = item.icon;
           const active = isActive(item.to);
+          const badge = item.badge ? getBadgeCount(item.badge) : 0;
 
           return (
             <Link
               key={item.to}
               to={item.to}
-              className={`flex flex-col items-center justify-center gap-0.5 min-w-[64px] py-1 transition-colors duration-200 ${
+              className={`relative flex flex-col items-center justify-center gap-0.5 min-w-[64px] py-1 transition-colors duration-200 ${
                 active
                   ? 'text-[var(--seasonal-primary,#1a5632)]'
                   : 'text-zinc-500'
               }`}
             >
-              <Icon className="w-5 h-5" />
+              <div className="relative">
+                <Icon className="w-5 h-5" />
+                {badge > 0 && (
+                  <span className="absolute -top-1.5 -right-2.5 min-w-[16px] h-4 px-1 bg-[var(--seasonal-primary,#1a5632)] text-white text-[9px] font-bold rounded-full flex items-center justify-center">
+                    {badge > 99 ? '99+' : badge}
+                  </span>
+                )}
+              </div>
               <span className="text-[10px] font-medium leading-none">
                 {item.label}
               </span>

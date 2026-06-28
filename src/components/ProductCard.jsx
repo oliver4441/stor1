@@ -201,12 +201,12 @@ function ProductCard({ listing, compareMode, onCompareChange }) {
           </button>
         )}
 
-        {/* Wishlist Heart button */}
+        {/* Wishlist Heart button — always visible on mobile, hover-reveal on desktop */}
         <button onClick={handleWishlist}
           className={`absolute top-2 left-2 p-1.5 rounded-full shadow-sm transition-all z-10 ${
             wishlisted
-              ? 'bg-[var(--seasonal-primary,#1a5632)] text-white'
-              : 'bg-white/90 dark:bg-black/90 text-zinc-400 hover:text-[var(--seasonal-primary,#1a5632)] opacity-0 group-hover:opacity-100'
+              ? 'bg-[var(--seasonal-primary,#1a5632)] text-white scale-110'
+              : 'bg-black/60 text-white/80 hover:text-[var(--seasonal-primary,#1a5632)] hover:bg-black/80 md:opacity-0 md:group-hover:opacity-100'
           }`}
           aria-label={wishlisted ? 'Remove from wishlist' : 'Add to wishlist'}
         >
