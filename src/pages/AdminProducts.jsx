@@ -9,6 +9,10 @@ import VariantManager from '../components/VariantManager';
 const CONDITIONS = [
   { value: 'new', label: 'New' },
   { value: 'like-new', label: 'Like New' },
+  { value: 'used-good', label: 'Used - Good' },
+  { value: 'used-fair', label: 'Used - Fair' },
+  { value: 'refurbished', label: 'Refurbished' },
+  { value: 'for-parts', label: 'For Parts' },
 ];
 const MAX_IMAGES = 5;
 
@@ -349,8 +353,10 @@ export default function AdminProducts() {
           className="px-4 py-2.5 rounded-xl bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 text-sm text-zinc-900 dark:text-white appearance-none">
           <option value="All">All Status</option>
           <option value="active">Active</option>
+          <option value="draft">Draft</option>
           <option value="sold">Sold</option>
           <option value="archived">Archived</option>
+          <option value="inactive">Inactive</option>
         </select>
       </div>
 
@@ -362,8 +368,10 @@ export default function AdminProducts() {
             className="px-3 py-1.5 rounded-lg bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 text-sm text-zinc-900 dark:text-white">
             <option value="">Bulk action...</option>
             <option value="active">Set Active</option>
+            <option value="draft">Set Draft</option>
             <option value="sold">Set Sold</option>
             <option value="archived">Set Archived</option>
+            <option value="inactive">Set Inactive</option>
             <option value="delete">Delete</option>
           </select>
           <button onClick={handleBulkAction} disabled={!bulkAction || processing}
@@ -578,8 +586,10 @@ export default function AdminProducts() {
                   <label className="block text-sm font-bold mb-1.5 text-zinc-700 dark:text-zinc-300">Status</label>
                   <select value={form.status} onChange={e => setForm({...form, status: e.target.value})} className="w-full px-4 py-2.5 rounded-xl bg-zinc-100 dark:bg-zinc-800 border border-transparent focus:border-[#ff385c] focus:outline-none text-zinc-900 dark:text-white text-sm appearance-none">
                     <option value="active">Active</option>
+                    <option value="draft">Draft</option>
                     <option value="sold">Sold</option>
                     <option value="archived">Archived</option>
+                    <option value="inactive">Inactive</option>
                   </select>
                 </div>
               </div>
