@@ -55,7 +55,7 @@ function CancelModal({ order, onClose, onConfirm, busy }) {
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm" onClick={onClose}>
       <div
-        className="bg-white dark:bg-zinc-900 rounded-3xl max-w-md w-full p-6 shadow-2xl border border-zinc-200 dark:border-zinc-800"
+        className="bg-zinc-900 rounded-3xl max-w-md w-full p-6 shadow-2xl border border-zinc-800"
         onClick={e => e.stopPropagation()}
       >
         <div className="flex items-center gap-3 mb-5">
@@ -63,17 +63,17 @@ function CancelModal({ order, onClose, onConfirm, busy }) {
             <AlertTriangle className="w-5 h-5 text-red-500" />
           </div>
           <div>
-            <h3 className="text-lg font-bold text-zinc-900 dark:text-white">Cancel Order</h3>
+            <h3 className="text-lg font-bold text-white">Cancel Order</h3>
             <p className="text-xs text-zinc-500">#{String(order.id).slice(0, 8).toUpperCase()}</p>
           </div>
         </div>
 
-        <p className="text-sm text-zinc-600 dark:text-zinc-400 mb-4">
+        <p className="text-sm text-zinc-400 mb-4">
           Are you sure you want to cancel this order? This action cannot be undone.
         </p>
 
         <div className="mb-4">
-          <label className="text-xs font-bold text-zinc-500 dark:text-zinc-400 uppercase tracking-wider mb-2 block">
+          <label className="text-xs font-bold text-zinc-400 uppercase tracking-wider mb-2 block">
             Reason (optional)
           </label>
           <div className="space-y-1.5">
@@ -84,7 +84,7 @@ function CancelModal({ order, onClose, onConfirm, busy }) {
                 className={`w-full text-left px-3 py-2 rounded-xl text-sm transition-all ${
                   reason === r
                     ? 'bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-400 font-semibold border border-red-200 dark:border-red-800'
-                    : 'bg-zinc-50 dark:bg-zinc-800/50 text-zinc-600 dark:text-zinc-400 hover:bg-zinc-100 dark:hover:bg-zinc-800 border border-transparent'
+                    : 'bg-zinc-800/50 text-zinc-400 hover:bg-zinc-800 border border-transparent'
                 }`}
               >
                 {r}
@@ -96,7 +96,7 @@ function CancelModal({ order, onClose, onConfirm, busy }) {
               value={customReason}
               onChange={e => setCustomReason(e.target.value)}
               placeholder="Tell us why..."
-              className="w-full mt-2 px-3 py-2 rounded-xl bg-zinc-50 dark:bg-zinc-800/50 border border-zinc-200 dark:border-zinc-700 text-sm text-zinc-900 dark:text-white resize-none h-20 focus:outline-none focus:border-red-400"
+              className="w-full mt-2 px-3 py-2 rounded-xl bg-zinc-800/50 border border-zinc-700 text-sm text-white resize-none h-20 focus:outline-none focus:border-red-400"
             />
           )}
         </div>
@@ -104,7 +104,7 @@ function CancelModal({ order, onClose, onConfirm, busy }) {
         <div className="flex gap-3">
           <button
             onClick={onClose}
-            className="flex-1 py-3 rounded-xl bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-300 font-bold text-sm hover:bg-zinc-200 dark:hover:bg-zinc-700 transition-colors"
+            className="flex-1 py-3 rounded-xl bg-zinc-800 text-zinc-300 font-bold text-sm hover:bg-zinc-700 transition-colors"
           >
             Keep Order
           </button>
@@ -129,7 +129,7 @@ function OrderCard({ order, onCancel, isExpanded, onToggle }) {
   const canCancel = CANCELLABLE_STATUSES.includes(order.status);
 
   return (
-    <div className="bg-white dark:bg-zinc-900 rounded-2xl border border-zinc-200 dark:border-zinc-800 overflow-hidden transition-all duration-200">
+    <div className="bg-zinc-900 rounded-2xl border border-zinc-800 overflow-hidden transition-all duration-200">
       {/* Header */}
       <button
         onClick={onToggle}
@@ -163,9 +163,9 @@ function OrderCard({ order, onCancel, isExpanded, onToggle }) {
         <div className="border-t border-zinc-100 dark:border-zinc-800 px-4 py-3 space-y-3 animate-slide-down">
           {order.omix_order_items?.length > 0 && (
             <div className="space-y-2">
-              <p className="text-xs font-bold text-zinc-500 dark:text-zinc-400 uppercase tracking-wider">Items</p>
+              <p className="text-xs font-bold text-zinc-400 uppercase tracking-wider">Items</p>
               {order.omix_order_items.map((item, i) => (
-                <div key={i} className="flex items-center gap-3 bg-zinc-50 dark:bg-zinc-800/50 rounded-xl p-2.5">
+                <div key={i} className="flex items-center gap-3 bg-zinc-800/50 rounded-xl p-2.5">
                   {item.product_image ? (
                     <img src={item.product_image} alt={item.product_name} className="w-10 h-10 rounded-lg object-cover bg-zinc-200 dark:bg-zinc-700 flex-shrink-0" />
                   ) : (
@@ -174,10 +174,10 @@ function OrderCard({ order, onCancel, isExpanded, onToggle }) {
                     </div>
                   )}
                   <div className="flex-1 min-w-0">
-                    <p className="text-sm font-bold text-zinc-900 dark:text-white truncate">{item.product_name}</p>
+                    <p className="text-sm font-bold text-white truncate">{item.product_name}</p>
                     <p className="text-xs text-zinc-500">Qty: {item.quantity}</p>
                   </div>
-                  <span className="text-sm font-bold text-zinc-900 dark:text-white flex-shrink-0">{formatKES(item.price * item.quantity)}</span>
+                  <span className="text-sm font-bold text-white flex-shrink-0">{formatKES(item.price * item.quantity)}</span>
                 </div>
               ))}
             </div>
@@ -185,15 +185,15 @@ function OrderCard({ order, onCancel, isExpanded, onToggle }) {
 
           <div className="grid grid-cols-2 gap-2 text-xs">
             {order.customer_name && (
-              <div className="bg-zinc-50 dark:bg-zinc-800/50 rounded-xl p-2.5">
+              <div className="bg-zinc-800/50 rounded-xl p-2.5">
                 <span className="text-zinc-400 block">Customer</span>
-                <span className="font-bold text-zinc-900 dark:text-white">{order.customer_name}</span>
+                <span className="font-bold text-white">{order.customer_name}</span>
               </div>
             )}
             {order.phone && (
-              <div className="bg-zinc-50 dark:bg-zinc-800/50 rounded-xl p-2.5">
+              <div className="bg-zinc-800/50 rounded-xl p-2.5">
                 <span className="text-zinc-400 block">Phone</span>
-                <span className="font-bold text-zinc-900 dark:text-white">{order.phone}</span>
+                <span className="font-bold text-white">{order.phone}</span>
               </div>
             )}
           </div>
@@ -255,7 +255,7 @@ function AvatarUpload({ currentUrl, userName, onUpload, busy }) {
   return (
     <div className="relative group">
       <div
-        className="w-20 h-20 rounded-full overflow-hidden bg-zinc-100 dark:bg-zinc-800 border-2 border-zinc-200 dark:border-zinc-700 cursor-pointer relative"
+        className="w-20 h-20 rounded-full overflow-hidden bg-zinc-800 border-2 border-zinc-700 cursor-pointer relative"
         onClick={handleSelect}
       >
         {src ? (
@@ -553,7 +553,7 @@ function UserDashboard() {
         return (
           <div className="space-y-6">
             {/* Profile Header */}
-            <div className="bg-white dark:bg-zinc-900 rounded-2xl border border-zinc-200 dark:border-zinc-800 p-6">
+            <div className="bg-zinc-900 rounded-2xl border border-zinc-800 p-6">
               <div className="flex flex-col sm:flex-row items-center sm:items-start gap-5">
                 <AvatarUpload
                   currentUrl={avatarUrl}
@@ -562,21 +562,21 @@ function UserDashboard() {
                   busy={uploadBusy}
                 />
                 <div className="flex-1 text-center sm:text-left">
-                  <h2 className="text-xl font-bold text-zinc-900 dark:text-white">{userName}</h2>
+                  <h2 className="text-xl font-bold text-white">{userName}</h2>
                   <p className="text-sm text-zinc-500">{user?.email}</p>
                   <p className="text-xs text-zinc-400 mt-1 capitalize">{profile?.role || 'Customer'}</p>
                 </div>
                 {!editing ? (
                   <button
                     onClick={() => setEditing(true)}
-                    className="flex items-center gap-2 px-4 py-2 rounded-xl bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-300 text-sm font-bold hover:bg-zinc-200 dark:hover:bg-zinc-700 transition-colors"
+                    className="flex items-center gap-2 px-4 py-2 rounded-xl bg-zinc-800 text-zinc-300 text-sm font-bold hover:bg-zinc-700 transition-colors"
                   >
                     <Edit2 className="w-4 h-4" /> Edit
                   </button>
                 ) : (
                   <button
                     onClick={() => { setEditing(false); setEditForm({ full_name: profile?.full_name || '', phone: profile?.phone || '' }); }}
-                    className="flex items-center gap-2 px-4 py-2 rounded-xl bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-300 text-sm font-bold hover:bg-zinc-200 dark:hover:bg-zinc-700 transition-colors"
+                    className="flex items-center gap-2 px-4 py-2 rounded-xl bg-zinc-800 text-zinc-300 text-sm font-bold hover:bg-zinc-700 transition-colors"
                   >
                     <X className="w-4 h-4" /> Cancel
                   </button>
@@ -587,30 +587,30 @@ function UserDashboard() {
               {editing && (
                 <div className="mt-6 border-t border-zinc-100 dark:border-zinc-800 pt-6 space-y-4">
                   <div>
-                    <label className="block text-xs font-bold text-zinc-500 dark:text-zinc-400 uppercase tracking-wider mb-1.5">Full Name</label>
+                    <label className="block text-xs font-bold text-zinc-400 uppercase tracking-wider mb-1.5">Full Name</label>
                     <input
                       type="text"
                       value={editForm.full_name}
                       onChange={e => setEditForm({ ...editForm, full_name: e.target.value })}
-                      className="w-full px-4 py-3 rounded-xl bg-zinc-50 dark:bg-zinc-800/50 border border-zinc-200 dark:border-zinc-700 text-zinc-900 dark:text-white text-sm focus:outline-none focus:border-[var(--seasonal-primary,#1a5632)]"
+                      className="w-full px-4 py-3 rounded-xl bg-zinc-800/50 border border-zinc-700 text-white text-sm focus:outline-none focus:border-[var(--seasonal-primary,#1a5632)]"
                     />
                   </div>
                   <div>
-                    <label className="block text-xs font-bold text-zinc-500 dark:text-zinc-400 uppercase tracking-wider mb-1.5">Phone</label>
+                    <label className="block text-xs font-bold text-zinc-400 uppercase tracking-wider mb-1.5">Phone</label>
                     <input
                       type="tel"
                       value={editForm.phone}
                       onChange={e => setEditForm({ ...editForm, phone: e.target.value })}
-                      className="w-full px-4 py-3 rounded-xl bg-zinc-50 dark:bg-zinc-800/50 border border-zinc-200 dark:border-zinc-700 text-zinc-900 dark:text-white text-sm focus:outline-none focus:border-[var(--seasonal-primary,#1a5632)]"
+                      className="w-full px-4 py-3 rounded-xl bg-zinc-800/50 border border-zinc-700 text-white text-sm focus:outline-none focus:border-[var(--seasonal-primary,#1a5632)]"
                     />
                   </div>
                   <div>
-                    <label className="block text-xs font-bold text-zinc-500 dark:text-zinc-400 uppercase tracking-wider mb-1.5">Email</label>
+                    <label className="block text-xs font-bold text-zinc-400 uppercase tracking-wider mb-1.5">Email</label>
                     <input
                       type="email"
                       value={user?.email || ''}
                       disabled
-                      className="w-full px-4 py-3 rounded-xl bg-zinc-100 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 text-zinc-400 text-sm cursor-not-allowed"
+                      className="w-full px-4 py-3 rounded-xl bg-zinc-800 border border-zinc-700 text-zinc-400 text-sm cursor-not-allowed"
                     />
                     <p className="text-xs text-zinc-400 mt-1">Email cannot be changed here.</p>
                   </div>
@@ -628,40 +628,40 @@ function UserDashboard() {
 
             {/* Quick Stats */}
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-              <div className="bg-white dark:bg-zinc-900 rounded-2xl border border-zinc-200 dark:border-zinc-800 p-4 text-center">
+              <div className="bg-zinc-900 rounded-2xl border border-zinc-800 p-4 text-center">
                 <ShoppingBag className="w-5 h-5 text-[var(--seasonal-primary,#1a5632)] mx-auto mb-1" />
-                <p className="text-2xl font-black text-zinc-900 dark:text-white">{orders.length}</p>
+                <p className="text-2xl font-black text-white">{orders.length}</p>
                 <p className="text-xs text-zinc-500">Orders</p>
               </div>
-              <div className="bg-white dark:bg-zinc-900 rounded-2xl border border-zinc-200 dark:border-zinc-800 p-4 text-center">
+              <div className="bg-zinc-900 rounded-2xl border border-zinc-800 p-4 text-center">
                 <Star className="w-5 h-5 text-amber-500 mx-auto mb-1" />
-                <p className="text-2xl font-black text-zinc-900 dark:text-white">{loyaltyPoints}</p>
+                <p className="text-2xl font-black text-white">{loyaltyPoints}</p>
                 <p className="text-xs text-zinc-500">Points</p>
               </div>
-              <div className="bg-white dark:bg-zinc-900 rounded-2xl border border-zinc-200 dark:border-zinc-800 p-4 text-center">
+              <div className="bg-zinc-900 rounded-2xl border border-zinc-800 p-4 text-center">
                 <MapPin className="w-5 h-5 text-emerald-500 mx-auto mb-1" />
-                <p className="text-2xl font-black text-zinc-900 dark:text-white">{addresses.length}</p>
+                <p className="text-2xl font-black text-white">{addresses.length}</p>
                 <p className="text-xs text-zinc-500">Addresses</p>
               </div>
-              <div className="bg-white dark:bg-zinc-900 rounded-2xl border border-zinc-200 dark:border-zinc-800 p-4 text-center">
+              <div className="bg-zinc-900 rounded-2xl border border-zinc-800 p-4 text-center">
                 <Gift className="w-5 h-5 text-purple-500 mx-auto mb-1" />
-                <p className="text-2xl font-black text-zinc-900 dark:text-white">{referralCount}</p>
+                <p className="text-2xl font-black text-white">{referralCount}</p>
                 <p className="text-xs text-zinc-500">Referrals</p>
               </div>
             </div>
 
             {/* Quick Links */}
             <div className="grid grid-cols-2 gap-3">
-              <Link to="/track-order" className="bg-white dark:bg-zinc-900 rounded-2xl border border-zinc-200 dark:border-zinc-800 p-4 flex items-center justify-between group hover:border-[var(--seasonal-primary,#1a5632)]/30 transition-colors">
+              <Link to="/track-order" className="bg-zinc-900 rounded-2xl border border-zinc-800 p-4 flex items-center justify-between group hover:border-[var(--seasonal-primary,#1a5632)]/30 transition-colors">
                 <div>
-                  <p className="font-bold text-zinc-900 dark:text-white text-sm">Track Order</p>
+                  <p className="font-bold text-white text-sm">Track Order</p>
                   <p className="text-xs text-zinc-500">Check delivery status</p>
                 </div>
                 <Package className="w-6 h-6 text-[var(--seasonal-primary,#1a5632)] group-hover:scale-110 transition-transform" />
               </Link>
-              <Link to="/wishlist" className="bg-white dark:bg-zinc-900 rounded-2xl border border-zinc-200 dark:border-zinc-800 p-4 flex items-center justify-between group hover:border-[var(--seasonal-primary,#1a5632)]/30 transition-colors">
+              <Link to="/wishlist" className="bg-zinc-900 rounded-2xl border border-zinc-800 p-4 flex items-center justify-between group hover:border-[var(--seasonal-primary,#1a5632)]/30 transition-colors">
                 <div>
-                  <p className="font-bold text-zinc-900 dark:text-white text-sm">Wishlist</p>
+                  <p className="font-bold text-white text-sm">Wishlist</p>
                   <p className="text-xs text-zinc-500">Saved items</p>
                 </div>
                 <Bookmark className="w-6 h-6 text-[var(--seasonal-primary,#1a5632)] group-hover:scale-110 transition-transform" />
@@ -676,7 +676,7 @@ function UserDashboard() {
           <div className="space-y-4">
             <div className="flex items-center justify-between">
               <div>
-                <h2 className="text-lg font-bold text-zinc-900 dark:text-white">Order History</h2>
+                <h2 className="text-lg font-bold text-white">Order History</h2>
                 <p className="text-xs text-zinc-500">{orders.length} order{orders.length !== 1 ? 's' : ''}</p>
               </div>
               {orders.length > 3 && (
@@ -705,9 +705,9 @@ function UserDashboard() {
                 ))}
               </div>
             ) : (
-              <div className="text-center py-12 bg-white dark:bg-zinc-900 rounded-2xl border border-zinc-200 dark:border-zinc-800">
+              <div className="text-center py-12 bg-zinc-900 rounded-2xl border border-zinc-800">
                 <Package className="w-12 h-12 text-zinc-300 mx-auto mb-3" />
-                <h3 className="font-bold text-zinc-900 dark:text-white mb-1">No orders yet</h3>
+                <h3 className="font-bold text-white mb-1">No orders yet</h3>
                 <p className="text-sm text-zinc-500 mb-4">When you place an order, it will appear here.</p>
                 <Link to="/" className="inline-flex items-center gap-2 bg-[var(--seasonal-primary,#1a5632)] text-white font-bold px-6 py-3 rounded-xl text-sm hover:bg-[var(--seasonal-secondary,#14472a)] transition-colors">
                   Start Shopping <ArrowRight className="w-4 h-4" />
@@ -722,7 +722,7 @@ function UserDashboard() {
         return (
           <div className="space-y-4">
             <div className="flex items-center justify-between">
-              <h2 className="text-lg font-bold text-zinc-900 dark:text-white">Saved Addresses</h2>
+              <h2 className="text-lg font-bold text-white">Saved Addresses</h2>
               <button
                 onClick={() => setShowAddressForm(true)}
                 className="flex items-center gap-2 px-4 py-2 rounded-xl bg-[var(--seasonal-primary,#1a5632)] text-white text-xs font-bold hover:bg-[var(--seasonal-secondary,#14472a)] transition-colors"
@@ -741,17 +741,17 @@ function UserDashboard() {
             {addresses.length > 0 ? (
               <div className="space-y-3">
                 {addresses.map(addr => (
-                  <div key={addr.id} className="bg-white dark:bg-zinc-900 rounded-2xl border border-zinc-200 dark:border-zinc-800 p-4">
+                  <div key={addr.id} className="bg-zinc-900 rounded-2xl border border-zinc-800 p-4">
                     <div className="flex items-start justify-between">
                       <div className="flex items-start gap-3">
                         <div className={`w-8 h-8 rounded-xl flex items-center justify-center flex-shrink-0 ${
-                          addr.is_default ? 'bg-[var(--seasonal-primary,#1a5632)]/10 text-[var(--seasonal-primary,#1a5632)]' : 'bg-zinc-100 dark:bg-zinc-800 text-zinc-400'
+                          addr.is_default ? 'bg-[var(--seasonal-primary,#1a5632)]/10 text-[var(--seasonal-primary,#1a5632)]' : 'bg-zinc-800 text-zinc-400'
                         }`}>
                           <MapPin className="w-4 h-4" />
                         </div>
                         <div>
                           <div className="flex items-center gap-2">
-                            <span className="font-bold text-zinc-900 dark:text-white text-sm">{addr.label || 'Address'}</span>
+                            <span className="font-bold text-white text-sm">{addr.label || 'Address'}</span>
                             {addr.is_default && (
                               <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-[var(--seasonal-primary,#1a5632)]/10 text-[var(--seasonal-primary,#1a5632)]">Default</span>
                             )}
@@ -775,9 +775,9 @@ function UserDashboard() {
                 ))}
               </div>
             ) : (
-              <div className="text-center py-12 bg-white dark:bg-zinc-900 rounded-2xl border border-zinc-200 dark:border-zinc-800">
+              <div className="text-center py-12 bg-zinc-900 rounded-2xl border border-zinc-800">
                 <MapPin className="w-10 h-10 text-zinc-300 mx-auto mb-3" />
-                <h3 className="font-bold text-zinc-900 dark:text-white mb-1">No addresses saved</h3>
+                <h3 className="font-bold text-white mb-1">No addresses saved</h3>
                 <p className="text-sm text-zinc-500">Save your delivery addresses for faster checkout.</p>
               </div>
             )}
@@ -789,21 +789,21 @@ function UserDashboard() {
         return (
           <div className="space-y-6">
             {/* Referral */}
-            <div className="bg-white dark:bg-zinc-900 rounded-2xl border border-zinc-200 dark:border-zinc-800 p-6">
+            <div className="bg-zinc-900 rounded-2xl border border-zinc-800 p-6">
               <div className="flex items-center gap-3 mb-5">
                 <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[var(--seasonal-primary,#1a5632)] to-[var(--seasonal-secondary,#14472a)] flex items-center justify-center">
                   <Users className="w-5 h-5 text-white" />
                 </div>
                 <div>
-                  <h2 className="text-lg font-bold text-zinc-900 dark:text-white">Refer a Friend</h2>
-                  <p className="text-xs text-zinc-500 dark:text-zinc-400">Share your code and earn KES 100 per referral</p>
+                  <h2 className="text-lg font-bold text-white">Refer a Friend</h2>
+                  <p className="text-xs text-zinc-400">Share your code and earn KES 100 per referral</p>
                 </div>
               </div>
               <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center">
                 <div className="flex-1 w-full">
-                  <label className="text-xs font-medium text-zinc-500 dark:text-zinc-400 mb-1.5 block">Your referral code</label>
-                  <div className="flex items-center gap-2 bg-zinc-50 dark:bg-zinc-800/50 rounded-xl px-4 py-3 border border-zinc-200 dark:border-zinc-700">
-                    <span className="font-mono font-bold text-lg text-zinc-900 dark:text-white tracking-wider">{referralCode}</span>
+                  <label className="text-xs font-medium text-zinc-400 mb-1.5 block">Your referral code</label>
+                  <div className="flex items-center gap-2 bg-zinc-800/50 rounded-xl px-4 py-3 border border-zinc-700">
+                    <span className="font-mono font-bold text-lg text-white tracking-wider">{referralCode}</span>
                     <button
                       onClick={() => { navigator.clipboard.writeText(referralCode); setCopied(true); setTimeout(() => setCopied(false), 2000); }}
                       className="ml-auto p-2 rounded-lg bg-zinc-200 dark:bg-zinc-700 hover:bg-zinc-300 dark:hover:bg-zinc-600 transition-colors"
@@ -813,24 +813,24 @@ function UserDashboard() {
                   </div>
                 </div>
                 <div className="text-center sm:text-left">
-                  <label className="text-xs font-medium text-zinc-500 dark:text-zinc-400 mb-1.5 block">People referred</label>
-                  <div className="flex items-center gap-2 bg-zinc-50 dark:bg-zinc-800/50 rounded-xl px-5 py-3 border border-zinc-200 dark:border-zinc-700">
+                  <label className="text-xs font-medium text-zinc-400 mb-1.5 block">People referred</label>
+                  <div className="flex items-center gap-2 bg-zinc-800/50 rounded-xl px-5 py-3 border border-zinc-700">
                     <Users className="w-5 h-5 text-[var(--seasonal-primary,#1a5632)]" />
-                    <span className="font-bold text-xl text-zinc-900 dark:text-white">{referralCount}</span>
+                    <span className="font-bold text-xl text-white">{referralCount}</span>
                   </div>
                 </div>
               </div>
             </div>
 
             {/* Loyalty Points */}
-            <div className="bg-white dark:bg-zinc-900 rounded-2xl border border-zinc-200 dark:border-zinc-800 p-6">
+            <div className="bg-zinc-900 rounded-2xl border border-zinc-800 p-6">
               <div className="flex items-center gap-3 mb-5">
                 <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-amber-400 to-orange-500 flex items-center justify-center">
                   <Star className="w-5 h-5 text-white" />
                 </div>
                 <div>
-                  <h2 className="text-lg font-bold text-zinc-900 dark:text-white">Loyalty Points</h2>
-                  <p className="text-xs text-zinc-500 dark:text-zinc-400">Earn 1 point per KES 100 spent</p>
+                  <h2 className="text-lg font-bold text-white">Loyalty Points</h2>
+                  <p className="text-xs text-zinc-400">Earn 1 point per KES 100 spent</p>
                 </div>
               </div>
               <div className="flex items-center gap-3 mb-5">
@@ -838,16 +838,16 @@ function UserDashboard() {
                   <Star className="w-8 h-8 text-white" />
                 </div>
                 <div>
-                  <span className="text-3xl font-black text-zinc-900 dark:text-white">{loyaltyPoints}</span>
-                  <p className="text-xs text-zinc-500 dark:text-zinc-400">Available points</p>
+                  <span className="text-3xl font-black text-white">{loyaltyPoints}</span>
+                  <p className="text-xs text-zinc-400">Available points</p>
                 </div>
               </div>
               {pointsHistory.length > 0 && (
                 <div>
-                  <h4 className="text-xs font-bold text-zinc-500 dark:text-zinc-400 uppercase tracking-wider mb-3">Recent Activity</h4>
+                  <h4 className="text-xs font-bold text-zinc-400 uppercase tracking-wider mb-3">Recent Activity</h4>
                   <div className="space-y-2">
                     {pointsHistory.slice(0, 5).map((entry, i) => (
-                      <div key={i} className="flex items-center justify-between bg-zinc-50 dark:bg-zinc-800/50 rounded-xl px-4 py-2.5">
+                      <div key={i} className="flex items-center justify-between bg-zinc-800/50 rounded-xl px-4 py-2.5">
                         <div className="flex items-center gap-3">
                           <div className={`w-8 h-8 rounded-lg flex items-center justify-center ${
                             entry.points > 0 ? 'bg-green-100 dark:bg-green-900/30' : 'bg-red-100 dark:bg-red-900/30'
@@ -859,7 +859,7 @@ function UserDashboard() {
                             )}
                           </div>
                           <div>
-                            <p className="text-sm font-bold text-zinc-900 dark:text-white">{entry.description || 'Points update'}</p>
+                            <p className="text-sm font-bold text-white">{entry.description || 'Points update'}</p>
                             <p className="text-xs text-zinc-500">{new Date(entry.created_at).toLocaleDateString('en-KE', { month: 'short', day: 'numeric' })}</p>
                           </div>
                         </div>
@@ -880,14 +880,14 @@ function UserDashboard() {
         return (
           <div className="space-y-6">
             {/* Notifications */}
-            <div className="bg-white dark:bg-zinc-900 rounded-2xl border border-zinc-200 dark:border-zinc-800 p-6">
+            <div className="bg-zinc-900 rounded-2xl border border-zinc-800 p-6">
               <div className="flex items-center gap-3 mb-5">
                 <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-amber-400 to-orange-500 flex items-center justify-center">
                   {notifStatus === 'on' ? <BellRing className="w-5 h-5 text-white" /> : <Bell className="w-5 h-5 text-white" />}
                 </div>
                 <div>
-                  <h2 className="text-lg font-bold text-zinc-900 dark:text-white">Notifications</h2>
-                  <p className="text-xs text-zinc-500 dark:text-zinc-400">Manage push notification settings</p>
+                  <h2 className="text-lg font-bold text-white">Notifications</h2>
+                  <p className="text-xs text-zinc-400">Manage push notification settings</p>
                 </div>
               </div>
 
@@ -941,7 +941,7 @@ function UserDashboard() {
                   )}
                 </div>
 
-                <p className="text-xs text-zinc-500 dark:text-zinc-400 leading-relaxed">
+                <p className="text-xs text-zinc-400 leading-relaxed">
                   {notifStatus === 'on'
                     ? 'You will receive notifications about order updates, new arrivals, deals, and cart reminders.'
                     : notifStatus === 'blocked'
@@ -962,23 +962,23 @@ function UserDashboard() {
             </div>
 
             {/* Saved Searches */}
-            <div className="bg-white dark:bg-zinc-900 rounded-2xl border border-zinc-200 dark:border-zinc-800 p-6">
+            <div className="bg-zinc-900 rounded-2xl border border-zinc-800 p-6">
               <div className="flex items-center gap-3 mb-5">
                 <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[var(--seasonal-primary,#1a5632)] to-[var(--seasonal-secondary,#14472a)] flex items-center justify-center">
                   <Bookmark className="w-5 h-5 text-white" />
                 </div>
                 <div>
-                  <h2 className="text-lg font-bold text-zinc-900 dark:text-white">Saved Searches</h2>
-                  <p className="text-xs text-zinc-500 dark:text-zinc-400">Quick access to your recent searches</p>
+                  <h2 className="text-lg font-bold text-white">Saved Searches</h2>
+                  <p className="text-xs text-zinc-400">Quick access to your recent searches</p>
                 </div>
               </div>
               {savedSearches.length > 0 ? (
                 <div className="space-y-2">
                   {savedSearches.map(search => (
-                    <div key={search.id} className="flex items-center justify-between bg-zinc-50 dark:bg-zinc-800/50 rounded-xl px-4 py-2.5 group hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors">
+                    <div key={search.id} className="flex items-center justify-between bg-zinc-800/50 rounded-xl px-4 py-2.5 group hover:bg-zinc-800 transition-colors">
                       <Link to={`/?search=${encodeURIComponent(search.search_term)}`} className="flex items-center gap-3 flex-1 min-w-0">
                         <Search className="w-4 h-4 text-zinc-400 flex-shrink-0" />
-                        <span className="text-sm font-medium text-zinc-900 dark:text-white truncate">{search.search_term}</span>
+                        <span className="text-sm font-medium text-white truncate">{search.search_term}</span>
                       </Link>
                       <button
                         onClick={async () => { await removeSavedSearch(search.id); setSavedSearches(prev => prev.filter(s => s.id !== search.id)); }}
@@ -998,16 +998,16 @@ function UserDashboard() {
             </div>
 
             {/* Security */}
-            <div className="bg-white dark:bg-zinc-900 rounded-2xl border border-zinc-200 dark:border-zinc-800 p-6">
+            <div className="bg-zinc-900 rounded-2xl border border-zinc-800 p-6">
               <div className="flex items-center gap-3 mb-4">
                 <div className="w-10 h-10 rounded-xl bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center">
                   <Shield className="w-5 h-5 text-blue-500" />
                 </div>
-                <h2 className="text-lg font-bold text-zinc-900 dark:text-white">Security</h2>
+                <h2 className="text-lg font-bold text-white">Security</h2>
               </div>
               <form onSubmit={handleChangePassword} className="space-y-3">
                 <div>
-                  <label className="text-xs font-bold text-zinc-500 dark:text-zinc-400 uppercase tracking-wider mb-1.5 block">
+                  <label className="text-xs font-bold text-zinc-400 uppercase tracking-wider mb-1.5 block">
                     Current Password
                   </label>
                   <input
@@ -1015,11 +1015,11 @@ function UserDashboard() {
                     value={pwForm.current}
                     onChange={e => setPwForm(f => ({ ...f, current: e.target.value }))}
                     placeholder="Enter current password"
-                    className="w-full px-3 py-2.5 rounded-xl bg-zinc-50 dark:bg-zinc-800/50 border border-zinc-200 dark:border-zinc-700 text-sm text-zinc-900 dark:text-white placeholder:text-zinc-400 focus:outline-none focus:border-blue-400 transition-colors"
+                    className="w-full px-3 py-2.5 rounded-xl bg-zinc-800/50 border border-zinc-700 text-sm text-white placeholder:text-zinc-400 focus:outline-none focus:border-blue-400 transition-colors"
                   />
                 </div>
                 <div>
-                  <label className="text-xs font-bold text-zinc-500 dark:text-zinc-400 uppercase tracking-wider mb-1.5 block">
+                  <label className="text-xs font-bold text-zinc-400 uppercase tracking-wider mb-1.5 block">
                     New Password
                   </label>
                   <input
@@ -1027,11 +1027,11 @@ function UserDashboard() {
                     value={pwForm.newPw}
                     onChange={e => setPwForm(f => ({ ...f, newPw: e.target.value }))}
                     placeholder="Min 6 characters"
-                    className="w-full px-3 py-2.5 rounded-xl bg-zinc-50 dark:bg-zinc-800/50 border border-zinc-200 dark:border-zinc-700 text-sm text-zinc-900 dark:text-white placeholder:text-zinc-400 focus:outline-none focus:border-blue-400 transition-colors"
+                    className="w-full px-3 py-2.5 rounded-xl bg-zinc-800/50 border border-zinc-700 text-sm text-white placeholder:text-zinc-400 focus:outline-none focus:border-blue-400 transition-colors"
                   />
                 </div>
                 <div>
-                  <label className="text-xs font-bold text-zinc-500 dark:text-zinc-400 uppercase tracking-wider mb-1.5 block">
+                  <label className="text-xs font-bold text-zinc-400 uppercase tracking-wider mb-1.5 block">
                     Confirm New Password
                   </label>
                   <input
@@ -1039,7 +1039,7 @@ function UserDashboard() {
                     value={pwForm.confirm}
                     onChange={e => setPwForm(f => ({ ...f, confirm: e.target.value }))}
                     placeholder="Re-enter new password"
-                    className="w-full px-3 py-2.5 rounded-xl bg-zinc-50 dark:bg-zinc-800/50 border border-zinc-200 dark:border-zinc-700 text-sm text-zinc-900 dark:text-white placeholder:text-zinc-400 focus:outline-none focus:border-blue-400 transition-colors"
+                    className="w-full px-3 py-2.5 rounded-xl bg-zinc-800/50 border border-zinc-700 text-sm text-white placeholder:text-zinc-400 focus:outline-none focus:border-blue-400 transition-colors"
                   />
                 </div>
                 {pwMsg.text && (
@@ -1063,20 +1063,20 @@ function UserDashboard() {
             </div>
 
             {/* Account Actions */}
-            <div className="bg-white dark:bg-zinc-900 rounded-2xl border border-zinc-200 dark:border-zinc-800 p-6">
-              <h2 className="text-lg font-bold text-zinc-900 dark:text-white mb-4">Account</h2>
+            <div className="bg-zinc-900 rounded-2xl border border-zinc-800 p-6">
+              <h2 className="text-lg font-bold text-white mb-4">Account</h2>
               <div className="space-y-2">
-                <Link to="/track-order" className="flex items-center justify-between w-full p-3 rounded-xl bg-zinc-50 dark:bg-zinc-800/50 hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors">
+                <Link to="/track-order" className="flex items-center justify-between w-full p-3 rounded-xl bg-zinc-800/50 hover:bg-zinc-800 transition-colors">
                   <div className="flex items-center gap-3">
                     <Package className="w-4 h-4 text-zinc-400" />
-                    <span className="text-sm font-medium text-zinc-900 dark:text-white">Track Order</span>
+                    <span className="text-sm font-medium text-white">Track Order</span>
                   </div>
                   <ChevronRight className="w-4 h-4 text-zinc-400" />
                 </Link>
-                <Link to="/wishlist" className="flex items-center justify-between w-full p-3 rounded-xl bg-zinc-50 dark:bg-zinc-800/50 hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors">
+                <Link to="/wishlist" className="flex items-center justify-between w-full p-3 rounded-xl bg-zinc-800/50 hover:bg-zinc-800 transition-colors">
                   <div className="flex items-center gap-3">
                     <Bookmark className="w-4 h-4 text-zinc-400" />
-                    <span className="text-sm font-medium text-zinc-900 dark:text-white">Wishlist</span>
+                    <span className="text-sm font-medium text-white">Wishlist</span>
                   </div>
                   <ChevronRight className="w-4 h-4 text-zinc-400" />
                 </Link>
@@ -1103,8 +1103,8 @@ function UserDashboard() {
       <Breadcrumb />
       <div className="flex items-center justify-between mb-6">
         <div>
-          <h1 className="text-2xl sm:text-3xl font-black text-zinc-900 dark:text-white">My Account</h1>
-          <p className="text-sm text-zinc-500 dark:text-zinc-400">Welcome back, {userName}</p>
+          <h1 className="text-2xl sm:text-3xl font-black text-white">My Account</h1>
+          <p className="text-sm text-zinc-400">Welcome back, {userName}</p>
         </div>
       </div>
 
@@ -1132,7 +1132,7 @@ function UserDashboard() {
               className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-bold whitespace-nowrap transition-all ${
                 isActive
                   ? 'bg-zinc-900 dark:bg-white text-white dark:text-zinc-900 shadow-lg shadow-zinc-900/10'
-                  : 'text-zinc-500 dark:text-zinc-400 hover:bg-zinc-100 dark:hover:bg-zinc-800'
+                  : 'text-zinc-400 hover:bg-zinc-800'
               }`}
             >
               <Icon className="w-4 h-4" />
@@ -1179,46 +1179,46 @@ function AddressForm({ onSave, onClose }) {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="bg-white dark:bg-zinc-900 rounded-2xl border border-zinc-200 dark:border-zinc-800 p-4 space-y-3">
+    <form onSubmit={handleSubmit} className="bg-zinc-900 rounded-2xl border border-zinc-800 p-4 space-y-3">
       <div>
-        <label className="text-xs font-bold text-zinc-500 dark:text-zinc-400 uppercase tracking-wider mb-1 block">Label</label>
+        <label className="text-xs font-bold text-zinc-400 uppercase tracking-wider mb-1 block">Label</label>
         <div className="flex gap-2">
           {['Home', 'Work', 'Other'].map(l => (
             <button key={l} type="button" onClick={() => setForm({ ...form, label: l })}
               className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all ${
-                form.label === l ? 'bg-zinc-900 text-white dark:bg-white dark:text-zinc-900' : 'bg-zinc-100 dark:bg-zinc-800 text-zinc-500'
+                form.label === l ? 'bg-zinc-900 text-white dark:bg-white dark:text-zinc-900' : 'bg-zinc-800 text-zinc-500'
               }`}>{l}</button>
           ))}
         </div>
       </div>
       <div>
-        <label className="text-xs font-bold text-zinc-500 dark:text-zinc-400 uppercase tracking-wider mb-1 block">Area</label>
+        <label className="text-xs font-bold text-zinc-400 uppercase tracking-wider mb-1 block">Area</label>
         <select value={form.area} onChange={e => setForm({ ...form, area: e.target.value })}
-          className="w-full px-3 py-2.5 rounded-xl bg-zinc-50 dark:bg-zinc-800/50 border border-zinc-200 dark:border-zinc-700 text-sm text-zinc-900 dark:text-white focus:outline-none focus:border-[var(--seasonal-primary,#1a5632)]">
+          className="w-full px-3 py-2.5 rounded-xl bg-zinc-800/50 border border-zinc-700 text-sm text-white focus:outline-none focus:border-[var(--seasonal-primary,#1a5632)]">
           <option value="">Select area...</option>
           {AREA_OPTIONS.map(a => <option key={a} value={a}>{a}</option>)}
         </select>
       </div>
       <div>
-        <label className="text-xs font-bold text-zinc-500 dark:text-zinc-400 uppercase tracking-wider mb-1 block">Landmark</label>
+        <label className="text-xs font-bold text-zinc-400 uppercase tracking-wider mb-1 block">Landmark</label>
         <input type="text" value={form.landmark} onChange={e => setForm({ ...form, landmark: e.target.value })}
           placeholder="Nearby landmark"
-          className="w-full px-3 py-2.5 rounded-xl bg-zinc-50 dark:bg-zinc-800/50 border border-zinc-200 dark:border-zinc-700 text-sm text-zinc-900 dark:text-white focus:outline-none focus:border-[var(--seasonal-primary,#1a5632)]" />
+          className="w-full px-3 py-2.5 rounded-xl bg-zinc-800/50 border border-zinc-700 text-sm text-white focus:outline-none focus:border-[var(--seasonal-primary,#1a5632)]" />
       </div>
       <div>
-        <label className="text-xs font-bold text-zinc-500 dark:text-zinc-400 uppercase tracking-wider mb-1 block">Phone</label>
+        <label className="text-xs font-bold text-zinc-400 uppercase tracking-wider mb-1 block">Phone</label>
         <input type="tel" value={form.phone} onChange={e => setForm({ ...form, phone: e.target.value })}
           placeholder="07XX XXX XXX"
-          className="w-full px-3 py-2.5 rounded-xl bg-zinc-50 dark:bg-zinc-800/50 border border-zinc-200 dark:border-zinc-700 text-sm text-zinc-900 dark:text-white focus:outline-none focus:border-[var(--seasonal-primary,#1a5632)]" />
+          className="w-full px-3 py-2.5 rounded-xl bg-zinc-800/50 border border-zinc-700 text-sm text-white focus:outline-none focus:border-[var(--seasonal-primary,#1a5632)]" />
       </div>
-      <label className="flex items-center gap-2 text-sm text-zinc-600 dark:text-zinc-400 cursor-pointer">
+      <label className="flex items-center gap-2 text-sm text-zinc-400 cursor-pointer">
         <input type="checkbox" checked={form.is_default} onChange={e => setForm({ ...form, is_default: e.target.checked })}
           className="rounded text-[var(--seasonal-primary,#1a5632)] focus:ring-[var(--seasonal-primary,#1a5632)]" />
         Set as default address
       </label>
       <div className="flex gap-2 pt-1">
         <button type="button" onClick={onClose}
-          className="flex-1 py-2.5 rounded-xl bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-300 text-sm font-bold hover:bg-zinc-200 dark:hover:bg-zinc-700 transition-colors">
+          className="flex-1 py-2.5 rounded-xl bg-zinc-800 text-zinc-300 text-sm font-bold hover:bg-zinc-700 transition-colors">
           Cancel
         </button>
         <button type="submit"

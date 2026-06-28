@@ -52,15 +52,15 @@ export default function CartMiniPopup() {
       {open && (
         <div
           ref={popupRef}
-          className="absolute bottom-14 right-0 w-[340px] max-w-[calc(100vw-2rem)] bg-white dark:bg-zinc-900 rounded-2xl shadow-2xl border border-zinc-200 dark:border-zinc-800 overflow-hidden animate-in slide-in-from-bottom-4 fade-in duration-200"
+          className="absolute bottom-14 right-0 w-[340px] max-w-[calc(100vw-2rem)] bg-zinc-900 rounded-2xl shadow-2xl border border-zinc-800 overflow-hidden animate-in slide-in-from-bottom-4 fade-in duration-200"
         >
           {/* Header */}
-          <div className="flex items-center justify-between px-4 py-3 border-b border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-900/50">
+          <div className="flex items-center justify-between px-4 py-3 border-b border-zinc-800 bg-zinc-900/50">
             <div className="flex items-center gap-2">
               <ShoppingCart className="w-4 h-4 text-[var(--seasonal-primary,#1a5632)]" />
-              <span className="font-bold text-sm text-zinc-900 dark:text-white">Cart ({count})</span>
+              <span className="font-bold text-sm text-white">Cart ({count})</span>
             </div>
-            <button onClick={() => setOpen(false)} className="p-1 rounded-lg hover:bg-zinc-200 dark:hover:bg-zinc-800 text-zinc-400">
+            <button onClick={() => setOpen(false)} className="p-1 rounded-lg hover:bg-zinc-800 text-zinc-400">
               <X className="w-4 h-4" />
             </button>
           </div>
@@ -82,7 +82,7 @@ export default function CartMiniPopup() {
             ) : (
               <div className="p-3 space-y-2">
                 {cart.map((item) => (
-                  <div key={item.id} className="flex items-center gap-3 p-2 rounded-xl bg-zinc-50 dark:bg-zinc-800/50">
+                  <div key={item.id} className="flex items-center gap-3 p-2 rounded-xl bg-zinc-800/50">
                     <div className="w-12 h-12 rounded-lg bg-zinc-200 dark:bg-zinc-700 overflow-hidden flex-shrink-0">
                       {item.image_url ? (
                         <img src={item.image_url} alt={item.name} className="w-full h-full object-cover" />
@@ -96,7 +96,7 @@ export default function CartMiniPopup() {
                       <Link
                         to={`/listing/${item.id}`}
                         onClick={() => setOpen(false)}
-                        className="text-xs font-bold text-zinc-900 dark:text-white hover:text-[var(--seasonal-primary,#1a5632)] truncate block"
+                        className="text-xs font-bold text-white hover:text-[var(--seasonal-primary,#1a5632)] truncate block"
                       >
                         {item.name}
                       </Link>
@@ -105,14 +105,14 @@ export default function CartMiniPopup() {
                     <div className="flex items-center gap-1">
                       <button
                         onClick={() => updateQuantity(item.id, item.quantity - 1)}
-                        className="w-6 h-6 rounded-md bg-zinc-200 dark:bg-zinc-700 flex items-center justify-center text-zinc-600 dark:text-zinc-300 hover:bg-zinc-300 dark:hover:bg-zinc-600"
+                        className="w-6 h-6 rounded-md bg-zinc-200 dark:bg-zinc-700 flex items-center justify-center text-zinc-300 hover:bg-zinc-300 dark:hover:bg-zinc-600"
                       >
                         <Minus className="w-3 h-3" />
                       </button>
-                      <span className="text-xs font-bold w-5 text-center text-zinc-900 dark:text-white">{item.quantity}</span>
+                      <span className="text-xs font-bold w-5 text-center text-white">{item.quantity}</span>
                       <button
                         onClick={() => updateQuantity(item.id, item.quantity + 1)}
-                        className="w-6 h-6 rounded-md bg-zinc-200 dark:bg-zinc-700 flex items-center justify-center text-zinc-600 dark:text-zinc-300 hover:bg-zinc-300 dark:hover:bg-zinc-600"
+                        className="w-6 h-6 rounded-md bg-zinc-200 dark:bg-zinc-700 flex items-center justify-center text-zinc-300 hover:bg-zinc-300 dark:hover:bg-zinc-600"
                       >
                         <Plus className="w-3 h-3" />
                       </button>
@@ -131,16 +131,16 @@ export default function CartMiniPopup() {
 
           {/* Footer with total + checkout */}
           {cart.length > 0 && (
-            <div className="border-t border-zinc-200 dark:border-zinc-800 p-3 space-y-2 bg-zinc-50 dark:bg-zinc-900/50">
+            <div className="border-t border-zinc-800 p-3 space-y-2 bg-zinc-900/50">
               <div className="flex items-center justify-between px-1">
                 <span className="text-xs text-zinc-500">Subtotal</span>
-                <span className="font-bold text-sm text-zinc-900 dark:text-white">{formatKES(total)}</span>
+                <span className="font-bold text-sm text-white">{formatKES(total)}</span>
               </div>
               <div className="flex gap-2">
                 <Link
                   to="/cart"
                   onClick={() => setOpen(false)}
-                  className="flex-1 text-center py-2.5 rounded-xl border border-zinc-200 dark:border-zinc-700 text-xs font-bold text-zinc-700 dark:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors"
+                  className="flex-1 text-center py-2.5 rounded-xl border border-zinc-700 text-xs font-bold text-zinc-300 hover:bg-zinc-800 transition-colors"
                 >
                   View Cart
                 </Link>

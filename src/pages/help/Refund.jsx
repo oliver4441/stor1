@@ -34,7 +34,7 @@ const refundSteps = [
 export default function Refund() {
   return (
     <HelpLayout title="How to Apply for a Refund">
-      <p className="mb-6 text-zinc-600 dark:text-zinc-400">
+      <p className="mb-6 text-zinc-400">
         We offer hassle-free refunds for eligible orders within 7 days of delivery.
       </p>
       

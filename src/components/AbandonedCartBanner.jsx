@@ -88,7 +88,7 @@ export default function AbandonedCartBanner() {
         </p>
         <button
           onClick={handleViewCart}
-          className="px-4 py-1.5 bg-white text-[var(--seasonal-primary,#1a5632)] text-xs font-bold rounded-xl hover:opacity-90 transition-opacity flex-shrink-0"
+          className="px-4 py-1.5 bg-[var(--seasonal-primary,#1a5632)] text-white text-xs font-bold rounded-xl hover:opacity-90 transition-opacity flex-shrink-0"
         >
           View Cart
         </button>

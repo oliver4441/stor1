@@ -28,7 +28,7 @@ function Privacy() {
       content: (
         <>
           <p>We collect the following categories of personal information:</p>
-          <h4 className="font-bold text-zinc-900 dark:text-white mt-4 mb-2">2.1 Information You Provide Directly</h4>
+          <h4 className="font-bold text-white mt-4 mb-2">2.1 Information You Provide Directly</h4>
           <ul className="list-disc pl-6 space-y-2">
             <li><strong>Account Information:</strong> Name, email address, phone number, profile picture, and password when you create an account</li>
             <li><strong>Listing Information:</strong> Item descriptions, prices, images, and location data when you create listings</li>
@@ -36,14 +36,14 @@ function Privacy() {
             <li><strong>Communication Data:</strong> Messages sent through the Platform's messaging system</li>
             <li><strong>Payment Information:</strong> Payment details processed through Paystack (we do not store full card details on our servers)</li>
           </ul>
-          <h4 className="font-bold text-zinc-900 dark:text-white mt-4 mb-2">2.2 Information Collected Automatically</h4>
+          <h4 className="font-bold text-white mt-4 mb-2">2.2 Information Collected Automatically</h4>
           <ul className="list-disc pl-6 space-y-2">
             <li><strong>Device Information:</strong> Device type, operating system, browser type, and unique device identifiers</li>
             <li><strong>Usage Data:</strong> Pages visited, features used, search queries, and interaction patterns</li>
             <li><strong>Location Data:</strong> Approximate geographic location based on IP address or device settings (with your permission)</li>
             <li><strong>Log Data:</strong> Access times, error logs, and referral URLs</li>
           </ul>
-          <h4 className="font-bold text-zinc-900 dark:text-white mt-4 mb-2">2.3 Information from Third Parties</h4>
+          <h4 className="font-bold text-white mt-4 mb-2">2.3 Information from Third Parties</h4>
           <ul className="list-disc pl-6 space-y-2">
             <li>Payment verification data from Paystack</li>
             <li>Social media information if you choose to link your social media accounts</li>
@@ -237,7 +237,7 @@ function Privacy() {
           <p>
             If you have any questions, concerns, or requests regarding this Privacy Policy or our data practices, please contact us:
           </p>
-          <div className="bg-zinc-50 dark:bg-zinc-900 rounded-2xl p-6 my-4 border border-zinc-200 dark:border-zinc-800">
+          <div className="bg-zinc-900 rounded-2xl p-6 my-4 border border-zinc-800">
             <p className="mb-2"><strong>Omix Marketplace — Data Protection Officer</strong></p>
             <p className="mb-2">Kericho, Kenya</p>
             <p className="mb-2">Email: <a href="mailto:omixsystems@gmail.com" className="text-[var(--seasonal-primary,#1a5632)] hover:underline">omixsystems@gmail.com</a></p>
@@ -258,15 +258,15 @@ function Privacy() {
       <div className="mb-10">
         <Link
           to="/"
-          className="inline-flex items-center gap-2 text-sm text-zinc-500 dark:text-zinc-400 hover:text-[var(--seasonal-primary,#1a5632)] mb-6 transition-colors"
+          className="inline-flex items-center gap-2 text-sm text-zinc-400 hover:text-[var(--seasonal-primary,#1a5632)] mb-6 transition-colors"
         >
           <ArrowLeft className="w-4 h-4" />
           Back to Home
         </Link>
-        <h1 className="text-4xl font-black text-zinc-900 dark:text-white tracking-tight mb-3">
+        <h1 className="text-4xl font-black text-white tracking-tight mb-3">
           Privacy Policy
         </h1>
-        <p className="text-zinc-500 dark:text-zinc-400 text-lg">
+        <p className="text-zinc-400 text-lg">
           Last updated: June 7, 2026
         </p>
         <div className="mt-4 p-4 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800/50 rounded-2xl">
@@ -277,14 +277,14 @@ function Privacy() {
       </div>
 
       {/* Table of Contents */}
-      <div className="mb-12 p-6 bg-zinc-50 dark:bg-zinc-900 rounded-2xl border border-zinc-200 dark:border-zinc-800">
-        <h2 className="text-lg font-bold text-zinc-900 dark:text-white mb-4">Table of Contents</h2>
+      <div className="mb-12 p-6 bg-zinc-900 rounded-2xl border border-zinc-800">
+        <h2 className="text-lg font-bold text-white mb-4">Table of Contents</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
           {sections.map((section) => (
             <a
               key={section.id}
               href={`#${section.id}`}
-              className="text-sm text-zinc-600 dark:text-zinc-400 hover:text-[var(--seasonal-primary,#1a5632)] transition-colors py-1"
+              className="text-sm text-zinc-400 hover:text-[var(--seasonal-primary,#1a5632)] transition-colors py-1"
             >
               {section.title}
             </a>
@@ -300,11 +300,11 @@ function Privacy() {
               <div className="w-10 h-10 rounded-xl bg-[var(--seasonal-primary,#1a5632)]/10 text-[var(--seasonal-primary,#1a5632)] flex items-center justify-center flex-shrink-0">
                 {section.icon}
               </div>
-              <h2 className="text-2xl font-bold text-zinc-900 dark:text-white">
+              <h2 className="text-2xl font-bold text-white">
                 {section.title}
               </h2>
             </div>
-            <div className="pl-0 md:pl-13 space-y-4 text-zinc-600 dark:text-zinc-300 leading-relaxed">
+            <div className="pl-0 md:pl-13 space-y-4 text-zinc-300 leading-relaxed">
               {section.content}
             </div>
           </section>
@@ -312,11 +312,11 @@ function Privacy() {
       </div>
 
       {/* Footer note */}
-      <div className="mt-16 pt-8 border-t border-zinc-200 dark:border-zinc-800 text-center">
-        <p className="text-sm text-zinc-500 dark:text-zinc-400">
+      <div className="mt-16 pt-8 border-t border-zinc-800 text-center">
+        <p className="text-sm text-zinc-400">
           &copy; 2026 Omix Marketplace. All rights reserved. Kericho, Kenya.
         </p>
-        <p className="text-sm text-zinc-500 dark:text-zinc-400 mt-2">
+        <p className="text-sm text-zinc-400 mt-2">
           This Privacy Policy is effective as of June 7, 2026.
         </p>
       </div>

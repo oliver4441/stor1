@@ -54,7 +54,7 @@ export default function PushNudge() {
 
   return (
     <div className="fixed bottom-20 left-4 right-4 sm:left-auto sm:right-4 sm:w-80 z-[110] animate-slide-up">
-      <div className="backdrop-blur-xl bg-white/95 dark:bg-zinc-900/95 border border-zinc-200 dark:border-zinc-700 rounded-2xl shadow-2xl overflow-hidden">
+      <div className="backdrop-blur-xl bg-white/95 dark:bg-zinc-900/95 border border-zinc-700 rounded-2xl shadow-2xl overflow-hidden">
         <div className="p-4">
           <div className="flex items-start justify-between gap-3">
             <div className="flex items-center gap-3">
@@ -62,17 +62,17 @@ export default function PushNudge() {
                 <BellRing className="w-5 h-5 text-amber-500" />
               </div>
               <div className="flex-1 min-w-0">
-                <h4 className="text-sm font-bold text-zinc-900 dark:text-white">
+                <h4 className="text-sm font-bold text-white">
                   Stay Updated
                 </h4>
-                <p className="text-xs text-zinc-500 dark:text-zinc-400 leading-relaxed mt-0.5">
+                <p className="text-xs text-zinc-400 leading-relaxed mt-0.5">
                   Get notified about orders, deals, and new arrivals
                 </p>
               </div>
             </div>
             <button
               onClick={handleDismiss}
-              className="p-1.5 rounded-lg hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors shrink-0"
+              className="p-1.5 rounded-lg hover:bg-zinc-800 transition-colors shrink-0"
               aria-label="Dismiss"
             >
               <X className="w-4 h-4 text-zinc-400" />

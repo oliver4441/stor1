@@ -15,12 +15,12 @@ export default function ScreenshotGuide({ steps }) {
           
           {/* Content */}
           <div className="flex-1">
-            <h3 className="font-bold text-zinc-900 dark:text-white text-lg mb-2">{step.title}</h3>
-            <p className="text-zinc-600 dark:text-zinc-400 text-sm leading-relaxed mb-4">{step.desc}</p>
+            <h3 className="font-bold text-white text-lg mb-2">{step.title}</h3>
+            <p className="text-zinc-400 text-sm leading-relaxed mb-4">{step.desc}</p>
             
             {/* SVG Illustration */}
             {step.svg && (
-              <div className="bg-zinc-50 dark:bg-zinc-800/50 rounded-xl p-6 border border-zinc-200 dark:border-zinc-700 overflow-hidden">
+              <div className="bg-zinc-800/50 rounded-xl p-6 border border-zinc-700 overflow-hidden">
                 <div className="max-w-lg mx-auto" dangerouslySetInnerHTML={{ __html: step.svg }} />
               </div>
             )}

@@ -84,7 +84,7 @@ function ContactFloat() {
       >
         <ShoppingCart className={`w-6 h-6 transition-colors duration-300 ${flash ? 'text-white' : 'text-white dark:text-zinc-900'}`} />
         {cartCount > 0 && (
-          <span className={`absolute -top-1 -right-1 w-5 h-5 text-white text-[10px] font-bold rounded-full flex items-center justify-center transition-all duration-300 ${bump ? 'scale-125' : 'scale-100'} ${flash ? 'bg-white text-zinc-900' : 'bg-[var(--seasonal-primary,#1a5632)]'}`}>
+          <span className={`absolute -top-1 -right-1 w-5 h-5 text-white text-[10px] font-bold rounded-full flex items-center justify-center transition-all duration-300 ${bump ? 'scale-125' : 'scale-100'} ${flash ? 'bg-zinc-800 text-white' : 'bg-[var(--seasonal-primary,#1a5632)]'}`}>
             {cartCount > 9 ? '9+' : cartCount}
           </span>
         )}
@@ -94,10 +94,10 @@ function ContactFloat() {
       {cartOpen && (
         <>
           <div className="fixed inset-0 z-40" onClick={() => setCartOpen(false)} />
-          <div className="fixed bottom-52 right-4 sm:right-6 w-[calc(100%-2rem)] sm:w-[380px] bg-white dark:bg-zinc-900 rounded-2xl shadow-2xl border border-zinc-200 dark:border-zinc-800 z-50 overflow-hidden" key="mini-cart">
+          <div className="fixed bottom-52 right-4 sm:right-6 w-[calc(100%-2rem)] sm:w-[380px] bg-zinc-900 rounded-2xl shadow-2xl border border-zinc-800 z-50 overflow-hidden" key="mini-cart">
             <div className="flex items-center justify-between px-5 py-4 border-b border-zinc-100 dark:border-zinc-800">
-              <h3 className="font-black text-lg text-zinc-900 dark:text-white">Cart ({cartCount})</h3>
-              <button onClick={() => setCartOpen(false)} className="p-1.5 rounded-lg hover:bg-zinc-100 dark:hover:bg-zinc-800 text-zinc-400">
+              <h3 className="font-black text-lg text-white">Cart ({cartCount})</h3>
+              <button onClick={() => setCartOpen(false)} className="p-1.5 rounded-lg hover:bg-zinc-800 text-zinc-400">
                 <X className="w-4 h-4" />
               </button>
             </div>
@@ -106,7 +106,7 @@ function ContactFloat() {
               {items.length === 0 ? (
                 <div className="px-5 py-10 text-center">
                   <ShoppingCart className="w-10 h-10 text-zinc-300 dark:text-zinc-600 mx-auto mb-3" />
-                  <p className="text-sm text-zinc-500 dark:text-zinc-400">Your cart is empty</p>
+                  <p className="text-sm text-zinc-400">Your cart is empty</p>
                   <Link to="/" onClick={() => setCartOpen(false)} className="inline-block mt-4 text-sm font-bold text-[var(--seasonal-primary,#1a5632)] hover:underline">
                     Browse Products
                   </Link>
@@ -115,7 +115,7 @@ function ContactFloat() {
                 <div className="divide-y divide-zinc-100 dark:divide-zinc-800">
                   {items.map(item => (
                     <div key={item.id} className="flex gap-3 px-5 py-3">
-                      <div className="w-14 h-14 rounded-xl bg-zinc-100 dark:bg-zinc-800 overflow-hidden flex-shrink-0">
+                      <div className="w-14 h-14 rounded-xl bg-zinc-800 overflow-hidden flex-shrink-0">
                         {item.image_url ? (
                           <img src={item.image_url} alt={item.name} className="w-full h-full object-cover" />
                         ) : (
@@ -125,16 +125,16 @@ function ContactFloat() {
                         )}
                       </div>
                       <div className="flex-grow min-w-0">
-                        <p className="font-bold text-sm text-zinc-900 dark:text-white truncate">{item.name}</p>
+                        <p className="font-bold text-sm text-white truncate">{item.name}</p>
                         <p className="text-[var(--seasonal-primary,#1a5632)] font-bold text-sm">{formatKES(item.price * item.quantity)}</p>
                       </div>
                       <div className="flex items-center gap-1 flex-shrink-0">
-                        <button onClick={() => updateQuantity(item.id, Math.max(0, item.quantity - 1))} className="w-7 h-7 rounded-lg bg-zinc-100 dark:bg-zinc-800 flex items-center justify-center hover:bg-zinc-200 dark:hover:bg-zinc-700">
-                          <Minus className="w-3 h-3 text-zinc-600 dark:text-zinc-300" />
+                        <button onClick={() => updateQuantity(item.id, Math.max(0, item.quantity - 1))} className="w-7 h-7 rounded-lg bg-zinc-800 flex items-center justify-center hover:bg-zinc-700">
+                          <Minus className="w-3 h-3 text-zinc-300" />
                         </button>
-                        <span className="text-sm font-bold w-6 text-center text-zinc-900 dark:text-white">{item.quantity}</span>
-                        <button onClick={() => updateQuantity(item.id, item.quantity + 1)} className="w-7 h-7 rounded-lg bg-zinc-100 dark:bg-zinc-800 flex items-center justify-center hover:bg-zinc-200 dark:hover:bg-zinc-700">
-                          <Plus className="w-3 h-3 text-zinc-600 dark:text-zinc-300" />
+                        <span className="text-sm font-bold w-6 text-center text-white">{item.quantity}</span>
+                        <button onClick={() => updateQuantity(item.id, item.quantity + 1)} className="w-7 h-7 rounded-lg bg-zinc-800 flex items-center justify-center hover:bg-zinc-700">
+                          <Plus className="w-3 h-3 text-zinc-300" />
                         </button>
                         <button onClick={() => removeItem(item.id)} className="w-7 h-7 rounded-lg flex items-center justify-center text-zinc-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 ml-1">
                           <Trash2 className="w-3 h-3" />
@@ -147,9 +147,9 @@ function ContactFloat() {
             </div>
 
             {items.length > 0 && (
-              <div className="border-t border-zinc-200 dark:border-zinc-700 p-4 space-y-3">
+              <div className="border-t border-zinc-700 p-4 space-y-3">
                 <div className="flex justify-between items-center">
-                  <span className="text-sm font-bold text-zinc-500 dark:text-zinc-400">Total</span>
+                  <span className="text-sm font-bold text-zinc-400">Total</span>
                   <span className="text-xl font-black text-[var(--seasonal-primary,#1a5632)]">{formatKES(cartTotal)}</span>
                 </div>
                 <Link
@@ -183,7 +183,7 @@ function ContactFloat() {
 
       {/* Form Panel */}
       <div
-        className={`fixed bottom-40 right-4 sm:right-6 w-[calc(100%-2rem)] sm:w-[400px] bg-white dark:bg-zinc-900 rounded-2xl shadow-2xl border border-zinc-200 dark:border-zinc-800 z-50 transition-all duration-300 origin-bottom-right ${
+        className={`fixed bottom-40 right-4 sm:right-6 w-[calc(100%-2rem)] sm:w-[400px] bg-zinc-900 rounded-2xl shadow-2xl border border-zinc-800 z-50 transition-all duration-300 origin-bottom-right ${
           isOpen
             ? 'opacity-100 scale-100 translate-y-0'
             : 'opacity-0 scale-95 translate-y-4 pointer-events-none'
@@ -192,12 +192,12 @@ function ContactFloat() {
         {/* Header */}
         <div className="flex items-center justify-between px-6 py-4 border-b border-zinc-100 dark:border-zinc-800">
           <div>
-            <h3 className="font-black text-lg text-zinc-900 dark:text-white">Contact Omix</h3>
-            <p className="text-xs text-zinc-500 dark:text-zinc-400 mt-0.5">We'll get back to you within 24 hours</p>
+            <h3 className="font-black text-lg text-white">Contact Omix</h3>
+            <p className="text-xs text-zinc-400 mt-0.5">We'll get back to you within 24 hours</p>
           </div>
           <button
             onClick={() => { setIsOpen(false); setSuccess(false); setError(''); }}
-            className="p-2 rounded-xl hover:bg-zinc-100 dark:hover:bg-zinc-800 text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-300 transition-colors"
+            className="p-2 rounded-xl hover:bg-zinc-800 text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-300 transition-colors"
           >
             <X className="w-5 h-5" />
           </button>
@@ -208,8 +208,8 @@ function ContactFloat() {
             <div className="w-14 h-14 bg-green-100 dark:bg-green-900/30 rounded-full flex items-center justify-center mx-auto mb-4">
               <CheckCircle className="w-7 h-7 text-green-600" />
             </div>
-            <h4 className="text-lg font-bold text-zinc-900 dark:text-white mb-2">Message sent!</h4>
-            <p className="text-sm text-zinc-500 dark:text-zinc-400 mb-6">Thank you for reaching out. Our team in Kericho will respond soon.</p>
+            <h4 className="text-lg font-bold text-white mb-2">Message sent!</h4>
+            <p className="text-sm text-zinc-400 mb-6">Thank you for reaching out. Our team in Kericho will respond soon.</p>
             <button
               onClick={() => { setSuccess(false); setIsOpen(false); }}
               className="text-sm font-bold text-[var(--seasonal-primary,#1a5632)] hover:underline"
@@ -220,24 +220,24 @@ function ContactFloat() {
         ) : (
           <form onSubmit={handleSubmit} className="px-6 py-5 space-y-4">
             <div>
-              <label className="block text-xs font-bold text-zinc-500 dark:text-zinc-400 uppercase tracking-wider mb-1.5">Your Name</label>
+              <label className="block text-xs font-bold text-zinc-400 uppercase tracking-wider mb-1.5">Your Name</label>
               <input required name="name" type="text" placeholder="e.g. Kiprono Yegon"
-                className="w-full px-4 py-3 rounded-xl bg-zinc-50 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 focus:border-[var(--seasonal-primary,#1a5632)] focus:ring-2 focus:ring-[var(--seasonal-primary,#1a5632)]/10 focus:outline-none text-zinc-900 dark:text-white text-sm transition-all" />
+                className="w-full px-4 py-3 rounded-xl bg-zinc-800 border border-zinc-700 focus:border-[var(--seasonal-primary,#1a5632)] focus:ring-2 focus:ring-[var(--seasonal-primary,#1a5632)]/10 focus:outline-none text-white text-sm transition-all" />
             </div>
             <div>
-              <label className="block text-xs font-bold text-zinc-500 dark:text-zinc-400 uppercase tracking-wider mb-1.5">Email Address</label>
+              <label className="block text-xs font-bold text-zinc-400 uppercase tracking-wider mb-1.5">Email Address</label>
               <input required name="email" type="email" placeholder="you@example.com"
-                className="w-full px-4 py-3 rounded-xl bg-zinc-50 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 focus:border-[var(--seasonal-primary,#1a5632)] focus:ring-2 focus:ring-[var(--seasonal-primary,#1a5632)]/10 focus:outline-none text-zinc-900 dark:text-white text-sm transition-all" />
+                className="w-full px-4 py-3 rounded-xl bg-zinc-800 border border-zinc-700 focus:border-[var(--seasonal-primary,#1a5632)] focus:ring-2 focus:ring-[var(--seasonal-primary,#1a5632)]/10 focus:outline-none text-white text-sm transition-all" />
             </div>
             <div>
-              <label className="block text-xs font-bold text-zinc-500 dark:text-zinc-400 uppercase tracking-wider mb-1.5">Phone (optional)</label>
+              <label className="block text-xs font-bold text-zinc-400 uppercase tracking-wider mb-1.5">Phone (optional)</label>
               <input name="phone" type="tel" placeholder="07XXXXXXXX"
-                className="w-full px-4 py-3 rounded-xl bg-zinc-50 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 focus:border-[var(--seasonal-primary,#1a5632)] focus:ring-2 focus:ring-[var(--seasonal-primary,#1a5632)]/10 focus:outline-none text-zinc-900 dark:text-white text-sm transition-all" />
+                className="w-full px-4 py-3 rounded-xl bg-zinc-800 border border-zinc-700 focus:border-[var(--seasonal-primary,#1a5632)] focus:ring-2 focus:ring-[var(--seasonal-primary,#1a5632)]/10 focus:outline-none text-white text-sm transition-all" />
             </div>
             <div>
-              <label className="block text-xs font-bold text-zinc-500 dark:text-zinc-400 uppercase tracking-wider mb-1.5">Subject</label>
+              <label className="block text-xs font-bold text-zinc-400 uppercase tracking-wider mb-1.5">Subject</label>
               <select name="subject"
-                className="w-full px-4 py-3 rounded-xl bg-zinc-50 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 focus:border-[var(--seasonal-primary,#1a5632)] focus:ring-2 focus:ring-[var(--seasonal-primary,#1a5632)]/10 focus:outline-none text-zinc-900 dark:text-white text-sm transition-all appearance-none"
+                className="w-full px-4 py-3 rounded-xl bg-zinc-800 border border-zinc-700 focus:border-[var(--seasonal-primary,#1a5632)] focus:ring-2 focus:ring-[var(--seasonal-primary,#1a5632)]/10 focus:outline-none text-white text-sm transition-all appearance-none"
               >
                 <option value="General Inquiry">General Inquiry</option>
                 <option value="Order Issue">Order Issue</option>
@@ -248,9 +248,9 @@ function ContactFloat() {
               </select>
             </div>
             <div>
-              <label className="block text-xs font-bold text-zinc-500 dark:text-zinc-400 uppercase tracking-wider mb-1.5">Message</label>
+              <label className="block text-xs font-bold text-zinc-400 uppercase tracking-wider mb-1.5">Message</label>
               <textarea required name="message" rows="3" placeholder="Tell us how we can help..."
-                className="w-full px-4 py-3 rounded-xl bg-zinc-50 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 focus:border-[var(--seasonal-primary,#1a5632)] focus:ring-2 focus:ring-[var(--seasonal-primary,#1a5632)]/10 focus:outline-none text-zinc-900 dark:text-white text-sm transition-all resize-none" />
+                className="w-full px-4 py-3 rounded-xl bg-zinc-800 border border-zinc-700 focus:border-[var(--seasonal-primary,#1a5632)] focus:ring-2 focus:ring-[var(--seasonal-primary,#1a5632)]/10 focus:outline-none text-white text-sm transition-all resize-none" />
             </div>
 
             {error && <p className="text-xs text-red-500 font-medium">{error}</p>}

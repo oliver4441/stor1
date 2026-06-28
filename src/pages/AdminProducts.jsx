@@ -326,7 +326,7 @@ export default function AdminProducts() {
       {/* Header */}
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div>
-          <h2 className="text-xl font-bold text-zinc-900 dark:text-white">Products</h2>
+          <h2 className="text-xl font-bold text-white">Products</h2>
           <p className="text-sm text-zinc-500">{listings.length} total • {filteredListings.length} shown</p>
         </div>
         <div className="flex items-center gap-2">
@@ -348,16 +348,16 @@ export default function AdminProducts() {
           <input
             type="text" placeholder="Search by name or SKU..."
             value={searchQuery} onChange={e => setSearchQuery(e.target.value)}
-            className="w-full pl-10 pr-4 py-2.5 rounded-xl bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 text-sm text-zinc-900 dark:text-white focus:border-primary focus:outline-none"
+            className="w-full pl-10 pr-4 py-2.5 rounded-xl bg-zinc-900 border border-zinc-800 text-sm text-white focus:border-primary focus:outline-none"
           />
         </div>
         <select value={filterCategory} onChange={e => setFilterCategory(e.target.value)}
-          className="px-4 py-2.5 rounded-xl bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 text-sm text-zinc-900 dark:text-white appearance-none">
+          className="px-4 py-2.5 rounded-xl bg-zinc-900 border border-zinc-800 text-sm text-white appearance-none">
           <option value="All">All Categories</option>
           {CATEGORIES.filter(c => c !== 'All').map(c => <option key={c} value={c}>{c}</option>)}
         </select>
         <select value={filterStatus} onChange={e => setFilterStatus(e.target.value)}
-          className="px-4 py-2.5 rounded-xl bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 text-sm text-zinc-900 dark:text-white appearance-none">
+          className="px-4 py-2.5 rounded-xl bg-zinc-900 border border-zinc-800 text-sm text-white appearance-none">
           <option value="All">All Status</option>
           <option value="active">Active</option>
           <option value="draft">Draft</option>
@@ -372,7 +372,7 @@ export default function AdminProducts() {
         <div className="flex items-center gap-3 p-3 bg-primary/5 border border-primary/20 rounded-xl">
           <span className="text-sm font-bold text-primary">{selectedIds.length} selected</span>
           <select value={bulkAction} onChange={e => setBulkAction(e.target.value)}
-            className="px-3 py-1.5 rounded-lg bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 text-sm text-zinc-900 dark:text-white">
+            className="px-3 py-1.5 rounded-lg bg-zinc-900 border border-zinc-800 text-sm text-white">
             <option value="">Bulk action...</option>
             <option value="active">Set Active</option>
             <option value="draft">Set Draft</option>
@@ -395,11 +395,11 @@ export default function AdminProducts() {
           <div className="inline-block w-8 h-8 border-4 border-primary border-t-transparent rounded-full animate-spin" />
         </div>
       ) : filteredListings.length > 0 ? (
-        <div className="bg-white dark:bg-zinc-900 rounded-2xl border border-zinc-200 dark:border-zinc-800 overflow-hidden">
+        <div className="bg-zinc-900 rounded-2xl border border-zinc-800 overflow-hidden">
           <div className="overflow-x-auto">
             <table className="w-full">
               <thead>
-                <tr className="border-b border-zinc-200 dark:border-zinc-800">
+                <tr className="border-b border-zinc-800">
                   <th className="px-4 py-3 w-10">
                     <button onClick={toggleSelectAll} className="text-zinc-400 hover:text-primary">
                       {allFilteredSelected ? <CheckSquare className="w-4 h-4" /> : <Square className="w-4 h-4" />}
@@ -422,7 +422,7 @@ export default function AdminProducts() {
                     </td>
                     <td className="px-4 py-3">
                       <div className="flex items-center gap-3">
-                        <div className="w-12 h-12 rounded-xl bg-zinc-100 dark:bg-zinc-800 overflow-hidden flex-shrink-0 relative">
+                        <div className="w-12 h-12 rounded-xl bg-zinc-800 overflow-hidden flex-shrink-0 relative">
                           {listing.images?.[0] ? (
                             <img src={listing.images[0]} alt="" className="w-full h-full object-cover" />
                           ) : (
@@ -438,9 +438,9 @@ export default function AdminProducts() {
                           {quickEditId === listing.id && quickEditField === 'title' ? (
                             <input autoFocus value={quickEditValue} onChange={e => setQuickEditValue(e.target.value)}
                               onBlur={saveQuickEdit} onKeyDown={e => e.key === 'Enter' && saveQuickEdit()}
-                              className="text-sm font-semibold text-zinc-900 dark:text-white bg-white dark:bg-zinc-800 border border-primary rounded px-1 py-0.5 w-full max-w-[200px]" />
+                              className="text-sm font-semibold text-white bg-zinc-800 border border-primary rounded px-1 py-0.5 w-full max-w-[200px]" />
                           ) : (
-                            <p className="text-sm font-semibold text-zinc-900 dark:text-white truncate max-w-[200px] cursor-pointer hover:text-primary"
+                            <p className="text-sm font-semibold text-white truncate max-w-[200px] cursor-pointer hover:text-primary"
                               onDoubleClick={() => startQuickEdit(listing.id, 'title', listing.title)} title="Double-click to edit">{listing.title}</p>
                           )}
                           {listing.sku && <p className="text-xs text-zinc-400 font-mono">{listing.sku}</p>}
@@ -448,15 +448,15 @@ export default function AdminProducts() {
                       </div>
                     </td>
                     <td className="px-4 py-3 hidden md:table-cell">
-                      <span className="text-xs font-medium text-zinc-600 dark:text-zinc-400 bg-zinc-100 dark:bg-zinc-800 px-2 py-1 rounded-lg">{listing.category}</span>
+                      <span className="text-xs font-medium text-zinc-400 bg-zinc-800 px-2 py-1 rounded-lg">{listing.category}</span>
                     </td>
                     <td className="px-4 py-3">
                       {quickEditId === listing.id && quickEditField === 'price' ? (
                         <input autoFocus type="number" value={quickEditValue} onChange={e => setQuickEditValue(e.target.value)}
                           onBlur={saveQuickEdit} onKeyDown={e => e.key === 'Enter' && saveQuickEdit()}
-                          className="text-sm font-bold text-zinc-900 dark:text-white bg-white dark:bg-zinc-800 border border-primary rounded px-1 py-0.5 w-24" />
+                          className="text-sm font-bold text-white bg-zinc-800 border border-primary rounded px-1 py-0.5 w-24" />
                       ) : (
-                        <span className="text-sm font-bold text-zinc-900 dark:text-white cursor-pointer hover:text-primary"
+                        <span className="text-sm font-bold text-white cursor-pointer hover:text-primary"
                           onDoubleClick={() => startQuickEdit(listing.id, 'price', String(listing.price))} title="Double-click to edit">
                           {formatKES(listing.price)}
                         </span>
@@ -469,10 +469,10 @@ export default function AdminProducts() {
                     </td>
                     <td className="px-4 py-3">
                       <div className="flex items-center justify-end gap-1">
-                        <a href={`/listing/${listing.id}`} target="_blank" className="p-2 rounded-lg hover:bg-zinc-100 dark:hover:bg-zinc-800 text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-300" title="View">
+                        <a href={`/listing/${listing.id}`} target="_blank" className="p-2 rounded-lg hover:bg-zinc-800 text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-300" title="View">
                           <Eye className="w-4 h-4" />
                         </a>
-                        <button onClick={() => openEditModal(listing)} className="p-2 rounded-lg hover:bg-zinc-100 dark:hover:bg-zinc-800 text-zinc-400 hover:text-blue-500" title="Edit">
+                        <button onClick={() => openEditModal(listing)} className="p-2 rounded-lg hover:bg-zinc-800 text-zinc-400 hover:text-blue-500" title="Edit">
                           <Pencil className="w-4 h-4" />
                         </button>
                         <button onClick={() => setDeleteTarget({ id: listing.id, title: listing.title })} className="p-2 rounded-lg hover:bg-red-50 dark:hover:bg-red-900/20 text-zinc-400 hover:text-red-500" title="Delete">
@@ -487,9 +487,9 @@ export default function AdminProducts() {
           </div>
         </div>
       ) : (
-        <div className="bg-white dark:bg-zinc-900 rounded-2xl border-2 border-dashed border-zinc-200 dark:border-zinc-800 p-12 text-center">
+        <div className="bg-zinc-900 rounded-2xl border-2 border-dashed border-zinc-800 p-12 text-center">
           <ImageIcon className="w-10 h-10 text-zinc-300 mx-auto mb-3" />
-          <h3 className="text-lg font-bold text-zinc-900 dark:text-white mb-1">No products found</h3>
+          <h3 className="text-lg font-bold text-white mb-1">No products found</h3>
           <p className="text-sm text-zinc-500 mb-4">{searchQuery || filterCategory !== 'All' || filterStatus !== 'All' ? 'Try adjusting your filters' : 'Get started by adding your first product'}</p>
           {!searchQuery && filterCategory === 'All' && filterStatus === 'All' && (
             <button onClick={openAddModal} className="text-primary font-bold text-sm hover:underline">Add Product</button>
@@ -501,19 +501,19 @@ export default function AdminProducts() {
       {modalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
           <div className="absolute inset-0 bg-black/50 backdrop-blur-sm" onClick={() => setModalOpen(false)} />
-          <div className="relative bg-white dark:bg-zinc-900 rounded-2xl border border-zinc-200 dark:border-zinc-800 p-6 w-full max-w-2xl shadow-2xl max-h-[90vh] overflow-y-auto">
+          <div className="relative bg-zinc-900 rounded-2xl border border-zinc-800 p-6 w-full max-w-2xl shadow-2xl max-h-[90vh] overflow-y-auto">
             <div className="flex items-center justify-between mb-6">
-              <h3 className="text-lg font-bold text-zinc-900 dark:text-white">{editingId ? 'Edit Product' : 'Add New Product'}</h3>
-              <button onClick={() => setModalOpen(false)} className="p-2 rounded-full hover:bg-zinc-100 dark:hover:bg-zinc-800 text-zinc-400"><X className="w-5 h-5" /></button>
+              <h3 className="text-lg font-bold text-white">{editingId ? 'Edit Product' : 'Add New Product'}</h3>
+              <button onClick={() => setModalOpen(false)} className="p-2 rounded-full hover:bg-zinc-800 text-zinc-400"><X className="w-5 h-5" /></button>
             </div>
             <form onSubmit={handleSubmit} className="space-y-4">
               {/* Multi-Image Upload */}
               <div>
-                <label className="block text-sm font-bold mb-2 text-zinc-700 dark:text-zinc-300">Product Images * <span className="font-normal text-zinc-400">(up to {MAX_IMAGES}, drag to reorder)</span></label>
+                <label className="block text-sm font-bold mb-2 text-zinc-300">Product Images * <span className="font-normal text-zinc-400">(up to {MAX_IMAGES}, drag to reorder)</span></label>
                 <div className="flex flex-wrap gap-3">
                   {form.images.map((url, i) => (
                     <div key={i} className="relative group">
-                      <div className="w-24 h-24 rounded-xl bg-zinc-100 dark:bg-zinc-800 overflow-hidden border-2 border-zinc-200 dark:border-zinc-700">
+                      <div className="w-24 h-24 rounded-xl bg-zinc-800 overflow-hidden border-2 border-zinc-700">
                         <img src={url} alt="" className="w-full h-full object-cover" />
                       </div>
                       {i === 0 && (
@@ -537,7 +537,7 @@ export default function AdminProducts() {
                     </div>
                   ))}
                   {form.images.length < MAX_IMAGES && (
-                    <div className="w-24 h-24 rounded-xl bg-zinc-100 dark:bg-zinc-800 border-2 border-dashed border-zinc-300 dark:border-zinc-600 flex flex-col items-center justify-center cursor-pointer hover:border-primary transition-colors"
+                    <div className="w-24 h-24 rounded-xl bg-zinc-800 border-2 border-dashed border-zinc-300 dark:border-zinc-600 flex flex-col items-center justify-center cursor-pointer hover:border-primary transition-colors"
                       onClick={() => fileInputRef.current?.click()}>
                       {imageUploading ? (
                         <Loader2 className="w-5 h-5 text-zinc-400 animate-spin" />
@@ -556,18 +556,18 @@ export default function AdminProducts() {
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-sm font-bold mb-1.5 text-zinc-700 dark:text-zinc-300">Product Title *</label>
-                  <input required value={form.title} onChange={e => setForm({...form, title: e.target.value})} placeholder="e.g. iPhone 13 Pro 256GB" className="w-full px-4 py-2.5 rounded-xl bg-zinc-100 dark:bg-zinc-800 border border-transparent focus:border-primary focus:outline-none text-zinc-900 dark:text-white text-sm" />
+                  <label className="block text-sm font-bold mb-1.5 text-zinc-300">Product Title *</label>
+                  <input required value={form.title} onChange={e => setForm({...form, title: e.target.value})} placeholder="e.g. iPhone 13 Pro 256GB" className="w-full px-4 py-2.5 rounded-xl bg-zinc-800 border border-transparent focus:border-primary focus:outline-none text-white text-sm" />
                 </div>
                 <div>
-                  <label className="block text-sm font-bold mb-1.5 text-zinc-700 dark:text-zinc-300">Price (KES) *</label>
-                  <input required type="number" value={form.price} onChange={e => setForm({...form, price: e.target.value})} placeholder="85000" className="w-full px-4 py-2.5 rounded-xl bg-zinc-100 dark:bg-zinc-800 border border-transparent focus:border-primary focus:outline-none text-zinc-900 dark:text-white text-sm" />
+                  <label className="block text-sm font-bold mb-1.5 text-zinc-300">Price (KES) *</label>
+                  <input required type="number" value={form.price} onChange={e => setForm({...form, price: e.target.value})} placeholder="85000" className="w-full px-4 py-2.5 rounded-xl bg-zinc-800 border border-transparent focus:border-primary focus:outline-none text-white text-sm" />
                 </div>
               </div>
 
               <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                 <div>
-                  <label className="block text-sm font-bold mb-1.5 text-zinc-700 dark:text-zinc-300">Category</label>
+                  <label className="block text-sm font-bold mb-1.5 text-zinc-300">Category</label>
                   <select value={form.category} onChange={e => {
                     const newCat = e.target.value;
                     const needsVariants = ['Clothing', 'T-Shirts', 'Shoes (Men)', 'Shoes (Women)', 'Shoes (Kids)', 'Pants', 'Belts', 'Hats'].includes(newCat);
@@ -579,19 +579,19 @@ export default function AdminProducts() {
                       // Auto-enable variants for apparel categories
                       has_variants: needsVariants ? true : prev.has_variants,
                     }));
-                  }} className="w-full px-4 py-2.5 rounded-xl bg-zinc-100 dark:bg-zinc-800 border border-transparent focus:border-primary focus:outline-none text-zinc-900 dark:text-white text-sm appearance-none">
+                  }} className="w-full px-4 py-2.5 rounded-xl bg-zinc-800 border border-transparent focus:border-primary focus:outline-none text-white text-sm appearance-none">
                     {CATEGORIES.filter(c => c !== 'All').map(c => <option key={c} value={c}>{c}</option>)}
                   </select>
                 </div>
                 <div>
-                  <label className="block text-sm font-bold mb-1.5 text-zinc-700 dark:text-zinc-300">Condition</label>
-                  <select value={form.condition} onChange={e => setForm({...form, condition: e.target.value})} className="w-full px-4 py-2.5 rounded-xl bg-zinc-100 dark:bg-zinc-800 border border-transparent focus:border-primary focus:outline-none text-zinc-900 dark:text-white text-sm appearance-none">
+                  <label className="block text-sm font-bold mb-1.5 text-zinc-300">Condition</label>
+                  <select value={form.condition} onChange={e => setForm({...form, condition: e.target.value})} className="w-full px-4 py-2.5 rounded-xl bg-zinc-800 border border-transparent focus:border-primary focus:outline-none text-white text-sm appearance-none">
                     {CONDITIONS.map(c => <option key={c.value} value={c.value}>{c.label}</option>)}
                   </select>
                 </div>
                 <div>
-                  <label className="block text-sm font-bold mb-1.5 text-zinc-700 dark:text-zinc-300">Status</label>
-                  <select value={form.status} onChange={e => setForm({...form, status: e.target.value})} className="w-full px-4 py-2.5 rounded-xl bg-zinc-100 dark:bg-zinc-800 border border-transparent focus:border-primary focus:outline-none text-zinc-900 dark:text-white text-sm appearance-none">
+                  <label className="block text-sm font-bold mb-1.5 text-zinc-300">Status</label>
+                  <select value={form.status} onChange={e => setForm({...form, status: e.target.value})} className="w-full px-4 py-2.5 rounded-xl bg-zinc-800 border border-transparent focus:border-primary focus:outline-none text-white text-sm appearance-none">
                     <option value="active">Active</option>
                     <option value="draft">Draft</option>
                     <option value="sold">Sold</option>
@@ -603,37 +603,37 @@ export default function AdminProducts() {
 
               <div className="grid grid-cols-3 gap-4">
                 <div>
-                  <label className="block text-sm font-bold mb-1.5 text-zinc-700 dark:text-zinc-300">Brand</label>
-                  <input value={form.brand} onChange={e => setForm({...form, brand: e.target.value})} placeholder="e.g. Apple" className="w-full px-4 py-2.5 rounded-xl bg-zinc-100 dark:bg-zinc-800 border border-transparent focus:border-primary focus:outline-none text-zinc-900 dark:text-white text-sm" />
+                  <label className="block text-sm font-bold mb-1.5 text-zinc-300">Brand</label>
+                  <input value={form.brand} onChange={e => setForm({...form, brand: e.target.value})} placeholder="e.g. Apple" className="w-full px-4 py-2.5 rounded-xl bg-zinc-800 border border-transparent focus:border-primary focus:outline-none text-white text-sm" />
                 </div>
                 <div>
-                  <label className="block text-sm font-bold mb-1.5 text-zinc-700 dark:text-zinc-300">Model</label>
-                  <input value={form.model} onChange={e => setForm({...form, model: e.target.value})} placeholder="e.g. iPhone 13 Pro" className="w-full px-4 py-2.5 rounded-xl bg-zinc-100 dark:bg-zinc-800 border border-transparent focus:border-primary focus:outline-none text-zinc-900 dark:text-white text-sm" />
+                  <label className="block text-sm font-bold mb-1.5 text-zinc-300">Model</label>
+                  <input value={form.model} onChange={e => setForm({...form, model: e.target.value})} placeholder="e.g. iPhone 13 Pro" className="w-full px-4 py-2.5 rounded-xl bg-zinc-800 border border-transparent focus:border-primary focus:outline-none text-white text-sm" />
                 </div>
                 <div>
-                  <label className="block text-sm font-bold mb-1.5 text-zinc-700 dark:text-zinc-300">Color</label>
-                  <input value={form.color} onChange={e => setForm({...form, color: e.target.value})} placeholder="e.g. Pacific Blue" className="w-full px-4 py-2.5 rounded-xl bg-zinc-100 dark:bg-zinc-800 border border-transparent focus:border-primary focus:outline-none text-zinc-900 dark:text-white text-sm" />
+                  <label className="block text-sm font-bold mb-1.5 text-zinc-300">Color</label>
+                  <input value={form.color} onChange={e => setForm({...form, color: e.target.value})} placeholder="e.g. Pacific Blue" className="w-full px-4 py-2.5 rounded-xl bg-zinc-800 border border-transparent focus:border-primary focus:outline-none text-white text-sm" />
                 </div>
               </div>
 
               <div className="grid grid-cols-3 gap-4">
                 <div>
-                  <label className="block text-sm font-bold mb-1.5 text-zinc-700 dark:text-zinc-300">Weight</label>
-                  <input value={form.weight} onChange={e => setForm({...form, weight: e.target.value})} placeholder="e.g. 0.5kg" className="w-full px-4 py-2.5 rounded-xl bg-zinc-100 dark:bg-zinc-800 border border-transparent focus:border-primary focus:outline-none text-zinc-900 dark:text-white text-sm" />
+                  <label className="block text-sm font-bold mb-1.5 text-zinc-300">Weight</label>
+                  <input value={form.weight} onChange={e => setForm({...form, weight: e.target.value})} placeholder="e.g. 0.5kg" className="w-full px-4 py-2.5 rounded-xl bg-zinc-800 border border-transparent focus:border-primary focus:outline-none text-white text-sm" />
                 </div>
                 <div>
-                  <label className="block text-sm font-bold mb-1.5 text-zinc-700 dark:text-zinc-300">SKU <span className="font-normal text-zinc-400">(auto-generated)</span></label>
+                  <label className="block text-sm font-bold mb-1.5 text-zinc-300">SKU <span className="font-normal text-zinc-400">(auto-generated)</span></label>
                   <div className="flex gap-2">
                     <input
                       value={form.sku}
                       onChange={e => setForm({...form, sku: e.target.value})}
                       placeholder="Auto-generated"
-                      className="flex-1 px-4 py-2.5 rounded-xl bg-zinc-100 dark:bg-zinc-800 border border-transparent focus:border-primary focus:outline-none text-zinc-900 dark:text-white text-sm font-mono"
+                      className="flex-1 px-4 py-2.5 rounded-xl bg-zinc-800 border border-transparent focus:border-primary focus:outline-none text-white text-sm font-mono"
                     />
                     <button
                       type="button"
                       onClick={() => setForm(prev => ({ ...prev, sku: generateSKU(form.category) }))}
-                      className="px-3 py-2.5 rounded-xl bg-zinc-100 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 text-zinc-500 hover:text-primary hover:border-primary transition-colors text-sm font-bold"
+                      className="px-3 py-2.5 rounded-xl bg-zinc-800 border border-zinc-700 text-zinc-500 hover:text-primary hover:border-primary transition-colors text-sm font-bold"
                       title="Regenerate SKU"
                     >
                       Refresh
@@ -641,8 +641,8 @@ export default function AdminProducts() {
                   </div>
                 </div>
                 <div>
-                  <label className="block text-sm font-bold mb-1.5 text-zinc-700 dark:text-zinc-300">Tags</label>
-                  <input value={form.tags} onChange={e => setForm({...form, tags: e.target.value})} placeholder="e.g. iphone, apple, phone" className="w-full px-4 py-2.5 rounded-xl bg-zinc-100 dark:bg-zinc-800 border border-transparent focus:border-primary focus:outline-none text-zinc-900 dark:text-white text-sm" />
+                  <label className="block text-sm font-bold mb-1.5 text-zinc-300">Tags</label>
+                  <input value={form.tags} onChange={e => setForm({...form, tags: e.target.value})} placeholder="e.g. iphone, apple, phone" className="w-full px-4 py-2.5 rounded-xl bg-zinc-800 border border-transparent focus:border-primary focus:outline-none text-white text-sm" />
                 </div>
               </div>
 
@@ -664,17 +664,17 @@ export default function AdminProducts() {
 
               {/* Size Guide */}
               <div>
-                <label className="block text-sm font-bold mb-1.5 text-zinc-700 dark:text-zinc-300">Size Guide <span className="font-normal text-zinc-400">(optional)</span></label>
-                <textarea rows="2" value={form.size_guide} onChange={e => setForm({...form, size_guide: e.target.value})} placeholder={'e.g. M: Chest 38-40 inch, Length 27-29 inch. Or paste a link to size chart.'} className="w-full px-4 py-2.5 rounded-xl bg-zinc-100 dark:bg-zinc-800 border border-transparent focus:border-primary focus:outline-none text-zinc-900 dark:text-white text-sm resize-none" />
+                <label className="block text-sm font-bold mb-1.5 text-zinc-300">Size Guide <span className="font-normal text-zinc-400">(optional)</span></label>
+                <textarea rows="2" value={form.size_guide} onChange={e => setForm({...form, size_guide: e.target.value})} placeholder={'e.g. M: Chest 38-40 inch, Length 27-29 inch. Or paste a link to size chart.'} className="w-full px-4 py-2.5 rounded-xl bg-zinc-800 border border-transparent focus:border-primary focus:outline-none text-white text-sm resize-none" />
               </div>
 
               <div>
-                <label className="block text-sm font-bold mb-1.5 text-zinc-700 dark:text-zinc-300">Description</label>
-                <textarea rows="3" value={form.description} onChange={e => setForm({...form, description: e.target.value})} placeholder="Describe the product..." className="w-full px-4 py-2.5 rounded-xl bg-zinc-100 dark:bg-zinc-800 border border-transparent focus:border-primary focus:outline-none text-zinc-900 dark:text-white text-sm resize-none" />
+                <label className="block text-sm font-bold mb-1.5 text-zinc-300">Description</label>
+                <textarea rows="3" value={form.description} onChange={e => setForm({...form, description: e.target.value})} placeholder="Describe the product..." className="w-full px-4 py-2.5 rounded-xl bg-zinc-800 border border-transparent focus:border-primary focus:outline-none text-white text-sm resize-none" />
               </div>
 
               <div className="flex gap-3 pt-2">
-                <button type="button" onClick={() => setModalOpen(false)} className="flex-1 bg-zinc-100 dark:bg-zinc-800 text-zinc-700 dark:text-zinc-300 font-bold py-2.5 rounded-xl text-sm">Cancel</button>
+                <button type="button" onClick={() => setModalOpen(false)} className="flex-1 bg-zinc-800 text-zinc-300 font-bold py-2.5 rounded-xl text-sm">Cancel</button>
                 <button type="submit" disabled={submitting || form.images.length === 0} className="flex-1 bg-primary text-white font-bold py-2.5 rounded-xl text-sm disabled:opacity-50">
                   {submitting ? <><Loader2 className="w-4 h-4 animate-spin inline mr-2" />Saving...</> : (editingId ? 'Save Changes' : 'Add Product')}
                 </button>
@@ -688,12 +688,12 @@ export default function AdminProducts() {
       {deleteTarget && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
           <div className="absolute inset-0 bg-black/50 backdrop-blur-sm" onClick={() => setDeleteTarget(null)} />
-          <div className="relative bg-white dark:bg-zinc-900 rounded-2xl border border-zinc-200 dark:border-zinc-800 p-6 w-full max-w-sm shadow-2xl text-center">
+          <div className="relative bg-zinc-900 rounded-2xl border border-zinc-800 p-6 w-full max-w-sm shadow-2xl text-center">
             <div className="w-12 h-12 bg-red-100 dark:bg-red-900/40 rounded-full flex items-center justify-center mx-auto mb-4"><AlertTriangle className="w-6 h-6 text-red-600" /></div>
-            <h3 className="text-lg font-bold text-zinc-900 dark:text-white mb-2">Delete Product?</h3>
-            <p className="text-sm text-zinc-500 dark:text-zinc-400 mb-6">This will permanently delete "{deleteTarget.title}".</p>
+            <h3 className="text-lg font-bold text-white mb-2">Delete Product?</h3>
+            <p className="text-sm text-zinc-400 mb-6">This will permanently delete "{deleteTarget.title}".</p>
             <div className="flex gap-3">
-              <button onClick={() => !processing && setDeleteTarget(null)} disabled={processing} className="flex-1 bg-zinc-100 dark:bg-zinc-800 text-zinc-700 dark:text-zinc-300 font-bold py-2.5 rounded-xl text-sm disabled:opacity-50">Cancel</button>
+              <button onClick={() => !processing && setDeleteTarget(null)} disabled={processing} className="flex-1 bg-zinc-800 text-zinc-300 font-bold py-2.5 rounded-xl text-sm disabled:opacity-50">Cancel</button>
               <button onClick={handleDelete} disabled={processing} className="flex-1 bg-red-500 text-white font-bold py-2.5 rounded-xl text-sm hover:bg-red-600 disabled:opacity-50 flex items-center justify-center gap-2">
                 {processing ? <><Loader2 className="w-4 h-4 animate-spin" /> Deleting...</> : 'Delete'}
               </button>
@@ -706,14 +706,14 @@ export default function AdminProducts() {
       {deleteAllModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
           <div className="absolute inset-0 bg-black/50 backdrop-blur-sm" onClick={() => !deleteAllBusy && setDeleteAllModal(false)} />
-          <div className="relative bg-white dark:bg-zinc-900 rounded-2xl border border-red-200 dark:border-red-900/50 p-6 w-full max-w-md shadow-2xl text-center">
+          <div className="relative bg-zinc-900 rounded-2xl border border-red-200 dark:border-red-900/50 p-6 w-full max-w-md shadow-2xl text-center">
             <div className="w-14 h-14 bg-red-100 dark:bg-red-900/40 rounded-full flex items-center justify-center mx-auto mb-4"><AlertTriangle className="w-7 h-7 text-red-600" /></div>
-            <h3 className="text-lg font-bold text-zinc-900 dark:text-white mb-2">Delete All Products</h3>
-            <p className="text-sm text-zinc-500 dark:text-zinc-400 mb-5">
+            <h3 className="text-lg font-bold text-white mb-2">Delete All Products</h3>
+            <p className="text-sm text-zinc-400 mb-5">
               This will permanently delete ALL <span className="font-bold text-red-600">{listings.length}</span> products. This cannot be undone.
             </p>
             <div className="mb-5">
-              <label className="block text-xs font-bold text-zinc-600 dark:text-zinc-400 mb-1.5 text-left">
+              <label className="block text-xs font-bold text-zinc-400 mb-1.5 text-left">
                 Type <span className="font-mono text-red-600">DELETE ALL</span> to confirm
               </label>
               <input
@@ -722,11 +722,11 @@ export default function AdminProducts() {
                 onChange={e => setDeleteAllConfirmText(e.target.value)}
                 placeholder="DELETE ALL"
                 disabled={deleteAllBusy}
-                className="w-full px-4 py-2.5 rounded-xl bg-zinc-100 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 focus:border-red-500 focus:outline-none text-zinc-900 dark:text-white text-sm font-mono tracking-widest placeholder:text-zinc-400"
+                className="w-full px-4 py-2.5 rounded-xl bg-zinc-800 border border-zinc-700 focus:border-red-500 focus:outline-none text-white text-sm font-mono tracking-widest placeholder:text-zinc-400"
               />
             </div>
             <div className="flex gap-3">
-              <button onClick={() => { setDeleteAllModal(false); setDeleteAllConfirmText(''); }} disabled={deleteAllBusy} className="flex-1 bg-zinc-100 dark:bg-zinc-800 text-zinc-700 dark:text-zinc-300 font-bold py-2.5 rounded-xl text-sm disabled:opacity-50">Cancel</button>
+              <button onClick={() => { setDeleteAllModal(false); setDeleteAllConfirmText(''); }} disabled={deleteAllBusy} className="flex-1 bg-zinc-800 text-zinc-300 font-bold py-2.5 rounded-xl text-sm disabled:opacity-50">Cancel</button>
               <button onClick={handleDeleteAll} disabled={deleteAllBusy || deleteAllConfirmText !== 'DELETE ALL'} className="flex-1 bg-red-600 text-white font-bold py-2.5 rounded-xl text-sm hover:bg-red-700 disabled:opacity-40 flex items-center justify-center gap-2">
                 {deleteAllBusy ? <><Loader2 className="w-4 h-4 animate-spin" /> Deleting...</> : 'Delete All'}
               </button>

@@ -45,8 +45,8 @@ export default function RecentlyViewed({ currentListing, allListings }) {
   if (viewedProducts.length === 0) return null;
 
   return (
-    <div className="mt-12 pt-8 border-t border-zinc-200 dark:border-zinc-800">
-      <h2 className="text-xl font-bold mb-6 text-zinc-900 dark:text-white">Recently Viewed</h2>
+    <div className="mt-12 pt-8 border-t border-zinc-800">
+      <h2 className="text-xl font-bold mb-6 text-white">Recently Viewed</h2>
       <div className="flex gap-4 overflow-x-auto scrollbar-hide pb-2 -mx-1 px-1">
         {viewedProducts.map(product => (
           <div key={product.id} className="flex-shrink-0 w-44">

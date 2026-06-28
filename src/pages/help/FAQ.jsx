@@ -46,7 +46,7 @@ const faqSteps = [
 export default function FAQ() {
   return (
     <HelpLayout title="FAQ Center">
-      <p className="mb-8 text-zinc-600 dark:text-zinc-400">Quick answers to the most common questions.</p>
+      <p className="mb-8 text-zinc-400">Quick answers to the most common questions.</p>
       
       <ScreenshotGuide steps={faqSteps} />
       

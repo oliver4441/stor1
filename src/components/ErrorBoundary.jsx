@@ -24,7 +24,7 @@ class ErrorBoundary extends React.Component {
         <div className="min-h-screen flex items-center justify-center p-4 text-center">
           <div className="max-w-md bg-red-50 dark:bg-red-900/20 p-8 rounded-3xl border border-red-100 dark:border-red-900/50">
             <h1 className="text-2xl font-bold text-red-600 mb-2">Something went wrong</h1>
-            <p className="text-zinc-600 dark:text-zinc-400 mb-2 text-sm">
+            <p className="text-zinc-400 mb-2 text-sm">
               An unexpected error occurred. Please try again or contact support if the problem persists.
             </p>
             {this.state.error && (

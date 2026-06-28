@@ -207,15 +207,15 @@ export default function QRCodePage() {
         <img src="/logo.svg" alt="Omix" className="w-full h-full" />
       </div>
 
-      <h1 className="text-3xl md:text-4xl font-black text-zinc-900 dark:text-white mb-2 tracking-tight text-center">
+      <h1 className="text-3xl md:text-4xl font-black text-white mb-2 tracking-tight text-center">
         Install Omix Store
       </h1>
-      <p className="text-zinc-500 dark:text-zinc-400 mb-8 text-center max-w-md">
+      <p className="text-zinc-400 mb-8 text-center max-w-md">
         Scan this QR code with your phone camera to install the Omix app on your device.
       </p>
 
       {/* QR Code */}
-      <div className="bg-white p-6 rounded-3xl shadow-xl shadow-zinc-200/50 dark:shadow-none border border-zinc-200 dark:border-zinc-800 mb-6">
+      <div className="bg-white p-6 rounded-3xl shadow-xl shadow-zinc-200/50 dark:shadow-none border border-zinc-800 mb-6">
         <canvas ref={canvasRef} className="block"></canvas>
       </div>
 
@@ -232,7 +232,7 @@ export default function QRCodePage() {
         </button>
         <a
           href="/install"
-          className="flex-1 flex items-center justify-center gap-2 px-6 py-3.5 rounded-2xl font-bold text-zinc-600 dark:text-zinc-300 bg-zinc-100 dark:bg-zinc-800 hover:bg-zinc-200 dark:hover:bg-zinc-700 transition-all text-sm"
+          className="flex-1 flex items-center justify-center gap-2 px-6 py-3.5 rounded-2xl font-bold text-zinc-300 bg-zinc-800 hover:bg-zinc-700 transition-all text-sm"
         >
           Install Directly
         </a>
@@ -246,9 +246,9 @@ export default function QRCodePage() {
           { title: 'Fast Delivery', desc: 'Across Kericho' },
           { title: 'Full Screen App', desc: 'Works like native' },
         ].map((f, i) => (
-          <div key={i} className="bg-zinc-50 dark:bg-zinc-900 rounded-xl p-4 text-center border border-zinc-100 dark:border-zinc-800">
-            <h3 className="font-bold text-zinc-900 dark:text-white text-sm">{f.title}</h3>
-            <p className="text-xs text-zinc-500 dark:text-zinc-400 mt-0.5">{f.desc}</p>
+          <div key={i} className="bg-zinc-900 rounded-xl p-4 text-center border border-zinc-100 dark:border-zinc-800">
+            <h3 className="font-bold text-white text-sm">{f.title}</h3>
+            <p className="text-xs text-zinc-400 mt-0.5">{f.desc}</p>
           </div>
         ))}
       </div>

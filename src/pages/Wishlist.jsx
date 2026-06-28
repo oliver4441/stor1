@@ -94,9 +94,9 @@ export default function Wishlist() {
             const listing = item.listings;
             if (!listing) return null;
             return (
-              <div key={item.id} className="group relative bg-white dark:bg-zinc-900 rounded-2xl border border-zinc-200 dark:border-zinc-800 overflow-hidden">
+              <div key={item.id} className="group relative bg-zinc-900 rounded-2xl border border-zinc-800 overflow-hidden">
                 <Link to={`/listing/${listing.id}`}>
-                  <div className="aspect-square bg-zinc-100 dark:bg-zinc-800 overflow-hidden">
+                  <div className="aspect-square bg-zinc-800 overflow-hidden">
                     {listing.images?.[0] ? (
                       <img src={listing.images[0]} alt={listing.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform" />
                     ) : (
@@ -112,7 +112,7 @@ export default function Wishlist() {
                 </button>
                 <div className="p-3">
                   <Link to={`/listing/${listing.id}`}>
-                    <h3 className="font-bold text-sm text-zinc-900 dark:text-white truncate">{listing.title}</h3>
+                    <h3 className="font-bold text-sm text-white truncate">{listing.title}</h3>
                   </Link>
                   <p className="text-[var(--seasonal-primary,#1a5632)] font-bold text-sm mt-1">{formatKES(listing.price)}</p>
                 </div>

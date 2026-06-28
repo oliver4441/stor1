@@ -41,7 +41,7 @@ const deliverySteps = [
 export default function Delivery() {
   return (
     <HelpLayout title="Delivery and Shipping">
-      <p className="mb-6 text-zinc-600 dark:text-zinc-400">
+      <p className="mb-6 text-zinc-400">
         We deliver across Kericho county and select upcountry locations.
       </p>
       

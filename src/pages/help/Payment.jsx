@@ -52,7 +52,7 @@ const paymentSteps = [
 export default function Payment() {
   return (
     <HelpLayout title="How Do I Pay on Omix Store">
-      <p className="mb-6 text-zinc-600 dark:text-zinc-400">
+      <p className="mb-6 text-zinc-400">
         We accept multiple payment methods to make checkout as convenient as possible.
       </p>
       

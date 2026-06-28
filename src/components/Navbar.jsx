@@ -86,7 +86,7 @@ function Navbar() {
   };
 
   return (
-    <nav className="border-b border-zinc-200/50 dark:border-zinc-800/50 bg-white/80 dark:bg-zinc-950/80 backdrop-blur-xl sticky top-0 z-50 transition-all" style={{ paddingTop: 'env(safe-area-inset-top)' }}>
+    <nav className="border-b border-zinc-800/50 bg-white/80 dark:bg-zinc-950/80 backdrop-blur-xl sticky top-0 z-50 transition-all" style={{ paddingTop: 'env(safe-area-inset-top)' }}>
       <div className="max-w-7xl mx-auto px-4 h-14 flex items-center justify-between">
         {/* Logo */}
         <Link to="/" className="flex items-center gap-2 shrink-0">
@@ -112,7 +112,7 @@ function Navbar() {
             const linkClass = `relative flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-sm font-bold transition-all duration-300 group ${
               isActive
                 ? `bg-gradient-to-r ${link.color} text-white shadow-lg ${link.glow}`
-                : `text-zinc-600 dark:text-zinc-300 hover:text-white hover:bg-gradient-to-r hover:${link.color} hover:shadow-md hover:${link.glow}`
+                : `text-zinc-300 hover:text-white hover:bg-gradient-to-r hover:${link.color} hover:shadow-md hover:${link.glow}`
             }`;
             const iconEl = <Icon className={`w-4 h-4 ${isActive ? 'animate-bounce-subtle' : 'group-hover:animate-bounce-subtle'}`} />;
             const labelEl = <span>{link.label}</span>;
@@ -134,12 +134,12 @@ function Navbar() {
 
         {/* Desktop (lg+): Right side */}
         <div className="hidden lg:flex items-center gap-2">
-          <button onClick={toggleLang} className="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold border border-zinc-200 dark:border-zinc-700 bg-white dark:bg-zinc-900 text-zinc-700 dark:text-zinc-300 hover:border-[var(--seasonal-primary,#1a5632)] hover:text-[var(--seasonal-primary,#1a5632)] transition-all" aria-label={t('common.toggleLanguage')}>
+          <button onClick={toggleLang} className="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold border border-zinc-700 bg-zinc-900 text-zinc-300 hover:border-[var(--seasonal-primary,#1a5632)] hover:text-[var(--seasonal-primary,#1a5632)] transition-all" aria-label={t('common.toggleLanguage')}>
             <Globe className="w-3.5 h-3.5" />
             {lang === 'en' ? 'EN' : 'SW'}
           </button>
 
-          <Link to="/cart" className="relative p-2 rounded-full hover:bg-zinc-100 dark:hover:bg-zinc-800 text-zinc-600 dark:text-zinc-300 transition-colors">
+          <Link to="/cart" className="relative p-2 rounded-full hover:bg-zinc-800 text-zinc-300 transition-colors">
             <ShoppingCart className="w-5 h-5" />
             {cartCount > 0 && (
               <span className="absolute -top-1 -right-1 w-5 h-5 text-white text-[10px] font-bold rounded-full flex items-center justify-center"
@@ -160,13 +160,13 @@ function Navbar() {
           )}
 
           {user ? (
-            <Link to="/account" className="flex items-center gap-2 p-2 rounded-full hover:bg-zinc-100 dark:hover:bg-zinc-800 text-zinc-600 dark:text-zinc-300 transition-colors">
+            <Link to="/account" className="flex items-center gap-2 p-2 rounded-full hover:bg-zinc-800 text-zinc-300 transition-colors">
               <User className="w-5 h-5" />
               <span className="text-sm font-medium">{t('nav.account') || 'Account'}</span>
             </Link>
           ) : (
             <>
-              <Link to="/login" className="flex items-center gap-1.5 text-sm font-medium text-zinc-600 dark:text-zinc-300 hover:text-zinc-900 dark:hover:text-white px-3 py-2 rounded-full hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-all">
+              <Link to="/login" className="flex items-center gap-1.5 text-sm font-medium text-zinc-300 hover:text-white px-3 py-2 rounded-full hover:bg-zinc-800 transition-all">
                 <LogIn className="w-4 h-4" />
                 Log In
               </Link>
@@ -188,7 +188,7 @@ function Navbar() {
         {/* Below lg: Compact controls + Hamburger */}
         <div className="flex lg:hidden items-center gap-1">
           {/* Cart icon always visible on mobile */}
-          <Link to="/cart" className="relative p-2 rounded-full hover:bg-zinc-100 dark:hover:bg-zinc-800 text-zinc-600 dark:text-zinc-300 transition-colors">
+          <Link to="/cart" className="relative p-2 rounded-full hover:bg-zinc-800 text-zinc-300 transition-colors">
             <ShoppingCart className="w-5 h-5" />
             {cartCount > 0 && (
               <span className="absolute -top-1 -right-1 w-5 h-5 text-white text-[10px] font-bold rounded-full flex items-center justify-center"
@@ -202,7 +202,7 @@ function Navbar() {
           {/* Hamburger */}
           <button
             onClick={() => setMenuOpen(!menuOpen)}
-            className="p-2 rounded-full hover:bg-zinc-100 dark:hover:bg-zinc-800 text-zinc-600 dark:text-zinc-300 transition-colors"
+            className="p-2 rounded-full hover:bg-zinc-800 text-zinc-300 transition-colors"
             aria-label="Toggle menu"
           >
             {menuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
@@ -217,7 +217,7 @@ function Navbar() {
           menuOpen ? 'max-h-[85vh] opacity-100' : 'max-h-0 opacity-0'
         }`}
       >
-        <div className="border-t border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-950">
+        <div className="border-t border-zinc-800 bg-zinc-950">
           <div className="max-w-7xl mx-auto px-4 py-4 space-y-1 overflow-y-auto max-h-[80vh]">
             {/* Navigation Links */}
             {FEATURE_LINKS.map(link => {
@@ -226,7 +226,7 @@ function Navbar() {
               const linkClass = `flex items-center gap-3 px-4 py-3 rounded-2xl text-sm font-bold transition-all ${
                 isActive
                   ? `bg-gradient-to-r ${link.color} text-white shadow-lg`
-                  : 'text-zinc-700 dark:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-zinc-800'
+                  : 'text-zinc-300 hover:bg-zinc-800'
               }`;
               if (link.external) {
                 return (
@@ -245,12 +245,12 @@ function Navbar() {
             })}
 
             {/* Divider */}
-            <div className="border-t border-zinc-200 dark:border-zinc-800 my-1" />
+            <div className="border-t border-zinc-800 my-1" />
 
             {/* Account */}
             {user ? (
               <>
-                <Link to="/account" className="flex items-center gap-3 px-4 py-3 rounded-2xl text-sm font-bold text-zinc-700 dark:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-zinc-800" onClick={() => setMenuOpen(false)}>
+                <Link to="/account" className="flex items-center gap-3 px-4 py-3 rounded-2xl text-sm font-bold text-zinc-300 hover:bg-zinc-800" onClick={() => setMenuOpen(false)}>
                   <User className="w-5 h-5" />
                   My Account
                 </Link>
@@ -270,7 +270,7 @@ function Navbar() {
               </>
             ) : (
               <>
-                <Link to="/login" className="flex items-center gap-3 px-4 py-3 rounded-2xl text-sm font-bold text-zinc-700 dark:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-zinc-800" onClick={() => setMenuOpen(false)}>
+                <Link to="/login" className="flex items-center gap-3 px-4 py-3 rounded-2xl text-sm font-bold text-zinc-300 hover:bg-zinc-800" onClick={() => setMenuOpen(false)}>
                   <LogIn className="w-5 h-5" />
                   Log In
                 </Link>
@@ -287,11 +287,11 @@ function Navbar() {
             )}
 
             {/* Divider */}
-            <div className="border-t border-zinc-200 dark:border-zinc-800 my-1" />
+            <div className="border-t border-zinc-800 my-1" />
 
             {/* Utility buttons */}
             <div className="flex gap-2">
-              <button onClick={toggleLang} className="flex-1 flex items-center justify-center gap-2 px-4 py-3 rounded-2xl text-sm font-bold border border-zinc-200 dark:border-zinc-700 text-zinc-600 dark:text-zinc-300">
+              <button onClick={toggleLang} className="flex-1 flex items-center justify-center gap-2 px-4 py-3 rounded-2xl text-sm font-bold border border-zinc-700 text-zinc-300">
                 <Globe className="w-4 h-4" />
                 {lang === 'en' ? 'English' : 'Swahili'}
               </button>

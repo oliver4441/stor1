@@ -44,7 +44,7 @@ const deliveryTimeSteps = [
 export default function DeliveryTime() {
   return (
     <HelpLayout title="How Long Does My Order Arrive">
-      <p className="mb-6 text-zinc-600 dark:text-zinc-400">
+      <p className="mb-6 text-zinc-400">
         Delivery times depend on your location and order time.
       </p>
       

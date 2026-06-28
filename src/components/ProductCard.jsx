@@ -150,7 +150,7 @@ function ProductCard({ listing, compareMode, onCompareChange }) {
 
   return (
     <Link to={`/listing/${listing.id}`} className="block group theme-card-shimmer theme-card-glow">
-      <div className="bg-zinc-100 dark:bg-zinc-900 rounded-2xl overflow-hidden aspect-[4/5] mb-3 relative">
+      <div className="bg-zinc-900 rounded-2xl overflow-hidden aspect-[4/5] mb-3 relative">
         {hasImage ? (
           <img src={listing.images[0]} alt={listing.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" loading="lazy" onError={() => setImgError(true)} />
         ) : (
@@ -161,14 +161,14 @@ function ProductCard({ listing, compareMode, onCompareChange }) {
 
         {/* Seasonal theme sticker badge */}
         {sticker && socialBadge && (
-          <div className="absolute bottom-2 left-2 bg-white/90 dark:bg-black/80 text-zinc-900 dark:text-white px-2 py-1 rounded-lg text-[10px] font-bold shadow-sm flex items-center gap-1">
+          <div className="absolute bottom-2 left-2 bg-white/90 dark:bg-black/80 text-white px-2 py-1 rounded-lg text-[10px] font-bold shadow-sm flex items-center gap-1">
             <span>{sticker}</span>
             <span className="truncate max-w-[80px]">{socialBadge}</span>
           </div>
         )}
 
         {/* Condition badge */}
-        <div className="absolute top-2 left-2 bg-white/90 dark:bg-black/90 text-zinc-900 dark:text-white px-2 py-1 rounded-lg text-[10px] font-bold shadow-sm capitalize">
+        <div className="absolute top-2 left-2 bg-white/90 dark:bg-black/90 text-white px-2 py-1 rounded-lg text-[10px] font-bold shadow-sm capitalize">
           {listing.condition?.replace('_', ' ')}
         </div>
 
@@ -215,7 +215,7 @@ function ProductCard({ listing, compareMode, onCompareChange }) {
 
         {/* Web Share button */}
         <button onClick={handleWebShare}
-          className="absolute top-2 right-12 bg-white/90 dark:bg-black/90 text-zinc-700 dark:text-zinc-300 p-1.5 rounded-full shadow-sm hover:bg-[var(--seasonal-primary,#1a5632)] hover:text-white transition-all opacity-0 group-hover:opacity-100"
+          className="absolute top-2 right-12 bg-white/90 dark:bg-black/90 text-zinc-300 p-1.5 rounded-full shadow-sm hover:bg-[var(--seasonal-primary,#1a5632)] hover:text-white transition-all opacity-0 group-hover:opacity-100"
           aria-label="Share">
           <Share2 className="w-3 h-3" />
         </button>
@@ -230,7 +230,7 @@ function ProductCard({ listing, compareMode, onCompareChange }) {
         {/* Quick View button */}
         <button
           onClick={(e) => { e.preventDefault(); e.stopPropagation(); }}
-          className="absolute top-10 right-2 bg-white/90 dark:bg-black/90 text-zinc-900 dark:text-white p-1.5 rounded-full shadow-sm hover:bg-[var(--seasonal-primary,#1a5632)] hover:text-white transition-all opacity-0 group-hover:opacity-100"
+          className="absolute top-10 right-2 bg-white/90 dark:bg-black/90 text-white p-1.5 rounded-full shadow-sm hover:bg-[var(--seasonal-primary,#1a5632)] hover:text-white transition-all opacity-0 group-hover:opacity-100"
           aria-label="Quick view"
         >
           <Eye className="w-3 h-3" />
@@ -244,7 +244,7 @@ function ProductCard({ listing, compareMode, onCompareChange }) {
                   ? 'bg-green-500 text-white'
                   : inCart
                     ? 'bg-[var(--seasonal-primary,#1a5632)]/90 text-white'
-                    : 'bg-white/90 dark:bg-black/90 text-zinc-900 dark:text-white hover:bg-[var(--seasonal-primary,#1a5632)] hover:text-white'
+                    : 'bg-white/90 dark:bg-black/90 text-white hover:bg-[var(--seasonal-primary,#1a5632)] hover:text-white'
             }`}
             aria-label={isMaintenanceCached() ? 'Under maintenance' : 'Add to cart'}
           >
@@ -259,10 +259,10 @@ function ProductCard({ listing, compareMode, onCompareChange }) {
 
       <div>
         <div className="flex items-center gap-2 mb-1">
-          <h3 className="font-bold text-zinc-900 dark:text-white text-sm truncate flex-1">{listing.title}</h3>
+          <h3 className="font-bold text-white text-sm truncate flex-1">{listing.title}</h3>
           <ProductSocialBadge listing={listing} />
         </div>
-        <p className="text-zinc-500 dark:text-zinc-400 text-xs">{listing.category}{listing.brand ? ` - ${listing.brand}` : ''}</p>
+        <p className="text-zinc-400 text-xs">{listing.category}{listing.brand ? ` - ${listing.brand}` : ''}</p>
 
         {/* Color swatches */}
         {listing.has_variants && listing.variants?.length > 0 && (() => {
@@ -299,7 +299,7 @@ function ProductCard({ listing, compareMode, onCompareChange }) {
           return (
             <div className="flex items-center gap-1 mt-1 flex-wrap">
               {uniqueSizes.slice(0, 4).map((s, i) => (
-                <span key={i} className="text-[9px] font-bold text-zinc-500 dark:text-zinc-400 bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">
+                <span key={i} className="text-[9px] font-bold text-zinc-400 bg-zinc-800 px-1.5 py-0.5 rounded">
                   {s}
                 </span>
               ))}

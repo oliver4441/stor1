@@ -73,7 +73,7 @@ export default function ImageGallery({ images, title, condition }) {
       <div className="w-full lg:w-1/2">
         {/* Main Image */}
         <div
-          className="bg-zinc-100 dark:bg-zinc-900 rounded-3xl overflow-hidden aspect-square group relative cursor-zoom-in"
+          className="bg-zinc-900 rounded-3xl overflow-hidden aspect-square group relative cursor-zoom-in"
           onClick={() => hasImages && setIsZoomed(true)}
         >
           {hasImages ? (
@@ -91,7 +91,7 @@ export default function ImageGallery({ images, title, condition }) {
 
           {/* Condition badge */}
           {condition && (
-            <div className="absolute top-4 left-4 bg-white/90 dark:bg-black/90 text-zinc-900 dark:text-white px-3 py-1.5 rounded-full text-sm font-bold shadow-sm capitalize z-10">
+            <div className="absolute top-4 left-4 bg-white/90 dark:bg-black/90 text-white px-3 py-1.5 rounded-full text-sm font-bold shadow-sm capitalize z-10">
               {condition.replace('_', ' ')}
             </div>
           )}

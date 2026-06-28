@@ -132,13 +132,13 @@ export default function SearchBar({ onSearch, initialValue = '' }) {
           onChange={(e) => setQuery(e.target.value)}
           onFocus={() => setFocused(true)}
           placeholder="Search for anything..."
-          className="w-full pl-12 pr-36 py-3.5 rounded-2xl bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 focus:border-[var(--seasonal-primary,#1a5632)] focus:outline-none text-zinc-900 dark:text-white text-sm shadow-sm"
+          className="w-full pl-12 pr-36 py-3.5 rounded-2xl bg-zinc-900 border border-zinc-800 focus:border-[var(--seasonal-primary,#1a5632)] focus:outline-none text-white text-sm shadow-sm"
         />
         {query && (
           <button
             type="button"
             onClick={() => { setQuery(''); onSearch(''); inputRef.current?.focus(); }}
-            className="absolute right-[8.5rem] top-1/2 -translate-y-1/2 p-1 rounded-full hover:bg-zinc-100 dark:hover:bg-zinc-800 text-zinc-400"
+            className="absolute right-[8.5rem] top-1/2 -translate-y-1/2 p-1 rounded-full hover:bg-zinc-800 text-zinc-400"
           >
             <X className="w-4 h-4" />
           </button>
@@ -147,7 +147,7 @@ export default function SearchBar({ onSearch, initialValue = '' }) {
           type="button"
           onClick={startVoiceSearch}
           className={`absolute right-[5.5rem] top-1/2 -translate-y-1/2 p-1.5 rounded-full transition-colors ${
-            listening ? 'bg-[var(--seasonal-primary,#1a5632)] text-white animate-pulse' : 'text-zinc-400 hover:bg-zinc-100 dark:hover:bg-zinc-800'
+            listening ? 'bg-[var(--seasonal-primary,#1a5632)] text-white animate-pulse' : 'text-zinc-400 hover:bg-zinc-800'
           }`}
           title={listening ? 'Listening...' : 'Search by voice'}
         >
@@ -163,11 +163,11 @@ export default function SearchBar({ onSearch, initialValue = '' }) {
 
       {/* Dropdown */}
       {showDropdown && (
-        <div className="absolute top-full left-0 right-0 mt-2 bg-white dark:bg-zinc-900 rounded-2xl border border-zinc-200 dark:border-zinc-800 shadow-xl overflow-hidden z-50 animate-in slide-in-from-top-2 fade-in duration-150">
+        <div className="absolute top-full left-0 right-0 mt-2 bg-zinc-900 rounded-2xl border border-zinc-800 shadow-xl overflow-hidden z-50 animate-in slide-in-from-top-2 fade-in duration-150">
           {recent.length > 0 && (
             <div className="p-3 border-b border-zinc-100 dark:border-zinc-800">
               <div className="flex items-center justify-between mb-2">
-                <div className="flex items-center gap-1.5 text-xs font-bold text-zinc-500 dark:text-zinc-400">
+                <div className="flex items-center gap-1.5 text-xs font-bold text-zinc-400">
                   <Clock className="w-3.5 h-3.5" />
                   Recent Searches
                 </div>
@@ -180,7 +180,7 @@ export default function SearchBar({ onSearch, initialValue = '' }) {
                   <button
                     key={term}
                     onClick={() => handleRecentClick(term)}
-                    className="px-3 py-1.5 rounded-lg bg-zinc-100 dark:bg-zinc-800 text-xs text-zinc-700 dark:text-zinc-300 hover:bg-[var(--seasonal-primary,#1a5632)] hover:text-white transition-colors"
+                    className="px-3 py-1.5 rounded-lg bg-zinc-800 text-xs text-zinc-300 hover:bg-[var(--seasonal-primary,#1a5632)] hover:text-white transition-colors"
                   >
                     {term}
                   </button>
@@ -192,7 +192,7 @@ export default function SearchBar({ onSearch, initialValue = '' }) {
           <div className="p-3">
             <div className="flex items-center gap-1.5 mb-2">
               <TrendingUp className="w-3.5 h-3.5 text-[var(--seasonal-primary,#1a5632)]" />
-              <span className="text-xs font-bold text-zinc-500 dark:text-zinc-400">Trending</span>
+              <span className="text-xs font-bold text-zinc-400">Trending</span>
             </div>
             <div className="flex flex-wrap gap-1.5">
               {TRENDING_SEARCHES.map((term) => (

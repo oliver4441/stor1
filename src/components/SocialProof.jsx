@@ -62,13 +62,13 @@ export function ListingSocialProof({ listing }) {
 
   return (
     <div className="flex flex-wrap gap-2 mb-4">
-      <span className="flex items-center gap-1 text-xs text-zinc-500 dark:text-zinc-400">
+      <span className="flex items-center gap-1 text-xs text-zinc-400">
         <Eye className="w-3.5 h-3.5 text-blue-500" />
-        <span className="font-bold text-zinc-700 dark:text-zinc-300">{viewingCount}</span> people viewing this
+        <span className="font-bold text-zinc-300">{viewingCount}</span> people viewing this
       </span>
-      <span className="flex items-center gap-1 text-xs text-zinc-500 dark:text-zinc-400">
+      <span className="flex items-center gap-1 text-xs text-zinc-400">
         <TrendingUp className="w-3.5 h-3.5 text-green-500" />
-        <span className="font-bold text-zinc-700 dark:text-zinc-300">{soldCount}</span> sold recently
+        <span className="font-bold text-zinc-300">{soldCount}</span> sold recently
       </span>
     </div>
   );

@@ -72,20 +72,20 @@ export default function QuickViewModal({ listing, onClose }) {
 
       {/* Modal */}
       <div
-        className="relative bg-white dark:bg-zinc-900 rounded-3xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto"
+        className="relative bg-zinc-900 rounded-3xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Close button */}
         <button
           onClick={onClose}
-          className="absolute top-4 right-4 z-10 w-8 h-8 rounded-full bg-white/90 dark:bg-zinc-800/90 flex items-center justify-center text-zinc-600 dark:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-zinc-700 shadow-sm"
+          className="absolute top-4 right-4 z-10 w-8 h-8 rounded-full bg-white/90 dark:bg-zinc-800/90 flex items-center justify-center text-zinc-300 hover:bg-zinc-700 shadow-sm"
         >
           <X className="w-4 h-4" />
         </button>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-0">
           {/* Image Gallery */}
-          <div className="relative aspect-square bg-zinc-100 dark:bg-zinc-800 rounded-t-3xl md:rounded-l-3xl md:rounded-tr-none overflow-hidden">
+          <div className="relative aspect-square bg-zinc-800 rounded-t-3xl md:rounded-l-3xl md:rounded-tr-none overflow-hidden">
             {hasImage ? (
               <>
                 <img
@@ -128,7 +128,7 @@ export default function QuickViewModal({ listing, onClose }) {
             {/* Badges */}
             <div className="absolute top-3 left-3 flex gap-2">
               {listing.condition && (
-                <span className="bg-white/90 dark:bg-black/90 text-zinc-900 dark:text-white px-2 py-1 rounded-lg text-[10px] font-bold shadow-sm capitalize">
+                <span className="bg-white/90 dark:bg-black/90 text-white px-2 py-1 rounded-lg text-[10px] font-bold shadow-sm capitalize">
                   {listing.condition.replace('_', ' ')}
                 </span>
               )}
@@ -143,8 +143,8 @@ export default function QuickViewModal({ listing, onClose }) {
 
           {/* Details */}
           <div className="p-6 flex flex-col">
-            <p className="text-xs text-zinc-500 dark:text-zinc-400 mb-1">{listing.category}{listing.brand ? ` · ${listing.brand}` : ''}</p>
-            <h2 className="text-xl font-black text-zinc-900 dark:text-white mb-2">{listing.title}</h2>
+            <p className="text-xs text-zinc-400 mb-1">{listing.category}{listing.brand ? ` · ${listing.brand}` : ''}</p>
+            <h2 className="text-xl font-black text-white mb-2">{listing.title}</h2>
 
             <div className="flex items-center gap-2 mb-4">
               <p className="text-2xl font-black text-[var(--seasonal-primary,#1a5632)]">{formatKES(listing.price)}</p>
@@ -159,7 +159,7 @@ export default function QuickViewModal({ listing, onClose }) {
             </div>
 
             {listing.description && (
-              <p className="text-sm text-zinc-600 dark:text-zinc-400 mb-4 line-clamp-3">{listing.description}</p>
+              <p className="text-sm text-zinc-400 mb-4 line-clamp-3">{listing.description}</p>
             )}
 
             {listing.location && (
@@ -188,7 +188,7 @@ export default function QuickViewModal({ listing, onClose }) {
               )}
               <button
                 onClick={handleShare}
-                className="w-12 h-12 rounded-xl border border-zinc-200 dark:border-zinc-700 flex items-center justify-center text-zinc-500 hover:bg-[#25D366] hover:text-white hover:border-[#25D366] transition-all"
+                className="w-12 h-12 rounded-xl border border-zinc-700 flex items-center justify-center text-zinc-500 hover:bg-[#25D366] hover:text-white hover:border-[#25D366] transition-all"
               >
                 <Share2 className="w-4 h-4" />
               </button>

@@ -82,7 +82,7 @@ function Signup() {
         <div className="bg-blue-50 dark:bg-blue-900/20 text-blue-600 p-8 rounded-3xl mb-6">
           <div className="w-16 h-16 bg-blue-100 dark:bg-blue-900/40 rounded-full flex items-center justify-center mx-auto mb-4"><span className="text-2xl font-black text-blue-500">@</span></div>
           <h2 className="text-2xl font-black mb-2">Check Your Email</h2>
-          <p className="text-zinc-500 dark:text-zinc-400 mb-2">We sent a verification link to <strong className="text-zinc-700 dark:text-zinc-300">{registeredEmail}</strong></p>
+          <p className="text-zinc-400 mb-2">We sent a verification link to <strong className="text-zinc-300">{registeredEmail}</strong></p>
           <p className="text-sm text-zinc-400">Click the link to activate your account.</p>
         </div>
         <Link to="/login" className="text-[var(--seasonal-primary,#1a5632)] font-bold hover:underline">Go to Login</Link>
@@ -95,7 +95,7 @@ function Signup() {
       <div className="max-w-md mx-auto px-4 py-20 text-center">
         <div className="bg-green-100 dark:bg-green-900/20 text-green-600 p-8 rounded-3xl inline-block mb-4">
           <h2 className="text-3xl font-black mb-2">Account Created!</h2>
-          <p className="text-zinc-500 dark:text-zinc-400">Redirecting to your account...</p>
+          <p className="text-zinc-400">Redirecting to your account...</p>
         </div>
       </div>
     );
@@ -105,39 +105,39 @@ function Signup() {
     <div className="max-w-md mx-auto px-4 py-12 w-full" data-name="signup-page">
       <div className="text-center mb-10">
         <div className="w-16 h-16 bg-[var(--seasonal-primary,#1a5632)]/10 rounded-2xl flex items-center justify-center mx-auto mb-4"><ShoppingBag className="w-8 h-8 text-[var(--seasonal-primary,#1a5632)]" /></div>
-        <h1 className="text-3xl font-black mb-2 text-zinc-900 dark:text-white">Create Your Account</h1>
-        <p className="text-zinc-500 dark:text-zinc-400">Sign up to start shopping on Omix.</p>
+        <h1 className="text-3xl font-black mb-2 text-white">Create Your Account</h1>
+        <p className="text-zinc-400">Sign up to start shopping on Omix.</p>
       </div>
 
       {error && <div className="bg-red-50 dark:bg-red-900/20 text-red-600 p-4 rounded-xl mb-6 text-sm font-medium border border-red-100 dark:border-red-900/50">{error}</div>}
 
       <form onSubmit={handleSignup} className="space-y-5">
         <div>
-          <label className="block text-sm font-bold mb-2 text-zinc-700 dark:text-zinc-300">Full Name</label>
+          <label className="block text-sm font-bold mb-2 text-zinc-300">Full Name</label>
           <div className="relative">
             <User className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-zinc-400" />
-            <input type="text" value={formData.fullName} onChange={e => updateField('fullName', e.target.value)} placeholder="e.g. Kiprono Yegon" required minLength={2} className="w-full pl-12 pr-4 py-3.5 rounded-xl bg-zinc-100 dark:bg-zinc-900 border border-transparent focus:border-[var(--seasonal-primary,#1a5632)] focus:bg-white dark:focus:bg-zinc-950 focus:outline-none text-zinc-900 dark:text-white transition-all shadow-sm" />
+            <input type="text" value={formData.fullName} onChange={e => updateField('fullName', e.target.value)} placeholder="e.g. Kiprono Yegon" required minLength={2} className="w-full pl-12 pr-4 py-3.5 rounded-xl bg-zinc-900 border border-transparent focus:border-[var(--seasonal-primary,#1a5632)] focus:bg-white dark:focus:bg-zinc-950 focus:outline-none text-white transition-all shadow-sm" />
           </div>
         </div>
         <div>
-          <label className="block text-sm font-bold mb-2 text-zinc-700 dark:text-zinc-300">Email Address</label>
+          <label className="block text-sm font-bold mb-2 text-zinc-300">Email Address</label>
           <div className="relative">
             <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-zinc-400" />
-            <input type="email" value={formData.email} onChange={e => updateField('email', e.target.value)} placeholder="you@example.com" required className="w-full pl-12 pr-4 py-3.5 rounded-xl bg-zinc-100 dark:bg-zinc-900 border border-transparent focus:border-[var(--seasonal-primary,#1a5632)] focus:bg-white dark:focus:bg-zinc-950 focus:outline-none text-zinc-900 dark:text-white transition-all shadow-sm" />
+            <input type="email" value={formData.email} onChange={e => updateField('email', e.target.value)} placeholder="you@example.com" required className="w-full pl-12 pr-4 py-3.5 rounded-xl bg-zinc-900 border border-transparent focus:border-[var(--seasonal-primary,#1a5632)] focus:bg-white dark:focus:bg-zinc-950 focus:outline-none text-white transition-all shadow-sm" />
           </div>
         </div>
         <div>
-          <label className="block text-sm font-bold mb-2 text-zinc-700 dark:text-zinc-300">Password</label>
+          <label className="block text-sm font-bold mb-2 text-zinc-300">Password</label>
           <div className="relative">
             <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-zinc-400" />
-            <input required name="password" type="password" value={formData.password} onChange={e => updateField('password', e.target.value)} placeholder="Minimum 6 characters" minLength={6} className="w-full pl-12 pr-4 py-3.5 rounded-xl bg-zinc-100 dark:bg-zinc-900 border border-transparent focus:border-[var(--seasonal-primary,#1a5632)] focus:bg-white dark:focus:bg-zinc-950 focus:outline-none text-zinc-900 dark:text-white transition-all shadow-sm" />
+            <input required name="password" type="password" value={formData.password} onChange={e => updateField('password', e.target.value)} placeholder="Minimum 6 characters" minLength={6} className="w-full pl-12 pr-4 py-3.5 rounded-xl bg-zinc-900 border border-transparent focus:border-[var(--seasonal-primary,#1a5632)] focus:bg-white dark:focus:bg-zinc-950 focus:outline-none text-white transition-all shadow-sm" />
           </div>
         </div>
         <div>
-          <label className="block text-sm font-bold mb-2 text-zinc-700 dark:text-zinc-300">Confirm Password</label>
+          <label className="block text-sm font-bold mb-2 text-zinc-300">Confirm Password</label>
           <div className="relative">
             <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-zinc-400" />
-            <input required name="confirmPassword" type="password" value={formData.confirmPassword} onChange={e => updateField('confirmPassword', e.target.value)} placeholder="Repeat your password" minLength={6} className="w-full pl-12 pr-4 py-3.5 rounded-xl bg-zinc-100 dark:bg-zinc-900 border border-transparent focus:border-[var(--seasonal-primary,#1a5632)] focus:bg-white dark:focus:bg-zinc-950 focus:outline-none text-zinc-900 dark:text-white transition-all shadow-sm" />
+            <input required name="confirmPassword" type="password" value={formData.confirmPassword} onChange={e => updateField('confirmPassword', e.target.value)} placeholder="Repeat your password" minLength={6} className="w-full pl-12 pr-4 py-3.5 rounded-xl bg-zinc-900 border border-transparent focus:border-[var(--seasonal-primary,#1a5632)] focus:bg-white dark:focus:bg-zinc-950 focus:outline-none text-white transition-all shadow-sm" />
           </div>
         </div>
 
@@ -148,7 +148,7 @@ function Signup() {
               {agreed && <CheckCircle2 className="w-3.5 h-3.5 text-white" />}
             </div>
           </div>
-          <span className="text-sm text-zinc-600 dark:text-zinc-400 leading-relaxed">
+          <span className="text-sm text-zinc-400 leading-relaxed">
             I agree to the <Link to="/terms" className="text-[var(--seasonal-primary,#1a5632)] font-semibold hover:underline" target="_blank" rel="noopener noreferrer">Terms of Service</Link> and <Link to="/privacy" className="text-[var(--seasonal-primary,#1a5632)] font-semibold hover:underline" target="_blank" rel="noopener noreferrer">Privacy Policy</Link>.
           </span>
         </label>
@@ -158,12 +158,12 @@ function Signup() {
         </button>
 
         <div className="relative my-6">
-          <div className="absolute inset-0 flex items-center"><div className="w-full border-t border-zinc-200 dark:border-zinc-700"></div></div>
-          <div className="relative flex justify-center text-sm"><span className="px-2 bg-white dark:bg-zinc-950 text-zinc-500">{t('auth.or') || 'or'}</span></div>
+          <div className="absolute inset-0 flex items-center"><div className="w-full border-t border-zinc-700"></div></div>
+          <div className="relative flex justify-center text-sm"><span className="px-2 bg-zinc-950 text-zinc-500">{t('auth.or') || 'or'}</span></div>
         </div>
 
         <button type="button" disabled
-          className="w-full flex items-center justify-center gap-2 bg-zinc-100 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 text-zinc-400 dark:text-zinc-500 font-bold py-3.5 rounded-2xl cursor-not-allowed">
+          className="w-full flex items-center justify-center gap-2 bg-zinc-800 border border-zinc-700 text-zinc-400 dark:text-zinc-500 font-bold py-3.5 rounded-2xl cursor-not-allowed">
           <span className="text-xs tracking-widest uppercase">Coming Soon</span>
         </button>
       </form>

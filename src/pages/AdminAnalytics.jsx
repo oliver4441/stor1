@@ -89,10 +89,10 @@ export default function AdminAnalytics() {
   const CustomTooltip = ({ active, payload, label }) => {
     if (!active || !payload) return null;
     return (
-      <div className="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-700 rounded-xl p-3 shadow-lg">
-        <p className="text-xs font-bold text-zinc-900 dark:text-white mb-1">{label}</p>
+      <div className="bg-zinc-900 border border-zinc-700 rounded-xl p-3 shadow-lg">
+        <p className="text-xs font-bold text-white mb-1">{label}</p>
         {payload.map((p, i) => (
-          <p key={i} className="text-xs text-zinc-600 dark:text-zinc-400">
+          <p key={i} className="text-xs text-zinc-400">
             {p.name === 'revenue' ? 'Revenue' : 'Orders'}: <span className="font-bold">{p.name === 'revenue' ? formatKES(p.value) : p.value}</span>
           </p>
         ))}
@@ -112,12 +112,12 @@ export default function AdminAnalytics() {
     <div className="space-y-6 max-w-7xl">
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div>
-          <h2 className="text-xl font-bold text-zinc-900 dark:text-white">Analytics</h2>
+          <h2 className="text-xl font-bold text-white">Analytics</h2>
           <p className="text-sm text-zinc-500">Sales performance overview</p>
         </div>
         <div className="flex items-center gap-3">
           <select value={dateRange} onChange={e => setDateRange(e.target.value)}
-            className="px-4 py-2 rounded-xl bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 text-sm text-zinc-900 dark:text-white appearance-none">
+            className="px-4 py-2 rounded-xl bg-zinc-900 border border-zinc-800 text-sm text-white appearance-none">
             <option value="7">Last 7 days</option>
             <option value="30">Last 30 days</option>
             <option value="90">Last 90 days</option>
@@ -128,31 +128,31 @@ export default function AdminAnalytics() {
 
       {/* Stats */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-        <div className="bg-white dark:bg-zinc-900 rounded-2xl border border-zinc-200 dark:border-zinc-800 p-5">
+        <div className="bg-zinc-900 rounded-2xl border border-zinc-800 p-5">
           <DollarSign className="w-5 h-5 text-emerald-500 mb-2" />
-          <p className="text-2xl font-black text-zinc-900 dark:text-white">{formatKES(totalRevenue)}</p>
+          <p className="text-2xl font-black text-white">{formatKES(totalRevenue)}</p>
           <p className="text-xs text-zinc-500 mt-1">Revenue</p>
         </div>
-        <div className="bg-white dark:bg-zinc-900 rounded-2xl border border-zinc-200 dark:border-zinc-800 p-5">
+        <div className="bg-zinc-900 rounded-2xl border border-zinc-800 p-5">
           <ShoppingBag className="w-5 h-5 text-blue-500 mb-2" />
-          <p className="text-2xl font-black text-zinc-900 dark:text-white">{filteredOrders.length}</p>
+          <p className="text-2xl font-black text-white">{filteredOrders.length}</p>
           <p className="text-xs text-zinc-500 mt-1">Orders</p>
         </div>
-        <div className="bg-white dark:bg-zinc-900 rounded-2xl border border-zinc-200 dark:border-zinc-800 p-5">
+        <div className="bg-zinc-900 rounded-2xl border border-zinc-800 p-5">
           <TrendingUp className="w-5 h-5 text-purple-500 mb-2" />
-          <p className="text-2xl font-black text-zinc-900 dark:text-white">{formatKES(avgOrderValue)}</p>
+          <p className="text-2xl font-black text-white">{formatKES(avgOrderValue)}</p>
           <p className="text-xs text-zinc-500 mt-1">Avg Order</p>
         </div>
-        <div className="bg-white dark:bg-zinc-900 rounded-2xl border border-zinc-200 dark:border-zinc-800 p-5">
+        <div className="bg-zinc-900 rounded-2xl border border-zinc-800 p-5">
           <Package className="w-5 h-5 text-amber-500 mb-2" />
-          <p className="text-2xl font-black text-zinc-900 dark:text-white">{listings.length}</p>
+          <p className="text-2xl font-black text-white">{listings.length}</p>
           <p className="text-xs text-zinc-500 mt-1">Products</p>
         </div>
       </div>
 
       {/* Revenue Chart */}
-      <div className="bg-white dark:bg-zinc-900 rounded-2xl border border-zinc-200 dark:border-zinc-800 p-5">
-        <h3 className="text-base font-bold text-zinc-900 dark:text-white mb-4">Revenue Trend</h3>
+      <div className="bg-zinc-900 rounded-2xl border border-zinc-800 p-5">
+        <h3 className="text-base font-bold text-white mb-4">Revenue Trend</h3>
         {chartData.length > 0 && chartData.some(d => d.revenue > 0) ? (
           <div className="h-64">
             <ResponsiveContainer width="100%" height="100%">
@@ -176,8 +176,8 @@ export default function AdminAnalytics() {
       </div>
 
       {/* Orders Chart */}
-      <div className="bg-white dark:bg-zinc-900 rounded-2xl border border-zinc-200 dark:border-zinc-800 p-5">
-        <h3 className="text-base font-bold text-zinc-900 dark:text-white mb-4">Orders Over Time</h3>
+      <div className="bg-zinc-900 rounded-2xl border border-zinc-800 p-5">
+        <h3 className="text-base font-bold text-white mb-4">Orders Over Time</h3>
         {chartData.length > 0 && chartData.some(d => d.orders > 0) ? (
           <div className="h-56">
             <ResponsiveContainer width="100%" height="100%">
@@ -196,8 +196,8 @@ export default function AdminAnalytics() {
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Top Products */}
-        <div className="bg-white dark:bg-zinc-900 rounded-2xl border border-zinc-200 dark:border-zinc-800 p-5">
-          <h3 className="text-base font-bold text-zinc-900 dark:text-white mb-4">Top Products</h3>
+        <div className="bg-zinc-900 rounded-2xl border border-zinc-800 p-5">
+          <h3 className="text-base font-bold text-white mb-4">Top Products</h3>
           {topProducts.length > 0 ? (
             <div className="space-y-3">
               {topProducts.map((product, i) => (
@@ -205,7 +205,7 @@ export default function AdminAnalytics() {
                   <div className="flex items-center gap-3">
                     <span className="w-6 h-6 rounded-lg flex items-center justify-center text-xs font-bold" style={{ backgroundColor: `${CHART_COLORS[i]}20`, color: CHART_COLORS[i] }}>{i + 1}</span>
                     <div>
-                      <p className="text-sm font-semibold text-zinc-900 dark:text-white truncate max-w-[180px]">{product.name}</p>
+                      <p className="text-sm font-semibold text-white truncate max-w-[180px]">{product.name}</p>
                       <p className="text-xs text-zinc-500">{product.count} sold</p>
                     </div>
                   </div>
@@ -219,8 +219,8 @@ export default function AdminAnalytics() {
         </div>
 
         {/* Category Breakdown */}
-        <div className="bg-white dark:bg-zinc-900 rounded-2xl border border-zinc-200 dark:border-zinc-800 p-5">
-          <h3 className="text-base font-bold text-zinc-900 dark:text-white mb-4">Sales by Category</h3>
+        <div className="bg-zinc-900 rounded-2xl border border-zinc-800 p-5">
+          <h3 className="text-base font-bold text-white mb-4">Sales by Category</h3>
           {categoryData.length > 0 ? (
             <div className="space-y-4">
               {categoryData.map((cat, i) => {
@@ -228,10 +228,10 @@ export default function AdminAnalytics() {
                 return (
                   <div key={cat.name}>
                     <div className="flex items-center justify-between mb-1.5">
-                      <span className="text-sm font-semibold text-zinc-700 dark:text-zinc-300">{cat.name}</span>
-                      <span className="text-sm font-bold text-zinc-900 dark:text-white">{formatKES(cat.value)} ({pct}%)</span>
+                      <span className="text-sm font-semibold text-zinc-300">{cat.name}</span>
+                      <span className="text-sm font-bold text-white">{formatKES(cat.value)} ({pct}%)</span>
                     </div>
-                    <div className="w-full h-2.5 bg-zinc-100 dark:bg-zinc-800 rounded-full overflow-hidden">
+                    <div className="w-full h-2.5 bg-zinc-800 rounded-full overflow-hidden">
                       <div className="h-full rounded-full transition-all" style={{ width: `${pct}%`, backgroundColor: CHART_COLORS[i % CHART_COLORS.length] }} />
                     </div>
                   </div>

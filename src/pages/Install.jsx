@@ -78,13 +78,13 @@ function IOSInstallModal({ onClose }) {
           ].map((step) => {
             const Icon = step.icon;
             return (
-              <div key={step.num} className="flex items-start gap-3 p-3 rounded-2xl bg-zinc-50/80 dark:bg-zinc-800/50 backdrop-blur-sm border border-zinc-200/50 dark:border-zinc-700/50 animate-slide-in" style={{ animationDelay: `${step.num * 100}ms` }}>
+              <div key={step.num} className="flex items-start gap-3 p-3 rounded-2xl bg-zinc-50/80 dark:bg-zinc-800/50 backdrop-blur-sm border border-zinc-700/50 animate-slide-in" style={{ animationDelay: `${step.num * 100}ms` }}>
                 <div className="w-8 h-8 rounded-full bg-gradient-to-r from-blue-500 to-indigo-600 text-white flex items-center justify-center text-sm font-black flex-shrink-0 shadow-lg shadow-blue-500/20">
                   {step.num}
                 </div>
                 <div className="flex-1 min-w-0">
-                  <p className="font-bold text-zinc-900 dark:text-white text-sm">{step.text}</p>
-                  <p className="text-xs text-zinc-500 dark:text-zinc-400 mt-0.5">{step.sub}</p>
+                  <p className="font-bold text-white text-sm">{step.text}</p>
+                  <p className="text-xs text-zinc-400 mt-0.5">{step.sub}</p>
                   <div className="mt-2 flex items-center gap-2">
                     <div className="w-8 h-8 rounded-lg bg-zinc-200/80 dark:bg-zinc-700/80 flex items-center justify-center">
                       <Icon className={`w-4 h-4 ${step.num === 3 ? 'text-green-500' : step.num === 2 ? 'text-green-500' : 'text-blue-500'}`} />
@@ -196,7 +196,7 @@ export default function Install() {
   };
 
   return (
-    <div className="min-h-screen bg-zinc-50 dark:bg-zinc-950 overflow-hidden">
+    <div className="min-h-screen bg-zinc-950 overflow-hidden">
       {showIOSModal && <IOSInstallModal onClose={() => setShowIOSModal(false)} />}
 
       {/* Hero Section */}
@@ -223,12 +223,12 @@ export default function Install() {
             </div>
           </div>
 
-          <h1 className="text-5xl md:text-7xl font-black text-zinc-900 dark:text-white mb-4 tracking-tight leading-tight">
+          <h1 className="text-5xl md:text-7xl font-black text-white mb-4 tracking-tight leading-tight">
             <span className="bg-gradient-to-r from-[var(--seasonal-primary,#1a5632)] via-purple-500 to-blue-500 bg-clip-text text-transparent bg-[length:200%_auto] animate-gradient-x">
               {t('install.title')}
             </span>
           </h1>
-          <p className="text-lg md:text-xl text-zinc-600 dark:text-zinc-400 mb-10 max-w-xl mx-auto leading-relaxed">
+          <p className="text-lg md:text-xl text-zinc-400 mb-10 max-w-xl mx-auto leading-relaxed">
             {t('install.omixIconAppears')}
           </p>
 
@@ -244,17 +244,17 @@ export default function Install() {
 
               {/* Glass divider */}
               <div className="relative">
-                <div className="absolute inset-0 flex items-center"><div className="w-full border-t border-zinc-200/50 dark:border-zinc-700/50" /></div>
+                <div className="absolute inset-0 flex items-center"><div className="w-full border-t border-zinc-700/50" /></div>
                 <div className="relative flex justify-center"><span className="px-3 text-xs text-zinc-400 dark:text-zinc-500 bg-white/50 dark:bg-zinc-900/50 backdrop-blur-sm">or visit on</span></div>
               </div>
 
               {/* App Store badges */}
               <div className="flex items-center justify-center gap-3">
-                <div className="backdrop-blur-sm bg-zinc-900/5 dark:bg-white/5 border border-zinc-200/50 dark:border-zinc-700/50 px-4 py-2.5 rounded-xl text-xs font-bold flex items-center gap-2 hover:bg-zinc-900/10 dark:hover:bg-white/10 transition-all cursor-default">
+                <div className="backdrop-blur-sm bg-zinc-900/5 dark:bg-white/5 border border-zinc-700/50 px-4 py-2.5 rounded-xl text-xs font-bold flex items-center gap-2 hover:bg-zinc-900/10 dark:hover:bg-white/10 transition-all cursor-default">
                   <Smartphone className="w-4 h-4" />
                   App Store
                 </div>
-                <div className="backdrop-blur-sm bg-zinc-900/5 dark:bg-white/5 border border-zinc-200/50 dark:border-zinc-700/50 px-4 py-2.5 rounded-xl text-xs font-bold flex items-center gap-2 hover:bg-zinc-900/10 dark:hover:bg-white/10 transition-all cursor-default">
+                <div className="backdrop-blur-sm bg-zinc-900/5 dark:bg-white/5 border border-zinc-700/50 px-4 py-2.5 rounded-xl text-xs font-bold flex items-center gap-2 hover:bg-zinc-900/10 dark:hover:bg-white/10 transition-all cursor-default">
                   <Smartphone className="w-4 h-4" />
                   Google Play
                 </div>
@@ -278,8 +278,8 @@ export default function Install() {
         <div className="max-w-6xl mx-auto px-4 relative">
           <div className="text-center mb-12">
             <span className="text-xs font-bold text-[var(--seasonal-primary,#1a5632)] uppercase tracking-[0.2em] bg-[var(--seasonal-primary,#1a5632)]/10 dark:bg-[var(--seasonal-primary,#1a5632)]/20 px-4 py-1.5 rounded-full">Why Install</span>
-            <h2 className="text-3xl md:text-4xl font-black text-zinc-900 dark:text-white mt-3">Install the App</h2>
-            <p className="text-zinc-500 dark:text-zinc-400 mt-2 max-w-md mx-auto">Everything you need, right on your home screen</p>
+            <h2 className="text-3xl md:text-4xl font-black text-white mt-3">Install the App</h2>
+            <p className="text-zinc-400 mt-2 max-w-md mx-auto">Everything you need, right on your home screen</p>
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
@@ -293,8 +293,8 @@ export default function Install() {
                     <div className={`w-14 h-14 rounded-xl bg-gradient-to-br ${f.bg} flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform duration-500 shadow-lg`}>
                       <Icon className={`w-7 h-7 ${f.color}`} />
                     </div>
-                    <h3 className="font-bold text-zinc-900 dark:text-white text-sm mb-1.5">{f.title}</h3>
-                    <p className="text-xs text-zinc-500 dark:text-zinc-400 leading-relaxed">{f.desc}</p>
+                    <h3 className="font-bold text-white text-sm mb-1.5">{f.title}</h3>
+                    <p className="text-xs text-zinc-400 leading-relaxed">{f.desc}</p>
                   </div>
                   {/* Glow on hover */}
                   <div className={`absolute -inset-2 bg-gradient-to-r ${f.gradient} opacity-0 group-hover:opacity-10 blur-2xl transition-opacity duration-500 rounded-3xl -z-10`} />
@@ -311,8 +311,8 @@ export default function Install() {
         <div className="max-w-4xl mx-auto px-4 relative">
           <div className="text-center mb-10">
             <span className="text-xs font-bold text-purple-500 uppercase tracking-[0.2em] bg-purple-500/10 dark:bg-purple-500/20 px-4 py-1.5 rounded-full">Steps</span>
-            <h2 className="text-3xl md:text-4xl font-black text-zinc-900 dark:text-white mt-3">How to Install</h2>
-            <p className="text-zinc-500 dark:text-zinc-400 mt-2">Select your device and follow the steps</p>
+            <h2 className="text-3xl md:text-4xl font-black text-white mt-3">How to Install</h2>
+            <p className="text-zinc-400 mt-2">Select your device and follow the steps</p>
           </div>
 
           {/* Platform Tabs */}
@@ -324,7 +324,7 @@ export default function Install() {
                 className={`relative flex items-center gap-2 px-5 py-3 rounded-2xl text-sm font-bold transition-all duration-300 ${
                   activeTab === key
                     ? `bg-gradient-to-r ${val.color} text-white shadow-xl ${val.glow} scale-105`
-                    : 'backdrop-blur-xl bg-white/50 dark:bg-zinc-900/50 border border-white/50 dark:border-zinc-700/50 text-zinc-600 dark:text-zinc-300 hover:bg-white/80 dark:hover:bg-zinc-800/80 hover:shadow-lg'
+                    : 'backdrop-blur-xl bg-white/50 dark:bg-zinc-900/50 border border-white/50 dark:border-zinc-700/50 text-zinc-300 hover:bg-white/80 dark:hover:bg-zinc-800/80 hover:shadow-lg'
                 }`}
               >
                 {activeTab === key && <div className="absolute -inset-1 bg-gradient-to-r ${val.color} opacity-20 blur-lg rounded-2xl" />}
@@ -356,13 +356,13 @@ export default function Install() {
               {/* Steps */}
               <div className="p-6 md:p-8 space-y-4">
                 {STEPS[activeTab].steps.map((step, i) => (
-                  <div key={i} className="flex items-start gap-4 p-4 rounded-2xl bg-zinc-50/80 dark:bg-zinc-800/40 backdrop-blur-sm border border-zinc-200/50 dark:border-zinc-700/30 hover:bg-white/80 dark:hover:bg-zinc-800/60 transition-all duration-300 group/step hover:shadow-md animate-fade-in-up" style={{ animationDelay: `${i * 150}ms` }}>
+                  <div key={i} className="flex items-start gap-4 p-4 rounded-2xl bg-zinc-50/80 dark:bg-zinc-800/40 backdrop-blur-sm border border-zinc-700/30 hover:bg-white/80 dark:hover:bg-zinc-800/60 transition-all duration-300 group/step hover:shadow-md animate-fade-in-up" style={{ animationDelay: `${i * 150}ms` }}>
                     <div className={`w-10 h-10 rounded-full bg-gradient-to-r ${STEPS[activeTab].color} text-white flex items-center justify-center text-lg font-black flex-shrink-0 shadow-lg group-hover/step:scale-110 transition-transform duration-300`}>
                       {i + 1}
                     </div>
                     <div className="pt-0.5 flex-1">
-                      <p className="font-bold text-zinc-900 dark:text-white">{step.text}</p>
-                      <p className="text-sm text-zinc-500 dark:text-zinc-400 mt-0.5">{step.hint}</p>
+                      <p className="font-bold text-white">{step.text}</p>
+                      <p className="text-sm text-zinc-400 mt-0.5">{step.hint}</p>
                     </div>
                     <ChevronRight className={`w-5 h-5 text-zinc-300 dark:text-zinc-600 group-hover/step:translate-x-1 transition-transform flex-shrink-0 mt-1 ${STEPS[activeTab].accent}`} />
                   </div>
@@ -377,7 +377,7 @@ export default function Install() {
                   </div>
                   <div>
                     <p className="font-bold text-green-700 dark:text-green-400 text-sm">You're all set!</p>
-                    <p className="text-sm text-zinc-600 dark:text-zinc-400 mt-0.5">
+                    <p className="text-sm text-zinc-400 mt-0.5">
                       Once installed, Omix works like any other app — tap the icon on your home screen to open it instantly!
                     </p>
                   </div>
@@ -402,8 +402,8 @@ export default function Install() {
             <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-[var(--seasonal-primary,#1a5632)] to-[var(--seasonal-secondary,#14472a)] flex items-center justify-center mx-auto mb-6 shadow-xl shadow-[var(--seasonal-primary,#1a5632)]/30">
               <Sparkles className="w-7 h-7 text-white" />
             </div>
-            <h2 className="text-3xl md:text-4xl font-black text-zinc-900 dark:text-white mb-3">Ready to get started?</h2>
-            <p className="text-zinc-500 dark:text-zinc-400 mb-8 max-w-md mx-auto">
+            <h2 className="text-3xl md:text-4xl font-black text-white mb-3">Ready to get started?</h2>
+            <p className="text-zinc-400 mb-8 max-w-md mx-auto">
               Join thousands of buyers on Kericho's cleanest online store.
             </p>
             <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
@@ -414,7 +414,7 @@ export default function Install() {
                   <span className="relative z-10">Install App — It's Free</span>
                 </button>
               )}
-              <a href="/" className="group flex items-center gap-2 px-6 py-4 rounded-2xl font-bold backdrop-blur-xl bg-white/50 dark:bg-zinc-900/50 border border-white/60 dark:border-zinc-700/50 text-zinc-600 dark:text-zinc-300 hover:bg-white/80 dark:hover:bg-zinc-800/80 hover:shadow-lg transition-all">
+              <a href="/" className="group flex items-center gap-2 px-6 py-4 rounded-2xl font-bold backdrop-blur-xl bg-white/50 dark:bg-zinc-900/50 border border-white/60 dark:border-zinc-700/50 text-zinc-300 hover:bg-white/80 dark:hover:bg-zinc-800/80 hover:shadow-lg transition-all">
                 Browse Listings Instead
                 <ChevronRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
               </a>

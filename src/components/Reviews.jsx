@@ -61,14 +61,14 @@ export function ReviewList({ listingId }) {
 
   const displayed = showAll ? reviews : reviews.slice(0, 3);
 
-  if (loading) return <div className="h-10 bg-zinc-100 dark:bg-zinc-800 rounded-xl animate-pulse" />;
+  if (loading) return <div className="h-10 bg-zinc-800 rounded-xl animate-pulse" />;
 
   if (reviews.length === 0) return null;
 
   const avgRating = reviews.reduce((s, r) => s + r.rating, 0) / reviews.length;
 
   return (
-    <div className="mt-8 pt-6 border-t border-zinc-200 dark:border-zinc-800">
+    <div className="mt-8 pt-6 border-t border-zinc-800">
       <div className="flex items-center justify-between mb-4">
         <h3 className="text-lg font-bold">Reviews</h3>
         <div className="flex items-center gap-2">
@@ -80,7 +80,7 @@ export function ReviewList({ listingId }) {
 
       <div className="space-y-4">
         {displayed.map(review => (
-          <div key={review.id} className="p-4 bg-zinc-50 dark:bg-zinc-800/50 rounded-xl">
+          <div key={review.id} className="p-4 bg-zinc-800/50 rounded-xl">
             <div className="flex items-center justify-between mb-2">
               <div className="flex items-center gap-2">
                 <div className="w-8 h-8 rounded-full bg-[var(--seasonal-primary,#1a5632)]/10 flex items-center justify-center">
@@ -93,7 +93,7 @@ export function ReviewList({ listingId }) {
               <StarRating rating={review.rating} size="sm" />
             </div>
             {review.review && (
-              <p className="text-sm text-zinc-600 dark:text-zinc-400">{review.review}</p>
+              <p className="text-sm text-zinc-400">{review.review}</p>
             )}
             <p className="text-xs text-zinc-400 mt-2">
               {review.created_at
@@ -169,7 +169,7 @@ export function ReviewForm({ listingId, onSubmitted }) {
   }
 
   return (
-    <form onSubmit={handleSubmit} className="mt-6 p-5 bg-zinc-50 dark:bg-zinc-800/50 rounded-xl">
+    <form onSubmit={handleSubmit} className="mt-6 p-5 bg-zinc-800/50 rounded-xl">
       <h4 className="text-sm font-bold mb-3">Write a Review</h4>
       <div className="mb-3">
         <StarRating rating={rating} size="lg" interactive onChange={setRating} />
@@ -178,7 +178,7 @@ export function ReviewForm({ listingId, onSubmitted }) {
         value={review}
         onChange={(e) => setReview(e.target.value)}
         placeholder="Share your experience with this product (optional)"
-        className="w-full px-4 py-3 rounded-xl bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-700 text-sm resize-none h-24 focus:outline-none focus:border-[var(--seasonal-primary,#1a5632)]"
+        className="w-full px-4 py-3 rounded-xl bg-zinc-900 border border-zinc-700 text-sm resize-none h-24 focus:outline-none focus:border-[var(--seasonal-primary,#1a5632)]"
       />
       {error && <p className="text-red-500 text-xs mt-1">{error}</p>}
       <button

@@ -125,8 +125,8 @@ function HowItWorks() {
         <section className="mb-20">
           <div className="text-center mb-12">
             <span className="text-xs font-bold text-[var(--seasonal-primary,#1a5632)] uppercase tracking-widest">3 Simple Steps</span>
-            <h2 className="text-3xl md:text-4xl font-black text-zinc-900 dark:text-white mt-2">Shop with ease</h2>
-            <p className="text-zinc-500 dark:text-zinc-400 mt-2 max-w-lg mx-auto">From browsing to delivery, it's that simple.</p>
+            <h2 className="text-3xl md:text-4xl font-black text-white mt-2">Shop with ease</h2>
+            <p className="text-zinc-400 mt-2 max-w-lg mx-auto">From browsing to delivery, it's that simple.</p>
           </div>
 
           <div className="grid md:grid-cols-3 gap-6">
@@ -144,8 +144,8 @@ function HowItWorks() {
                     </div>
                     <span className="text-xs font-black text-zinc-400 uppercase">Step {i + 1}</span>
                   </div>
-                  <h3 className="text-xl font-black text-zinc-900 dark:text-white mb-3">{step.title}</h3>
-                  <p className="text-zinc-500 dark:text-zinc-400 leading-relaxed text-sm">{step.description}</p>
+                  <h3 className="text-xl font-black text-white mb-3">{step.title}</h3>
+                  <p className="text-zinc-400 leading-relaxed text-sm">{step.description}</p>
                 </div>
               </div>
             ))}
@@ -156,19 +156,19 @@ function HowItWorks() {
         <section className="mb-20">
           <div className="text-center mb-12">
             <span className="text-xs font-bold text-[var(--seasonal-primary,#1a5632)] uppercase tracking-widest">Features</span>
-            <h2 className="text-3xl md:text-4xl font-black text-zinc-900 dark:text-white mt-2">Everything you get</h2>
-            <p className="text-zinc-500 dark:text-zinc-400 mt-2 max-w-lg mx-auto">Designed for how people shop in Kenya.</p>
+            <h2 className="text-3xl md:text-4xl font-black text-white mt-2">Everything you get</h2>
+            <p className="text-zinc-400 mt-2 max-w-lg mx-auto">Designed for how people shop in Kenya.</p>
           </div>
 
           <div className="grid sm:grid-cols-2 gap-4">
             {features.map((feature, i) => (
-              <div key={i} className="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-2xl p-6 flex gap-4 hover:border-[var(--seasonal-primary,#1a5632)]/30 transition-all">
-                <div className="w-12 h-12 rounded-xl bg-zinc-100 dark:bg-zinc-800 flex items-center justify-center flex-shrink-0">
+              <div key={i} className="bg-zinc-900 border border-zinc-800 rounded-2xl p-6 flex gap-4 hover:border-[var(--seasonal-primary,#1a5632)]/30 transition-all">
+                <div className="w-12 h-12 rounded-xl bg-zinc-800 flex items-center justify-center flex-shrink-0">
                   {feature.icon}
                 </div>
                 <div className="flex-1 min-w-0">
-                  <h3 className="font-bold text-zinc-900 dark:text-white mb-1">{feature.title}</h3>
-                  <p className="text-sm text-zinc-500 dark:text-zinc-400">{feature.description}</p>
+                  <h3 className="font-bold text-white mb-1">{feature.title}</h3>
+                  <p className="text-sm text-zinc-400">{feature.description}</p>
                 </div>
               </div>
             ))}
@@ -179,19 +179,19 @@ function HowItWorks() {
         <section className="mb-16">
           <div className="text-center mb-12">
             <span className="text-xs font-bold text-[var(--seasonal-primary,#1a5632)] uppercase tracking-widest">FAQ</span>
-            <h2 className="text-3xl md:text-4xl font-black text-zinc-900 dark:text-white mt-2">Common questions</h2>
+            <h2 className="text-3xl md:text-4xl font-black text-white mt-2">Common questions</h2>
           </div>
 
           <div className="max-w-3xl mx-auto space-y-3">
             {faqs.map((faq, i) => (
-              <div key={i} className="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-2xl overflow-hidden">
+              <div key={i} className="bg-zinc-900 border border-zinc-800 rounded-2xl overflow-hidden">
                 <button onClick={() => toggleFaq(i)} className="w-full flex items-center justify-between px-6 py-5 text-left hover:bg-zinc-50 dark:hover:bg-zinc-800/50 transition-colors">
-                  <span className="font-bold text-zinc-900 dark:text-white pr-4">{faq.question}</span>
+                  <span className="font-bold text-white pr-4">{faq.question}</span>
                   {openFaq === i ? <ChevronUp className="w-5 h-5 text-zinc-400 flex-shrink-0" /> : <ChevronDown className="w-5 h-5 text-zinc-400 flex-shrink-0" />}
                 </button>
                 {openFaq === i && (
                   <div className="px-6 pb-5">
-                    <p className="text-zinc-500 dark:text-zinc-400 leading-relaxed">{faq.answer}</p>
+                    <p className="text-zinc-400 leading-relaxed">{faq.answer}</p>
                   </div>
                 )}
               </div>
@@ -205,7 +205,7 @@ function HowItWorks() {
             <h2 className="text-2xl md:text-3xl font-black text-white mb-3">Ready to start shopping?</h2>
             <p className="text-white/80 mb-8 max-w-lg mx-auto">Create your account in seconds and start browsing. Pay via M-Pesa, get delivered.</p>
             <div className="flex flex-wrap gap-3 justify-center">
-              <Link to="/signup" className="bg-white text-[var(--seasonal-primary,#1a5632)] px-6 py-3 rounded-xl font-bold hover:bg-zinc-100 transition-all flex items-center gap-2">
+              <Link to="/signup" className="bg-[var(--seasonal-primary,#1a5632)] text-white px-6 py-3 rounded-xl font-bold hover:bg-[var(--seasonal-primary,#14472a)] transition-all flex items-center gap-2">
                 <ShoppingCart className="w-5 h-5" />
                 Create Account
               </Link>

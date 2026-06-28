@@ -240,7 +240,7 @@ function Home() {
 
       {/* Video Preview */}
       <div className="max-w-4xl mx-auto px-4 mb-12">
-        <div className="rounded-2xl overflow-hidden shadow-2xl border border-zinc-200 dark:border-zinc-800 bg-zinc-900">
+        <div className="rounded-2xl overflow-hidden shadow-2xl border border-zinc-800 bg-zinc-900">
           <video
             autoPlay
             muted
@@ -252,7 +252,7 @@ function Home() {
             <source src="/videos/buy_sell_kericho.mp4" type="video/mp4" />
           </video>
         </div>
-        <p className="text-center text-sm text-zinc-500 dark:text-zinc-400 mt-3">
+        <p className="text-center text-sm text-zinc-400 mt-3">
           <Link to="/how-it-works" className="text-[var(--seasonal-primary,#1a5632)] font-bold hover:underline">{t('home.howItWorks')}</Link>
         </p>
       </div>
@@ -262,7 +262,7 @@ function Home() {
         {featuredProducts.length > 0 && activeCategory === 'All' && !searchQuery && (
           <div className="mb-10">
             <div className="flex items-center justify-between mb-4">
-              <h2 className="text-xl font-bold text-zinc-900 dark:text-white">{t('home.featuredListings')}</h2>
+              <h2 className="text-xl font-bold text-white">{t('home.featuredListings')}</h2>
             </div>
             <AutoScrollCarousel itemMinWidth={260} gap={16} speed={35}>
               {featuredProducts.map((product) => (
@@ -333,7 +333,7 @@ function Home() {
         {/* Empty state */}
         {!loading && listings.length === 0 && (
           <div className="text-center py-20">
-            <p className="text-zinc-500 dark:text-zinc-400 mb-4 text-lg">{t('home.noListings')}</p>
+            <p className="text-zinc-400 mb-4 text-lg">{t('home.noListings')}</p>
             <Link to="/" className="text-[var(--seasonal-primary,#1a5632)] font-bold text-lg hover:underline underline-offset-4 mb-8 block">
               {t('home.browseListings') || 'Browse Products'}
             </Link>

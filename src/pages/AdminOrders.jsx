@@ -192,14 +192,14 @@ export default function AdminOrders() {
       {/* Header */}
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div>
-          <h2 className="text-xl font-bold text-zinc-900 dark:text-white">Orders</h2>
+          <h2 className="text-xl font-bold text-white">Orders</h2>
           <p className="text-sm text-zinc-500">{filteredOrders.length} orders - {formatKES(totalAmount)} total</p>
         </div>
         <div className="flex items-center gap-2">
-          <button onClick={handleExportCSV} className="flex items-center gap-2 px-4 py-2 rounded-xl bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 text-sm font-semibold text-zinc-700 dark:text-zinc-300 hover:bg-zinc-50 dark:hover:bg-zinc-800">
+          <button onClick={handleExportCSV} className="flex items-center gap-2 px-4 py-2 rounded-xl bg-zinc-900 border border-zinc-800 text-sm font-semibold text-zinc-300 hover:bg-zinc-50 dark:hover:bg-zinc-800">
             <Download className="w-4 h-4" /> Export CSV
           </button>
-          <button onClick={loadData} className="flex items-center gap-2 px-4 py-2 rounded-xl bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 text-sm font-semibold text-zinc-700 dark:text-zinc-300 hover:bg-zinc-50 dark:hover:bg-zinc-800">
+          <button onClick={loadData} className="flex items-center gap-2 px-4 py-2 rounded-xl bg-zinc-900 border border-zinc-800 text-sm font-semibold text-zinc-300 hover:bg-zinc-50 dark:hover:bg-zinc-800">
             <RefreshCw className="w-4 h-4" /> Refresh
           </button>
         </div>
@@ -207,15 +207,15 @@ export default function AdminOrders() {
 
       {/* Summary Cards */}
       <div className="grid grid-cols-3 gap-3">
-        <div className="bg-white dark:bg-zinc-900 rounded-xl border border-zinc-200 dark:border-zinc-800 p-4">
+        <div className="bg-zinc-900 rounded-xl border border-zinc-800 p-4">
           <p className="text-xs text-zinc-500 mb-1">Total Orders</p>
-          <p className="text-xl font-black text-zinc-900 dark:text-white">{filteredOrders.length}</p>
+          <p className="text-xl font-black text-white">{filteredOrders.length}</p>
         </div>
-        <div className="bg-white dark:bg-zinc-900 rounded-xl border border-zinc-200 dark:border-zinc-800 p-4">
+        <div className="bg-zinc-900 rounded-xl border border-zinc-800 p-4">
           <p className="text-xs text-zinc-500 mb-1">Pending</p>
           <p className="text-xl font-black text-amber-500">{pendingCount}</p>
         </div>
-        <div className="bg-white dark:bg-zinc-900 rounded-xl border border-zinc-200 dark:border-zinc-800 p-4">
+        <div className="bg-zinc-900 rounded-xl border border-zinc-800 p-4">
           <p className="text-xs text-zinc-500 mb-1">Cancelled</p>
           <p className="text-xl font-black text-red-500">{cancelledCount}</p>
         </div>
@@ -228,16 +228,16 @@ export default function AdminOrders() {
           <input
             type="text" placeholder="Search by ID, name, email, phone..."
             value={searchQuery} onChange={e => setSearchQuery(e.target.value)}
-            className="w-full pl-10 pr-4 py-2.5 rounded-xl bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 text-sm text-zinc-900 dark:text-white focus:border-primary focus:outline-none"
+            className="w-full pl-10 pr-4 py-2.5 rounded-xl bg-zinc-900 border border-zinc-800 text-sm text-white focus:border-primary focus:outline-none"
           />
         </div>
         <select value={filterStatus} onChange={e => setFilterStatus(e.target.value)}
-          className="px-4 py-2.5 rounded-xl bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 text-sm text-zinc-900 dark:text-white appearance-none">
+          className="px-4 py-2.5 rounded-xl bg-zinc-900 border border-zinc-800 text-sm text-white appearance-none">
           <option value="All">All Status</option>
           {ORDER_STATUSES.map(s => <option key={s} value={s}>{s.charAt(0).toUpperCase() + s.slice(1)}</option>)}
         </select>
         <select value={dateRange} onChange={e => setDateRange(e.target.value)}
-          className="px-4 py-2.5 rounded-xl bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 text-sm text-zinc-900 dark:text-white appearance-none">
+          className="px-4 py-2.5 rounded-xl bg-zinc-900 border border-zinc-800 text-sm text-white appearance-none">
           {DATE_RANGES.map(r => <option key={r.value} value={r.value}>{r.label}</option>)}
         </select>
       </div>
@@ -248,11 +248,11 @@ export default function AdminOrders() {
           <div className="inline-block w-8 h-8 border-4 border-primary border-t-transparent rounded-full animate-spin" />
         </div>
       ) : filteredOrders.length > 0 ? (
-        <div className="bg-white dark:bg-zinc-900 rounded-2xl border border-zinc-200 dark:border-zinc-800 overflow-hidden">
+        <div className="bg-zinc-900 rounded-2xl border border-zinc-800 overflow-hidden">
           <div className="overflow-x-auto">
             <table className="w-full">
               <thead>
-                <tr className="border-b border-zinc-200 dark:border-zinc-800">
+                <tr className="border-b border-zinc-800">
                   <th className="text-left text-xs font-bold text-zinc-500 uppercase px-4 py-3">Order</th>
                   <th className="text-left text-xs font-bold text-zinc-500 uppercase px-4 py-3 hidden md:table-cell">Customer</th>
                   <th className="text-left text-xs font-bold text-zinc-500 uppercase px-4 py-3">Total</th>
@@ -265,11 +265,11 @@ export default function AdminOrders() {
                 {filteredOrders.map(order => (
                   <tr key={order.id} className="border-b border-zinc-100 dark:border-zinc-800 last:border-0 hover:bg-zinc-50 dark:hover:bg-zinc-800/50">
                     <td className="px-4 py-3">
-                      <p className="text-sm font-mono font-semibold text-zinc-900 dark:text-white">#{String(order.id).slice(0, 8).toUpperCase()}</p>
+                      <p className="text-sm font-mono font-semibold text-white">#{String(order.id).slice(0, 8).toUpperCase()}</p>
                       <p className="text-xs text-zinc-400">{order.omix_order_items?.length || 0} items</p>
                     </td>
                     <td className="px-4 py-3 hidden md:table-cell">
-                      <p className="text-sm font-semibold text-zinc-900 dark:text-white">{order.customer_name || 'Guest'}</p>
+                      <p className="text-sm font-semibold text-white">{order.customer_name || 'Guest'}</p>
                       <p className="text-xs text-zinc-500">{order.phone || order.email || 'No contact'}</p>
                     </td>
                     <td className="px-4 py-3">
@@ -281,13 +281,13 @@ export default function AdminOrders() {
                     </td>
                     <td className="px-4 py-3">
                       <select value={order.status} onChange={(e) => handleStatusChange(order.id, e.target.value)}
-                        className={`text-[10px] uppercase font-bold px-2 py-1 rounded-full border-0 cursor-pointer ${STATUS_COLORS[order.status] || 'bg-zinc-100 text-zinc-600'}`}>
+                        className={`text-[10px] uppercase font-bold px-2 py-1 rounded-full border-0 cursor-pointer ${STATUS_COLORS[order.status] || 'bg-zinc-800 text-zinc-300'}`}>
                         {ORDER_STATUSES.map(s => <option key={s} value={s}>{s}</option>)}
                       </select>
                     </td>
                     <td className="px-4 py-3">
                       <div className="flex items-center justify-end gap-1">
-                        <button onClick={() => openOrderDetail(order)} className="p-2 rounded-lg hover:bg-zinc-100 dark:hover:bg-zinc-800 text-zinc-400 hover:text-primary" title="View details">
+                        <button onClick={() => openOrderDetail(order)} className="p-2 rounded-lg hover:bg-zinc-800 text-zinc-400 hover:text-primary" title="View details">
                           <Eye className="w-4 h-4" />
                         </button>
                         {order.status !== 'cancelled' && order.status !== 'delivered' && (
@@ -304,9 +304,9 @@ export default function AdminOrders() {
           </div>
         </div>
       ) : (
-        <div className="bg-white dark:bg-zinc-900 rounded-2xl border-2 border-dashed border-zinc-200 dark:border-zinc-800 p-12 text-center">
+        <div className="bg-zinc-900 rounded-2xl border-2 border-dashed border-zinc-800 p-12 text-center">
           <Package className="w-10 h-10 text-zinc-300 mx-auto mb-3" />
-          <h3 className="text-lg font-bold text-zinc-900 dark:text-white mb-1">No orders found</h3>
+          <h3 className="text-lg font-bold text-white mb-1">No orders found</h3>
           <p className="text-sm text-zinc-500">{searchQuery || filterStatus !== 'All' || dateRange !== 'all' ? 'Try adjusting your filters' : 'Orders will appear here when customers place them'}</p>
         </div>
       )}
@@ -315,17 +315,17 @@ export default function AdminOrders() {
       {selectedOrder && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
           <div className="absolute inset-0 bg-black/50 backdrop-blur-sm" onClick={() => setSelectedOrder(null)} />
-          <div className="relative bg-white dark:bg-zinc-900 rounded-2xl border border-zinc-200 dark:border-zinc-800 p-6 w-full max-w-lg shadow-2xl max-h-[90vh] overflow-y-auto">
+          <div className="relative bg-zinc-900 rounded-2xl border border-zinc-800 p-6 w-full max-w-lg shadow-2xl max-h-[90vh] overflow-y-auto">
             <div className="flex items-center justify-between mb-6">
               <div>
-                <h3 className="text-lg font-bold text-zinc-900 dark:text-white">Order Details</h3>
+                <h3 className="text-lg font-bold text-white">Order Details</h3>
                 <p className="text-sm font-mono text-zinc-500">#{String(selectedOrder.id).slice(0, 8).toUpperCase()}</p>
               </div>
-              <button onClick={() => setSelectedOrder(null)} className="p-2 rounded-full hover:bg-zinc-100 dark:hover:bg-zinc-800 text-zinc-400"><X className="w-5 h-5" /></button>
+              <button onClick={() => setSelectedOrder(null)} className="p-2 rounded-full hover:bg-zinc-800 text-zinc-400"><X className="w-5 h-5" /></button>
             </div>
 
             {/* Status + Actions */}
-            <div className="flex items-center justify-between mb-6 p-3 rounded-xl bg-zinc-50 dark:bg-zinc-800/50">
+            <div className="flex items-center justify-between mb-6 p-3 rounded-xl bg-zinc-800/50">
               <select value={selectedOrder.status} onChange={(e) => handleStatusChange(selectedOrder.id, e.target.value)}
                 className={`text-sm font-bold px-3 py-2 rounded-xl border-0 cursor-pointer ${STATUS_COLORS[selectedOrder.status]}`}>
                 {ORDER_STATUSES.map(s => <option key={s} value={s}>{s.charAt(0).toUpperCase() + s.slice(1)}</option>)}
@@ -339,32 +339,32 @@ export default function AdminOrders() {
             </div>
 
             {/* Customer Info */}
-            <div className="mb-5 p-4 rounded-xl bg-zinc-50 dark:bg-zinc-800/50">
-              <h4 className="text-sm font-bold text-zinc-700 dark:text-zinc-300 mb-3">Customer</h4>
+            <div className="mb-5 p-4 rounded-xl bg-zinc-800/50">
+              <h4 className="text-sm font-bold text-zinc-300 mb-3">Customer</h4>
               <div className="space-y-2">
-                <div className="flex items-center gap-2 text-sm text-zinc-600 dark:text-zinc-400">
+                <div className="flex items-center gap-2 text-sm text-zinc-400">
                   <User className="w-4 h-4 text-zinc-400 flex-shrink-0" />
                   <span className="truncate">{selectedOrder.customer_name || 'Guest'}</span>
                 </div>
                 {selectedOrder.email && (
-                  <div className="flex items-center gap-2 text-sm text-zinc-600 dark:text-zinc-400">
+                  <div className="flex items-center gap-2 text-sm text-zinc-400">
                     <Mail className="w-4 h-4 text-zinc-400 flex-shrink-0" />
                     <span className="truncate">{selectedOrder.email}</span>
                   </div>
                 )}
                 {selectedOrder.phone && (
-                  <div className="flex items-center gap-2 text-sm text-zinc-600 dark:text-zinc-400">
+                  <div className="flex items-center gap-2 text-sm text-zinc-400">
                     <Phone className="w-4 h-4 text-zinc-400 flex-shrink-0" />
                     {selectedOrder.phone}
                   </div>
                 )}
                 {selectedOrder.address && (
-                  <div className="flex items-center gap-2 text-sm text-zinc-600 dark:text-zinc-400">
+                  <div className="flex items-center gap-2 text-sm text-zinc-400">
                     <MapPin className="w-4 h-4 text-zinc-400 flex-shrink-0" />
                     {selectedOrder.address}{selectedOrder.city ? `, ${selectedOrder.city}` : ''}
                   </div>
                 )}
-                <div className="flex items-center gap-2 text-sm text-zinc-600 dark:text-zinc-400">
+                <div className="flex items-center gap-2 text-sm text-zinc-400">
                   <Clock className="w-4 h-4 text-zinc-400 flex-shrink-0" />
                   {new Date(selectedOrder.created_at).toLocaleDateString('en-KE', { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit' })}
                 </div>
@@ -374,7 +374,7 @@ export default function AdminOrders() {
             {/* Items */}
             {selectedOrder.omix_order_items && selectedOrder.omix_order_items.length > 0 && (
               <div className="mb-5">
-                <h4 className="text-sm font-bold text-zinc-700 dark:text-zinc-300 mb-3">Items</h4>
+                <h4 className="text-sm font-bold text-zinc-300 mb-3">Items</h4>
                 <div className="space-y-3">
                   {selectedOrder.omix_order_items.map((item, i) => (
                     <div key={i} className="flex items-center justify-between py-2 border-b border-zinc-100 dark:border-zinc-800 last:border-0">
@@ -383,11 +383,11 @@ export default function AdminOrders() {
                           <img src={item.product_image} alt="" className="w-10 h-10 rounded-lg object-cover" />
                         )}
                         <div>
-                          <p className="text-sm font-semibold text-zinc-900 dark:text-white">{item.product_name}</p>
+                          <p className="text-sm font-semibold text-white">{item.product_name}</p>
                           <p className="text-xs text-zinc-500">Qty: {item.quantity} x {formatKES(item.price)}</p>
                         </div>
                       </div>
-                      <p className="text-sm font-bold text-zinc-900 dark:text-white">{formatKES(item.price * item.quantity)}</p>
+                      <p className="text-sm font-bold text-white">{formatKES(item.price * item.quantity)}</p>
                     </div>
                   ))}
                 </div>
@@ -397,7 +397,7 @@ export default function AdminOrders() {
             {/* Admin Notes */}
             <div className="mb-5">
               <div className="flex items-center justify-between mb-2">
-                <h4 className="text-sm font-bold text-zinc-700 dark:text-zinc-300 flex items-center gap-2">
+                <h4 className="text-sm font-bold text-zinc-300 flex items-center gap-2">
                   <MessageSquare className="w-4 h-4" /> Internal Notes
                 </h4>
                 {!editingNotes && (
@@ -410,24 +410,24 @@ export default function AdminOrders() {
                 <div className="space-y-2">
                   <textarea rows="3" value={notesValue} onChange={e => setNotesValue(e.target.value)}
                     placeholder="Add internal notes (only visible to admins)..."
-                    className="w-full px-3 py-2 rounded-xl bg-zinc-100 dark:bg-zinc-800 border border-transparent focus:border-primary focus:outline-none text-sm text-zinc-900 dark:text-white resize-none" />
+                    className="w-full px-3 py-2 rounded-xl bg-zinc-800 border border-transparent focus:border-primary focus:outline-none text-sm text-white resize-none" />
                   <div className="flex gap-2 justify-end">
                     <button onClick={() => { setEditingNotes(false); setNotesValue(selectedOrder.admin_notes || ''); }}
-                      className="px-3 py-1.5 rounded-lg text-xs font-bold text-zinc-600 dark:text-zinc-400 hover:bg-zinc-100 dark:hover:bg-zinc-800">Cancel</button>
+                      className="px-3 py-1.5 rounded-lg text-xs font-bold text-zinc-400 hover:bg-zinc-800">Cancel</button>
                     <button onClick={handleSaveNotes}
                       className="px-3 py-1.5 rounded-lg text-xs font-bold bg-primary text-white hover:bg-primary-hover">Save</button>
                   </div>
                 </div>
               ) : (
-                <p className="text-sm text-zinc-500 dark:text-zinc-400 p-3 rounded-xl bg-zinc-50 dark:bg-zinc-800/50 min-h-[40px]">
+                <p className="text-sm text-zinc-400 p-3 rounded-xl bg-zinc-800/50 min-h-[40px]">
                   {selectedOrder.admin_notes || <span className="text-zinc-400 italic">No internal notes</span>}
                 </p>
               )}
             </div>
 
             {/* Total */}
-            <div className="flex items-center justify-between pt-4 border-t border-zinc-200 dark:border-zinc-800">
-              <span className="text-sm font-bold text-zinc-700 dark:text-zinc-300">Total</span>
+            <div className="flex items-center justify-between pt-4 border-t border-zinc-800">
+              <span className="text-sm font-bold text-zinc-300">Total</span>
               <span className="text-xl font-black text-primary">{formatKES(selectedOrder.total_amount)}</span>
             </div>
           </div>

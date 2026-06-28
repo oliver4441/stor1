@@ -56,7 +56,7 @@ export default function Breadcrumb({ customLabel, showOnMobile = true }) {
   return (
     <nav
       aria-label="Breadcrumb"
-      className={`bg-zinc-50 dark:bg-zinc-900/50 border-b border-zinc-200 dark:border-zinc-800 ${showOnMobile ? '' : 'hidden md:block'}`}
+      className={`bg-zinc-900/50 border-b border-zinc-800 ${showOnMobile ? '' : 'hidden md:block'}`}
     >
       <div className="max-w-7xl mx-auto px-4 py-2.5">
         <ol className="flex items-center gap-1.5 text-xs overflow-x-auto scrollbar-hide">
@@ -64,13 +64,13 @@ export default function Breadcrumb({ customLabel, showOnMobile = true }) {
             <li key={item.path} className="flex items-center gap-1.5 flex-shrink-0">
               {index > 0 && <ChevronRight className="w-3 h-3 text-zinc-400 flex-shrink-0" />}
               {item.isLast ? (
-                <span className="font-semibold text-zinc-900 dark:text-white truncate max-w-[200px]">
+                <span className="font-semibold text-white truncate max-w-[200px]">
                   {item.label}
                 </span>
               ) : (
                 <Link
                   to={`/${item.path}`}
-                  className="text-zinc-500 dark:text-zinc-400 hover:text-[var(--seasonal-primary,#1a5632)] dark:hover:text-[var(--seasonal-primary,#1a5632)] transition-colors flex items-center gap-1"
+                  className="text-zinc-400 hover:text-[var(--seasonal-primary,#1a5632)] dark:hover:text-[var(--seasonal-primary,#1a5632)] transition-colors flex items-center gap-1"
                 >
                   {index === 0 && <Home className="w-3 h-3" />}
                   <span>{item.label}</span>

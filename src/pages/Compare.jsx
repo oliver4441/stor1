@@ -120,7 +120,7 @@ export default function Compare() {
         </div>
         <Link
           to="/"
-          className="flex items-center gap-2 bg-zinc-100 dark:bg-zinc-900 text-zinc-600 dark:text-zinc-300 px-4 py-2 rounded-xl font-bold text-sm hover:bg-zinc-200 dark:hover:bg-zinc-800 transition-all"
+          className="flex items-center gap-2 bg-zinc-900 text-zinc-300 px-4 py-2 rounded-xl font-bold text-sm hover:bg-zinc-800 transition-all"
         >
           <ArrowLeft className="w-4 h-4" /> Back
         </Link>
@@ -131,11 +131,11 @@ export default function Compare() {
         <table className="w-full border-collapse">
           <thead>
             <tr>
-              <th className="sticky left-0 bg-white dark:bg-zinc-950 z-10 p-3 text-left text-xs font-bold text-zinc-500 dark:text-zinc-400 uppercase tracking-wider min-w-[120px] border-b border-zinc-200 dark:border-zinc-800">
+              <th className="sticky left-0 bg-zinc-950 z-10 p-3 text-left text-xs font-bold text-zinc-400 uppercase tracking-wider min-w-[120px] border-b border-zinc-800">
                 Feature
               </th>
               {listings.map(listing => (
-                <th key={listing.id} className="p-3 text-center border-b border-zinc-200 dark:border-zinc-800 min-w-[200px]">
+                <th key={listing.id} className="p-3 text-center border-b border-zinc-800 min-w-[200px]">
                   <div className="relative">
                     <button
                       onClick={() => removeFromCompare(listing.id)}
@@ -146,7 +146,7 @@ export default function Compare() {
                     </button>
                     <Link to={`/listing/${listing.id}`}>
                       {/* Image */}
-                      <div className="aspect-square bg-zinc-100 dark:bg-zinc-800 rounded-xl overflow-hidden mb-3 max-w-[180px] mx-auto">
+                      <div className="aspect-square bg-zinc-800 rounded-xl overflow-hidden mb-3 max-w-[180px] mx-auto">
                         {listing.images?.[0] ? (
                           <img src={listing.images[0]} alt={listing.title} className="w-full h-full object-cover hover:scale-105 transition-transform" />
                         ) : (
@@ -155,7 +155,7 @@ export default function Compare() {
                           </div>
                         )}
                       </div>
-                      <h3 className="font-bold text-sm text-zinc-900 dark:text-white truncate hover:text-[var(--seasonal-primary,#1a5632)] transition-colors">
+                      <h3 className="font-bold text-sm text-white truncate hover:text-[var(--seasonal-primary,#1a5632)] transition-colors">
                         {listing.title}
                       </h3>
                     </Link>
@@ -173,11 +173,11 @@ export default function Compare() {
           <tbody>
             {/* Condition */}
             <tr className="border-b border-zinc-100 dark:border-zinc-800">
-              <td className="sticky left-0 bg-white dark:bg-zinc-950 z-10 p-3 text-sm font-bold text-zinc-700 dark:text-zinc-300">
+              <td className="sticky left-0 bg-zinc-950 z-10 p-3 text-sm font-bold text-zinc-300">
                 Condition
               </td>
               {listings.map(listing => (
-                <td key={listing.id} className="p-3 text-center text-sm text-zinc-600 dark:text-zinc-400 capitalize">
+                <td key={listing.id} className="p-3 text-center text-sm text-zinc-400 capitalize">
                   {listing.condition?.replace(/_/g, ' ') || '—'}
                 </td>
               ))}
@@ -185,11 +185,11 @@ export default function Compare() {
 
             {/* Category */}
             <tr className="border-b border-zinc-100 dark:border-zinc-800">
-              <td className="sticky left-0 bg-white dark:bg-zinc-950 z-10 p-3 text-sm font-bold text-zinc-700 dark:text-zinc-300">
+              <td className="sticky left-0 bg-zinc-950 z-10 p-3 text-sm font-bold text-zinc-300">
                 Category
               </td>
               {listings.map(listing => (
-                <td key={listing.id} className="p-3 text-center text-sm text-zinc-600 dark:text-zinc-400">
+                <td key={listing.id} className="p-3 text-center text-sm text-zinc-400">
                   {listing.category || '—'}
                 </td>
               ))}
@@ -197,11 +197,11 @@ export default function Compare() {
 
             {/* Description */}
             <tr className="border-b border-zinc-100 dark:border-zinc-800">
-              <td className="sticky left-0 bg-white dark:bg-zinc-950 z-10 p-3 text-sm font-bold text-zinc-700 dark:text-zinc-300">
+              <td className="sticky left-0 bg-zinc-950 z-10 p-3 text-sm font-bold text-zinc-300">
                 Description
               </td>
               {listings.map(listing => (
-                <td key={listing.id} className="p-3 text-center text-sm text-zinc-600 dark:text-zinc-400 max-w-[250px]">
+                <td key={listing.id} className="p-3 text-center text-sm text-zinc-400 max-w-[250px]">
                   <p className="line-clamp-4">{listing.description || '—'}</p>
                 </td>
               ))}
@@ -209,11 +209,11 @@ export default function Compare() {
 
             {/* Location */}
             <tr className="border-b border-zinc-100 dark:border-zinc-800">
-              <td className="sticky left-0 bg-white dark:bg-zinc-950 z-10 p-3 text-sm font-bold text-zinc-700 dark:text-zinc-300">
+              <td className="sticky left-0 bg-zinc-950 z-10 p-3 text-sm font-bold text-zinc-300">
                 Location
               </td>
               {listings.map(listing => (
-                <td key={listing.id} className="p-3 text-center text-sm text-zinc-600 dark:text-zinc-400">
+                <td key={listing.id} className="p-3 text-center text-sm text-zinc-400">
                   {listing.location || listing.location_city || '—'}
                 </td>
               ))}
@@ -222,11 +222,11 @@ export default function Compare() {
             {/* Specs */}
             {allSpecKeys.map(key => (
               <tr key={key} className="border-b border-zinc-100 dark:border-zinc-800">
-                <td className="sticky left-0 bg-white dark:bg-zinc-950 z-10 p-3 text-sm font-bold text-zinc-700 dark:text-zinc-300">
+                <td className="sticky left-0 bg-zinc-950 z-10 p-3 text-sm font-bold text-zinc-300">
                   {specLabels[key]}
                 </td>
                 {listings.map(listing => (
-                  <td key={listing.id} className="p-3 text-center text-sm text-zinc-600 dark:text-zinc-400">
+                  <td key={listing.id} className="p-3 text-center text-sm text-zinc-400">
                     {listing[key] ? String(listing[key]) : '—'}
                   </td>
                 ))}

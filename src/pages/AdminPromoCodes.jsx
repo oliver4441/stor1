@@ -134,8 +134,8 @@ export default function AdminPromoCodes() {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h2 className="text-xl font-bold text-zinc-900 dark:text-white">Promo Codes</h2>
-          <p className="text-sm text-zinc-500 dark:text-zinc-400 mt-0.5">
+          <h2 className="text-xl font-bold text-white">Promo Codes</h2>
+          <p className="text-sm text-zinc-400 mt-0.5">
             Create and manage discount codes for your customers
           </p>
         </div>
@@ -194,7 +194,7 @@ export default function AdminPromoCodes() {
                       </code>
                       <button
                         onClick={() => copyCode(c.code, c.id)}
-                        className="p-1 rounded-md hover:bg-zinc-100 transition-colors"
+                        className="p-1 rounded-md hover:bg-zinc-800 transition-colors"
                         title="Copy code"
                       >
                         {copiedId === c.id ? (
@@ -221,7 +221,7 @@ export default function AdminPromoCodes() {
                         </span>
                       )}
                       {!c.is_active && !expired && !exhausted && (
-                        <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-zinc-100 text-zinc-500">
+                        <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-zinc-800 text-zinc-400">
                           INACTIVE
                         </span>
                       )}
@@ -251,7 +251,7 @@ export default function AdminPromoCodes() {
                   <div className="flex items-center gap-2 shrink-0">
                     <button
                       onClick={() => toggleActive(c.id, c.is_active)}
-                      className="p-2 rounded-lg hover:bg-zinc-100 transition-colors"
+                      className="p-2 rounded-lg hover:bg-zinc-800 transition-colors"
                       title={c.is_active ? 'Deactivate' : 'Activate'}
                     >
                       {c.is_active ? (
@@ -262,7 +262,7 @@ export default function AdminPromoCodes() {
                     </button>
                     <button
                       onClick={() => openEdit(c)}
-                      className="p-2 rounded-lg hover:bg-zinc-100 transition-colors"
+                      className="p-2 rounded-lg hover:bg-zinc-800 transition-colors"
                       title="Edit"
                     >
                       <Pencil className="w-4 h-4 text-zinc-500" />
@@ -286,13 +286,13 @@ export default function AdminPromoCodes() {
       {modalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
           <div className="absolute inset-0 bg-black/50 backdrop-blur-sm" onClick={() => { setModalOpen(false); resetForm(); }} />
-          <div className="relative w-full max-w-lg rounded-2xl bg-white shadow-2xl overflow-hidden">
+          <div className="relative w-full max-w-lg rounded-2xl bg-zinc-900 shadow-2xl overflow-hidden border border-zinc-800">
             {/* Header */}
             <div className="px-6 py-4 border-b flex items-center justify-between" style={{ borderColor: '#e4e4e7' }}>
-              <h3 className="text-lg font-bold text-zinc-900">
+              <h3 className="text-lg font-bold text-white">
                 {editingId ? 'Edit Promo Code' : 'New Promo Code'}
               </h3>
-              <button onClick={() => { setModalOpen(false); resetForm(); }} className="p-1.5 rounded-lg hover:bg-zinc-100">
+              <button onClick={() => { setModalOpen(false); resetForm(); }} className="p-1.5 rounded-lg hover:bg-zinc-800">
                 <X className="w-5 h-5 text-zinc-500" />
               </button>
             </div>
@@ -414,7 +414,7 @@ export default function AdminPromoCodes() {
                 <button
                   type="button"
                   onClick={() => { setModalOpen(false); resetForm(); }}
-                  className="flex-1 px-4 py-2.5 rounded-xl border text-sm font-semibold text-zinc-600 hover:bg-zinc-50"
+                  className="flex-1 px-4 py-2.5 rounded-xl border text-sm font-semibold text-zinc-300 hover:bg-zinc-800 border-zinc-700"
                   style={{ borderColor: '#e4e4e7' }}
                 >
                   Cancel
@@ -443,23 +443,23 @@ export default function AdminPromoCodes() {
       {deleteTarget && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
           <div className="absolute inset-0 bg-black/50 backdrop-blur-sm" onClick={() => setDeleteTarget(null)} />
-          <div className="relative w-full max-w-sm rounded-2xl bg-white shadow-2xl p-6">
+          <div className="relative w-full max-w-sm rounded-2xl bg-zinc-900 shadow-2xl p-6 border border-zinc-800">
             <div className="flex items-center gap-3 mb-4">
               <div className="w-10 h-10 rounded-full bg-red-100 flex items-center justify-center">
                 <AlertTriangle className="w-5 h-5 text-red-600" />
               </div>
               <div>
-                <h3 className="text-base font-bold text-zinc-900">Delete Promo Code</h3>
+                <h3 className="text-base font-bold text-white">Delete Promo Code</h3>
                 <p className="text-xs text-zinc-500">This action cannot be undone</p>
               </div>
             </div>
-            <p className="text-sm text-zinc-600 mb-5">
-              Are you sure you want to delete <code className="font-bold px-1.5 py-0.5 rounded bg-zinc-100 text-zinc-800">{deleteTarget.code}</code>?
+            <p className="text-sm text-zinc-400 mb-5">
+              Are you sure you want to delete <code className="font-bold px-1.5 py-0.5 rounded bg-zinc-800 text-zinc-200">{deleteTarget.code}</code>?
             </p>
             <div className="flex gap-3">
               <button
                 onClick={() => setDeleteTarget(null)}
-                className="flex-1 px-4 py-2.5 rounded-xl border text-sm font-semibold text-zinc-600 hover:bg-zinc-50"
+                className="flex-1 px-4 py-2.5 rounded-xl border text-sm font-semibold text-zinc-300 hover:bg-zinc-800 border-zinc-700"
                 style={{ borderColor: '#e4e4e7' }}
               >
                 Cancel

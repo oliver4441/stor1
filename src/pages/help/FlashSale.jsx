@@ -40,7 +40,7 @@ const flashSaleSteps = [
 export default function FlashSale() {
   return (
     <HelpLayout title="Flash Sale">
-      <p className="mb-6 text-zinc-600 dark:text-zinc-400">
+      <p className="mb-6 text-zinc-400">
         Grab incredible deals before they are gone.
       </p>
       

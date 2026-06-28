@@ -76,7 +76,7 @@ export default function InstallBanner({ onOpenFullGuide }) {
 
   return (
     <div className="fixed bottom-0 left-0 right-0 z-50 p-3 safe-area-bottom">
-      <div className="max-w-lg mx-auto bg-white dark:bg-zinc-900 rounded-2xl shadow-2xl shadow-black/20 border border-zinc-200 dark:border-zinc-800 p-4 flex items-center gap-3 animate-slide-up">
+      <div className="max-w-lg mx-auto bg-zinc-900 rounded-2xl shadow-2xl shadow-black/20 border border-zinc-800 p-4 flex items-center gap-3 animate-slide-up">
         {/* App Icon */}
         <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-[var(--seasonal-primary,#1a5632)] to-[var(--seasonal-primary,#1a5632)] flex items-center justify-center flex-shrink-0 shadow-lg shadow-[var(--seasonal-primary,#1a5632)]/20">
           <span className="text-white font-black text-xl">O</span>
@@ -84,10 +84,10 @@ export default function InstallBanner({ onOpenFullGuide }) {
 
         {/* Text */}
         <div className="flex-1 min-w-0">
-          <p className="font-bold text-zinc-900 dark:text-white text-sm leading-tight">
+          <p className="font-bold text-white text-sm leading-tight">
             Install Omix App
           </p>
-          <p className="text-xs text-zinc-500 dark:text-zinc-400 mt-0.5">
+          <p className="text-xs text-zinc-400 mt-0.5">
             {isIOS ? 'Add to your home screen for the best experience' : 'Get faster access, works offline'}
           </p>
         </div>
@@ -103,7 +103,7 @@ export default function InstallBanner({ onOpenFullGuide }) {
           </button>
           <button
             onClick={handleDismiss}
-            className="w-8 h-8 rounded-full bg-zinc-100 dark:bg-zinc-800 flex items-center justify-center hover:bg-zinc-200 dark:hover:bg-zinc-700 transition-colors"
+            className="w-8 h-8 rounded-full bg-zinc-800 flex items-center justify-center hover:bg-zinc-700 transition-colors"
           >
             <X className="w-4 h-4 text-zinc-400" />
           </button>

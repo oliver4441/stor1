@@ -29,21 +29,21 @@ const sections = [
 
 export default function HelpCenter() {
   return (
-    <div className="min-h-screen bg-zinc-50 dark:bg-zinc-950">
+    <div className="min-h-screen bg-zinc-950">
       <div className="max-w-4xl mx-auto px-4 py-16">
         {/* Header */}
         <div className="text-center mb-12">
-          <h1 className="text-3xl md:text-4xl font-black text-zinc-900 dark:text-white mb-3">
+          <h1 className="text-3xl md:text-4xl font-black text-white mb-3">
             Customer Help Center
           </h1>
-          <p className="text-zinc-500 dark:text-zinc-400 max-w-lg mx-auto">
+          <p className="text-zinc-400 max-w-lg mx-auto">
             Everything you need to know about shopping on Omix Store
           </p>
         </div>
 
         {/* Search hint */}
-        <div className="backdrop-blur-xl bg-white dark:bg-zinc-900/50 border border-zinc-200 dark:border-zinc-800 rounded-2xl p-6 mb-8">
-          <p className="text-sm text-zinc-500 dark:text-zinc-400 text-center">
+        <div className="backdrop-blur-xl bg-zinc-900/50 border border-zinc-800 rounded-2xl p-6 mb-8">
+          <p className="text-sm text-zinc-400 text-center">
             Browse topics below or use the search bar at the top of the page to find answers fast
           </p>
         </div>
@@ -51,7 +51,7 @@ export default function HelpCenter() {
         {/* Sections */}
         {sections.map((section) => (
           <div key={section.title} className="mb-10">
-            <h2 className="text-lg font-bold text-zinc-800 dark:text-zinc-200 mb-4 px-1">
+            <h2 className="text-lg font-bold text-zinc-200 mb-4 px-1">
               {section.title}
             </h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
@@ -59,12 +59,12 @@ export default function HelpCenter() {
                 <Link
                   key={link.to}
                   to={link.to}
-                  className="group bg-white dark:bg-zinc-900/70 border border-zinc-200 dark:border-zinc-800 rounded-xl p-5 hover:border-primary/30 hover:shadow-md transition-all"
+                  className="group bg-zinc-900/70 border border-zinc-800 rounded-xl p-5 hover:border-primary/30 hover:shadow-md transition-all"
                 >
-                  <h3 className="font-bold text-zinc-900 dark:text-white text-sm mb-1 group-hover:text-primary transition-colors">
+                  <h3 className="font-bold text-white text-sm mb-1 group-hover:text-primary transition-colors">
                     {link.label}
                   </h3>
-                  <p className="text-xs text-zinc-500 dark:text-zinc-400 leading-relaxed">
+                  <p className="text-xs text-zinc-400 leading-relaxed">
                     {link.desc}
                   </p>
                 </Link>
@@ -74,9 +74,9 @@ export default function HelpCenter() {
         ))}
 
         {/* Still need help */}
-        <div className="backdrop-blur-xl bg-white dark:bg-zinc-900/50 border border-zinc-200 dark:border-zinc-800 rounded-2xl p-6 text-center mt-8">
-          <h3 className="font-bold text-zinc-900 dark:text-white mb-2">Still need help?</h3>
-          <p className="text-sm text-zinc-500 dark:text-zinc-400 mb-4">
+        <div className="backdrop-blur-xl bg-zinc-900/50 border border-zinc-800 rounded-2xl p-6 text-center mt-8">
+          <h3 className="font-bold text-white mb-2">Still need help?</h3>
+          <p className="text-sm text-zinc-400 mb-4">
             Contact us via WhatsApp or email and we will get back to you within 24 hours
           </p>
           <div className="flex flex-wrap justify-center gap-3">

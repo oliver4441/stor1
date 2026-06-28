@@ -29,7 +29,7 @@ export function WelcomeScreen({ onFinish }) {
       <div className="relative z-10 text-center px-6 max-w-sm mx-auto w-full">
         {/* Logo */}
         <div
-          className={`w-24 h-24 rounded-3xl bg-white flex items-center justify-center mx-auto mb-6 shadow-2xl shadow-black/30 transition-all duration-700 overflow-hidden ${
+          className={`w-24 h-24 rounded-3xl bg-zinc-800 flex items-center justify-center mx-auto mb-6 shadow-2xl shadow-black/30 transition-all duration-700 overflow-hidden ${
             animStep >= 1 ? 'opacity-100 scale-100 translate-y-0' : 'opacity-0 scale-75 translate-y-4'
           }`}
         >
@@ -73,7 +73,7 @@ export function WelcomeScreen({ onFinish }) {
 
         <button
           onClick={handleContinue}
-          className={`w-full bg-white text-[var(--seasonal-primary,#1a5632)] font-black py-4 rounded-2xl text-lg shadow-xl shadow-black/20 hover:shadow-black/30 active:scale-95 transition-all duration-500 flex items-center justify-center gap-2 ${
+          className={`w-full bg-[var(--seasonal-primary,#1a5632)] text-white font-black py-4 rounded-2xl text-lg shadow-xl shadow-black/20 hover:shadow-black/30 active:scale-95 transition-all duration-500 flex items-center justify-center gap-2 ${
             animStep >= 4 ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'
           }`}
         >

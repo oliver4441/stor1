@@ -69,13 +69,13 @@ export default function AdminOverview() {
         {stats.map(stat => {
           const Icon = stat.icon;
           return (
-            <div key={stat.label} className="bg-white dark:bg-zinc-900 rounded-2xl border border-zinc-200 dark:border-zinc-800 p-5">
+            <div key={stat.label} className="bg-zinc-900 rounded-2xl border border-zinc-800 p-5">
               <div className="flex items-center justify-between mb-3">
                 <div className={`w-10 h-10 rounded-xl ${stat.bg} flex items-center justify-center`}>
                   <Icon className={`w-5 h-5 ${stat.color}`} />
                 </div>
               </div>
-              <p className="text-2xl font-black text-zinc-900 dark:text-white">{stat.value}</p>
+              <p className="text-2xl font-black text-white">{stat.value}</p>
               <p className="text-xs text-zinc-500 mt-1">{stat.label}</p>
               <p className="text-xs text-zinc-400 mt-0.5">{stat.change}</p>
             </div>
@@ -85,9 +85,9 @@ export default function AdminOverview() {
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Recent Orders */}
-        <div className="bg-white dark:bg-zinc-900 rounded-2xl border border-zinc-200 dark:border-zinc-800 p-5">
+        <div className="bg-zinc-900 rounded-2xl border border-zinc-800 p-5">
           <div className="flex items-center justify-between mb-4">
-            <h3 className="text-base font-bold text-zinc-900 dark:text-white">Recent Orders</h3>
+            <h3 className="text-base font-bold text-white">Recent Orders</h3>
             <a href="/admin/orders" className="text-xs font-semibold text-primary hover:underline">View all orders</a>
           </div>
           {recentOrders.length > 0 ? (
@@ -95,7 +95,7 @@ export default function AdminOverview() {
               {recentOrders.map(order => (
                 <div key={order.id} className="flex items-center justify-between py-2 border-b border-zinc-100 dark:border-zinc-800 last:border-0">
                   <div>
-                    <p className="text-sm font-semibold text-zinc-900 dark:text-white">
+                    <p className="text-sm font-semibold text-white">
                       #{String(order.id).slice(0, 8).toUpperCase()}
                     </p>
                     <p className="text-xs text-zinc-500">{order.customer_name || 'Guest'} • {order.phone || 'No phone'}</p>
@@ -121,9 +121,9 @@ export default function AdminOverview() {
         </div>
 
         {/* Top Products */}
-        <div className="bg-white dark:bg-zinc-900 rounded-2xl border border-zinc-200 dark:border-zinc-800 p-5">
+        <div className="bg-zinc-900 rounded-2xl border border-zinc-800 p-5">
           <div className="flex items-center justify-between mb-4">
-            <h3 className="text-base font-bold text-zinc-900 dark:text-white">Top Products</h3>
+            <h3 className="text-base font-bold text-white">Top Products</h3>
             <a href="/admin/products" className="text-xs font-semibold text-primary hover:underline">View all products</a>
           </div>
           {topProducts.length > 0 ? (
@@ -131,9 +131,9 @@ export default function AdminOverview() {
               {topProducts.map((product, i) => (
                 <div key={product.name} className="flex items-center justify-between py-2 border-b border-zinc-100 dark:border-zinc-800 last:border-0">
                   <div className="flex items-center gap-3">
-                    <span className="w-6 h-6 rounded-lg bg-zinc-100 dark:bg-zinc-800 flex items-center justify-center text-xs font-bold text-zinc-500">{i + 1}</span>
+                    <span className="w-6 h-6 rounded-lg bg-zinc-800 flex items-center justify-center text-xs font-bold text-zinc-500">{i + 1}</span>
                     <div>
-                      <p className="text-sm font-semibold text-zinc-900 dark:text-white truncate max-w-[180px]">{product.name}</p>
+                      <p className="text-sm font-semibold text-white truncate max-w-[180px]">{product.name}</p>
                       <p className="text-xs text-zinc-500">{product.count} sold</p>
                     </div>
                   </div>
@@ -151,24 +151,24 @@ export default function AdminOverview() {
       </div>
 
       {/* Quick Actions */}
-      <div className="bg-white dark:bg-zinc-900 rounded-2xl border border-zinc-200 dark:border-zinc-800 p-5">
-        <h3 className="text-base font-bold text-zinc-900 dark:text-white mb-4">Quick Actions</h3>
+      <div className="bg-zinc-900 rounded-2xl border border-zinc-800 p-5">
+        <h3 className="text-base font-bold text-white mb-4">Quick Actions</h3>
         <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-          <a href="/admin/products" className="flex items-center gap-3 p-3 rounded-xl bg-zinc-50 dark:bg-zinc-800 hover:bg-primary/10 hover:border-primary/30 border border-transparent transition-all group">
+          <a href="/admin/products" className="flex items-center gap-3 p-3 rounded-xl bg-zinc-800 hover:bg-primary/10 hover:border-primary/30 border border-transparent transition-all group">
             <Package className="w-5 h-5 text-primary" />
-            <span className="text-sm font-semibold text-zinc-700 dark:text-zinc-300 group-hover:text-primary">Add Product</span>
+            <span className="text-sm font-semibold text-zinc-300 group-hover:text-primary">Add Product</span>
           </a>
-          <a href="/admin/orders" className="flex items-center gap-3 p-3 rounded-xl bg-zinc-50 dark:bg-zinc-800 hover:bg-blue-50 dark:hover:bg-blue-900/20 hover:border-blue-500/30 border border-transparent transition-all group">
+          <a href="/admin/orders" className="flex items-center gap-3 p-3 rounded-xl bg-zinc-800 hover:bg-blue-50 dark:hover:bg-blue-900/20 hover:border-blue-500/30 border border-transparent transition-all group">
             <ShoppingBag className="w-5 h-5 text-blue-500" />
-            <span className="text-sm font-semibold text-zinc-700 dark:text-zinc-300 group-hover:text-blue-500">View Orders</span>
+            <span className="text-sm font-semibold text-zinc-300 group-hover:text-blue-500">View Orders</span>
           </a>
-          <a href="/admin/analytics" className="flex items-center gap-3 p-3 rounded-xl bg-zinc-50 dark:bg-zinc-800 hover:bg-emerald-50 dark:hover:bg-emerald-900/20 hover:border-emerald-500/30 border border-transparent transition-all group">
+          <a href="/admin/analytics" className="flex items-center gap-3 p-3 rounded-xl bg-zinc-800 hover:bg-emerald-50 dark:hover:bg-emerald-900/20 hover:border-emerald-500/30 border border-transparent transition-all group">
             <TrendingUp className="w-5 h-5 text-emerald-500" />
-            <span className="text-sm font-semibold text-zinc-700 dark:text-zinc-300 group-hover:text-emerald-500">Analytics</span>
+            <span className="text-sm font-semibold text-zinc-300 group-hover:text-emerald-500">Analytics</span>
           </a>
-          <a href="/" target="_blank" className="flex items-center gap-3 p-3 rounded-xl bg-zinc-50 dark:bg-zinc-800 hover:bg-purple-50 dark:hover:bg-purple-900/20 hover:border-purple-500/30 border border-transparent transition-all group">
+          <a href="/" target="_blank" className="flex items-center gap-3 p-3 rounded-xl bg-zinc-800 hover:bg-purple-50 dark:hover:bg-purple-900/20 hover:border-purple-500/30 border border-transparent transition-all group">
             <Eye className="w-5 h-5 text-purple-500" />
-            <span className="text-sm font-semibold text-zinc-700 dark:text-zinc-300 group-hover:text-purple-500">View Store</span>
+            <span className="text-sm font-semibold text-zinc-300 group-hover:text-purple-500">View Store</span>
           </a>
         </div>
       </div>

@@ -88,17 +88,17 @@ export default function InstallPrompt() {
                 <Download className="w-5 h-5 text-[var(--seasonal-primary,#1a5632)]" />
               </div>
               <div className="flex-1 min-w-0">
-                <h4 className="text-sm font-bold text-zinc-900 dark:text-white">
+                <h4 className="text-sm font-bold text-white">
                   Install Omix Store
                 </h4>
-                <p className="text-xs text-zinc-500 dark:text-zinc-400 leading-relaxed mt-0.5">
+                <p className="text-xs text-zinc-400 leading-relaxed mt-0.5">
                   Install for the best experience
                 </p>
               </div>
             </div>
             <button
               onClick={handleDismiss}
-              className="p-1.5 rounded-lg hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors shrink-0"
+              className="p-1.5 rounded-lg hover:bg-zinc-800 transition-colors shrink-0"
               aria-label="Dismiss install prompt"
             >
               <X className="w-4 h-4 text-zinc-400" />

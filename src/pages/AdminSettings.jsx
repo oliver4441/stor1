@@ -200,7 +200,7 @@ export default function AdminSettings() {
   return (
     <div className="space-y-6 max-w-3xl">
       <div>
-        <h2 className="text-xl font-bold text-zinc-900 dark:text-white">Settings</h2>
+        <h2 className="text-xl font-bold text-white">Settings</h2>
         <p className="text-sm text-zinc-500">Configure your store</p>
       </div>
 
@@ -209,75 +209,75 @@ export default function AdminSettings() {
       )}
 
       {/* Store Info */}
-      <div className="bg-white dark:bg-zinc-900 rounded-2xl border border-zinc-200 dark:border-zinc-800 p-6">
+      <div className="bg-zinc-900 rounded-2xl border border-zinc-800 p-6">
         <div className="flex items-center gap-3 mb-5">
           <Store className="w-5 h-5 text-primary" />
-          <h3 className="text-base font-bold text-zinc-900 dark:text-white">Store Information</h3>
+          <h3 className="text-base font-bold text-white">Store Information</h3>
         </div>
         <div className="space-y-4">
           <div>
-            <label className="block text-sm font-bold mb-1.5 text-zinc-700 dark:text-zinc-300">Store Name</label>
+            <label className="block text-sm font-bold mb-1.5 text-zinc-300">Store Name</label>
             <input value={form.storeName} onChange={e => updateField('storeName', e.target.value)}
-              className="w-full px-4 py-2.5 rounded-xl bg-zinc-100 dark:bg-zinc-800 border border-transparent focus:border-primary focus:outline-none text-zinc-900 dark:text-white text-sm" />
+              className="w-full px-4 py-2.5 rounded-xl bg-zinc-800 border border-transparent focus:border-primary focus:outline-none text-white text-sm" />
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-bold mb-1.5 text-zinc-700 dark:text-zinc-300">Email</label>
+              <label className="block text-sm font-bold mb-1.5 text-zinc-300">Email</label>
               <input type="email" value={form.storeEmail} onChange={e => updateField('storeEmail', e.target.value)}
-                className="w-full px-4 py-2.5 rounded-xl bg-zinc-100 dark:bg-zinc-800 border border-transparent focus:border-primary focus:outline-none text-zinc-900 dark:text-white text-sm" />
+                className="w-full px-4 py-2.5 rounded-xl bg-zinc-800 border border-transparent focus:border-primary focus:outline-none text-white text-sm" />
             </div>
             <div>
-              <label className="block text-sm font-bold mb-1.5 text-zinc-700 dark:text-zinc-300">Phone</label>
+              <label className="block text-sm font-bold mb-1.5 text-zinc-300">Phone</label>
               <input value={form.storePhone} onChange={e => updateField('storePhone', e.target.value)}
-                className="w-full px-4 py-2.5 rounded-xl bg-zinc-100 dark:bg-zinc-800 border border-transparent focus:border-primary focus:outline-none text-zinc-900 dark:text-white text-sm" />
+                className="w-full px-4 py-2.5 rounded-xl bg-zinc-800 border border-transparent focus:border-primary focus:outline-none text-white text-sm" />
             </div>
           </div>
         </div>
       </div>
 
       {/* Delivery */}
-      <div className="bg-white dark:bg-zinc-900 rounded-2xl border border-zinc-200 dark:border-zinc-800 p-6">
+      <div className="bg-zinc-900 rounded-2xl border border-zinc-800 p-6">
         <div className="flex items-center gap-3 mb-5">
           <Truck className="w-5 h-5 text-blue-500" />
-          <h3 className="text-base font-bold text-zinc-900 dark:text-white">Delivery</h3>
+          <h3 className="text-base font-bold text-white">Delivery</h3>
         </div>
         <div className="space-y-4">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <div>
-              <label className="block text-sm font-bold mb-1.5 text-zinc-700 dark:text-zinc-300">CBD Delivery (KES)</label>
+              <label className="block text-sm font-bold mb-1.5 text-zinc-300">CBD Delivery (KES)</label>
               <input type="number" value={form.deliveryCBD} onChange={e => updateField('deliveryCBD', e.target.value)}
-                className="w-full px-4 py-2.5 rounded-xl bg-zinc-100 dark:bg-zinc-800 border border-transparent focus:border-primary focus:outline-none text-zinc-900 dark:text-white text-sm" />
+                className="w-full px-4 py-2.5 rounded-xl bg-zinc-800 border border-transparent focus:border-primary focus:outline-none text-white text-sm" />
             </div>
             <div>
-              <label className="block text-sm font-bold mb-1.5 text-zinc-700 dark:text-zinc-300">Kericho (KES)</label>
+              <label className="block text-sm font-bold mb-1.5 text-zinc-300">Kericho (KES)</label>
               <input type="number" value={form.deliveryKericho} onChange={e => updateField('deliveryKericho', e.target.value)}
-                className="w-full px-4 py-2.5 rounded-xl bg-zinc-100 dark:bg-zinc-800 border border-transparent focus:border-primary focus:outline-none text-zinc-900 dark:text-white text-sm" />
+                className="w-full px-4 py-2.5 rounded-xl bg-zinc-800 border border-transparent focus:border-primary focus:outline-none text-white text-sm" />
             </div>
             <div>
-              <label className="block text-sm font-bold mb-1.5 text-zinc-700 dark:text-zinc-300">Outside Kericho (KES)</label>
+              <label className="block text-sm font-bold mb-1.5 text-zinc-300">Outside Kericho (KES)</label>
               <input type="number" value={form.deliveryOutside} onChange={e => updateField('deliveryOutside', e.target.value)}
-                className="w-full px-4 py-2.5 rounded-xl bg-zinc-100 dark:bg-zinc-800 border border-transparent focus:border-primary focus:outline-none text-zinc-900 dark:text-white text-sm" />
+                className="w-full px-4 py-2.5 rounded-xl bg-zinc-800 border border-transparent focus:border-primary focus:outline-none text-white text-sm" />
             </div>
           </div>
           <div>
-            <label className="block text-sm font-bold mb-1.5 text-zinc-700 dark:text-zinc-300">Free Shipping Threshold (KES)</label>
+            <label className="block text-sm font-bold mb-1.5 text-zinc-300">Free Shipping Threshold (KES)</label>
             <input type="number" value={form.freeShippingThreshold} onChange={e => updateField('freeShippingThreshold', e.target.value)}
-              className="w-full md:w-1/3 px-4 py-2.5 rounded-xl bg-zinc-100 dark:bg-zinc-800 border border-transparent focus:border-primary focus:outline-none text-zinc-900 dark:text-white text-sm" />
+              className="w-full md:w-1/3 px-4 py-2.5 rounded-xl bg-zinc-800 border border-transparent focus:border-primary focus:outline-none text-white text-sm" />
             <p className="text-xs text-zinc-500 mt-1">Orders above this amount get free delivery</p>
           </div>
         </div>
       </div>
 
       {/* Notifications */}
-      <div className="bg-white dark:bg-zinc-900 rounded-2xl border border-zinc-200 dark:border-zinc-800 p-6">
+      <div className="bg-zinc-900 rounded-2xl border border-zinc-800 p-6">
         <div className="flex items-center gap-3 mb-5">
           <Bell className="w-5 h-5 text-amber-500" />
-          <h3 className="text-base font-bold text-zinc-900 dark:text-white">Notifications</h3>
+          <h3 className="text-base font-bold text-white">Notifications</h3>
         </div>
         <div className="space-y-4">
           <label className="flex items-center justify-between cursor-pointer">
             <div>
-              <p className="text-sm font-semibold text-zinc-900 dark:text-white">Email Notifications</p>
+              <p className="text-sm font-semibold text-white">Email Notifications</p>
               <p className="text-xs text-zinc-500">Receive email for new orders</p>
             </div>
             <div className={`w-11 h-6 rounded-full transition-colors relative ${form.emailNotifications ? 'bg-primary' : 'bg-zinc-300 dark:bg-zinc-700'}`}
@@ -292,11 +292,11 @@ export default function AdminSettings() {
       <div className={`rounded-2xl border p-6 ${
         form.maintenanceMode
           ? 'bg-amber-50 dark:bg-amber-950/30 border-amber-300 dark:border-amber-800'
-          : 'bg-white dark:bg-zinc-900 border-zinc-200 dark:border-zinc-800'
+          : 'bg-zinc-900 border-zinc-800'
       }`}>
         <div className="flex items-center gap-3 mb-5">
           <Wrench className={`w-5 h-5 ${form.maintenanceMode ? 'text-amber-600' : 'text-purple-500'}`} />
-          <h3 className="text-base font-bold text-zinc-900 dark:text-white">Site Status</h3>
+          <h3 className="text-base font-bold text-white">Site Status</h3>
           {form.maintenanceMode && (
             <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-amber-500 text-white uppercase tracking-wider animate-pulse">
               Active
@@ -305,7 +305,7 @@ export default function AdminSettings() {
         </div>
         <label className="flex items-center justify-between cursor-pointer">
           <div>
-            <p className="text-sm font-semibold text-zinc-900 dark:text-white">Maintenance Mode</p>
+            <p className="text-sm font-semibold text-white">Maintenance Mode</p>
             <p className="text-xs text-zinc-500">Temporarily disable purchases for customers</p>
           </div>
           <div className={`w-11 h-6 rounded-full transition-colors relative ${
@@ -327,10 +327,10 @@ export default function AdminSettings() {
       </div>
 
       {/* Seasonal Themes */}
-      <div className="bg-white dark:bg-zinc-900 rounded-2xl border border-zinc-200 dark:border-zinc-800 p-6">
+      <div className="bg-zinc-900 rounded-2xl border border-zinc-800 p-6">
         <div className="flex items-center gap-3 mb-2">
           <Palette className="w-5 h-5 text-pink-500" />
-          <h3 className="text-base font-bold text-zinc-900 dark:text-white">Seasonal Themes</h3>
+          <h3 className="text-base font-bold text-white">Seasonal Themes</h3>
         </div>
         <p className="text-xs text-zinc-500 mb-4">
           Automatically transform the app look for holidays and events. Active theme changes based on date.
@@ -353,7 +353,7 @@ export default function AdminSettings() {
         )}
 
         {!activeTheme && (
-          <div className="mb-4 p-3 rounded-xl bg-zinc-50 dark:bg-zinc-800/50 border border-zinc-200 dark:border-zinc-700">
+          <div className="mb-4 p-3 rounded-xl bg-zinc-800/50 border border-zinc-700">
             <p className="text-xs text-zinc-500">No seasonal theme is currently active. Enable one below to get started.</p>
           </div>
         )}
@@ -378,7 +378,7 @@ export default function AdminSettings() {
                     <div className="w-4 h-4 rounded-full border-2 border-white dark:border-zinc-900" style={{ backgroundColor: theme.colors?.secondary }} />
                   </div>
                   <div>
-                    <p className="text-sm font-semibold text-zinc-900 dark:text-white">{theme.name}</p>
+                    <p className="text-sm font-semibold text-white">{theme.name}</p>
                     <div className="flex items-center gap-2 text-[11px] text-zinc-500">
                       <Calendar className="w-3 h-3" />
                       {theme.dateRange.start} — {theme.dateRange.end}
@@ -393,7 +393,7 @@ export default function AdminSettings() {
                   {/* Preview button */}
                   <button
                     onClick={() => setPreviewTheme(previewTheme === theme.id ? null : theme.id)}
-                    className="p-1.5 rounded-lg hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors"
+                    className="p-1.5 rounded-lg hover:bg-zinc-800 transition-colors"
                     title="Preview theme"
                   >
                     <Eye className="w-4 h-4 text-zinc-400" />
@@ -434,10 +434,10 @@ export default function AdminSettings() {
       </div>
 
       {/* Broadcast Update */}
-      <div className="bg-white dark:bg-zinc-900 rounded-2xl border border-zinc-200 dark:border-zinc-800 p-6">
+      <div className="bg-zinc-900 rounded-2xl border border-zinc-800 p-6">
         <div className="flex items-center gap-3 mb-5">
           <Megaphone className="w-5 h-5 text-purple-500" />
-          <h3 className="text-base font-bold text-zinc-900 dark:text-white">Broadcast Update</h3>
+          <h3 className="text-base font-bold text-white">Broadcast Update</h3>
         </div>
         <p className="text-xs text-zinc-500 mb-3">
           Send a push notification to all users who have enabled notifications. Use for new features, promotions, or important announcements.
@@ -447,7 +447,7 @@ export default function AdminSettings() {
           onChange={e => setUpdateMsg(e.target.value)}
           placeholder="What's new at Omix Store?..."
           rows={3}
-          className="w-full px-4 py-3 rounded-xl bg-zinc-100 dark:bg-zinc-800 border border-transparent focus:border-primary focus:outline-none text-zinc-900 dark:text-white text-sm resize-none"
+          className="w-full px-4 py-3 rounded-xl bg-zinc-800 border border-transparent focus:border-primary focus:outline-none text-white text-sm resize-none"
         />
         <div className="flex items-center justify-between mt-3">
           <span className="text-[11px] text-zinc-400">{updateMsg.length}/200</span>

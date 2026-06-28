@@ -69,7 +69,7 @@ function App() {
     <NiaChatProvider>
     <ErrorBoundary>
       <ScrollToTop />
-      <div className="min-h-screen flex flex-col bg-white">
+      <div className="min-h-screen flex flex-col bg-zinc-950">
         <Navbar />
         <main className="flex-grow">
           <Routes>

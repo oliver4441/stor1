@@ -16,7 +16,7 @@ export function ProductCardSkeleton() {
   return (
     <div className="block group">
       {/* Image placeholder — matches aspect-[4/5] ratio used in ProductCard */}
-      <div className="bg-zinc-100 dark:bg-zinc-900 rounded-2xl overflow-hidden aspect-[4/5] mb-3 relative">
+      <div className="bg-zinc-900 rounded-2xl overflow-hidden aspect-[4/5] mb-3 relative">
         <Skeleton className="absolute inset-0 rounded-none bg-zinc-200 dark:bg-zinc-800" />
         {/* Condition badge skeleton */}
         <Skeleton className="absolute top-2 left-2 w-16 h-5 rounded-lg" />
@@ -119,9 +119,9 @@ export function CheckoutSkeleton() {
       <div className="grid grid-cols-1 lg:grid-cols-5 gap-6">
         {/* ── Order Summary (left, 2 cols) ─────────────────────── */}
         <div className="lg:col-span-2 order-2 lg:order-1">
-          <div className="rounded-2xl border border-zinc-200 dark:border-zinc-800 overflow-hidden bg-white dark:bg-zinc-900">
+          <div className="rounded-2xl border border-zinc-800 overflow-hidden bg-zinc-900">
             {/* Header */}
-            <div className="px-5 py-4 border-b border-zinc-200 dark:border-zinc-800">
+            <div className="px-5 py-4 border-b border-zinc-800">
               <div className="flex items-center justify-between">
                 <Skeleton className="h-5 w-32" />
                 <Skeleton className="h-5 w-16 rounded-full" />
@@ -147,7 +147,7 @@ export function CheckoutSkeleton() {
             </div>
 
             {/* Promo code */}
-            <div className="px-5 py-4 border-t border-zinc-200 dark:border-zinc-800">
+            <div className="px-5 py-4 border-t border-zinc-800">
               <Skeleton className="h-3 w-20 mb-1.5" />
               <div className="flex gap-2">
                 <Skeleton className="flex-1 h-9 rounded-lg" />
@@ -156,7 +156,7 @@ export function CheckoutSkeleton() {
             </div>
 
             {/* Total */}
-            <div className="px-5 py-4 border-t border-zinc-200 dark:border-zinc-800 space-y-2">
+            <div className="px-5 py-4 border-t border-zinc-800 space-y-2">
               <div className="flex justify-between">
                 <Skeleton className="h-4 w-20" />
                 <Skeleton className="h-4 w-16" />
@@ -165,7 +165,7 @@ export function CheckoutSkeleton() {
                 <Skeleton className="h-4 w-16" />
                 <Skeleton className="h-4 w-24" />
               </div>
-              <div className="flex justify-between pt-3 border-t border-zinc-200 dark:border-zinc-800">
+              <div className="flex justify-between pt-3 border-t border-zinc-800">
                 <Skeleton className="h-5 w-12" />
                 <Skeleton className="h-6 w-24" />
               </div>
@@ -175,9 +175,9 @@ export function CheckoutSkeleton() {
 
         {/* ── Form (right, 3 cols) ─────────────────────────────── */}
         <div className="lg:col-span-3 order-1 lg:order-2">
-          <div className="rounded-2xl border border-zinc-200 dark:border-zinc-800 overflow-hidden bg-white dark:bg-zinc-900">
+          <div className="rounded-2xl border border-zinc-800 overflow-hidden bg-zinc-900">
             {/* Header */}
-            <div className="px-5 py-4 border-b border-zinc-200 dark:border-zinc-800">
+            <div className="px-5 py-4 border-b border-zinc-800">
               <Skeleton className="h-5 w-48" />
               <Skeleton className="h-3 w-64 mt-1" />
             </div>

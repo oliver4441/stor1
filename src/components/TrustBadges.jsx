@@ -11,11 +11,11 @@ const BADGES = [
 export default function TrustBadges({ compact = false }) {
   if (compact) {
     return (
-      <div className="flex items-center justify-center gap-4 py-3 px-4 bg-zinc-50 dark:bg-zinc-900/50 rounded-xl border border-zinc-200 dark:border-zinc-800">
+      <div className="flex items-center justify-center gap-4 py-3 px-4 bg-zinc-900/50 rounded-xl border border-zinc-800">
         {BADGES.slice(0, 3).map((badge) => {
           const Icon = badge.icon;
           return (
-            <div key={badge.label} className="flex items-center gap-1.5 text-[10px] text-zinc-500 dark:text-zinc-400">
+            <div key={badge.label} className="flex items-center gap-1.5 text-[10px] text-zinc-400">
               <Icon className="w-3.5 h-3.5 text-[var(--seasonal-primary,#1a5632)]" />
               <span className="font-semibold">{badge.label}</span>
             </div>
@@ -32,12 +32,12 @@ export default function TrustBadges({ compact = false }) {
         return (
           <div
             key={badge.label}
-            className="flex flex-col items-center text-center gap-1.5 p-3 rounded-xl bg-zinc-50 dark:bg-zinc-900/50 border border-zinc-200 dark:border-zinc-800"
+            className="flex flex-col items-center text-center gap-1.5 p-3 rounded-xl bg-zinc-900/50 border border-zinc-800"
           >
             <div className="w-8 h-8 rounded-full bg-[var(--seasonal-primary,#1a5632)]/10 flex items-center justify-center">
               <Icon className="w-4 h-4 text-[var(--seasonal-primary,#1a5632)]" />
             </div>
-            <span className="text-[10px] font-bold text-zinc-700 dark:text-zinc-300 leading-tight">{badge.label}</span>
+            <span className="text-[10px] font-bold text-zinc-300 leading-tight">{badge.label}</span>
             <span className="text-[9px] text-zinc-400 leading-tight">{badge.desc}</span>
           </div>
         );

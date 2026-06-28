@@ -134,16 +134,16 @@ export default function VariantManager({ category, basePrice, baseSku, value = [
   const totalStock = variants.reduce((sum, v) => sum + (parseInt(v.quantity) || 0), 0);
 
   return (
-    <div className="border border-zinc-200 dark:border-zinc-700 rounded-2xl overflow-hidden">
+    <div className="border border-zinc-700 rounded-2xl overflow-hidden">
       {/* Header Toggle */}
       <button
         type="button"
         onClick={() => setExpanded(!expanded)}
-        className="w-full flex items-center justify-between px-4 py-3 bg-zinc-50 dark:bg-zinc-800/50 hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors"
+        className="w-full flex items-center justify-between px-4 py-3 bg-zinc-800/50 hover:bg-zinc-800 transition-colors"
       >
         <div className="flex items-center gap-2.5">
           <Shirt className="w-4 h-4 text-[var(--seasonal-primary,#1a5632)]" />
-          <span className="text-sm font-bold text-zinc-700 dark:text-zinc-300">Product Variants</span>
+          <span className="text-sm font-bold text-zinc-300">Product Variants</span>
           {variants.length > 0 && (
             <span className="text-[10px] font-bold bg-[var(--seasonal-primary,#1a5632)] text-white px-1.5 py-0.5 rounded-full">
               {variants.length} variants
@@ -170,12 +170,12 @@ export default function VariantManager({ category, basePrice, baseSku, value = [
 
           {/* Step 1: Select Colors */}
           <div>
-            <label className="block text-xs font-bold text-zinc-500 dark:text-zinc-400 uppercase tracking-wider mb-2">Colors</label>
+            <label className="block text-xs font-bold text-zinc-400 uppercase tracking-wider mb-2">Colors</label>
             <div className="flex flex-wrap gap-2 mb-2">
               {colors.map(color => (
-                <div key={color.hex} className="flex items-center gap-1.5 bg-white dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 rounded-lg pl-1 pr-2 py-1">
+                <div key={color.hex} className="flex items-center gap-1.5 bg-zinc-800 border border-zinc-700 rounded-lg pl-1 pr-2 py-1">
                   <div className="w-5 h-5 rounded border border-zinc-300 dark:border-zinc-600 flex-shrink-0" style={{ backgroundColor: color.hex }} />
-                  <span className="text-xs font-medium text-zinc-700 dark:text-zinc-300">{color.name}</span>
+                  <span className="text-xs font-medium text-zinc-300">{color.name}</span>
                   <button type="button" onClick={() => removeColor(color.hex)} className="text-zinc-400 hover:text-red-500">
                     <X className="w-3 h-3" />
                   </button>
@@ -192,7 +192,7 @@ export default function VariantManager({ category, basePrice, baseSku, value = [
 
             {/* Color Picker */}
             {showColorPicker && (
-              <div className="p-3 bg-zinc-50 dark:bg-zinc-800/50 rounded-xl border border-zinc-200 dark:border-zinc-700">
+              <div className="p-3 bg-zinc-800/50 rounded-xl border border-zinc-700">
                 <p className="text-[10px] font-bold text-zinc-500 uppercase tracking-wider mb-2">Preset Colors</p>
                 <div className="flex flex-wrap gap-1.5 mb-3">
                   {COLOR_PALETTE.map(c => (
@@ -200,7 +200,7 @@ export default function VariantManager({ category, basePrice, baseSku, value = [
                       key={c.hex}
                       type="button"
                       onClick={() => addColorFromPalette(c)}
-                      className="group relative w-7 h-7 rounded-lg border-2 border-zinc-200 dark:border-zinc-600 hover:border-[var(--seasonal-primary,#1a5632)] transition-colors hover:scale-110"
+                      className="group relative w-7 h-7 rounded-lg border-2 border-zinc-600 hover:border-[var(--seasonal-primary,#1a5632)] transition-colors hover:scale-110"
                       style={{ backgroundColor: c.hex.includes('linear') ? undefined : c.hex, background: c.hex.includes('linear') ? c.hex : undefined }}
                       title={c.name}
                     >
@@ -212,9 +212,9 @@ export default function VariantManager({ category, basePrice, baseSku, value = [
                     </button>
                   ))}
                 </div>
-                <div className="flex items-center gap-2 pt-2 border-t border-zinc-200 dark:border-zinc-700">
+                <div className="flex items-center gap-2 pt-2 border-t border-zinc-700">
                   <input type="color" value={customColorHex} onChange={e => setCustomColorHex(e.target.value)} className="w-8 h-8 rounded cursor-pointer" />
-                  <input type="text" value={customColorName} onChange={e => setCustomColorName(e.target.value)} placeholder="Color name (e.g. Sky Blue)" className="flex-1 px-2 py-1 rounded-lg bg-white dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 text-xs text-zinc-900 dark:text-white" />
+                  <input type="text" value={customColorName} onChange={e => setCustomColorName(e.target.value)} placeholder="Color name (e.g. Sky Blue)" className="flex-1 px-2 py-1 rounded-lg bg-zinc-800 border border-zinc-700 text-xs text-white" />
                   <button type="button" onClick={addCustomColor} disabled={!customColorName.trim()} className="px-3 py-1 bg-[var(--seasonal-primary,#1a5632)] text-white text-xs font-bold rounded-lg disabled:opacity-50">Add</button>
                   <button type="button" onClick={() => setShowColorPicker(false)} className="text-xs text-zinc-500 hover:text-zinc-700">Cancel</button>
                 </div>
@@ -224,7 +224,7 @@ export default function VariantManager({ category, basePrice, baseSku, value = [
 
           {/* Step 2: Select Sizes */}
           <div>
-            <label className="block text-xs font-bold text-zinc-500 dark:text-zinc-400 uppercase tracking-wider mb-2">Sizes</label>
+            <label className="block text-xs font-bold text-zinc-400 uppercase tracking-wider mb-2">Sizes</label>
             {presetSizes && (
               <div className="flex flex-wrap gap-1.5 mb-2">
                 {presetSizes.map(size => {
@@ -237,7 +237,7 @@ export default function VariantManager({ category, basePrice, baseSku, value = [
                       className={`px-2.5 py-1 rounded-lg text-xs font-bold border transition-all ${
                         active
                           ? 'bg-[var(--seasonal-primary,#1a5632)] text-white border-[var(--seasonal-primary,#1a5632)]'
-                          : 'bg-white dark:bg-zinc-800 text-zinc-600 dark:text-zinc-400 border-zinc-200 dark:border-zinc-700 hover:border-[var(--seasonal-primary,#1a5632)]'
+                          : 'bg-zinc-800 text-zinc-400 border-zinc-700 hover:border-[var(--seasonal-primary,#1a5632)]'
                       }`}
                     >
                       {size}
@@ -253,9 +253,9 @@ export default function VariantManager({ category, basePrice, baseSku, value = [
                 onChange={e => setCustomSize(e.target.value)}
                 onKeyDown={e => { if (e.key === 'Enter') { e.preventDefault(); addSize(customSize); } }}
                 placeholder={presetSizes ? "Or type custom size..." : "Type a size and press Enter"}
-                className="px-2 py-1 rounded-lg bg-white dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 text-xs text-zinc-900 dark:text-white w-36"
+                className="px-2 py-1 rounded-lg bg-zinc-800 border border-zinc-700 text-xs text-white w-36"
               />
-              <button type="button" onClick={() => addSize(customSize)} disabled={!customSize.trim()} className="px-3 py-1 bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-400 text-xs font-bold rounded-lg disabled:opacity-50">Add</button>
+              <button type="button" onClick={() => addSize(customSize)} disabled={!customSize.trim()} className="px-3 py-1 bg-zinc-800 text-zinc-400 text-xs font-bold rounded-lg disabled:opacity-50">Add</button>
             </div>
           </div>
 
@@ -263,7 +263,7 @@ export default function VariantManager({ category, basePrice, baseSku, value = [
           {colors.length > 0 && sizes.length > 0 && (
             <div>
               <div className="flex items-center justify-between mb-2">
-                <label className="text-xs font-bold text-zinc-500 dark:text-zinc-400 uppercase tracking-wider">Variant Matrix</label>
+                <label className="text-xs font-bold text-zinc-400 uppercase tracking-wider">Variant Matrix</label>
                 <button
                   type="button"
                   onClick={generateMatrix}
@@ -276,16 +276,16 @@ export default function VariantManager({ category, basePrice, baseSku, value = [
               {variants.length > 0 && (
                 <>
                   {/* Bulk actions */}
-                  <div className="flex items-center gap-3 mb-3 p-2 bg-zinc-50 dark:bg-zinc-800/30 rounded-lg">
+                  <div className="flex items-center gap-3 mb-3 p-2 bg-zinc-800/30 rounded-lg">
                     <span className="text-[10px] text-zinc-500 font-bold uppercase">Bulk:</span>
                     <div className="flex items-center gap-1">
                       <span className="text-[10px] text-zinc-500">Qty:</span>
-                      <input type="number" min="0" placeholder="0" className="w-14 px-1.5 py-0.5 rounded border border-zinc-200 dark:border-zinc-700 bg-white dark:bg-zinc-800 text-[11px] text-zinc-900 dark:text-white"
+                      <input type="number" min="0" placeholder="0" className="w-14 px-1.5 py-0.5 rounded border border-zinc-700 bg-zinc-800 text-[11px] text-white"
                         onKeyDown={e => { if (e.key === 'Enter') { e.preventDefault(); bulkSetQuantity(e.target.value); } }} />
                     </div>
                     <div className="flex items-center gap-1">
                       <span className="text-[10px] text-zinc-500">Price ±:</span>
-                      <input type="number" step="50" placeholder="0" className="w-16 px-1.5 py-0.5 rounded border border-zinc-200 dark:border-zinc-700 bg-white dark:bg-zinc-800 text-[11px] text-zinc-900 dark:text-white"
+                      <input type="number" step="50" placeholder="0" className="w-16 px-1.5 py-0.5 rounded border border-zinc-700 bg-zinc-800 text-[11px] text-white"
                         onKeyDown={e => { if (e.key === 'Enter') { e.preventDefault(); setAllPriceAdjustment(e.target.value); } }} />
                     </div>
                   </div>
@@ -294,7 +294,7 @@ export default function VariantManager({ category, basePrice, baseSku, value = [
                   <div className="overflow-x-auto">
                     <table className="w-full text-xs">
                       <thead>
-                        <tr className="border-b border-zinc-200 dark:border-zinc-700">
+                        <tr className="border-b border-zinc-700">
                           <th className="text-left py-1.5 px-2 text-zinc-500 font-bold">Size</th>
                           <th className="text-left py-1.5 px-2 text-zinc-500 font-bold">Color</th>
                           <th className="text-left py-1.5 px-2 text-zinc-500 font-bold w-16">Stock</th>
@@ -306,24 +306,24 @@ export default function VariantManager({ category, basePrice, baseSku, value = [
                       <tbody>
                         {variants.map(v => (
                           <tr key={v.id} className="border-b border-zinc-100 dark:border-zinc-800/50 hover:bg-zinc-50 dark:hover:bg-zinc-800/30">
-                            <td className="py-1.5 px-2 font-bold text-zinc-900 dark:text-white">{v.size}</td>
+                            <td className="py-1.5 px-2 font-bold text-white">{v.size}</td>
                             <td className="py-1.5 px-2">
                               <div className="flex items-center gap-1.5">
-                                <div className="w-4 h-4 rounded border border-zinc-200 dark:border-zinc-600 flex-shrink-0" style={{ backgroundColor: v.color?.startsWith('#') ? v.color : '#ccc' }} />
-                                <span className="text-zinc-600 dark:text-zinc-400">{v.colorName}</span>
+                                <div className="w-4 h-4 rounded border border-zinc-600 flex-shrink-0" style={{ backgroundColor: v.color?.startsWith('#') ? v.color : '#ccc' }} />
+                                <span className="text-zinc-400">{v.colorName}</span>
                               </div>
                             </td>
                             <td className="py-1.5 px-2">
                               <input type="number" min="0" value={v.quantity || 0} onChange={e => updateVariant(v.id, 'quantity', parseInt(e.target.value) || 0)}
-                                className="w-14 px-1.5 py-0.5 rounded border border-zinc-200 dark:border-zinc-700 bg-white dark:bg-zinc-800 text-zinc-900 dark:text-white text-center" />
+                                className="w-14 px-1.5 py-0.5 rounded border border-zinc-700 bg-zinc-800 text-white text-center" />
                             </td>
                             <td className="py-1.5 px-2">
                               <input type="number" step="50" value={v.priceAdjustment || 0} onChange={e => updateVariant(v.id, 'priceAdjustment', parseFloat(e.target.value) || 0)}
-                                className="w-16 px-1.5 py-0.5 rounded border border-zinc-200 dark:border-zinc-700 bg-white dark:bg-zinc-800 text-zinc-900 dark:text-white" placeholder="0" />
+                                className="w-16 px-1.5 py-0.5 rounded border border-zinc-700 bg-zinc-800 text-white" placeholder="0" />
                             </td>
                             <td className="py-1.5 px-2">
                               <input type="text" value={v.sku || ''} onChange={e => updateVariant(v.id, 'sku', e.target.value)}
-                                className="w-full px-1.5 py-0.5 rounded border border-zinc-200 dark:border-zinc-700 bg-white dark:bg-zinc-800 text-zinc-900 dark:text-white font-mono text-[10px]" />
+                                className="w-full px-1.5 py-0.5 rounded border border-zinc-700 bg-zinc-800 text-white font-mono text-[10px]" />
                             </td>
                             <td className="py-1.5 px-1">
                               <button type="button" onClick={() => removeVariant(v.id)} className="text-zinc-400 hover:text-red-500">
