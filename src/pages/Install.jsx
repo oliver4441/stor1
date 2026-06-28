@@ -167,11 +167,11 @@ export default function Install() {
 
   const renderInstallButton = () => {
     if (installState === 'installed') return (
-      <div className="flex items-center gap-3 backdrop-blur-xl bg-green-500/10 dark:bg-green-500/10 border border-green-500/20 px-8 py-4 rounded-2xl shadow-lg shadow-green-500/10 animate-scale-in">
+      <div className="flex items-center gap-3 backdrop-blur-xl bg-green-500/10 border border-green-500/20 px-8 py-4 rounded-2xl shadow-lg shadow-green-500/10 animate-scale-in">
         <CheckCircle2 className="w-6 h-6 text-green-500" />
         <div className="text-left">
-          <span className="font-bold text-green-700 dark:text-green-400 text-sm block">App Installed!</span>
-          <span className="text-green-600 dark:text-green-500 text-xs">Open Omix from your home screen</span>
+          <span className="font-bold text-green-400 text-sm block">App Installed!</span>
+          <span className="text-green-500 text-xs">Open Omix from your home screen</span>
         </div>
       </div>
     );
@@ -237,7 +237,7 @@ export default function Install() {
             <div className="backdrop-blur-xl bg-white/50 dark:bg-zinc-900/50 border border-white/60 dark:border-zinc-700/50 rounded-3xl p-8 shadow-2xl shadow-zinc-900/5 space-y-4">
               <div className="flex flex-col items-center gap-4">
                 {renderInstallButton()}
-                <p className="text-xs text-zinc-400 dark:text-zinc-500">
+                <p className="text-xs text-zinc-500">
                   {isIOS ? "You're on iPhone — tap above for easy install steps" : isAndroid ? "You're on Android — tap above to install" : "You're on desktop — tap above to install"}
                 </p>
               </div>
@@ -245,7 +245,7 @@ export default function Install() {
               {/* Glass divider */}
               <div className="relative">
                 <div className="absolute inset-0 flex items-center"><div className="w-full border-t border-zinc-700/50" /></div>
-                <div className="relative flex justify-center"><span className="px-3 text-xs text-zinc-400 dark:text-zinc-500 bg-white/50 dark:bg-zinc-900/50 backdrop-blur-sm">or visit on</span></div>
+                <div className="relative flex justify-center"><span className="px-3 text-xs text-zinc-500 bg-white/50 dark:bg-zinc-900/50 backdrop-blur-sm">or visit on</span></div>
               </div>
 
               {/* App Store badges */}
@@ -258,7 +258,7 @@ export default function Install() {
                   <Smartphone className="w-4 h-4" />
                   Google Play
                 </div>
-                <span className="text-[10px] font-bold text-zinc-400 dark:text-zinc-600 uppercase tracking-wider bg-zinc-100/50 dark:bg-zinc-800/50 px-2 py-1 rounded-lg backdrop-blur-sm">Soon</span>
+                <span className="text-[10px] font-bold text-zinc-600 uppercase tracking-wider bg-zinc-100/50 dark:bg-zinc-800/50 px-2 py-1 rounded-lg backdrop-blur-sm">Soon</span>
               </div>
             </div>
           </div>
@@ -376,7 +376,7 @@ export default function Install() {
                     <CheckCircle2 className="w-5 h-5 text-white" />
                   </div>
                   <div>
-                    <p className="font-bold text-green-700 dark:text-green-400 text-sm">You're all set!</p>
+                    <p className="font-bold text-green-400 text-sm">You're all set!</p>
                     <p className="text-sm text-zinc-400 mt-0.5">
                       Once installed, Omix works like any other app — tap the icon on your home screen to open it instantly!
                     </p>

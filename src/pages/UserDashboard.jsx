@@ -30,11 +30,11 @@ const TABS = [
 
 // ── Status config ─────────────────────────────────────────────────────
 const ORDER_STATUS = {
-  pending:    { color: 'text-amber-500', bg: 'bg-amber-50 dark:bg-amber-900/30',     label: 'Pending',    icon: Clock },
-  processing: { color: 'text-blue-500',  bg: 'bg-blue-50 dark:bg-blue-900/30',       label: 'Processing', icon: Package },
-  shipped:    { color: 'text-purple-500',bg: 'bg-purple-50 dark:bg-purple-900/30',   label: 'Shipped',    icon: ShoppingBag },
-  delivered:  { color: 'text-emerald-500',bg: 'bg-emerald-50 dark:bg-emerald-900/30',label: 'Delivered',  icon: CheckCircle2 },
-  cancelled:  { color: 'text-red-500',   bg: 'bg-red-50 dark:bg-red-900/30',         label: 'Cancelled',  icon: AlertTriangle },
+  pending:    { color: 'text-amber-500', bg: 'bg-amber-900/30',     label: 'Pending',    icon: Clock },
+  processing: { color: 'text-blue-500',  bg: 'bg-blue-900/30',       label: 'Processing', icon: Package },
+  shipped:    { color: 'text-purple-500',bg: 'bg-purple-900/30',   label: 'Shipped',    icon: ShoppingBag },
+  delivered:  { color: 'text-emerald-500',bg: 'bg-emerald-900/30',label: 'Delivered',  icon: CheckCircle2 },
+  cancelled:  { color: 'text-red-500',   bg: 'bg-red-900/30',         label: 'Cancelled',  icon: AlertTriangle },
 };
 
 const CANCELLABLE_STATUSES = ['pending', 'processing'];
@@ -59,7 +59,7 @@ function CancelModal({ order, onClose, onConfirm, busy }) {
         onClick={e => e.stopPropagation()}
       >
         <div className="flex items-center gap-3 mb-5">
-          <div className="w-10 h-10 rounded-xl bg-red-100 dark:bg-red-900/30 flex items-center justify-center">
+          <div className="w-10 h-10 rounded-xl bg-red-900/30 flex items-center justify-center">
             <AlertTriangle className="w-5 h-5 text-red-500" />
           </div>
           <div>
@@ -83,7 +83,7 @@ function CancelModal({ order, onClose, onConfirm, busy }) {
                 onClick={() => setReason(r)}
                 className={`w-full text-left px-3 py-2 rounded-xl text-sm transition-all ${
                   reason === r
-                    ? 'bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-400 font-semibold border border-red-200 dark:border-red-800'
+                    ? 'bg-red-900/20 text-red-400 font-semibold border border-red-800'
                     : 'bg-zinc-800/50 text-zinc-400 hover:bg-zinc-800 border border-transparent'
                 }`}
               >
@@ -199,9 +199,9 @@ function OrderCard({ order, onCancel, isExpanded, onToggle }) {
           </div>
 
           {order.cancellation_reason && (
-            <div className="bg-red-50 dark:bg-red-900/20 rounded-xl p-2.5">
+            <div className="bg-red-900/20 rounded-xl p-2.5">
               <span className="text-xs text-red-500 font-semibold block">Cancellation reason</span>
-              <span className="text-xs text-red-600 dark:text-red-400">{order.cancellation_reason}</span>
+              <span className="text-xs text-red-400">{order.cancellation_reason}</span>
             </div>
           )}
 
@@ -215,7 +215,7 @@ function OrderCard({ order, onCancel, isExpanded, onToggle }) {
             {canCancel && (
               <button
                 onClick={() => onCancel(order)}
-                className="py-2.5 px-4 rounded-xl bg-red-50 dark:bg-red-900/20 text-red-500 font-bold text-sm hover:bg-red-100 dark:hover:bg-red-900/30 transition-colors"
+                className="py-2.5 px-4 rounded-xl bg-red-900/20 text-red-500 font-bold text-sm hover:bg-red-100 dark:hover:bg-red-900/30 transition-colors"
               >
                 Cancel
               </button>
@@ -766,7 +766,7 @@ function UserDashboard() {
                             <Check className="w-3.5 h-3.5" />
                           </button>
                         )}
-                        <button onClick={() => handleDeleteAddress(addr.id)} className="p-1.5 rounded-lg text-zinc-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 transition-all" title="Delete">
+                        <button onClick={() => handleDeleteAddress(addr.id)} className="p-1.5 rounded-lg text-zinc-400 hover:text-red-500 hover:bg-red-900/20 transition-all" title="Delete">
                           <Trash2 className="w-3.5 h-3.5" />
                         </button>
                       </div>
@@ -850,12 +850,12 @@ function UserDashboard() {
                       <div key={i} className="flex items-center justify-between bg-zinc-800/50 rounded-xl px-4 py-2.5">
                         <div className="flex items-center gap-3">
                           <div className={`w-8 h-8 rounded-lg flex items-center justify-center ${
-                            entry.points > 0 ? 'bg-green-100 dark:bg-green-900/30' : 'bg-red-100 dark:bg-red-900/30'
+                            entry.points > 0 ? 'bg-green-900/30' : 'bg-red-900/30'
                           }`}>
                             {entry.points > 0 ? (
-                              <Star className="w-4 h-4 text-green-600 dark:text-green-400" />
+                              <Star className="w-4 h-4 text-green-400" />
                             ) : (
-                              <ExternalLink className="w-4 h-4 text-red-600 dark:text-red-400" />
+                              <ExternalLink className="w-4 h-4 text-red-400" />
                             )}
                           </div>
                           <div>
@@ -863,7 +863,7 @@ function UserDashboard() {
                             <p className="text-xs text-zinc-500">{new Date(entry.created_at).toLocaleDateString('en-KE', { month: 'short', day: 'numeric' })}</p>
                           </div>
                         </div>
-                        <span className={`font-bold text-sm ${entry.points > 0 ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400'}`}>
+                        <span className={`font-bold text-sm ${entry.points > 0 ? 'text-green-400' : 'text-red-400'}`}>
                           {entry.points > 0 ? '+' : ''}{entry.points}
                         </span>
                       </div>
@@ -899,12 +899,12 @@ function UserDashboard() {
                     ) : notifStatus === 'on' ? (
                       <div className="flex items-center gap-2">
                         <div className="w-2.5 h-2.5 rounded-full bg-green-500 animate-pulse" />
-                        <span className="text-sm font-semibold text-green-600 dark:text-green-400">Enabled</span>
+                        <span className="text-sm font-semibold text-green-400">Enabled</span>
                       </div>
                     ) : notifStatus === 'blocked' ? (
                       <div className="flex items-center gap-2">
                         <div className="w-2.5 h-2.5 rounded-full bg-red-500" />
-                        <span className="text-sm font-semibold text-red-600 dark:text-red-400">Blocked</span>
+                        <span className="text-sm font-semibold text-red-400">Blocked</span>
                       </div>
                     ) : notifStatus === 'unsupported' ? (
                       <div className="flex items-center gap-2">
@@ -921,7 +921,7 @@ function UserDashboard() {
 
                   {notifStatus === 'on' && (
                     <button onClick={handleNotifToggle} disabled={notifBusy}
-                      className="flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold text-red-600 dark:text-red-400 bg-red-50 dark:bg-red-900/20 hover:bg-red-100 dark:hover:bg-red-900/40 transition-all disabled:opacity-50">
+                      className="flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold text-red-400 bg-red-900/20 hover:bg-red-100 dark:hover:bg-red-900/40 transition-all disabled:opacity-50">
                       <BellOff className="w-3.5 h-3.5" /> {notifBusy ? '...' : 'Turn Off'}
                     </button>
                   )}
@@ -952,8 +952,8 @@ function UserDashboard() {
                 {notifMsg && (
                   <div className={`p-3 rounded-xl text-xs font-semibold ${
                     notifMsg.type === 'success'
-                      ? 'bg-green-50 dark:bg-green-900/20 text-green-700 dark:text-green-400 border border-green-200 dark:border-green-800'
-                      : 'bg-red-50 dark:bg-red-900/20 text-red-700 dark:text-red-400 border border-red-200 dark:border-red-800'
+                      ? 'bg-green-900/20 text-green-400 border border-green-800'
+                      : 'bg-red-900/20 text-red-400 border border-red-800'
                   }`}>
                     {notifMsg.text}
                   </div>
@@ -982,7 +982,7 @@ function UserDashboard() {
                       </Link>
                       <button
                         onClick={async () => { await removeSavedSearch(search.id); setSavedSearches(prev => prev.filter(s => s.id !== search.id)); }}
-                        className="p-1.5 rounded-lg text-zinc-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 opacity-0 group-hover:opacity-100 transition-all flex-shrink-0"
+                        className="p-1.5 rounded-lg text-zinc-400 hover:text-red-500 hover:bg-red-900/20 opacity-0 group-hover:opacity-100 transition-all flex-shrink-0"
                       >
                         <X className="w-4 h-4" />
                       </button>
@@ -1000,7 +1000,7 @@ function UserDashboard() {
             {/* Security */}
             <div className="bg-zinc-900 rounded-2xl border border-zinc-800 p-6">
               <div className="flex items-center gap-3 mb-4">
-                <div className="w-10 h-10 rounded-xl bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center">
+                <div className="w-10 h-10 rounded-xl bg-blue-900/30 flex items-center justify-center">
                   <Shield className="w-5 h-5 text-blue-500" />
                 </div>
                 <h2 className="text-lg font-bold text-white">Security</h2>
@@ -1045,8 +1045,8 @@ function UserDashboard() {
                 {pwMsg.text && (
                   <div className={`text-xs font-semibold px-3 py-2 rounded-xl ${
                     pwMsg.type === 'success'
-                      ? 'bg-green-50 dark:bg-green-900/20 text-green-600 dark:text-green-400'
-                      : 'bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-400'
+                      ? 'bg-green-900/20 text-green-400'
+                      : 'bg-red-900/20 text-red-400'
                   }`}>
                     {pwMsg.text}
                   </div>
@@ -1082,7 +1082,7 @@ function UserDashboard() {
                 </Link>
                 <button
                   onClick={handleLogout}
-                  className="flex items-center gap-3 w-full p-3 rounded-xl bg-red-50 dark:bg-red-900/20 hover:bg-red-100 dark:hover:bg-red-900/30 transition-colors text-left"
+                  className="flex items-center gap-3 w-full p-3 rounded-xl bg-red-900/20 hover:bg-red-100 dark:hover:bg-red-900/30 transition-colors text-left"
                 >
                   <LogOut className="w-4 h-4 text-red-500" />
                   <span className="text-sm font-bold text-red-500">Log Out</span>
@@ -1112,8 +1112,8 @@ function UserDashboard() {
       {profileMsg && (
         <div className={`mb-4 p-3 rounded-xl text-sm font-semibold flex items-center gap-2 ${
           profileMsg.type === 'success'
-            ? 'bg-green-50 dark:bg-green-900/20 text-green-700 dark:text-green-400 border border-green-200 dark:border-green-800'
-            : 'bg-red-50 dark:bg-red-900/20 text-red-700 dark:text-red-400 border border-red-200 dark:border-red-800'
+            ? 'bg-green-900/20 text-green-400 border border-green-800'
+            : 'bg-red-900/20 text-red-400 border border-red-800'
         }`}>
           {profileMsg.type === 'success' ? <Check className="w-4 h-4" /> : <AlertTriangle className="w-4 h-4" />}
           {profileMsg.text}

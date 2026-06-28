@@ -623,7 +623,7 @@ export default function CheckoutPage() {
                       <Plus className="w-3 h-3" />
                     </button>
                   </div>
-                  <button onClick={() => removeItem(item.id)} className="p-1.5 rounded-lg transition-colors hover:bg-red-50 dark:hover:bg-red-900/20">
+                  <button onClick={() => removeItem(item.id)} className="p-1.5 rounded-lg transition-colors hover:bg-red-900/20">
                     <Trash2 className="w-3.5 h-3.5" style={{ color: C.textMuted }} />
                   </button>
                 </div>

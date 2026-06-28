@@ -37,7 +37,7 @@ export default function MobileBottomNav() {
               className={`flex flex-col items-center justify-center gap-0.5 min-w-[64px] py-1 transition-colors duration-200 ${
                 active
                   ? 'text-[var(--seasonal-primary,#1a5632)]'
-                  : 'text-zinc-400 dark:text-zinc-500'
+                  : 'text-zinc-500'
               }`}
             >
               <Icon className="w-5 h-5" />

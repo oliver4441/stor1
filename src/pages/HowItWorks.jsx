@@ -18,7 +18,7 @@ function HowItWorks() {
       title: 'Browse or Search',
       description: 'Explore products by category or search for exactly what you need. Use filters to narrow down by price or condition.',
       color: 'from-blue-500 to-blue-600',
-      bg: 'bg-blue-50 dark:bg-blue-900/20',
+      bg: 'bg-blue-900/20',
     },
     {
       icon: <ShoppingCart className="w-7 h-7" />,
@@ -32,7 +32,7 @@ function HowItWorks() {
       title: 'Get Delivered',
       description: 'We deliver to your doorstep in Kericho within 2-5 business days. Track your order in real-time.',
       color: 'from-emerald-500 to-emerald-600',
-      bg: 'bg-emerald-50 dark:bg-emerald-900/20',
+      bg: 'bg-emerald-900/20',
     },
   ];
 

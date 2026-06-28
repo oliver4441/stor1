@@ -291,7 +291,7 @@ export default function AdminOrders() {
                           <Eye className="w-4 h-4" />
                         </button>
                         {order.status !== 'cancelled' && order.status !== 'delivered' && (
-                          <button onClick={() => handleCancel(order.id)} className="p-2 rounded-lg hover:bg-red-50 dark:hover:bg-red-900/20 text-zinc-400 hover:text-red-500" title="Cancel order">
+                          <button onClick={() => handleCancel(order.id)} className="p-2 rounded-lg hover:bg-red-900/20 text-zinc-400 hover:text-red-500" title="Cancel order">
                             <X className="w-4 h-4" />
                           </button>
                         )}
@@ -332,7 +332,7 @@ export default function AdminOrders() {
               </select>
               {selectedOrder.status !== 'cancelled' && selectedOrder.status !== 'delivered' && (
                 <button onClick={() => handleCancel(selectedOrder.id)}
-                  className="flex items-center gap-1.5 px-3 py-2 rounded-xl bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-400 text-sm font-bold hover:bg-red-100 dark:hover:bg-red-900/40">
+                  className="flex items-center gap-1.5 px-3 py-2 rounded-xl bg-red-900/20 text-red-400 text-sm font-bold hover:bg-red-100 dark:hover:bg-red-900/40">
                   <AlertTriangle className="w-3.5 h-3.5" /> Cancel Order
                 </button>
               )}

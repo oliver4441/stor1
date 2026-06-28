@@ -194,7 +194,7 @@ function ListingDetails() {
               {listing.compare_at_price && listing.compare_at_price > listing.price && (
                 <>
                   <p className="text-lg font-bold text-zinc-400 line-through">{formatKES(listing.compare_at_price)}</p>
-                  <span className="bg-red-100 dark:bg-red-900/30 text-red-600 dark:text-red-400 text-xs font-bold px-2 py-1 rounded-full">
+                  <span className="bg-red-900/30 text-red-400 text-xs font-bold px-2 py-1 rounded-full">
                     -{Math.round((1 - listing.price / listing.compare_at_price) * 100)}%
                   </span>
                 </>
@@ -204,10 +204,10 @@ function ListingDetails() {
 
           {/* Delivery Info */}
           <div className="flex flex-wrap gap-2 mb-6">
-            <span className="flex items-center gap-1.5 bg-blue-50 dark:bg-blue-900/20 text-blue-700 dark:text-blue-400 px-3 py-1.5 rounded-xl text-xs font-bold border border-blue-200 dark:border-blue-800">
+            <span className="flex items-center gap-1.5 bg-blue-900/20 text-blue-700 dark:text-blue-400 px-3 py-1.5 rounded-xl text-xs font-bold border border-blue-800">
               <Truck className="w-3.5 h-3.5" /> {t('listing.freeDeliveryInKericho')}
             </span>
-            <span className="flex items-center gap-1.5 bg-purple-50 dark:bg-purple-900/20 text-purple-700 dark:text-purple-400 px-3 py-1.5 rounded-xl text-xs font-bold border border-purple-200 dark:border-purple-800">
+            <span className="flex items-center gap-1.5 bg-purple-900/20 text-purple-700 dark:text-purple-400 px-3 py-1.5 rounded-xl text-xs font-bold border border-purple-200 dark:border-purple-800">
               <Package className="w-3.5 h-3.5" /> {t('listing.deliveryByTomorrow')}
             </span>
           </div>
@@ -225,7 +225,7 @@ function ListingDetails() {
                     <div key={i} className="flex items-center gap-2 bg-zinc-900/60 border border-zinc-800 rounded-xl px-3 py-2.5 flex-shrink-0">
                       <Icon className="w-4 h-4 text-[var(--seasonal-primary,#1a5632)]" />
                       <div className="leading-tight">
-                        <p className="text-[10px] text-zinc-400 dark:text-zinc-500 uppercase tracking-wider">{spec.label}</p>
+                        <p className="text-[10px] text-zinc-500 uppercase tracking-wider">{spec.label}</p>
                         <p className="text-xs font-bold text-white">{spec.value}</p>
                       </div>
                     </div>
@@ -284,7 +284,7 @@ function ListingDetails() {
                 <p className="font-bold text-sm text-white">{t('listing.omixStore')}</p>
                 <p className="text-xs text-zinc-400">{t('listing.kerichoKenya')} &bull; {t('listing.officialStore')}</p>
               </div>
-              <span className="bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400 text-[10px] font-bold px-2 py-1 rounded-full">{t('listing.verified')}</span>
+              <span className="bg-green-900/30 text-green-400 text-[10px] font-bold px-2 py-1 rounded-full">{t('listing.verified')}</span>
             </div>
             <div className="grid grid-cols-3 gap-2">
               <div className="text-center bg-zinc-800 rounded-xl py-2 px-1">
@@ -388,7 +388,7 @@ function ListingDetails() {
               {selectedVariantObj && (
                 <div className="flex items-center gap-3 text-xs">
                   {selectedVariantObj.quantity > 0 && selectedVariantObj.quantity <= 3 && (
-                    <span className="text-amber-600 dark:text-amber-400 font-bold">Only {selectedVariantObj.quantity} left!</span>
+                    <span className="text-amber-400 font-bold">Only {selectedVariantObj.quantity} left!</span>
                   )}
                   {selectedVariantObj.quantity <= 0 && (
                     <span className="text-red-500 font-bold">Out of stock</span>
@@ -406,7 +406,7 @@ function ListingDetails() {
           {/* Cart Section */}
           <div className="space-y-3">
             {inCart && user && (
-              <div className="flex items-center gap-2 text-sm text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-900/20 px-4 py-2 rounded-xl font-bold border border-emerald-200 dark:border-emerald-800">
+              <div className="flex items-center gap-2 text-sm text-emerald-400 bg-emerald-900/20 px-4 py-2 rounded-xl font-bold border border-emerald-200 dark:border-emerald-800">
                 <ShoppingCart className="w-4 h-4" /> {inCart.quantity} {t('cart.title').toLowerCase()}
               </div>
             )}
@@ -514,7 +514,7 @@ function ListingDetails() {
                 <Bell className="w-4 h-4" /> Notify when back in stock
               </button>
               {notifyMsg && (
-                <div className="text-center text-sm font-medium text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-900/20 px-4 py-2 rounded-xl animate-fade-in">
+                <div className="text-center text-sm font-medium text-emerald-400 bg-emerald-900/20 px-4 py-2 rounded-xl animate-fade-in">
                   {notifyMsg}
                 </div>
               )}

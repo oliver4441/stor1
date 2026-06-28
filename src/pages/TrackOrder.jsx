@@ -5,11 +5,11 @@ import { formatKES } from '../utils/constants';
 import Breadcrumb from '../components/Breadcrumb';
 
 const STATUS_CONFIG = {
-  pending: { icon: Clock, color: 'text-amber-500', bg: 'bg-amber-50 dark:bg-amber-900/20', label: 'Pending' },
-  processing: { icon: Package, color: 'text-blue-500', bg: 'bg-blue-50 dark:bg-blue-900/20', label: 'Processing' },
-  shipped: { icon: Truck, color: 'text-purple-500', bg: 'bg-purple-50 dark:bg-purple-900/20', label: 'Shipped' },
-  delivered: { icon: CheckCircle, color: 'text-emerald-500', bg: 'bg-emerald-50 dark:bg-emerald-900/20', label: 'Delivered' },
-  cancelled: { icon: AlertTriangle, color: 'text-red-500', bg: 'bg-red-50 dark:bg-red-900/20', label: 'Cancelled' },
+  pending: { icon: Clock, color: 'text-amber-500', bg: 'bg-amber-900/20', label: 'Pending' },
+  processing: { icon: Package, color: 'text-blue-500', bg: 'bg-blue-900/20', label: 'Processing' },
+  shipped: { icon: Truck, color: 'text-purple-500', bg: 'bg-purple-900/20', label: 'Shipped' },
+  delivered: { icon: CheckCircle, color: 'text-emerald-500', bg: 'bg-emerald-900/20', label: 'Delivered' },
+  cancelled: { icon: AlertTriangle, color: 'text-red-500', bg: 'bg-red-900/20', label: 'Cancelled' },
 };
 
 export default function TrackOrder() {
@@ -65,7 +65,7 @@ export default function TrackOrder() {
       </div>
 
       {error && (
-        <div className="bg-red-50 dark:bg-red-900/20 text-red-600 p-4 rounded-xl mb-6 text-sm font-medium border border-red-100 dark:border-red-900/50">
+        <div className="bg-red-900/20 text-red-600 p-4 rounded-xl mb-6 text-sm font-medium border border-red-100 dark:border-red-900/50">
           {error}
         </div>
       )}

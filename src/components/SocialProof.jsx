@@ -30,7 +30,7 @@ export function ProductSocialBadge({ listing }) {
 
   if (isHot) {
     return (
-      <span className="flex items-center gap-1 bg-orange-100 dark:bg-orange-900/30 text-orange-600 dark:text-orange-400 px-2 py-0.5 rounded-full text-[9px] font-bold">
+      <span className="flex items-center gap-1 bg-orange-100 dark:bg-orange-900/30 text-orange-400 px-2 py-0.5 rounded-full text-[9px] font-bold">
         <Zap className="w-2.5 h-2.5" /> Hot
       </span>
     );
@@ -38,7 +38,7 @@ export function ProductSocialBadge({ listing }) {
 
   if (showType === 2) {
     return (
-      <span className="flex items-center gap-1 bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400 px-2 py-0.5 rounded-full text-[9px] font-bold">
+      <span className="flex items-center gap-1 bg-blue-900/20 text-blue-400 px-2 py-0.5 rounded-full text-[9px] font-bold">
         <Eye className="w-2.5 h-2.5" /> {viewingCount} viewing
       </span>
     );
@@ -46,7 +46,7 @@ export function ProductSocialBadge({ listing }) {
 
   if (showType === 3) {
     return (
-      <span className="flex items-center gap-1 bg-green-50 dark:bg-green-900/20 text-green-600 dark:text-green-400 px-2 py-0.5 rounded-full text-[9px] font-bold">
+      <span className="flex items-center gap-1 bg-green-900/20 text-green-400 px-2 py-0.5 rounded-full text-[9px] font-bold">
         <TrendingUp className="w-2.5 h-2.5" /> {soldCount} sold
       </span>
     );

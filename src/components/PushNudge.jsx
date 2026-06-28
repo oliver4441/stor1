@@ -80,14 +80,14 @@ export default function PushNudge() {
           </div>
 
           {result === 'success' ? (
-            <div className="mt-3 p-2.5 rounded-xl bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800">
-              <p className="text-xs font-semibold text-green-700 dark:text-green-400">
+            <div className="mt-3 p-2.5 rounded-xl bg-green-900/20 border border-green-800">
+              <p className="text-xs font-semibold text-green-400">
                 Notifications enabled! You will now receive updates.
               </p>
             </div>
           ) : result === 'error' ? (
-            <div className="mt-3 p-2.5 rounded-xl bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800">
-              <p className="text-xs font-semibold text-red-700 dark:text-red-400">
+            <div className="mt-3 p-2.5 rounded-xl bg-red-900/20 border border-red-800">
+              <p className="text-xs font-semibold text-red-400">
                 Could not enable notifications. Please check browser settings.
               </p>
             </div>

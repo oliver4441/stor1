@@ -151,7 +151,7 @@ export default function QuickViewModal({ listing, onClose }) {
               {listing.compare_at_price && listing.compare_at_price > listing.price && (
                 <>
                   <p className="text-sm text-zinc-400 line-through">{formatKES(listing.compare_at_price)}</p>
-                  <span className="text-xs font-bold text-emerald-500 bg-emerald-50 dark:bg-emerald-900/20 px-2 py-0.5 rounded-full">
+                  <span className="text-xs font-bold text-emerald-500 bg-emerald-900/20 px-2 py-0.5 rounded-full">
                     -{Math.round((1 - listing.price / listing.compare_at_price) * 100)}%
                   </span>
                 </>

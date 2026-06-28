@@ -79,8 +79,8 @@ function Signup() {
   if (needsVerification) {
     return (
       <div className="max-w-md mx-auto px-4 py-20 text-center" data-name="signup-verify">
-        <div className="bg-blue-50 dark:bg-blue-900/20 text-blue-600 p-8 rounded-3xl mb-6">
-          <div className="w-16 h-16 bg-blue-100 dark:bg-blue-900/40 rounded-full flex items-center justify-center mx-auto mb-4"><span className="text-2xl font-black text-blue-500">@</span></div>
+        <div className="bg-blue-900/20 text-blue-600 p-8 rounded-3xl mb-6">
+          <div className="w-16 h-16 bg-blue-900/40 rounded-full flex items-center justify-center mx-auto mb-4"><span className="text-2xl font-black text-blue-500">@</span></div>
           <h2 className="text-2xl font-black mb-2">Check Your Email</h2>
           <p className="text-zinc-400 mb-2">We sent a verification link to <strong className="text-zinc-300">{registeredEmail}</strong></p>
           <p className="text-sm text-zinc-400">Click the link to activate your account.</p>
@@ -93,7 +93,7 @@ function Signup() {
   if (success) {
     return (
       <div className="max-w-md mx-auto px-4 py-20 text-center">
-        <div className="bg-green-100 dark:bg-green-900/20 text-green-600 p-8 rounded-3xl inline-block mb-4">
+        <div className="bg-green-900/20 text-green-600 p-8 rounded-3xl inline-block mb-4">
           <h2 className="text-3xl font-black mb-2">Account Created!</h2>
           <p className="text-zinc-400">Redirecting to your account...</p>
         </div>
@@ -109,7 +109,7 @@ function Signup() {
         <p className="text-zinc-400">Sign up to start shopping on Omix.</p>
       </div>
 
-      {error && <div className="bg-red-50 dark:bg-red-900/20 text-red-600 p-4 rounded-xl mb-6 text-sm font-medium border border-red-100 dark:border-red-900/50">{error}</div>}
+      {error && <div className="bg-red-900/20 text-red-600 p-4 rounded-xl mb-6 text-sm font-medium border border-red-100 dark:border-red-900/50">{error}</div>}
 
       <form onSubmit={handleSignup} className="space-y-5">
         <div>
@@ -163,7 +163,7 @@ function Signup() {
         </div>
 
         <button type="button" disabled
-          className="w-full flex items-center justify-center gap-2 bg-zinc-800 border border-zinc-700 text-zinc-400 dark:text-zinc-500 font-bold py-3.5 rounded-2xl cursor-not-allowed">
+          className="w-full flex items-center justify-center gap-2 bg-zinc-800 border border-zinc-700 text-zinc-500 font-bold py-3.5 rounded-2xl cursor-not-allowed">
           <span className="text-xs tracking-widest uppercase">Coming Soon</span>
         </button>
       </form>

@@ -73,7 +73,7 @@ function Login() {
       </div>
 
       {needsVerification && (
-        <div className="bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-900/50 text-amber-700 dark:text-amber-400 p-4 rounded-xl mb-4 text-sm">
+        <div className="bg-amber-900/20 border border-amber-900/50 text-amber-700 dark:text-amber-400 p-4 rounded-xl mb-4 text-sm">
           <p className="font-bold mb-1">{t('auth.emailNotVerified') || 'Email not verified'}</p>
           <p className="text-zinc-400 text-xs mb-2">{t('auth.emailNotVerifiedDesc') || 'Please check your email for a verification link.'}</p>
           <p className="text-xs text-zinc-400">{t('auth.emailNotVerifiedHelp') || 'Need help?'} <Link to="/signup" className="text-[var(--seasonal-primary,#1a5632)] font-bold hover:underline">{t('auth.createNewAccount') || 'Create new account'}</Link>.</p>
@@ -81,7 +81,7 @@ function Login() {
       )}
 
       {error && !needsVerification && (
-        <div className="bg-red-50 dark:bg-red-900/20 text-red-600 p-4 rounded-xl mb-6 text-sm font-medium border border-red-100 dark:border-red-900/50">{error}</div>
+        <div className="bg-red-900/20 text-red-600 p-4 rounded-xl mb-6 text-sm font-medium border border-red-100 dark:border-red-900/50">{error}</div>
       )}
 
       <form onSubmit={handleLogin} className="space-y-4">
@@ -103,7 +103,7 @@ function Login() {
         </div>
 
         <button type="button" disabled
-          className="w-full flex items-center justify-center gap-2 bg-zinc-800 border border-zinc-700 text-zinc-400 dark:text-zinc-500 font-bold py-3.5 rounded-2xl cursor-not-allowed">
+          className="w-full flex items-center justify-center gap-2 bg-zinc-800 border border-zinc-700 text-zinc-500 font-bold py-3.5 rounded-2xl cursor-not-allowed">
           <span className="text-xs tracking-widest uppercase">Coming Soon</span>
         </button>
       </form>

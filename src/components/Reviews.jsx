@@ -161,7 +161,7 @@ export function ReviewForm({ listingId, onSubmitted }) {
 
   if (success) {
     return (
-      <div className="mt-6 p-4 bg-green-50 dark:bg-green-900/20 rounded-xl text-green-700 dark:text-green-400 text-sm font-medium">
+      <div className="mt-6 p-4 bg-green-900/20 rounded-xl text-green-400 text-sm font-medium">
         Review submitted! Thank you.
         <button onClick={() => setSuccess(false)} className="ml-2 underline">Write another</button>
       </div>

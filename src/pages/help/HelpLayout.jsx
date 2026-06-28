@@ -19,7 +19,7 @@ export default function HelpLayout({ title, children, backLabel = 'Back to Help 
           <h1 className="text-2xl md:text-3xl font-black text-white mb-6">
             {title}
           </h1>
-          <div className="prose prose-zinc dark:prose-invert max-w-none text-sm leading-relaxed text-zinc-400 space-y-4">
+          <div className="prose prose-invert max-w-none text-sm leading-relaxed text-zinc-400 space-y-4">
             {children}
           </div>
         </div>

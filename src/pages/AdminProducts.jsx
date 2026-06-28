@@ -475,7 +475,7 @@ export default function AdminProducts() {
                         <button onClick={() => openEditModal(listing)} className="p-2 rounded-lg hover:bg-zinc-800 text-zinc-400 hover:text-blue-500" title="Edit">
                           <Pencil className="w-4 h-4" />
                         </button>
-                        <button onClick={() => setDeleteTarget({ id: listing.id, title: listing.title })} className="p-2 rounded-lg hover:bg-red-50 dark:hover:bg-red-900/20 text-zinc-400 hover:text-red-500" title="Delete">
+                        <button onClick={() => setDeleteTarget({ id: listing.id, title: listing.title })} className="p-2 rounded-lg hover:bg-red-900/20 text-zinc-400 hover:text-red-500" title="Delete">
                           <Trash2 className="w-4 h-4" />
                         </button>
                       </div>
@@ -648,7 +648,7 @@ export default function AdminProducts() {
 
               {/* Variant Manager — size/color variants for ALL products */}
               {form.variants.length === 0 && (
-                <div className="flex items-center gap-2 p-3 bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800 rounded-xl">
+                <div className="flex items-center gap-2 p-3 bg-amber-900/20 border border-amber-800 rounded-xl">
                   <AlertTriangle className="w-4 h-4 text-amber-500 flex-shrink-0" />
                   <p className="text-xs text-amber-700 dark:text-amber-400">Adding size/variant options helps customers pick exactly what they need. Add sizes in the Product Variants section below.</p>
                 </div>
@@ -689,7 +689,7 @@ export default function AdminProducts() {
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
           <div className="absolute inset-0 bg-black/50 backdrop-blur-sm" onClick={() => setDeleteTarget(null)} />
           <div className="relative bg-zinc-900 rounded-2xl border border-zinc-800 p-6 w-full max-w-sm shadow-2xl text-center">
-            <div className="w-12 h-12 bg-red-100 dark:bg-red-900/40 rounded-full flex items-center justify-center mx-auto mb-4"><AlertTriangle className="w-6 h-6 text-red-600" /></div>
+            <div className="w-12 h-12 bg-red-900/40 rounded-full flex items-center justify-center mx-auto mb-4"><AlertTriangle className="w-6 h-6 text-red-600" /></div>
             <h3 className="text-lg font-bold text-white mb-2">Delete Product?</h3>
             <p className="text-sm text-zinc-400 mb-6">This will permanently delete "{deleteTarget.title}".</p>
             <div className="flex gap-3">
@@ -706,8 +706,8 @@ export default function AdminProducts() {
       {deleteAllModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
           <div className="absolute inset-0 bg-black/50 backdrop-blur-sm" onClick={() => !deleteAllBusy && setDeleteAllModal(false)} />
-          <div className="relative bg-zinc-900 rounded-2xl border border-red-200 dark:border-red-900/50 p-6 w-full max-w-md shadow-2xl text-center">
-            <div className="w-14 h-14 bg-red-100 dark:bg-red-900/40 rounded-full flex items-center justify-center mx-auto mb-4"><AlertTriangle className="w-7 h-7 text-red-600" /></div>
+          <div className="relative bg-zinc-900 rounded-2xl border border-red-900/50 p-6 w-full max-w-md shadow-2xl text-center">
+            <div className="w-14 h-14 bg-red-900/40 rounded-full flex items-center justify-center mx-auto mb-4"><AlertTriangle className="w-7 h-7 text-red-600" /></div>
             <h3 className="text-lg font-bold text-white mb-2">Delete All Products</h3>
             <p className="text-sm text-zinc-400 mb-5">
               This will permanently delete ALL <span className="font-bold text-red-600">{listings.length}</span> products. This cannot be undone.

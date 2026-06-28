@@ -269,7 +269,7 @@ function Privacy() {
         <p className="text-zinc-400 text-lg">
           Last updated: June 7, 2026
         </p>
-        <div className="mt-4 p-4 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800/50 rounded-2xl">
+        <div className="mt-4 p-4 bg-blue-900/20 border border-blue-800/50 rounded-2xl">
           <p className="text-sm text-blue-800 dark:text-blue-300">
             <strong>Your privacy matters to us.</strong> This Privacy Policy explains how Omix Marketplace collects, uses, and protects your personal information. Please read it carefully.
           </p>

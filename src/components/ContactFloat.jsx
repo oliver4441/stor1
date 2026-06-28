@@ -136,7 +136,7 @@ function ContactFloat() {
                         <button onClick={() => updateQuantity(item.id, item.quantity + 1)} className="w-7 h-7 rounded-lg bg-zinc-800 flex items-center justify-center hover:bg-zinc-700">
                           <Plus className="w-3 h-3 text-zinc-300" />
                         </button>
-                        <button onClick={() => removeItem(item.id)} className="w-7 h-7 rounded-lg flex items-center justify-center text-zinc-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 ml-1">
+                        <button onClick={() => removeItem(item.id)} className="w-7 h-7 rounded-lg flex items-center justify-center text-zinc-400 hover:text-red-500 hover:bg-red-900/20 ml-1">
                           <Trash2 className="w-3 h-3" />
                         </button>
                       </div>
@@ -205,7 +205,7 @@ function ContactFloat() {
 
         {success ? (
           <div className="px-6 py-10 text-center">
-            <div className="w-14 h-14 bg-green-100 dark:bg-green-900/30 rounded-full flex items-center justify-center mx-auto mb-4">
+            <div className="w-14 h-14 bg-green-900/30 rounded-full flex items-center justify-center mx-auto mb-4">
               <CheckCircle className="w-7 h-7 text-green-600" />
             </div>
             <h4 className="text-lg font-bold text-white mb-2">Message sent!</h4>

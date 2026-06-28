@@ -234,11 +234,11 @@ export default function AdminNotifications() {
         {result && (
           <div className={`p-3 rounded-xl border ${
             result.success
-              ? 'bg-green-50 dark:bg-green-900/20 border-green-200 dark:border-green-800'
-              : 'bg-red-50 dark:bg-red-900/20 border-red-200 dark:border-red-800'
+              ? 'bg-green-900/20 border-green-800'
+              : 'bg-red-900/20 border-red-800'
           }`}>
             <p className={`text-xs font-bold ${
-              result.success ? 'text-green-700 dark:text-green-400' : 'text-red-700 dark:text-red-400'
+              result.success ? 'text-green-400' : 'text-red-400'
             }`}>
               {result.success
                 ? `Sent to ${result.sent} subscribers (${result.failed} failed)`

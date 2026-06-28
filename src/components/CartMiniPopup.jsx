@@ -118,7 +118,7 @@ export default function CartMiniPopup() {
                       </button>
                       <button
                         onClick={() => removeItem(item.id)}
-                        className="w-6 h-6 rounded-md flex items-center justify-center text-zinc-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 ml-1"
+                        className="w-6 h-6 rounded-md flex items-center justify-center text-zinc-400 hover:text-red-500 hover:bg-red-900/20 ml-1"
                       >
                         <Trash2 className="w-3 h-3" />
                       </button>

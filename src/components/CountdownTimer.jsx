@@ -38,14 +38,14 @@ export default function CountdownTimer({ targetDate, onExpired }) {
   // If more than 24h, show days
   if (timeLeft.days > 0) {
     return (
-      <span className="inline-flex items-center gap-1 bg-red-100 dark:bg-red-900/30 text-red-600 dark:text-red-400 text-xs font-bold px-2 py-1 rounded-full">
+      <span className="inline-flex items-center gap-1 bg-red-900/30 text-red-400 text-xs font-bold px-2 py-1 rounded-full">
         <span className="animate-pulse">⏱</span> {timeLeft.days}d {timeLeft.hours}h left
       </span>
     );
   }
 
   return (
-    <span className="inline-flex items-center gap-1 bg-red-100 dark:bg-red-900/30 text-red-600 dark:text-red-400 text-xs font-bold px-2 py-1 rounded-full animate-pulse">
+    <span className="inline-flex items-center gap-1 bg-red-900/30 text-red-400 text-xs font-bold px-2 py-1 rounded-full animate-pulse">
       <span>⏱</span> {pad(timeLeft.hours)}:{pad(timeLeft.minutes)}:{pad(timeLeft.seconds)}
     </span>
   );

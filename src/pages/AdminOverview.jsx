@@ -158,7 +158,7 @@ export default function AdminOverview() {
             <Package className="w-5 h-5 text-primary" />
             <span className="text-sm font-semibold text-zinc-300 group-hover:text-primary">Add Product</span>
           </a>
-          <a href="/admin/orders" className="flex items-center gap-3 p-3 rounded-xl bg-zinc-800 hover:bg-blue-50 dark:hover:bg-blue-900/20 hover:border-blue-500/30 border border-transparent transition-all group">
+          <a href="/admin/orders" className="flex items-center gap-3 p-3 rounded-xl bg-zinc-800 hover:bg-blue-900/20 hover:border-blue-500/30 border border-transparent transition-all group">
             <ShoppingBag className="w-5 h-5 text-blue-500" />
             <span className="text-sm font-semibold text-zinc-300 group-hover:text-blue-500">View Orders</span>
           </a>

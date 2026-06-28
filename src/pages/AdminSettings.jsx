@@ -291,7 +291,7 @@ export default function AdminSettings() {
       {/* Maintenance */}
       <div className={`rounded-2xl border p-6 ${
         form.maintenanceMode
-          ? 'bg-amber-50 dark:bg-amber-950/30 border-amber-300 dark:border-amber-800'
+          ? 'bg-amber-950/30 border-amber-300 dark:border-amber-800'
           : 'bg-zinc-900 border-zinc-800'
       }`}>
         <div className="flex items-center gap-3 mb-5">
@@ -318,7 +318,7 @@ export default function AdminSettings() {
           </div>
         </label>
         {form.maintenanceMode && (
-          <div className="mt-4 p-3 rounded-xl bg-amber-100 dark:bg-amber-900/40 border border-amber-300 dark:border-amber-700">
+          <div className="mt-4 p-3 rounded-xl bg-amber-900/40 border border-amber-300 dark:border-amber-700">
             <p className="text-xs font-semibold text-amber-800 dark:text-amber-300">
               ⚠️ Customers can browse but cannot add to cart or checkout. They will see a maintenance warning banner.
             </p>

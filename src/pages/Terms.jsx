@@ -13,7 +13,7 @@ function Terms() {
       <h1 className="text-3xl font-black mb-2 text-white">Terms of Service</h1>
       <p className="text-sm text-zinc-400 mb-8">Last updated: June 2025</p>
 
-      <div className="prose prose-zinc dark:prose-invert max-w-none space-y-6">
+      <div className="prose prose-invert max-w-none space-y-6">
         <section>
           <h2 className="text-xl font-bold text-white">1. Acceptance of Terms</h2>
           <p className="text-zinc-400">By accessing and using Omix ("the Platform"), you agree to be bound by these Terms of Service. If you do not agree to these terms, please do not use the Platform.</p>
