@@ -20,7 +20,7 @@ function Navbar() {
   const [isUserAdmin, setIsUserAdmin] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   const menuRef = useRef(null);
-  const { lang, toggleLang, t } = useLang();
+  const { t } = useLang();
   const location = useLocation();
   const { getItemCount } = useCart();
   const cartCount = getItemCount();
@@ -134,11 +134,6 @@ function Navbar() {
 
         {/* Desktop (lg+): Right side */}
         <div className="hidden lg:flex items-center gap-2">
-          <button onClick={toggleLang} className="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold border border-zinc-700 bg-zinc-900 text-zinc-300 hover:border-[var(--seasonal-primary,#1a5632)] hover:text-[var(--seasonal-primary,#1a5632)] transition-all" aria-label={t('common.toggleLanguage')}>
-            <Globe className="w-3.5 h-3.5" />
-            {lang === 'en' ? 'EN' : 'SW'}
-          </button>
-
           <Link to="/cart" className="relative p-2 rounded-full hover:bg-zinc-800 text-zinc-300 transition-colors">
             <ShoppingCart className="w-5 h-5" />
             {cartCount > 0 && (
@@ -288,14 +283,6 @@ function Navbar() {
 
             {/* Divider */}
             <div className="border-t border-zinc-800 my-1" />
-
-            {/* Utility buttons */}
-            <div className="flex gap-2">
-              <button onClick={toggleLang} className="flex-1 flex items-center justify-center gap-2 px-4 py-3 rounded-2xl text-sm font-bold border border-zinc-700 text-zinc-300">
-                <Globe className="w-4 h-4" />
-                {lang === 'en' ? 'English' : 'Swahili'}
-              </button>
-            </div>
           </div>
         </div>
       </div>
