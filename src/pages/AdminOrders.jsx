@@ -228,7 +228,7 @@ export default function AdminOrders() {
           <input
             type="text" placeholder="Search by ID, name, email, phone..."
             value={searchQuery} onChange={e => setSearchQuery(e.target.value)}
-            className="w-full pl-10 pr-4 py-2.5 rounded-xl bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 text-sm text-zinc-900 dark:text-white focus:border-[#ff385c] focus:outline-none"
+            className="w-full pl-10 pr-4 py-2.5 rounded-xl bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 text-sm text-zinc-900 dark:text-white focus:border-primary focus:outline-none"
           />
         </div>
         <select value={filterStatus} onChange={e => setFilterStatus(e.target.value)}
@@ -245,7 +245,7 @@ export default function AdminOrders() {
       {/* Table */}
       {loading ? (
         <div className="flex items-center justify-center h-40">
-          <div className="inline-block w-8 h-8 border-4 border-[#ff385c] border-t-transparent rounded-full animate-spin" />
+          <div className="inline-block w-8 h-8 border-4 border-primary border-t-transparent rounded-full animate-spin" />
         </div>
       ) : filteredOrders.length > 0 ? (
         <div className="bg-white dark:bg-zinc-900 rounded-2xl border border-zinc-200 dark:border-zinc-800 overflow-hidden">
@@ -273,7 +273,7 @@ export default function AdminOrders() {
                       <p className="text-xs text-zinc-500">{order.phone || order.email || 'No contact'}</p>
                     </td>
                     <td className="px-4 py-3">
-                      <span className="text-sm font-bold text-[#ff385c]">{formatKES(order.total_amount)}</span>
+                      <span className="text-sm font-bold text-primary">{formatKES(order.total_amount)}</span>
                     </td>
                     <td className="px-4 py-3 hidden sm:table-cell">
                       <p className="text-xs text-zinc-500">{new Date(order.created_at).toLocaleDateString('en-KE', { month: 'short', day: 'numeric', year: 'numeric' })}</p>
@@ -287,7 +287,7 @@ export default function AdminOrders() {
                     </td>
                     <td className="px-4 py-3">
                       <div className="flex items-center justify-end gap-1">
-                        <button onClick={() => openOrderDetail(order)} className="p-2 rounded-lg hover:bg-zinc-100 dark:hover:bg-zinc-800 text-zinc-400 hover:text-[#ff385c]" title="View details">
+                        <button onClick={() => openOrderDetail(order)} className="p-2 rounded-lg hover:bg-zinc-100 dark:hover:bg-zinc-800 text-zinc-400 hover:text-primary" title="View details">
                           <Eye className="w-4 h-4" />
                         </button>
                         {order.status !== 'cancelled' && order.status !== 'delivered' && (
@@ -401,7 +401,7 @@ export default function AdminOrders() {
                   <MessageSquare className="w-4 h-4" /> Internal Notes
                 </h4>
                 {!editingNotes && (
-                  <button onClick={() => setEditingNotes(true)} className="text-xs font-semibold text-[#ff385c] hover:underline">
+                  <button onClick={() => setEditingNotes(true)} className="text-xs font-semibold text-primary hover:underline">
                     {selectedOrder.admin_notes ? 'Edit' : 'Add'}
                   </button>
                 )}
@@ -410,12 +410,12 @@ export default function AdminOrders() {
                 <div className="space-y-2">
                   <textarea rows="3" value={notesValue} onChange={e => setNotesValue(e.target.value)}
                     placeholder="Add internal notes (only visible to admins)..."
-                    className="w-full px-3 py-2 rounded-xl bg-zinc-100 dark:bg-zinc-800 border border-transparent focus:border-[#ff385c] focus:outline-none text-sm text-zinc-900 dark:text-white resize-none" />
+                    className="w-full px-3 py-2 rounded-xl bg-zinc-100 dark:bg-zinc-800 border border-transparent focus:border-primary focus:outline-none text-sm text-zinc-900 dark:text-white resize-none" />
                   <div className="flex gap-2 justify-end">
                     <button onClick={() => { setEditingNotes(false); setNotesValue(selectedOrder.admin_notes || ''); }}
                       className="px-3 py-1.5 rounded-lg text-xs font-bold text-zinc-600 dark:text-zinc-400 hover:bg-zinc-100 dark:hover:bg-zinc-800">Cancel</button>
                     <button onClick={handleSaveNotes}
-                      className="px-3 py-1.5 rounded-lg text-xs font-bold bg-[#ff385c] text-white hover:bg-[#e03150]">Save</button>
+                      className="px-3 py-1.5 rounded-lg text-xs font-bold bg-primary text-white hover:bg-primary-hover">Save</button>
                   </div>
                 </div>
               ) : (
@@ -428,7 +428,7 @@ export default function AdminOrders() {
             {/* Total */}
             <div className="flex items-center justify-between pt-4 border-t border-zinc-200 dark:border-zinc-800">
               <span className="text-sm font-bold text-zinc-700 dark:text-zinc-300">Total</span>
-              <span className="text-xl font-black text-[#ff385c]">{formatKES(selectedOrder.total_amount)}</span>
+              <span className="text-xl font-black text-primary">{formatKES(selectedOrder.total_amount)}</span>
             </div>
           </div>
         </div>

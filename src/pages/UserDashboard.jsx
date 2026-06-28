@@ -153,7 +153,7 @@ function OrderCard({ order, onCancel, isExpanded, onToggle }) {
           <span className={`text-xs font-bold px-2.5 py-1 rounded-full capitalize ${status.bg} ${status.color}`}>
             {status.label}
           </span>
-          <span className="font-bold text-[var(--seasonal-primary,#ff385c)] text-sm">{formatKES(order.total_amount)}</span>
+          <span className="font-bold text-[var(--seasonal-primary,#1a5632)] text-sm">{formatKES(order.total_amount)}</span>
           {isExpanded ? <ChevronUp className="w-4 h-4 text-zinc-400" /> : <ChevronDown className="w-4 h-4 text-zinc-400" />}
         </div>
       </button>
@@ -208,7 +208,7 @@ function OrderCard({ order, onCancel, isExpanded, onToggle }) {
           <div className="flex gap-2">
             <Link
               to={`/track-order?orderId=${order.id}`}
-              className="flex items-center justify-center gap-2 flex-1 py-2.5 rounded-xl bg-[var(--seasonal-primary,#ff385c)]/10 text-[var(--seasonal-primary,#ff385c)] font-bold text-sm hover:bg-[var(--seasonal-primary,#ff385c)]/20 transition-colors"
+              className="flex items-center justify-center gap-2 flex-1 py-2.5 rounded-xl bg-[var(--seasonal-primary,#1a5632)]/10 text-[var(--seasonal-primary,#1a5632)] font-bold text-sm hover:bg-[var(--seasonal-primary,#1a5632)]/20 transition-colors"
             >
               Track <ArrowRight className="w-4 h-4" />
             </Link>
@@ -277,7 +277,7 @@ function AvatarUpload({ currentUrl, userName, onUpload, busy }) {
       <input ref={fileRef} type="file" accept="image/*" className="hidden" onChange={handleFile} />
       <button
         onClick={handleSelect}
-        className="absolute -bottom-1 -right-1 w-7 h-7 rounded-full bg-[var(--seasonal-primary,#ff385c)] text-white flex items-center justify-center shadow-lg hover:scale-110 transition-transform"
+        className="absolute -bottom-1 -right-1 w-7 h-7 rounded-full bg-[var(--seasonal-primary,#1a5632)] text-white flex items-center justify-center shadow-lg hover:scale-110 transition-transform"
       >
         <Camera className="w-3.5 h-3.5" />
       </button>
@@ -536,7 +536,7 @@ function UserDashboard() {
   if (loading) {
     return (
       <div className="max-w-7xl mx-auto px-4 py-20 text-center">
-        <div className="inline-block w-8 h-8 border-4 border-[var(--seasonal-primary,#ff385c)] border-t-transparent rounded-full animate-spin mb-4" />
+        <div className="inline-block w-8 h-8 border-4 border-[var(--seasonal-primary,#1a5632)] border-t-transparent rounded-full animate-spin mb-4" />
         <p className="text-zinc-500">Loading your account...</p>
       </div>
     );
@@ -592,7 +592,7 @@ function UserDashboard() {
                       type="text"
                       value={editForm.full_name}
                       onChange={e => setEditForm({ ...editForm, full_name: e.target.value })}
-                      className="w-full px-4 py-3 rounded-xl bg-zinc-50 dark:bg-zinc-800/50 border border-zinc-200 dark:border-zinc-700 text-zinc-900 dark:text-white text-sm focus:outline-none focus:border-[var(--seasonal-primary,#ff385c)]"
+                      className="w-full px-4 py-3 rounded-xl bg-zinc-50 dark:bg-zinc-800/50 border border-zinc-200 dark:border-zinc-700 text-zinc-900 dark:text-white text-sm focus:outline-none focus:border-[var(--seasonal-primary,#1a5632)]"
                     />
                   </div>
                   <div>
@@ -601,7 +601,7 @@ function UserDashboard() {
                       type="tel"
                       value={editForm.phone}
                       onChange={e => setEditForm({ ...editForm, phone: e.target.value })}
-                      className="w-full px-4 py-3 rounded-xl bg-zinc-50 dark:bg-zinc-800/50 border border-zinc-200 dark:border-zinc-700 text-zinc-900 dark:text-white text-sm focus:outline-none focus:border-[var(--seasonal-primary,#ff385c)]"
+                      className="w-full px-4 py-3 rounded-xl bg-zinc-50 dark:bg-zinc-800/50 border border-zinc-200 dark:border-zinc-700 text-zinc-900 dark:text-white text-sm focus:outline-none focus:border-[var(--seasonal-primary,#1a5632)]"
                     />
                   </div>
                   <div>
@@ -617,7 +617,7 @@ function UserDashboard() {
                   <button
                     onClick={handleSaveProfile}
                     disabled={savingProfile}
-                    className="w-full py-3 rounded-xl bg-[var(--seasonal-primary,#ff385c)] text-white font-bold text-sm hover:bg-[var(--seasonal-secondary,#e03150)] transition-colors disabled:opacity-50 flex items-center justify-center gap-2"
+                    className="w-full py-3 rounded-xl bg-[var(--seasonal-primary,#1a5632)] text-white font-bold text-sm hover:bg-[var(--seasonal-secondary,#14472a)] transition-colors disabled:opacity-50 flex items-center justify-center gap-2"
                   >
                     {savingProfile ? <Loader2 className="w-4 h-4 animate-spin" /> : null}
                     {savingProfile ? 'Saving...' : 'Save Changes'}
@@ -629,7 +629,7 @@ function UserDashboard() {
             {/* Quick Stats */}
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
               <div className="bg-white dark:bg-zinc-900 rounded-2xl border border-zinc-200 dark:border-zinc-800 p-4 text-center">
-                <ShoppingBag className="w-5 h-5 text-[var(--seasonal-primary,#ff385c)] mx-auto mb-1" />
+                <ShoppingBag className="w-5 h-5 text-[var(--seasonal-primary,#1a5632)] mx-auto mb-1" />
                 <p className="text-2xl font-black text-zinc-900 dark:text-white">{orders.length}</p>
                 <p className="text-xs text-zinc-500">Orders</p>
               </div>
@@ -652,19 +652,19 @@ function UserDashboard() {
 
             {/* Quick Links */}
             <div className="grid grid-cols-2 gap-3">
-              <Link to="/track-order" className="bg-white dark:bg-zinc-900 rounded-2xl border border-zinc-200 dark:border-zinc-800 p-4 flex items-center justify-between group hover:border-[var(--seasonal-primary,#ff385c)]/30 transition-colors">
+              <Link to="/track-order" className="bg-white dark:bg-zinc-900 rounded-2xl border border-zinc-200 dark:border-zinc-800 p-4 flex items-center justify-between group hover:border-[var(--seasonal-primary,#1a5632)]/30 transition-colors">
                 <div>
                   <p className="font-bold text-zinc-900 dark:text-white text-sm">Track Order</p>
                   <p className="text-xs text-zinc-500">Check delivery status</p>
                 </div>
-                <Package className="w-6 h-6 text-[var(--seasonal-primary,#ff385c)] group-hover:scale-110 transition-transform" />
+                <Package className="w-6 h-6 text-[var(--seasonal-primary,#1a5632)] group-hover:scale-110 transition-transform" />
               </Link>
-              <Link to="/wishlist" className="bg-white dark:bg-zinc-900 rounded-2xl border border-zinc-200 dark:border-zinc-800 p-4 flex items-center justify-between group hover:border-[var(--seasonal-primary,#ff385c)]/30 transition-colors">
+              <Link to="/wishlist" className="bg-white dark:bg-zinc-900 rounded-2xl border border-zinc-200 dark:border-zinc-800 p-4 flex items-center justify-between group hover:border-[var(--seasonal-primary,#1a5632)]/30 transition-colors">
                 <div>
                   <p className="font-bold text-zinc-900 dark:text-white text-sm">Wishlist</p>
                   <p className="text-xs text-zinc-500">Saved items</p>
                 </div>
-                <Bookmark className="w-6 h-6 text-[var(--seasonal-primary,#ff385c)] group-hover:scale-110 transition-transform" />
+                <Bookmark className="w-6 h-6 text-[var(--seasonal-primary,#1a5632)] group-hover:scale-110 transition-transform" />
               </Link>
             </div>
           </div>
@@ -685,7 +685,7 @@ function UserDashboard() {
                     Object.keys(expandedOrders).length === orders.length ? {} :
                     Object.fromEntries(orders.map(o => [o.id, true]))
                   )}
-                  className="text-xs font-bold text-[var(--seasonal-primary,#ff385c)] hover:underline"
+                  className="text-xs font-bold text-[var(--seasonal-primary,#1a5632)] hover:underline"
                 >
                   {Object.keys(expandedOrders).length === orders.length ? 'Collapse all' : 'Expand all'}
                 </button>
@@ -709,7 +709,7 @@ function UserDashboard() {
                 <Package className="w-12 h-12 text-zinc-300 mx-auto mb-3" />
                 <h3 className="font-bold text-zinc-900 dark:text-white mb-1">No orders yet</h3>
                 <p className="text-sm text-zinc-500 mb-4">When you place an order, it will appear here.</p>
-                <Link to="/" className="inline-flex items-center gap-2 bg-[var(--seasonal-primary,#ff385c)] text-white font-bold px-6 py-3 rounded-xl text-sm hover:bg-[var(--seasonal-secondary,#e03150)] transition-colors">
+                <Link to="/" className="inline-flex items-center gap-2 bg-[var(--seasonal-primary,#1a5632)] text-white font-bold px-6 py-3 rounded-xl text-sm hover:bg-[var(--seasonal-secondary,#14472a)] transition-colors">
                   Start Shopping <ArrowRight className="w-4 h-4" />
                 </Link>
               </div>
@@ -725,7 +725,7 @@ function UserDashboard() {
               <h2 className="text-lg font-bold text-zinc-900 dark:text-white">Saved Addresses</h2>
               <button
                 onClick={() => setShowAddressForm(true)}
-                className="flex items-center gap-2 px-4 py-2 rounded-xl bg-[var(--seasonal-primary,#ff385c)] text-white text-xs font-bold hover:bg-[var(--seasonal-secondary,#e03150)] transition-colors"
+                className="flex items-center gap-2 px-4 py-2 rounded-xl bg-[var(--seasonal-primary,#1a5632)] text-white text-xs font-bold hover:bg-[var(--seasonal-secondary,#14472a)] transition-colors"
               >
                 <Plus className="w-3.5 h-3.5" /> Add
               </button>
@@ -745,7 +745,7 @@ function UserDashboard() {
                     <div className="flex items-start justify-between">
                       <div className="flex items-start gap-3">
                         <div className={`w-8 h-8 rounded-xl flex items-center justify-center flex-shrink-0 ${
-                          addr.is_default ? 'bg-[var(--seasonal-primary,#ff385c)]/10 text-[var(--seasonal-primary,#ff385c)]' : 'bg-zinc-100 dark:bg-zinc-800 text-zinc-400'
+                          addr.is_default ? 'bg-[var(--seasonal-primary,#1a5632)]/10 text-[var(--seasonal-primary,#1a5632)]' : 'bg-zinc-100 dark:bg-zinc-800 text-zinc-400'
                         }`}>
                           <MapPin className="w-4 h-4" />
                         </div>
@@ -753,7 +753,7 @@ function UserDashboard() {
                           <div className="flex items-center gap-2">
                             <span className="font-bold text-zinc-900 dark:text-white text-sm">{addr.label || 'Address'}</span>
                             {addr.is_default && (
-                              <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-[var(--seasonal-primary,#ff385c)]/10 text-[var(--seasonal-primary,#ff385c)]">Default</span>
+                              <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-[var(--seasonal-primary,#1a5632)]/10 text-[var(--seasonal-primary,#1a5632)]">Default</span>
                             )}
                           </div>
                           <p className="text-xs text-zinc-500 mt-0.5">{addr.area}{addr.landmark ? `, ${addr.landmark}` : ''}</p>
@@ -791,7 +791,7 @@ function UserDashboard() {
             {/* Referral */}
             <div className="bg-white dark:bg-zinc-900 rounded-2xl border border-zinc-200 dark:border-zinc-800 p-6">
               <div className="flex items-center gap-3 mb-5">
-                <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[var(--seasonal-primary,#ff385c)] to-[var(--seasonal-secondary,#e03150)] flex items-center justify-center">
+                <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[var(--seasonal-primary,#1a5632)] to-[var(--seasonal-secondary,#14472a)] flex items-center justify-center">
                   <Users className="w-5 h-5 text-white" />
                 </div>
                 <div>
@@ -815,7 +815,7 @@ function UserDashboard() {
                 <div className="text-center sm:text-left">
                   <label className="text-xs font-medium text-zinc-500 dark:text-zinc-400 mb-1.5 block">People referred</label>
                   <div className="flex items-center gap-2 bg-zinc-50 dark:bg-zinc-800/50 rounded-xl px-5 py-3 border border-zinc-200 dark:border-zinc-700">
-                    <Users className="w-5 h-5 text-[var(--seasonal-primary,#ff385c)]" />
+                    <Users className="w-5 h-5 text-[var(--seasonal-primary,#1a5632)]" />
                     <span className="font-bold text-xl text-zinc-900 dark:text-white">{referralCount}</span>
                   </div>
                 </div>
@@ -964,7 +964,7 @@ function UserDashboard() {
             {/* Saved Searches */}
             <div className="bg-white dark:bg-zinc-900 rounded-2xl border border-zinc-200 dark:border-zinc-800 p-6">
               <div className="flex items-center gap-3 mb-5">
-                <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[var(--seasonal-primary,#ff385c)] to-[var(--seasonal-secondary,#e03150)] flex items-center justify-center">
+                <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[var(--seasonal-primary,#1a5632)] to-[var(--seasonal-secondary,#14472a)] flex items-center justify-center">
                   <Bookmark className="w-5 h-5 text-white" />
                 </div>
                 <div>
@@ -1194,7 +1194,7 @@ function AddressForm({ onSave, onClose }) {
       <div>
         <label className="text-xs font-bold text-zinc-500 dark:text-zinc-400 uppercase tracking-wider mb-1 block">Area</label>
         <select value={form.area} onChange={e => setForm({ ...form, area: e.target.value })}
-          className="w-full px-3 py-2.5 rounded-xl bg-zinc-50 dark:bg-zinc-800/50 border border-zinc-200 dark:border-zinc-700 text-sm text-zinc-900 dark:text-white focus:outline-none focus:border-[var(--seasonal-primary,#ff385c)]">
+          className="w-full px-3 py-2.5 rounded-xl bg-zinc-50 dark:bg-zinc-800/50 border border-zinc-200 dark:border-zinc-700 text-sm text-zinc-900 dark:text-white focus:outline-none focus:border-[var(--seasonal-primary,#1a5632)]">
           <option value="">Select area...</option>
           {AREA_OPTIONS.map(a => <option key={a} value={a}>{a}</option>)}
         </select>
@@ -1203,17 +1203,17 @@ function AddressForm({ onSave, onClose }) {
         <label className="text-xs font-bold text-zinc-500 dark:text-zinc-400 uppercase tracking-wider mb-1 block">Landmark</label>
         <input type="text" value={form.landmark} onChange={e => setForm({ ...form, landmark: e.target.value })}
           placeholder="Nearby landmark"
-          className="w-full px-3 py-2.5 rounded-xl bg-zinc-50 dark:bg-zinc-800/50 border border-zinc-200 dark:border-zinc-700 text-sm text-zinc-900 dark:text-white focus:outline-none focus:border-[var(--seasonal-primary,#ff385c)]" />
+          className="w-full px-3 py-2.5 rounded-xl bg-zinc-50 dark:bg-zinc-800/50 border border-zinc-200 dark:border-zinc-700 text-sm text-zinc-900 dark:text-white focus:outline-none focus:border-[var(--seasonal-primary,#1a5632)]" />
       </div>
       <div>
         <label className="text-xs font-bold text-zinc-500 dark:text-zinc-400 uppercase tracking-wider mb-1 block">Phone</label>
         <input type="tel" value={form.phone} onChange={e => setForm({ ...form, phone: e.target.value })}
           placeholder="07XX XXX XXX"
-          className="w-full px-3 py-2.5 rounded-xl bg-zinc-50 dark:bg-zinc-800/50 border border-zinc-200 dark:border-zinc-700 text-sm text-zinc-900 dark:text-white focus:outline-none focus:border-[var(--seasonal-primary,#ff385c)]" />
+          className="w-full px-3 py-2.5 rounded-xl bg-zinc-50 dark:bg-zinc-800/50 border border-zinc-200 dark:border-zinc-700 text-sm text-zinc-900 dark:text-white focus:outline-none focus:border-[var(--seasonal-primary,#1a5632)]" />
       </div>
       <label className="flex items-center gap-2 text-sm text-zinc-600 dark:text-zinc-400 cursor-pointer">
         <input type="checkbox" checked={form.is_default} onChange={e => setForm({ ...form, is_default: e.target.checked })}
-          className="rounded text-[var(--seasonal-primary,#ff385c)] focus:ring-[var(--seasonal-primary,#ff385c)]" />
+          className="rounded text-[var(--seasonal-primary,#1a5632)] focus:ring-[var(--seasonal-primary,#1a5632)]" />
         Set as default address
       </label>
       <div className="flex gap-2 pt-1">
@@ -1222,7 +1222,7 @@ function AddressForm({ onSave, onClose }) {
           Cancel
         </button>
         <button type="submit"
-          className="flex-1 py-2.5 rounded-xl bg-[var(--seasonal-primary,#ff385c)] text-white text-sm font-bold hover:bg-[var(--seasonal-secondary,#e03150)] transition-colors">
+          className="flex-1 py-2.5 rounded-xl bg-[var(--seasonal-primary,#1a5632)] text-white text-sm font-bold hover:bg-[var(--seasonal-secondary,#14472a)] transition-colors">
           Save Address
         </button>
       </div>

@@ -55,7 +55,7 @@ export default function AdminLayout() {
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-zinc-50 dark:bg-zinc-950">
-        <div className="inline-block w-8 h-8 border-4 border-[#ff385c] border-t-transparent rounded-full animate-spin" />
+        <div className="inline-block w-8 h-8 border-4 border-primary border-t-transparent rounded-full animate-spin" />
       </div>
     );
   }
@@ -73,7 +73,7 @@ export default function AdminLayout() {
           {/* Logo */}
           <div className="flex items-center justify-between h-16 px-5 border-b border-zinc-200 dark:border-zinc-800">
             <Link to="/admin/dashboard" className="flex items-center gap-2.5">
-              <div className="w-8 h-8 bg-[#ff385c] rounded-xl flex items-center justify-center">
+              <div className="w-8 h-8 bg-primary rounded-xl flex items-center justify-center">
                 <Shield className="w-4 h-4 text-white" />
               </div>
               <span className="text-lg font-black text-zinc-900 dark:text-white">Omix Admin</span>
@@ -95,7 +95,7 @@ export default function AdminLayout() {
                   onClick={() => setSidebarOpen(false)}
                   className={`flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-semibold transition-all ${
                     active
-                      ? 'bg-[#ff385c]/10 text-[#ff385c]'
+                      ? 'bg-primary/10 text-primary'
                       : 'text-zinc-600 dark:text-zinc-400 hover:bg-zinc-100 dark:hover:bg-zinc-800 hover:text-zinc-900 dark:hover:text-white'
                   }`}
                 >
@@ -110,8 +110,8 @@ export default function AdminLayout() {
           {/* User section */}
           <div className="p-3 border-t border-zinc-200 dark:border-zinc-800">
             <div className="flex items-center gap-3 px-3 py-2.5 mb-1">
-              <div className="w-8 h-8 rounded-full bg-[#ff385c]/10 flex items-center justify-center">
-                <span className="text-xs font-bold text-[#ff385c]">
+              <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center">
+                <span className="text-xs font-bold text-primary">
                   {user?.email?.charAt(0).toUpperCase() || 'A'}
                 </span>
               </div>
@@ -142,7 +142,7 @@ export default function AdminLayout() {
             <h1 className="text-lg font-bold text-zinc-900 dark:text-white">{currentPage.label}</h1>
           </div>
           <div className="flex items-center gap-2">
-            <Link to="/" className="text-xs font-semibold text-zinc-500 hover:text-[#ff385c] transition-colors hidden sm:block">
+            <Link to="/" className="text-xs font-semibold text-zinc-500 hover:text-primary transition-colors hidden sm:block">
               View Store
             </Link>
           </div>

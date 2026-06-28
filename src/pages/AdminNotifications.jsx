@@ -87,7 +87,7 @@ export default function AdminNotifications() {
       {/* Header */}
       <div>
         <h1 className="text-2xl font-black text-zinc-900 dark:text-white flex items-center gap-3">
-          <Bell className="w-7 h-7 text-[#ff385c]" />
+          <Bell className="w-7 h-7 text-primary" />
           Push Notifications
         </h1>
         <p className="text-sm text-zinc-500 dark:text-zinc-400 mt-1">
@@ -156,12 +156,12 @@ export default function AdminNotifications() {
                 onClick={() => applyTemplate(t)}
                 className={`flex items-center gap-2.5 p-3 rounded-xl border text-left transition-all ${
                   isSelected
-                    ? 'border-[#ff385c] bg-[#ff385c]/5 dark:bg-[#ff385c]/10'
+                    ? 'border-primary bg-primary/5 dark:bg-primary/10'
                     : 'border-zinc-200 dark:border-zinc-700 hover:border-zinc-300 dark:hover:border-zinc-600 bg-white dark:bg-zinc-900'
                 }`}
               >
-                <Icon className={`w-4 h-4 flex-shrink-0 ${isSelected ? 'text-[#ff385c]' : 'text-zinc-400'}`} />
-                <span className={`text-xs font-bold ${isSelected ? 'text-[#ff385c]' : 'text-zinc-700 dark:text-zinc-300'}`}>
+                <Icon className={`w-4 h-4 flex-shrink-0 ${isSelected ? 'text-primary' : 'text-zinc-400'}`} />
+                <span className={`text-xs font-bold ${isSelected ? 'text-primary' : 'text-zinc-700 dark:text-zinc-300'}`}>
                   {t.label}
                 </span>
               </button>
@@ -182,7 +182,7 @@ export default function AdminNotifications() {
             onChange={(e) => setTitle(e.target.value)}
             placeholder="e.g. Flash Sale is Live!"
             maxLength={60}
-            className="w-full px-4 py-3 rounded-xl border border-zinc-200 dark:border-zinc-700 bg-zinc-50 dark:bg-zinc-800 text-zinc-900 dark:text-white text-sm focus:outline-none focus:ring-2 focus:ring-[#ff385c]/50 focus:border-[#ff385c] transition-all"
+            className="w-full px-4 py-3 rounded-xl border border-zinc-200 dark:border-zinc-700 bg-zinc-50 dark:bg-zinc-800 text-zinc-900 dark:text-white text-sm focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all"
           />
           <p className="text-[10px] text-zinc-400 mt-1">{title.length}/60</p>
         </div>
@@ -195,7 +195,7 @@ export default function AdminNotifications() {
             placeholder="e.g. Up to 50% off selected items. Limited time only!"
             maxLength={160}
             rows={3}
-            className="w-full px-4 py-3 rounded-xl border border-zinc-200 dark:border-zinc-700 bg-zinc-50 dark:bg-zinc-800 text-zinc-900 dark:text-white text-sm focus:outline-none focus:ring-2 focus:ring-[#ff385c]/50 focus:border-[#ff385c] transition-all resize-none"
+            className="w-full px-4 py-3 rounded-xl border border-zinc-200 dark:border-zinc-700 bg-zinc-50 dark:bg-zinc-800 text-zinc-900 dark:text-white text-sm focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all resize-none"
           />
           <p className="text-[10px] text-zinc-400 mt-1">{body.length}/160</p>
         </div>
@@ -207,7 +207,7 @@ export default function AdminNotifications() {
             value={url}
             onChange={(e) => setUrl(e.target.value)}
             placeholder="/"
-            className="w-full px-4 py-3 rounded-xl border border-zinc-200 dark:border-zinc-700 bg-zinc-50 dark:bg-zinc-800 text-zinc-900 dark:text-white text-sm focus:outline-none focus:ring-2 focus:ring-[#ff385c]/50 focus:border-[#ff385c] transition-all"
+            className="w-full px-4 py-3 rounded-xl border border-zinc-200 dark:border-zinc-700 bg-zinc-50 dark:bg-zinc-800 text-zinc-900 dark:text-white text-sm focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all"
           />
         </div>
 
@@ -215,8 +215,8 @@ export default function AdminNotifications() {
         <div className="border border-zinc-200 dark:border-zinc-700 rounded-xl p-4 bg-zinc-50 dark:bg-zinc-800/50">
           <p className="text-[10px] font-bold text-zinc-400 uppercase tracking-wider mb-2">Preview</p>
           <div className="flex items-start gap-3 bg-white dark:bg-zinc-900 rounded-xl p-3 shadow-sm border border-zinc-100 dark:border-zinc-800">
-            <div className="w-10 h-10 rounded-lg bg-[#ff385c]/10 flex items-center justify-center flex-shrink-0">
-              <Bell className="w-5 h-5 text-[#ff385c]" />
+            <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center flex-shrink-0">
+              <Bell className="w-5 h-5 text-primary" />
             </div>
             <div className="flex-1 min-w-0">
               <p className="text-sm font-bold text-zinc-900 dark:text-white truncate">
@@ -251,7 +251,7 @@ export default function AdminNotifications() {
         <button
           onClick={handleSend}
           disabled={!isFormValid || sending || subscriberCount === 0}
-          className="flex items-center justify-center gap-2 w-full bg-[#ff385c] hover:bg-[#e03150] disabled:opacity-50 disabled:cursor-not-allowed text-white font-black py-3.5 rounded-xl transition-all shadow-lg shadow-[#ff385c]/20"
+          className="flex items-center justify-center gap-2 w-full bg-primary hover:bg-primary-hover disabled:opacity-50 disabled:cursor-not-allowed text-white font-black py-3.5 rounded-xl transition-all shadow-lg shadow-primary/20"
         >
           {sending ? (
             <>

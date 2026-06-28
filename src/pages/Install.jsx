@@ -176,13 +176,13 @@ export default function Install() {
       </div>
     );
     if (installState === 'installing') return (
-      <div className="flex items-center gap-3 backdrop-blur-xl bg-[var(--seasonal-primary,#ff385c)]/10 border border-[var(--seasonal-primary,#ff385c)]/20 px-8 py-4 rounded-2xl">
-        <div className="w-6 h-6 border-2 border-[var(--seasonal-primary,#ff385c)] border-t-transparent rounded-full animate-spin" />
-        <span className="font-bold text-[var(--seasonal-primary,#ff385c)] text-sm">Installing...</span>
+      <div className="flex items-center gap-3 backdrop-blur-xl bg-[var(--seasonal-primary,#1a5632)]/10 border border-[var(--seasonal-primary,#1a5632)]/20 px-8 py-4 rounded-2xl">
+        <div className="w-6 h-6 border-2 border-[var(--seasonal-primary,#1a5632)] border-t-transparent rounded-full animate-spin" />
+        <span className="font-bold text-[var(--seasonal-primary,#1a5632)] text-sm">Installing...</span>
       </div>
     );
     return (
-      <button onClick={handleInstall} className="group relative flex items-center gap-3 bg-gradient-to-r from-[var(--seasonal-primary,#ff385c)] to-[var(--seasonal-secondary,#e03150)] text-white px-8 py-4 rounded-2xl font-black text-lg shadow-2xl shadow-[var(--seasonal-primary,#ff385c)]/30 hover:shadow-[var(--seasonal-primary,#ff385c)]/50 transition-all duration-300 hover:scale-105 active:scale-95 overflow-hidden">
+      <button onClick={handleInstall} className="group relative flex items-center gap-3 bg-gradient-to-r from-[var(--seasonal-primary,#1a5632)] to-[var(--seasonal-secondary,#14472a)] text-white px-8 py-4 rounded-2xl font-black text-lg shadow-2xl shadow-[var(--seasonal-primary,#1a5632)]/30 hover:shadow-[var(--seasonal-primary,#1a5632)]/50 transition-all duration-300 hover:scale-105 active:scale-95 overflow-hidden">
         <div className="absolute inset-0 bg-white/10 opacity-0 group-hover:opacity-100 transition-opacity" />
         <Download className="w-6 h-6 relative z-10 group-hover:animate-bounce" />
         <span className="text-left relative z-10">
@@ -202,12 +202,12 @@ export default function Install() {
       {/* Hero Section */}
       <section className="relative min-h-[90vh] flex items-center justify-center overflow-hidden">
         {/* Animated gradient background */}
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-[var(--seasonal-primary,#ff385c)]/20 via-zinc-50 dark:via-zinc-950 to-transparent dark:from-[var(--seasonal-primary,#ff385c)]/10" />
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-[var(--seasonal-primary,#1a5632)]/20 via-zinc-50 dark:via-zinc-950 to-transparent dark:from-[var(--seasonal-primary,#1a5632)]/10" />
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_bottom_left,_var(--tw-gradient-stops))] from-purple-500/10 via-transparent to-transparent" />
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-blue-500/10 via-transparent to-transparent" />
         
         {/* Animated floating orbs */}
-        <div className="absolute top-1/4 left-1/4 w-72 h-72 bg-[var(--seasonal-primary,#ff385c)]/20 rounded-full blur-3xl animate-float-slow" />
+        <div className="absolute top-1/4 left-1/4 w-72 h-72 bg-[var(--seasonal-primary,#1a5632)]/20 rounded-full blur-3xl animate-float-slow" />
         <div className="absolute bottom-1/3 right-1/4 w-56 h-56 bg-purple-500/20 rounded-full blur-3xl animate-float-slower" />
         <div className="absolute top-1/2 right-1/3 w-48 h-48 bg-blue-500/15 rounded-full blur-3xl animate-float" />
 
@@ -217,14 +217,14 @@ export default function Install() {
         <div className="relative z-10 max-w-4xl mx-auto px-4 pt-20 pb-12 text-center">
           {/* Logo with glass container */}
           <div className="relative inline-block mb-8 group">
-            <div className="absolute -inset-4 bg-gradient-to-r from-[var(--seasonal-primary,#ff385c)]/30 via-purple-500/30 to-blue-500/30 rounded-full blur-2xl opacity-75 group-hover:opacity-100 transition-opacity duration-700 animate-pulse-slow" />
+            <div className="absolute -inset-4 bg-gradient-to-r from-[var(--seasonal-primary,#1a5632)]/30 via-purple-500/30 to-blue-500/30 rounded-full blur-2xl opacity-75 group-hover:opacity-100 transition-opacity duration-700 animate-pulse-slow" />
             <div className="relative w-24 h-24 rounded-full backdrop-blur-xl bg-white/60 dark:bg-zinc-800/60 border border-white/50 dark:border-zinc-700/50 shadow-2xl flex items-center justify-center overflow-hidden group-hover:scale-110 transition-transform duration-500">
               <img src="/logo.jpg" alt="Omix Store" className="w-full h-full object-cover" />
             </div>
           </div>
 
           <h1 className="text-5xl md:text-7xl font-black text-zinc-900 dark:text-white mb-4 tracking-tight leading-tight">
-            <span className="bg-gradient-to-r from-[var(--seasonal-primary,#ff385c)] via-purple-500 to-blue-500 bg-clip-text text-transparent bg-[length:200%_auto] animate-gradient-x">
+            <span className="bg-gradient-to-r from-[var(--seasonal-primary,#1a5632)] via-purple-500 to-blue-500 bg-clip-text text-transparent bg-[length:200%_auto] animate-gradient-x">
               {t('install.title')}
             </span>
           </h1>
@@ -274,10 +274,10 @@ export default function Install() {
 
       {/* Features */}
       <section className="relative py-20 overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-b from-transparent via-[var(--seasonal-primary,#ff385c)]/5 to-transparent dark:via-[var(--seasonal-primary,#ff385c)]/[0.02]" />
+        <div className="absolute inset-0 bg-gradient-to-b from-transparent via-[var(--seasonal-primary,#1a5632)]/5 to-transparent dark:via-[var(--seasonal-primary,#1a5632)]/[0.02]" />
         <div className="max-w-6xl mx-auto px-4 relative">
           <div className="text-center mb-12">
-            <span className="text-xs font-bold text-[var(--seasonal-primary,#ff385c)] uppercase tracking-[0.2em] bg-[var(--seasonal-primary,#ff385c)]/10 dark:bg-[var(--seasonal-primary,#ff385c)]/20 px-4 py-1.5 rounded-full">Why Install</span>
+            <span className="text-xs font-bold text-[var(--seasonal-primary,#1a5632)] uppercase tracking-[0.2em] bg-[var(--seasonal-primary,#1a5632)]/10 dark:bg-[var(--seasonal-primary,#1a5632)]/20 px-4 py-1.5 rounded-full">Why Install</span>
             <h2 className="text-3xl md:text-4xl font-black text-zinc-900 dark:text-white mt-3">Install the App</h2>
             <p className="text-zinc-500 dark:text-zinc-400 mt-2 max-w-md mx-auto">Everything you need, right on your home screen</p>
           </div>
@@ -288,7 +288,7 @@ export default function Install() {
               return (
                 <div key={f.title} className="group relative animate-fade-in-up" style={{ animationDelay: `${idx * 100}ms` }}>
                   {/* Glass card */}
-                  <div className="relative h-full backdrop-blur-xl bg-white/50 dark:bg-zinc-900/50 border border-white/60 dark:border-zinc-700/50 rounded-2xl p-6 text-center shadow-xl shadow-zinc-900/5 hover:shadow-2xl hover:shadow-zinc-900/10 transition-all duration-500 hover:-translate-y-2 hover:border-[var(--seasonal-primary,#ff385c)]/20">
+                  <div className="relative h-full backdrop-blur-xl bg-white/50 dark:bg-zinc-900/50 border border-white/60 dark:border-zinc-700/50 rounded-2xl p-6 text-center shadow-xl shadow-zinc-900/5 hover:shadow-2xl hover:shadow-zinc-900/10 transition-all duration-500 hover:-translate-y-2 hover:border-[var(--seasonal-primary,#1a5632)]/20">
                     {/* Icon gradient glow */}
                     <div className={`w-14 h-14 rounded-xl bg-gradient-to-br ${f.bg} flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform duration-500 shadow-lg`}>
                       <Icon className={`w-7 h-7 ${f.color}`} />
@@ -390,16 +390,16 @@ export default function Install() {
 
       {/* CTA */}
       <section className="relative py-24 overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-t from-[var(--seasonal-primary,#ff385c)]/10 via-transparent to-transparent dark:from-[var(--seasonal-primary,#ff385c)]/5" />
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-[var(--seasonal-primary,#ff385c)]/10 via-transparent to-transparent dark:from-[var(--seasonal-primary,#ff385c)]/5" />
+        <div className="absolute inset-0 bg-gradient-to-t from-[var(--seasonal-primary,#1a5632)]/10 via-transparent to-transparent dark:from-[var(--seasonal-primary,#1a5632)]/5" />
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-[var(--seasonal-primary,#1a5632)]/10 via-transparent to-transparent dark:from-[var(--seasonal-primary,#1a5632)]/5" />
 
         {/* Floating orbs */}
-        <div className="absolute top-1/2 left-1/4 w-48 h-48 bg-[var(--seasonal-primary,#ff385c)]/20 rounded-full blur-3xl animate-float" />
+        <div className="absolute top-1/2 left-1/4 w-48 h-48 bg-[var(--seasonal-primary,#1a5632)]/20 rounded-full blur-3xl animate-float" />
         <div className="absolute bottom-1/4 right-1/3 w-36 h-36 bg-purple-500/15 rounded-full blur-3xl animate-float-slow" />
 
         <div className="max-w-2xl mx-auto px-4 text-center relative">
           <div className="backdrop-blur-2xl bg-white/50 dark:bg-zinc-900/50 border border-white/60 dark:border-zinc-700/50 rounded-3xl p-10 md:p-12 shadow-2xl shadow-zinc-900/5">
-            <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-[var(--seasonal-primary,#ff385c)] to-[var(--seasonal-secondary,#e03150)] flex items-center justify-center mx-auto mb-6 shadow-xl shadow-[var(--seasonal-primary,#ff385c)]/30">
+            <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-[var(--seasonal-primary,#1a5632)] to-[var(--seasonal-secondary,#14472a)] flex items-center justify-center mx-auto mb-6 shadow-xl shadow-[var(--seasonal-primary,#1a5632)]/30">
               <Sparkles className="w-7 h-7 text-white" />
             </div>
             <h2 className="text-3xl md:text-4xl font-black text-zinc-900 dark:text-white mb-3">Ready to get started?</h2>
@@ -408,7 +408,7 @@ export default function Install() {
             </p>
             <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
               {installState !== 'installed' && (
-                <button onClick={handleInstall} className="group relative flex items-center gap-2 bg-gradient-to-r from-[var(--seasonal-primary,#ff385c)] to-[var(--seasonal-secondary,#e03150)] text-white px-8 py-4 rounded-2xl font-black shadow-2xl shadow-[var(--seasonal-primary,#ff385c)]/25 hover:shadow-[var(--seasonal-primary,#ff385c)]/40 transition-all duration-300 hover:scale-105 active:scale-95 overflow-hidden">
+                <button onClick={handleInstall} className="group relative flex items-center gap-2 bg-gradient-to-r from-[var(--seasonal-primary,#1a5632)] to-[var(--seasonal-secondary,#14472a)] text-white px-8 py-4 rounded-2xl font-black shadow-2xl shadow-[var(--seasonal-primary,#1a5632)]/25 hover:shadow-[var(--seasonal-primary,#1a5632)]/40 transition-all duration-300 hover:scale-105 active:scale-95 overflow-hidden">
                   <div className="absolute inset-0 bg-white/10 opacity-0 group-hover:opacity-100 transition-opacity" />
                   <Download className="w-5 h-5 relative z-10 group-hover:animate-bounce" />
                   <span className="relative z-10">Install App — It's Free</span>

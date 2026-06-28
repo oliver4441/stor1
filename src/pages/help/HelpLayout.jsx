@@ -7,7 +7,7 @@ export default function HelpLayout({ title, children, backLabel = 'Back to Help 
       <div className="max-w-3xl mx-auto px-4 py-10">
         {/* Breadcrumb */}
         <div className="flex items-center gap-2 text-sm text-zinc-400 mb-8">
-          <Link to="/help" className="hover:text-[#ff385c] transition-colors">
+          <Link to="/help" className="hover:text-primary transition-colors">
             Help Center
           </Link>
           <ChevronRight className="w-3 h-3" />
@@ -28,7 +28,7 @@ export default function HelpLayout({ title, children, backLabel = 'Back to Help 
         <div className="mt-6 text-center">
           <Link
             to="/help"
-            className="inline-flex items-center gap-1 text-sm text-zinc-500 hover:text-[#ff385c] transition-colors font-medium"
+            className="inline-flex items-center gap-1 text-sm text-zinc-500 hover:text-primary transition-colors font-medium"
           >
             <ChevronRight className="w-3 h-3 rotate-180" />
             {backLabel}

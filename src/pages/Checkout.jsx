@@ -26,8 +26,8 @@ function loadPaystackScript() {
 
 // ── Design Tokens (matching Nia chat) ──────────────────────────────
 const C = {
-  accent: 'var(--seasonal-primary,#ff385c)',
-  accentDark: '#e03150',
+  accent: 'var(--seasonal-primary,#1a5632)',
+  accentDark: '#14472a',
   bg: '#ffffff',
   bgDark: '#18181b',
   bgGray: '#f9fafb',
@@ -684,7 +684,7 @@ export default function CheckoutPage() {
                     type="checkbox"
                     checked={redeemPoints}
                     onChange={(e) => setRedeemPoints(e.target.checked)}
-                    className="w-4 h-4 rounded border-zinc-300 text-[var(--seasonal-primary,#ff385c)] focus:ring-[var(--seasonal-primary,#ff385c)]"
+                    className="w-4 h-4 rounded border-zinc-300 text-[var(--seasonal-primary,#1a5632)] focus:ring-[var(--seasonal-primary,#1a5632)]"
                   />
                   <span className="text-sm" style={{ color: C.textMuted }}>
                     Use loyalty points <strong className="text-amber-500">({userPoints} pts)</strong>

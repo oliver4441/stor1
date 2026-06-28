@@ -142,10 +142,10 @@ export default function VariantManager({ category, basePrice, baseSku, value = [
         className="w-full flex items-center justify-between px-4 py-3 bg-zinc-50 dark:bg-zinc-800/50 hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors"
       >
         <div className="flex items-center gap-2.5">
-          <Shirt className="w-4 h-4 text-[var(--seasonal-primary,#ff385c)]" />
+          <Shirt className="w-4 h-4 text-[var(--seasonal-primary,#1a5632)]" />
           <span className="text-sm font-bold text-zinc-700 dark:text-zinc-300">Product Variants</span>
           {variants.length > 0 && (
-            <span className="text-[10px] font-bold bg-[var(--seasonal-primary,#ff385c)] text-white px-1.5 py-0.5 rounded-full">
+            <span className="text-[10px] font-bold bg-[var(--seasonal-primary,#1a5632)] text-white px-1.5 py-0.5 rounded-full">
               {variants.length} variants
             </span>
           )}
@@ -184,7 +184,7 @@ export default function VariantManager({ category, basePrice, baseSku, value = [
               <button
                 type="button"
                 onClick={() => setShowColorPicker(!showColorPicker)}
-                className="flex items-center gap-1 px-2 py-1 border border-dashed border-zinc-300 dark:border-zinc-600 rounded-lg text-xs text-zinc-500 hover:text-[var(--seasonal-primary,#ff385c)] hover:border-[var(--seasonal-primary,#ff385c)] transition-colors"
+                className="flex items-center gap-1 px-2 py-1 border border-dashed border-zinc-300 dark:border-zinc-600 rounded-lg text-xs text-zinc-500 hover:text-[var(--seasonal-primary,#1a5632)] hover:border-[var(--seasonal-primary,#1a5632)] transition-colors"
               >
                 <Plus className="w-3 h-3" /> Add Color
               </button>
@@ -200,7 +200,7 @@ export default function VariantManager({ category, basePrice, baseSku, value = [
                       key={c.hex}
                       type="button"
                       onClick={() => addColorFromPalette(c)}
-                      className="group relative w-7 h-7 rounded-lg border-2 border-zinc-200 dark:border-zinc-600 hover:border-[var(--seasonal-primary,#ff385c)] transition-colors hover:scale-110"
+                      className="group relative w-7 h-7 rounded-lg border-2 border-zinc-200 dark:border-zinc-600 hover:border-[var(--seasonal-primary,#1a5632)] transition-colors hover:scale-110"
                       style={{ backgroundColor: c.hex.includes('linear') ? undefined : c.hex, background: c.hex.includes('linear') ? c.hex : undefined }}
                       title={c.name}
                     >
@@ -215,7 +215,7 @@ export default function VariantManager({ category, basePrice, baseSku, value = [
                 <div className="flex items-center gap-2 pt-2 border-t border-zinc-200 dark:border-zinc-700">
                   <input type="color" value={customColorHex} onChange={e => setCustomColorHex(e.target.value)} className="w-8 h-8 rounded cursor-pointer" />
                   <input type="text" value={customColorName} onChange={e => setCustomColorName(e.target.value)} placeholder="Color name (e.g. Sky Blue)" className="flex-1 px-2 py-1 rounded-lg bg-white dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 text-xs text-zinc-900 dark:text-white" />
-                  <button type="button" onClick={addCustomColor} disabled={!customColorName.trim()} className="px-3 py-1 bg-[var(--seasonal-primary,#ff385c)] text-white text-xs font-bold rounded-lg disabled:opacity-50">Add</button>
+                  <button type="button" onClick={addCustomColor} disabled={!customColorName.trim()} className="px-3 py-1 bg-[var(--seasonal-primary,#1a5632)] text-white text-xs font-bold rounded-lg disabled:opacity-50">Add</button>
                   <button type="button" onClick={() => setShowColorPicker(false)} className="text-xs text-zinc-500 hover:text-zinc-700">Cancel</button>
                 </div>
               </div>
@@ -236,8 +236,8 @@ export default function VariantManager({ category, basePrice, baseSku, value = [
                       onClick={() => active ? removeSize(size) : addSize(size)}
                       className={`px-2.5 py-1 rounded-lg text-xs font-bold border transition-all ${
                         active
-                          ? 'bg-[var(--seasonal-primary,#ff385c)] text-white border-[var(--seasonal-primary,#ff385c)]'
-                          : 'bg-white dark:bg-zinc-800 text-zinc-600 dark:text-zinc-400 border-zinc-200 dark:border-zinc-700 hover:border-[var(--seasonal-primary,#ff385c)]'
+                          ? 'bg-[var(--seasonal-primary,#1a5632)] text-white border-[var(--seasonal-primary,#1a5632)]'
+                          : 'bg-white dark:bg-zinc-800 text-zinc-600 dark:text-zinc-400 border-zinc-200 dark:border-zinc-700 hover:border-[var(--seasonal-primary,#1a5632)]'
                       }`}
                     >
                       {size}
@@ -267,7 +267,7 @@ export default function VariantManager({ category, basePrice, baseSku, value = [
                 <button
                   type="button"
                   onClick={generateMatrix}
-                  className="text-xs text-[var(--seasonal-primary,#ff385c)] font-bold hover:underline"
+                  className="text-xs text-[var(--seasonal-primary,#1a5632)] font-bold hover:underline"
                 >
                   {variants.length > 0 ? 'Regenerate Matrix' : 'Generate All Combinations'}
                 </button>

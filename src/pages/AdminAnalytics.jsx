@@ -83,7 +83,7 @@ export default function AdminAnalytics() {
     .sort(([, a], [, b]) => b - a)
     .map(([name, value]) => ({ name, value: Math.round(value) }));
 
-  const CHART_COLORS = ['#ff385c', '#3b82f6', '#10b981', '#f59e0b', '#8b5cf6', '#ec4899', '#06b6d4'];
+  const CHART_COLORS = ['#1a5632', '#3b82f6', '#10b981', '#f59e0b', '#8b5cf6', '#ec4899', '#06b6d4'];
 
   // Custom tooltip
   const CustomTooltip = ({ active, payload, label }) => {
@@ -103,7 +103,7 @@ export default function AdminAnalytics() {
   if (loading) {
     return (
       <div className="flex items-center justify-center h-64">
-        <div className="inline-block w-8 h-8 border-4 border-[#ff385c] border-t-transparent rounded-full animate-spin" />
+        <div className="inline-block w-8 h-8 border-4 border-primary border-t-transparent rounded-full animate-spin" />
       </div>
     );
   }
@@ -159,14 +159,14 @@ export default function AdminAnalytics() {
               <AreaChart data={chartData} margin={{ top: 5, right: 5, bottom: 5, left: 5 }}>
                 <defs>
                   <linearGradient id="colorRevenue" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%" stopColor="#ff385c" stopOpacity={0.3} />
-                    <stop offset="95%" stopColor="#ff385c" stopOpacity={0} />
+                    <stop offset="5%" stopColor="#1a5632" stopOpacity={0.3} />
+                    <stop offset="95%" stopColor="#1a5632" stopOpacity={0} />
                   </linearGradient>
                 </defs>
                 <XAxis dataKey="day" tick={{ fontSize: 10, fill: '#71717a' }} tickLine={false} axisLine={false} />
                 <YAxis tick={{ fontSize: 10, fill: '#71717a' }} tickLine={false} axisLine={false} width={60} tickFormatter={v => v >= 1000 ? `${(v/1000).toFixed(0)}k` : v} />
                 <Tooltip content={<CustomTooltip />} />
-                <Area type="monotone" dataKey="revenue" stroke="#ff385c" strokeWidth={2} fill="url(#colorRevenue)" />
+                <Area type="monotone" dataKey="revenue" stroke="#1a5632" strokeWidth={2} fill="url(#colorRevenue)" />
               </AreaChart>
             </ResponsiveContainer>
           </div>

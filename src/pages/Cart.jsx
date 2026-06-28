@@ -20,7 +20,7 @@ export default function CartPage() {
           </div>
           <h1 className="text-2xl font-bold text-zinc-900 dark:text-white mb-3">Your cart is empty</h1>
           <p className="text-zinc-500 dark:text-zinc-400 mb-8">Browse our products and add items to your cart.</p>
-          <Link to="/" className="inline-flex items-center gap-2 bg-[var(--seasonal-primary,#ff385c)] hover:bg-[#e62e4f] text-white font-semibold px-8 py-4 rounded-xl transition-colors mb-8">
+          <Link to="/" className="inline-flex items-center gap-2 bg-[var(--seasonal-primary,#1a5632)] hover:bg-[#e62e4f] text-white font-semibold px-8 py-4 rounded-xl transition-colors mb-8">
             Browse Products
           </Link>
           <NiaContextualTrigger page="emptyCart" />
@@ -49,7 +49,7 @@ export default function CartPage() {
                 )}
               </div>
               <div className="flex-grow min-w-0">
-                <Link to={`/listing/${item.id}`} className="font-bold text-zinc-900 dark:text-white hover:text-[var(--seasonal-primary,#ff385c)] transition-colors">
+                <Link to={`/listing/${item.id}`} className="font-bold text-zinc-900 dark:text-white hover:text-[var(--seasonal-primary,#1a5632)] transition-colors">
                   {item.name}
                 </Link>
                 {item.variant && (
@@ -65,7 +65,7 @@ export default function CartPage() {
                     )}
                   </div>
                 )}
-                <p className="text-[var(--seasonal-primary,#ff385c)] font-bold">{formatKES(item.price)}</p>
+                <p className="text-[var(--seasonal-primary,#1a5632)] font-bold">{formatKES(item.price)}</p>
                 <div className="flex items-center gap-3 mt-2">
                   <div className="flex items-center gap-2">
                     <button onClick={() => updateQuantity(item.id, item.quantity - 1)} className="w-8 h-8 rounded-lg bg-zinc-100 dark:bg-zinc-800 flex items-center justify-center hover:bg-zinc-200 dark:hover:bg-zinc-700 transition-colors">
@@ -104,13 +104,13 @@ export default function CartPage() {
           <div className="border-t border-zinc-200 dark:border-zinc-700 pt-4 mb-6">
             <div className="flex justify-between items-center">
               <span className="font-bold text-zinc-900 dark:text-white">Total</span>
-              <span className="text-2xl font-black text-[var(--seasonal-primary,#ff385c)]">{formatKES(total)}</span>
+              <span className="text-2xl font-black text-[var(--seasonal-primary,#1a5632)]">{formatKES(total)}</span>
             </div>
           </div>
-          <Link to="/checkout" className="flex items-center justify-center gap-2 w-full bg-[var(--seasonal-primary,#ff385c)] text-white font-black py-4 rounded-2xl hover:bg-[var(--seasonal-secondary,#e03150)] transition-all shadow-lg shadow-[var(--seasonal-primary,#ff385c)]/20">
+          <Link to="/checkout" className="flex items-center justify-center gap-2 w-full bg-[var(--seasonal-primary,#1a5632)] text-white font-black py-4 rounded-2xl hover:bg-[var(--seasonal-secondary,#14472a)] transition-all shadow-lg shadow-[var(--seasonal-primary,#1a5632)]/20">
             Proceed to Checkout <ArrowRight className="w-5 h-5" />
           </Link>
-          <Link to="/" className="block text-center text-sm text-zinc-500 hover:text-[var(--seasonal-primary,#ff385c)] mt-4 font-medium">
+          <Link to="/" className="block text-center text-sm text-zinc-500 hover:text-[var(--seasonal-primary,#1a5632)] mt-4 font-medium">
             Continue Shopping
           </Link>
         </div>

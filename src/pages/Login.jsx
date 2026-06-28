@@ -76,7 +76,7 @@ function Login() {
         <div className="bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-900/50 text-amber-700 dark:text-amber-400 p-4 rounded-xl mb-4 text-sm">
           <p className="font-bold mb-1">{t('auth.emailNotVerified') || 'Email not verified'}</p>
           <p className="text-zinc-500 dark:text-zinc-400 text-xs mb-2">{t('auth.emailNotVerifiedDesc') || 'Please check your email for a verification link.'}</p>
-          <p className="text-xs text-zinc-400">{t('auth.emailNotVerifiedHelp') || 'Need help?'} <Link to="/signup" className="text-[var(--seasonal-primary,#ff385c)] font-bold hover:underline">{t('auth.createNewAccount') || 'Create new account'}</Link>.</p>
+          <p className="text-xs text-zinc-400">{t('auth.emailNotVerifiedHelp') || 'Need help?'} <Link to="/signup" className="text-[var(--seasonal-primary,#1a5632)] font-bold hover:underline">{t('auth.createNewAccount') || 'Create new account'}</Link>.</p>
         </div>
       )}
 
@@ -87,13 +87,13 @@ function Login() {
       <form onSubmit={handleLogin} className="space-y-4">
         <div>
           <label className="block text-sm font-bold mb-2 text-zinc-700 dark:text-zinc-300">{t('auth.email') || 'Email'}</label>
-          <input required name="email" type="email" placeholder={t('auth.emailPlaceholder') || 'your@email.com'} className="w-full px-4 py-3.5 rounded-xl bg-zinc-100 dark:bg-zinc-900 border border-transparent focus:border-[var(--seasonal-primary,#ff385c)] focus:bg-white dark:focus:bg-zinc-950 focus:outline-none text-zinc-900 dark:text-white transition-all shadow-sm" />
+          <input required name="email" type="email" placeholder={t('auth.emailPlaceholder') || 'your@email.com'} className="w-full px-4 py-3.5 rounded-xl bg-zinc-100 dark:bg-zinc-900 border border-transparent focus:border-[var(--seasonal-primary,#1a5632)] focus:bg-white dark:focus:bg-zinc-950 focus:outline-none text-zinc-900 dark:text-white transition-all shadow-sm" />
         </div>
         <div>
           <label className="block text-sm font-bold mb-2 text-zinc-700 dark:text-zinc-300">{t('auth.password') || 'Password'}</label>
-          <input required name="password" type="password" placeholder={t('auth.passwordPlaceholder') || '••••••••'} className="w-full px-4 py-3.5 rounded-xl bg-zinc-100 dark:bg-zinc-900 border border-transparent focus:border-[var(--seasonal-primary,#ff385c)] focus:bg-white dark:focus:bg-zinc-950 focus:outline-none text-zinc-900 dark:text-white transition-all shadow-sm" />
+          <input required name="password" type="password" placeholder={t('auth.passwordPlaceholder') || '••••••••'} className="w-full px-4 py-3.5 rounded-xl bg-zinc-100 dark:bg-zinc-900 border border-transparent focus:border-[var(--seasonal-primary,#1a5632)] focus:bg-white dark:focus:bg-zinc-950 focus:outline-none text-zinc-900 dark:text-white transition-all shadow-sm" />
         </div>
-        <button type="submit" disabled={loading} className="w-full bg-[var(--seasonal-primary,#ff385c)] text-white font-black py-4 rounded-2xl hover:bg-[var(--seasonal-secondary,#e03150)] transition-all disabled:opacity-50 shadow-lg shadow-[var(--seasonal-primary,#ff385c)]/20">
+        <button type="submit" disabled={loading} className="w-full bg-[var(--seasonal-primary,#1a5632)] text-white font-black py-4 rounded-2xl hover:bg-[var(--seasonal-secondary,#14472a)] transition-all disabled:opacity-50 shadow-lg shadow-[var(--seasonal-primary,#1a5632)]/20">
           {loading ? (t('auth.loggingIn') || 'Signing in...') : (t('auth.login') || 'Sign In')}
         </button>
 
@@ -109,7 +109,7 @@ function Login() {
       </form>
 
       <p className="mt-8 text-center text-zinc-500 text-sm">
-        {t('auth.noAccount') || "Don't have an account?"} <Link to="/signup" className="text-[var(--seasonal-primary,#ff385c)] font-bold hover:underline">{t('auth.signUp') || 'Sign Up'}</Link>
+        {t('auth.noAccount') || "Don't have an account?"} <Link to="/signup" className="text-[var(--seasonal-primary,#1a5632)] font-bold hover:underline">{t('auth.signUp') || 'Sign Up'}</Link>
       </p>
     </div>
   );

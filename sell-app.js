@@ -23,17 +23,17 @@ function App() {
           
           <div>
             <label className="block text-sm font-bold mb-2">Title</label>
-            <input required type="text" placeholder="e.g. iPhone 12 Pro" className="w-full px-4 py-3 rounded-[14px] bg-zinc-100 dark:bg-zinc-900 border border-transparent focus:border-[#ff385c] focus:bg-white dark:focus:bg-zinc-950 focus:outline-none text-zinc-900 dark:text-white" />
+            <input required type="text" placeholder="e.g. iPhone 12 Pro" className="w-full px-4 py-3 rounded-[14px] bg-zinc-100 dark:bg-zinc-900 border border-transparent focus:border-[#1a5632] focus:bg-white dark:focus:bg-zinc-950 focus:outline-none text-zinc-900 dark:text-white" />
           </div>
 
           <div className="grid grid-cols-2 gap-4">
             <div>
               <label className="block text-sm font-bold mb-2">Price (KES)</label>
-              <input required type="number" placeholder="0" className="w-full px-4 py-3 rounded-[14px] bg-zinc-100 dark:bg-zinc-900 border border-transparent focus:border-[#ff385c] focus:bg-white dark:focus:bg-zinc-950 focus:outline-none text-zinc-900 dark:text-white" />
+              <input required type="number" placeholder="0" className="w-full px-4 py-3 rounded-[14px] bg-zinc-100 dark:bg-zinc-900 border border-transparent focus:border-[#1a5632] focus:bg-white dark:focus:bg-zinc-950 focus:outline-none text-zinc-900 dark:text-white" />
             </div>
             <div>
               <label className="block text-sm font-bold mb-2">Condition</label>
-              <select required className="w-full px-4 py-3 rounded-[14px] bg-zinc-100 dark:bg-zinc-900 border border-transparent focus:border-[#ff385c] focus:bg-white dark:focus:bg-zinc-950 focus:outline-none text-zinc-900 dark:text-white appearance-none">
+              <select required className="w-full px-4 py-3 rounded-[14px] bg-zinc-100 dark:bg-zinc-900 border border-transparent focus:border-[#1a5632] focus:bg-white dark:focus:bg-zinc-950 focus:outline-none text-zinc-900 dark:text-white appearance-none">
                 <option value="New">New</option>
                 <option value="Used - Like New">Used - Like New</option>
                 <option value="Used - Good">Used - Good</option>
@@ -46,13 +46,13 @@ function App() {
           <div className="grid grid-cols-2 gap-4">
             <div>
               <label className="block text-sm font-bold mb-2">Category</label>
-              <select required className="w-full px-4 py-3 rounded-[14px] bg-zinc-100 dark:bg-zinc-900 border border-transparent focus:border-[#ff385c] focus:bg-white dark:focus:bg-zinc-950 focus:outline-none text-zinc-900 dark:text-white appearance-none">
+              <select required className="w-full px-4 py-3 rounded-[14px] bg-zinc-100 dark:bg-zinc-900 border border-transparent focus:border-[#1a5632] focus:bg-white dark:focus:bg-zinc-950 focus:outline-none text-zinc-900 dark:text-white appearance-none">
                 {CATEGORIES.filter(c => c !== 'All').map(c => <option key={c} value={c}>{c}</option>)}
               </select>
             </div>
             <div>
               <label className="block text-sm font-bold mb-2">Location</label>
-              <select required className="w-full px-4 py-3 rounded-[14px] bg-zinc-100 dark:bg-zinc-900 border border-transparent focus:border-[#ff385c] focus:bg-white dark:focus:bg-zinc-950 focus:outline-none text-zinc-900 dark:text-white appearance-none">
+              <select required className="w-full px-4 py-3 rounded-[14px] bg-zinc-100 dark:bg-zinc-900 border border-transparent focus:border-[#1a5632] focus:bg-white dark:focus:bg-zinc-950 focus:outline-none text-zinc-900 dark:text-white appearance-none">
                 {LOCATIONS.map(l => <option key={l} value={l}>{l}</option>)}
               </select>
             </div>
@@ -60,20 +60,20 @@ function App() {
 
           <div>
             <label className="block text-sm font-bold mb-2">Description</label>
-            <textarea required rows="4" placeholder="Describe your item..." className="w-full px-4 py-3 rounded-[14px] bg-zinc-100 dark:bg-zinc-900 border border-transparent focus:border-[#ff385c] focus:bg-white dark:focus:bg-zinc-950 focus:outline-none text-zinc-900 dark:text-white resize-none"></textarea>
+            <textarea required rows="4" placeholder="Describe your item..." className="w-full px-4 py-3 rounded-[14px] bg-zinc-100 dark:bg-zinc-900 border border-transparent focus:border-[#1a5632] focus:bg-white dark:focus:bg-zinc-950 focus:outline-none text-zinc-900 dark:text-white resize-none"></textarea>
           </div>
 
           <div>
             <label className="block text-sm font-bold mb-2">Images (URLs for demo)</label>
-            <input required type="url" placeholder="https://unsplash.com/..." className="w-full px-4 py-3 rounded-[14px] bg-zinc-100 dark:bg-zinc-900 border border-transparent focus:border-[#ff385c] focus:bg-white dark:focus:bg-zinc-950 focus:outline-none text-zinc-900 dark:text-white" />
+            <input required type="url" placeholder="https://unsplash.com/..." className="w-full px-4 py-3 rounded-[14px] bg-zinc-100 dark:bg-zinc-900 border border-transparent focus:border-[#1a5632] focus:bg-white dark:focus:bg-zinc-950 focus:outline-none text-zinc-900 dark:text-white" />
           </div>
 
           <div className="border-t border-zinc-200 dark:border-zinc-800 pt-6 mt-6">
             <label className="block text-sm font-bold mb-2">Your Name</label>
-            <input required type="text" placeholder="e.g. Kiprono" className="w-full px-4 py-3 rounded-[14px] bg-zinc-100 dark:bg-zinc-900 border border-transparent focus:border-[#ff385c] focus:bg-white dark:focus:bg-zinc-950 focus:outline-none text-zinc-900 dark:text-white" />
+            <input required type="text" placeholder="e.g. Kiprono" className="w-full px-4 py-3 rounded-[14px] bg-zinc-100 dark:bg-zinc-900 border border-transparent focus:border-[#1a5632] focus:bg-white dark:focus:bg-zinc-950 focus:outline-none text-zinc-900 dark:text-white" />
           </div>
 
-          <button type="submit" className="w-full bg-[#ff385c] text-white font-bold py-4 rounded-[14px] hover:bg-[#e03150] mt-8">
+          <button type="submit" className="w-full bg-[#1a5632] text-white font-bold py-4 rounded-[14px] hover:bg-[#14472a] mt-8">
             Post Listing
           </button>
         </form>

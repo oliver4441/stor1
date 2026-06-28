@@ -50,13 +50,13 @@ export default function AdminOverview() {
   if (loading) {
     return (
       <div className="flex items-center justify-center h-64">
-        <div className="inline-block w-8 h-8 border-4 border-[#ff385c] border-t-transparent rounded-full animate-spin" />
+        <div className="inline-block w-8 h-8 border-4 border-primary border-t-transparent rounded-full animate-spin" />
       </div>
     );
   }
 
   const stats = [
-    { label: 'Total Products', value: listings.length, icon: Package, color: 'text-[#ff385c]', bg: 'bg-[#ff385c]/10', change: `${activeListings} active` },
+    { label: 'Total Products', value: listings.length, icon: Package, color: 'text-primary', bg: 'bg-primary/10', change: `${activeListings} active` },
     { label: 'Total Orders', value: orders.length, icon: ShoppingBag, color: 'text-blue-500', bg: 'bg-blue-500/10', change: `${pendingOrders} pending` },
     { label: 'Revenue', value: formatKES(totalRevenue), icon: DollarSign, color: 'text-emerald-500', bg: 'bg-emerald-500/10', change: 'All time' },
     { label: 'Low Stock', value: lowStock + outOfStock, icon: AlertTriangle, color: 'text-amber-500', bg: 'bg-amber-500/10', change: `${outOfStock} out of stock` },
@@ -88,7 +88,7 @@ export default function AdminOverview() {
         <div className="bg-white dark:bg-zinc-900 rounded-2xl border border-zinc-200 dark:border-zinc-800 p-5">
           <div className="flex items-center justify-between mb-4">
             <h3 className="text-base font-bold text-zinc-900 dark:text-white">Recent Orders</h3>
-            <a href="/admin/orders" className="text-xs font-semibold text-[#ff385c] hover:underline">View all orders</a>
+            <a href="/admin/orders" className="text-xs font-semibold text-primary hover:underline">View all orders</a>
           </div>
           {recentOrders.length > 0 ? (
             <div className="space-y-3">
@@ -101,7 +101,7 @@ export default function AdminOverview() {
                     <p className="text-xs text-zinc-500">{order.customer_name || 'Guest'} • {order.phone || 'No phone'}</p>
                   </div>
                   <div className="text-right">
-                    <p className="text-sm font-bold text-[#ff385c]">{formatKES(order.total_amount)}</p>
+                    <p className="text-sm font-bold text-primary">{formatKES(order.total_amount)}</p>
                     <span className={`text-[10px] uppercase font-bold px-2 py-0.5 rounded-full ${
                       order.status === 'pending' ? 'bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400' :
                       order.status === 'delivered' ? 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400' :
@@ -124,7 +124,7 @@ export default function AdminOverview() {
         <div className="bg-white dark:bg-zinc-900 rounded-2xl border border-zinc-200 dark:border-zinc-800 p-5">
           <div className="flex items-center justify-between mb-4">
             <h3 className="text-base font-bold text-zinc-900 dark:text-white">Top Products</h3>
-            <a href="/admin/products" className="text-xs font-semibold text-[#ff385c] hover:underline">View all products</a>
+            <a href="/admin/products" className="text-xs font-semibold text-primary hover:underline">View all products</a>
           </div>
           {topProducts.length > 0 ? (
             <div className="space-y-3">
@@ -154,9 +154,9 @@ export default function AdminOverview() {
       <div className="bg-white dark:bg-zinc-900 rounded-2xl border border-zinc-200 dark:border-zinc-800 p-5">
         <h3 className="text-base font-bold text-zinc-900 dark:text-white mb-4">Quick Actions</h3>
         <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-          <a href="/admin/products" className="flex items-center gap-3 p-3 rounded-xl bg-zinc-50 dark:bg-zinc-800 hover:bg-[#ff385c]/10 hover:border-[#ff385c]/30 border border-transparent transition-all group">
-            <Package className="w-5 h-5 text-[#ff385c]" />
-            <span className="text-sm font-semibold text-zinc-700 dark:text-zinc-300 group-hover:text-[#ff385c]">Add Product</span>
+          <a href="/admin/products" className="flex items-center gap-3 p-3 rounded-xl bg-zinc-50 dark:bg-zinc-800 hover:bg-primary/10 hover:border-primary/30 border border-transparent transition-all group">
+            <Package className="w-5 h-5 text-primary" />
+            <span className="text-sm font-semibold text-zinc-700 dark:text-zinc-300 group-hover:text-primary">Add Product</span>
           </a>
           <a href="/admin/orders" className="flex items-center gap-3 p-3 rounded-xl bg-zinc-50 dark:bg-zinc-800 hover:bg-blue-50 dark:hover:bg-blue-900/20 hover:border-blue-500/30 border border-transparent transition-all group">
             <ShoppingBag className="w-5 h-5 text-blue-500" />

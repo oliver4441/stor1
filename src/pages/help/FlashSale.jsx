@@ -31,7 +31,7 @@ const flashSaleSteps = [
       <text x="180" y="50" font-size="14" fill="#0f172a" font-weight="bold">Product Name</text>
       <text x="320" y="50" font-size="12" fill="#ea580c" font-weight="bold">Ksh 999</text>
       <text x="340" y="65" font-size="10" fill="#94a3b8" style="text-decoration:line-through">Ksh 1,999</text>
-      <rect x="270" y="55" width="95" height="25" rx="6" fill="#ff385c"/>
+      <rect x="270" y="55" width="95" height="25" rx="6" fill="#1a5632"/>
       <text x="317" y="71" font-size="11" fill="white" text-anchor="middle" font-weight="bold">Add to Cart</text>
     </svg>`
   }

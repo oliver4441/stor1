@@ -28,21 +28,21 @@ function App() {
       
       <main className="flex-grow">
         {/* Hero Section */}
-        <div className="bg-gradient-to-br from-[#ff385c]/10 via-zinc-100 to-white dark:from-[#ff385c]/10 dark:via-zinc-900 dark:to-zinc-950 py-16 px-4 mb-8">
+        <div className="bg-gradient-to-br from-[#1a5632]/10 via-zinc-100 to-white dark:from-[#1a5632]/10 dark:via-zinc-900 dark:to-zinc-950 py-16 px-4 mb-8">
           <div className="max-w-7xl mx-auto text-center">
             <h1 className="text-4xl md:text-6xl font-extrabold mb-4 tracking-tight">Buy and sell in Kericho</h1>
             <p className="text-zinc-600 dark:text-zinc-400 mb-8 max-w-xl mx-auto text-lg">The cleanest marketplace to find electronics, furniture, vehicles, and services near you.</p>
             
             <div className="max-w-2xl mx-auto relative group">
               <div className="absolute inset-y-0 left-4 flex items-center pointer-events-none">
-                <div className="icon-search text-zinc-400 group-focus-within:text-[#ff385c] transition-colors"></div>
+                <div className="icon-search text-zinc-400 group-focus-within:text-[#1a5632] transition-colors"></div>
               </div>
               <input 
                 type="text" 
                 placeholder="Search for anything..." 
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full pl-12 pr-4 py-4 rounded-2xl bg-white/50 dark:bg-zinc-900/50 backdrop-blur-xl border border-zinc-200/50 dark:border-zinc-800/50 focus:outline-none focus:ring-2 focus:ring-[#ff385c]/50 text-zinc-900 dark:text-white shadow-xl transition-all"
+                className="w-full pl-12 pr-4 py-4 rounded-2xl bg-white/50 dark:bg-zinc-900/50 backdrop-blur-xl border border-zinc-200/50 dark:border-zinc-800/50 focus:outline-none focus:ring-2 focus:ring-[#1a5632]/50 text-zinc-900 dark:text-white shadow-xl transition-all"
               />
             </div>
           </div>

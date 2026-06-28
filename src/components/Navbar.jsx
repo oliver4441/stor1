@@ -12,7 +12,7 @@ const FEATURE_LINKS = [
   { to: '/how-it-works', label: 'How It Works', icon: HelpCircle, color: 'from-amber-500 to-orange-600', glow: 'shadow-amber-500/40' },
   { to: '/help', label: 'Help', icon: Package, color: 'from-emerald-500 to-green-600', glow: 'shadow-emerald-500/40' },
   { to: '/about', label: 'About', icon: Info, color: 'from-cyan-500 to-teal-600', glow: 'shadow-cyan-500/40' },
-  { to: '/install', label: 'Install App', icon: Download, color: 'from-[var(--seasonal-primary,#ff385c)] to-[var(--seasonal-secondary,#e03150)]', glow: 'shadow-[var(--seasonal-primary,#ff385c)]/40' },
+  { to: '/install', label: 'Install App', icon: Download, color: 'from-[var(--seasonal-primary,#1a5632)] to-[var(--seasonal-secondary,#14472a)]', glow: 'shadow-[var(--seasonal-primary,#1a5632)]/40' },
 ];
 
 function Navbar() {
@@ -26,13 +26,13 @@ function Navbar() {
   const cartCount = getItemCount();
   const theme = useActiveTheme();
 
-  const navAccentColor = theme?.colors?.navAccent || '#ff385c';
+  const navAccentColor = theme?.colors?.navAccent || '#1a5632';
   const navAccentText = theme?.colors?.navAccentText || '#ffffff';
   const badgeText = theme?.badgeText;
-  const badgeBg = theme?.colors?.badgeBg || '#ff385c';
+  const badgeBg = theme?.colors?.badgeBg || '#1a5632';
   const badgeTextColor = theme?.colors?.badgeText || '#ffffff';
   const sticker = theme?.sticker || '';
-  const secondaryColor = theme?.colors?.secondary || '#e03150';
+  const secondaryColor = theme?.colors?.secondary || '#14472a';
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
@@ -134,7 +134,7 @@ function Navbar() {
 
         {/* Desktop (lg+): Right side */}
         <div className="hidden lg:flex items-center gap-2">
-          <button onClick={toggleLang} className="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold border border-zinc-200 dark:border-zinc-700 bg-white dark:bg-zinc-900 text-zinc-700 dark:text-zinc-300 hover:border-[var(--seasonal-primary,#ff385c)] hover:text-[var(--seasonal-primary,#ff385c)] transition-all" aria-label={t('common.toggleLanguage')}>
+          <button onClick={toggleLang} className="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold border border-zinc-200 dark:border-zinc-700 bg-white dark:bg-zinc-900 text-zinc-700 dark:text-zinc-300 hover:border-[var(--seasonal-primary,#1a5632)] hover:text-[var(--seasonal-primary,#1a5632)] transition-all" aria-label={t('common.toggleLanguage')}>
             <Globe className="w-3.5 h-3.5" />
             {lang === 'en' ? 'EN' : 'SW'}
           </button>
@@ -174,7 +174,7 @@ function Navbar() {
                 to="/signup"
                 className="flex items-center gap-1.5 text-white px-5 py-2.5 rounded-full text-sm font-bold shadow-lg transition-all hover:scale-105 active:scale-95"
                 style={{
-                  background: `linear-gradient(135deg, ${navAccentColor}, ${theme?.colors?.secondary || '#e03150'})`,
+                  background: `linear-gradient(135deg, ${navAccentColor}, ${theme?.colors?.secondary || '#14472a'})`,
                   boxShadow: `0 4px 14px ${navAccentColor}40`,
                 }}
               >
@@ -255,7 +255,7 @@ function Navbar() {
                   My Account
                 </Link>
                 {isUserAdmin && (
-                  <Link to="/admin" className="flex items-center gap-3 px-4 py-3 rounded-2xl text-sm font-bold text-[var(--seasonal-primary,#ff385c)] hover:bg-[var(--seasonal-primary,#ff385c)]/10" onClick={() => setMenuOpen(false)}>
+                  <Link to="/admin" className="flex items-center gap-3 px-4 py-3 rounded-2xl text-sm font-bold text-[var(--seasonal-primary,#1a5632)] hover:bg-[var(--seasonal-primary,#1a5632)]/10" onClick={() => setMenuOpen(false)}>
                     <Shield className="w-5 h-5" />
                     Admin Dashboard
                   </Link>

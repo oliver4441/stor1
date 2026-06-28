@@ -16,7 +16,7 @@ function App() {
         <main className="flex-grow flex items-center justify-center">
           <div className="text-center">
             <h2 className="text-2xl font-bold mb-2">Listing not found</h2>
-            <a href="index.html" className="text-[#ff385c]">Go back home</a>
+            <a href="index.html" className="text-[#1a5632]">Go back home</a>
           </div>
         </main>
         <Footer />
@@ -42,7 +42,7 @@ function App() {
           {/* Details Right */}
           <div className="w-full md:w-1/2 lg:w-2/5 flex flex-col">
             <h1 className="text-3xl font-bold mb-2 text-zinc-900 dark:text-white">{listing.title}</h1>
-            <p className="text-3xl font-bold text-[#ff385c] mb-6">{formatKES(listing.price)}</p>
+            <p className="text-3xl font-bold text-[#1a5632] mb-6">{formatKES(listing.price)}</p>
 
             <div className="flex flex-wrap gap-4 mb-6">
               <div className="flex items-center gap-2 text-zinc-600 dark:text-zinc-300">

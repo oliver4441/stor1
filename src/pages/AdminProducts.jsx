@@ -335,7 +335,7 @@ export default function AdminProducts() {
               <Trash2 className="w-4 h-4" /> Delete All
             </button>
           )}
-          <button onClick={openAddModal} className="flex items-center gap-2 bg-[#ff385c] text-white px-5 py-2.5 rounded-xl font-bold text-sm hover:bg-[#e03150] shadow-lg shadow-[#ff385c]/20 transition-all">
+          <button onClick={openAddModal} className="flex items-center gap-2 bg-primary text-white px-5 py-2.5 rounded-xl font-bold text-sm hover:bg-primary-hover shadow-lg shadow-primary/20 transition-all">
             <Plus className="w-4 h-4" /> Add Product
           </button>
         </div>
@@ -348,7 +348,7 @@ export default function AdminProducts() {
           <input
             type="text" placeholder="Search by name or SKU..."
             value={searchQuery} onChange={e => setSearchQuery(e.target.value)}
-            className="w-full pl-10 pr-4 py-2.5 rounded-xl bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 text-sm text-zinc-900 dark:text-white focus:border-[#ff385c] focus:outline-none"
+            className="w-full pl-10 pr-4 py-2.5 rounded-xl bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 text-sm text-zinc-900 dark:text-white focus:border-primary focus:outline-none"
           />
         </div>
         <select value={filterCategory} onChange={e => setFilterCategory(e.target.value)}
@@ -369,8 +369,8 @@ export default function AdminProducts() {
 
       {/* Bulk Actions Bar */}
       {selectedIds.length > 0 && (
-        <div className="flex items-center gap-3 p-3 bg-[#ff385c]/5 border border-[#ff385c]/20 rounded-xl">
-          <span className="text-sm font-bold text-[#ff385c]">{selectedIds.length} selected</span>
+        <div className="flex items-center gap-3 p-3 bg-primary/5 border border-primary/20 rounded-xl">
+          <span className="text-sm font-bold text-primary">{selectedIds.length} selected</span>
           <select value={bulkAction} onChange={e => setBulkAction(e.target.value)}
             className="px-3 py-1.5 rounded-lg bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 text-sm text-zinc-900 dark:text-white">
             <option value="">Bulk action...</option>
@@ -382,7 +382,7 @@ export default function AdminProducts() {
             <option value="delete">Delete</option>
           </select>
           <button onClick={handleBulkAction} disabled={!bulkAction || processing}
-            className="px-4 py-1.5 bg-[#ff385c] text-white rounded-lg text-sm font-bold disabled:opacity-50 hover:bg-[#e03150] flex items-center gap-2">
+            className="px-4 py-1.5 bg-primary text-white rounded-lg text-sm font-bold disabled:opacity-50 hover:bg-primary-hover flex items-center gap-2">
             {processing ? <><Loader2 className="w-3.5 h-3.5 animate-spin" /> Processing...</> : 'Apply'}
           </button>
           <button onClick={() => setSelectedIds([])} className="text-xs text-zinc-500 hover:text-zinc-700 ml-auto">Clear selection</button>
@@ -392,7 +392,7 @@ export default function AdminProducts() {
       {/* Table */}
       {loading ? (
         <div className="flex items-center justify-center h-40">
-          <div className="inline-block w-8 h-8 border-4 border-[#ff385c] border-t-transparent rounded-full animate-spin" />
+          <div className="inline-block w-8 h-8 border-4 border-primary border-t-transparent rounded-full animate-spin" />
         </div>
       ) : filteredListings.length > 0 ? (
         <div className="bg-white dark:bg-zinc-900 rounded-2xl border border-zinc-200 dark:border-zinc-800 overflow-hidden">
@@ -401,7 +401,7 @@ export default function AdminProducts() {
               <thead>
                 <tr className="border-b border-zinc-200 dark:border-zinc-800">
                   <th className="px-4 py-3 w-10">
-                    <button onClick={toggleSelectAll} className="text-zinc-400 hover:text-[#ff385c]">
+                    <button onClick={toggleSelectAll} className="text-zinc-400 hover:text-primary">
                       {allFilteredSelected ? <CheckSquare className="w-4 h-4" /> : <Square className="w-4 h-4" />}
                     </button>
                   </th>
@@ -414,10 +414,10 @@ export default function AdminProducts() {
               </thead>
               <tbody>
                 {filteredListings.map(listing => (
-                  <tr key={listing.id} className={`border-b border-zinc-100 dark:border-zinc-800 last:border-0 hover:bg-zinc-50 dark:hover:bg-zinc-800/50 ${selectedIds.includes(listing.id) ? 'bg-[#ff385c]/5' : ''}`}>
+                  <tr key={listing.id} className={`border-b border-zinc-100 dark:border-zinc-800 last:border-0 hover:bg-zinc-50 dark:hover:bg-zinc-800/50 ${selectedIds.includes(listing.id) ? 'bg-primary/5' : ''}`}>
                     <td className="px-4 py-3">
-                      <button onClick={() => toggleSelect(listing.id)} className="text-zinc-400 hover:text-[#ff385c]">
-                        {selectedIds.includes(listing.id) ? <CheckSquare className="w-4 h-4 text-[#ff385c]" /> : <Square className="w-4 h-4" />}
+                      <button onClick={() => toggleSelect(listing.id)} className="text-zinc-400 hover:text-primary">
+                        {selectedIds.includes(listing.id) ? <CheckSquare className="w-4 h-4 text-primary" /> : <Square className="w-4 h-4" />}
                       </button>
                     </td>
                     <td className="px-4 py-3">
@@ -438,9 +438,9 @@ export default function AdminProducts() {
                           {quickEditId === listing.id && quickEditField === 'title' ? (
                             <input autoFocus value={quickEditValue} onChange={e => setQuickEditValue(e.target.value)}
                               onBlur={saveQuickEdit} onKeyDown={e => e.key === 'Enter' && saveQuickEdit()}
-                              className="text-sm font-semibold text-zinc-900 dark:text-white bg-white dark:bg-zinc-800 border border-[#ff385c] rounded px-1 py-0.5 w-full max-w-[200px]" />
+                              className="text-sm font-semibold text-zinc-900 dark:text-white bg-white dark:bg-zinc-800 border border-primary rounded px-1 py-0.5 w-full max-w-[200px]" />
                           ) : (
-                            <p className="text-sm font-semibold text-zinc-900 dark:text-white truncate max-w-[200px] cursor-pointer hover:text-[#ff385c]"
+                            <p className="text-sm font-semibold text-zinc-900 dark:text-white truncate max-w-[200px] cursor-pointer hover:text-primary"
                               onDoubleClick={() => startQuickEdit(listing.id, 'title', listing.title)} title="Double-click to edit">{listing.title}</p>
                           )}
                           {listing.sku && <p className="text-xs text-zinc-400 font-mono">{listing.sku}</p>}
@@ -454,9 +454,9 @@ export default function AdminProducts() {
                       {quickEditId === listing.id && quickEditField === 'price' ? (
                         <input autoFocus type="number" value={quickEditValue} onChange={e => setQuickEditValue(e.target.value)}
                           onBlur={saveQuickEdit} onKeyDown={e => e.key === 'Enter' && saveQuickEdit()}
-                          className="text-sm font-bold text-zinc-900 dark:text-white bg-white dark:bg-zinc-800 border border-[#ff385c] rounded px-1 py-0.5 w-24" />
+                          className="text-sm font-bold text-zinc-900 dark:text-white bg-white dark:bg-zinc-800 border border-primary rounded px-1 py-0.5 w-24" />
                       ) : (
-                        <span className="text-sm font-bold text-zinc-900 dark:text-white cursor-pointer hover:text-[#ff385c]"
+                        <span className="text-sm font-bold text-zinc-900 dark:text-white cursor-pointer hover:text-primary"
                           onDoubleClick={() => startQuickEdit(listing.id, 'price', String(listing.price))} title="Double-click to edit">
                           {formatKES(listing.price)}
                         </span>
@@ -492,7 +492,7 @@ export default function AdminProducts() {
           <h3 className="text-lg font-bold text-zinc-900 dark:text-white mb-1">No products found</h3>
           <p className="text-sm text-zinc-500 mb-4">{searchQuery || filterCategory !== 'All' || filterStatus !== 'All' ? 'Try adjusting your filters' : 'Get started by adding your first product'}</p>
           {!searchQuery && filterCategory === 'All' && filterStatus === 'All' && (
-            <button onClick={openAddModal} className="text-[#ff385c] font-bold text-sm hover:underline">Add Product</button>
+            <button onClick={openAddModal} className="text-primary font-bold text-sm hover:underline">Add Product</button>
           )}
         </div>
       )}
@@ -517,7 +517,7 @@ export default function AdminProducts() {
                         <img src={url} alt="" className="w-full h-full object-cover" />
                       </div>
                       {i === 0 && (
-                        <span className="absolute top-1 left-1 bg-[#ff385c] text-white text-[8px] font-bold px-1.5 py-0.5 rounded-full">Cover</span>
+                        <span className="absolute top-1 left-1 bg-primary text-white text-[8px] font-bold px-1.5 py-0.5 rounded-full">Cover</span>
                       )}
                       <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity rounded-xl flex items-center justify-center gap-1">
                         {i > 0 && (
@@ -537,7 +537,7 @@ export default function AdminProducts() {
                     </div>
                   ))}
                   {form.images.length < MAX_IMAGES && (
-                    <div className="w-24 h-24 rounded-xl bg-zinc-100 dark:bg-zinc-800 border-2 border-dashed border-zinc-300 dark:border-zinc-600 flex flex-col items-center justify-center cursor-pointer hover:border-[#ff385c] transition-colors"
+                    <div className="w-24 h-24 rounded-xl bg-zinc-100 dark:bg-zinc-800 border-2 border-dashed border-zinc-300 dark:border-zinc-600 flex flex-col items-center justify-center cursor-pointer hover:border-primary transition-colors"
                       onClick={() => fileInputRef.current?.click()}>
                       {imageUploading ? (
                         <Loader2 className="w-5 h-5 text-zinc-400 animate-spin" />
@@ -557,11 +557,11 @@ export default function AdminProducts() {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
                   <label className="block text-sm font-bold mb-1.5 text-zinc-700 dark:text-zinc-300">Product Title *</label>
-                  <input required value={form.title} onChange={e => setForm({...form, title: e.target.value})} placeholder="e.g. iPhone 13 Pro 256GB" className="w-full px-4 py-2.5 rounded-xl bg-zinc-100 dark:bg-zinc-800 border border-transparent focus:border-[#ff385c] focus:outline-none text-zinc-900 dark:text-white text-sm" />
+                  <input required value={form.title} onChange={e => setForm({...form, title: e.target.value})} placeholder="e.g. iPhone 13 Pro 256GB" className="w-full px-4 py-2.5 rounded-xl bg-zinc-100 dark:bg-zinc-800 border border-transparent focus:border-primary focus:outline-none text-zinc-900 dark:text-white text-sm" />
                 </div>
                 <div>
                   <label className="block text-sm font-bold mb-1.5 text-zinc-700 dark:text-zinc-300">Price (KES) *</label>
-                  <input required type="number" value={form.price} onChange={e => setForm({...form, price: e.target.value})} placeholder="85000" className="w-full px-4 py-2.5 rounded-xl bg-zinc-100 dark:bg-zinc-800 border border-transparent focus:border-[#ff385c] focus:outline-none text-zinc-900 dark:text-white text-sm" />
+                  <input required type="number" value={form.price} onChange={e => setForm({...form, price: e.target.value})} placeholder="85000" className="w-full px-4 py-2.5 rounded-xl bg-zinc-100 dark:bg-zinc-800 border border-transparent focus:border-primary focus:outline-none text-zinc-900 dark:text-white text-sm" />
                 </div>
               </div>
 
@@ -579,19 +579,19 @@ export default function AdminProducts() {
                       // Auto-enable variants for apparel categories
                       has_variants: needsVariants ? true : prev.has_variants,
                     }));
-                  }} className="w-full px-4 py-2.5 rounded-xl bg-zinc-100 dark:bg-zinc-800 border border-transparent focus:border-[#ff385c] focus:outline-none text-zinc-900 dark:text-white text-sm appearance-none">
+                  }} className="w-full px-4 py-2.5 rounded-xl bg-zinc-100 dark:bg-zinc-800 border border-transparent focus:border-primary focus:outline-none text-zinc-900 dark:text-white text-sm appearance-none">
                     {CATEGORIES.filter(c => c !== 'All').map(c => <option key={c} value={c}>{c}</option>)}
                   </select>
                 </div>
                 <div>
                   <label className="block text-sm font-bold mb-1.5 text-zinc-700 dark:text-zinc-300">Condition</label>
-                  <select value={form.condition} onChange={e => setForm({...form, condition: e.target.value})} className="w-full px-4 py-2.5 rounded-xl bg-zinc-100 dark:bg-zinc-800 border border-transparent focus:border-[#ff385c] focus:outline-none text-zinc-900 dark:text-white text-sm appearance-none">
+                  <select value={form.condition} onChange={e => setForm({...form, condition: e.target.value})} className="w-full px-4 py-2.5 rounded-xl bg-zinc-100 dark:bg-zinc-800 border border-transparent focus:border-primary focus:outline-none text-zinc-900 dark:text-white text-sm appearance-none">
                     {CONDITIONS.map(c => <option key={c.value} value={c.value}>{c.label}</option>)}
                   </select>
                 </div>
                 <div>
                   <label className="block text-sm font-bold mb-1.5 text-zinc-700 dark:text-zinc-300">Status</label>
-                  <select value={form.status} onChange={e => setForm({...form, status: e.target.value})} className="w-full px-4 py-2.5 rounded-xl bg-zinc-100 dark:bg-zinc-800 border border-transparent focus:border-[#ff385c] focus:outline-none text-zinc-900 dark:text-white text-sm appearance-none">
+                  <select value={form.status} onChange={e => setForm({...form, status: e.target.value})} className="w-full px-4 py-2.5 rounded-xl bg-zinc-100 dark:bg-zinc-800 border border-transparent focus:border-primary focus:outline-none text-zinc-900 dark:text-white text-sm appearance-none">
                     <option value="active">Active</option>
                     <option value="draft">Draft</option>
                     <option value="sold">Sold</option>
@@ -604,22 +604,22 @@ export default function AdminProducts() {
               <div className="grid grid-cols-3 gap-4">
                 <div>
                   <label className="block text-sm font-bold mb-1.5 text-zinc-700 dark:text-zinc-300">Brand</label>
-                  <input value={form.brand} onChange={e => setForm({...form, brand: e.target.value})} placeholder="e.g. Apple" className="w-full px-4 py-2.5 rounded-xl bg-zinc-100 dark:bg-zinc-800 border border-transparent focus:border-[#ff385c] focus:outline-none text-zinc-900 dark:text-white text-sm" />
+                  <input value={form.brand} onChange={e => setForm({...form, brand: e.target.value})} placeholder="e.g. Apple" className="w-full px-4 py-2.5 rounded-xl bg-zinc-100 dark:bg-zinc-800 border border-transparent focus:border-primary focus:outline-none text-zinc-900 dark:text-white text-sm" />
                 </div>
                 <div>
                   <label className="block text-sm font-bold mb-1.5 text-zinc-700 dark:text-zinc-300">Model</label>
-                  <input value={form.model} onChange={e => setForm({...form, model: e.target.value})} placeholder="e.g. iPhone 13 Pro" className="w-full px-4 py-2.5 rounded-xl bg-zinc-100 dark:bg-zinc-800 border border-transparent focus:border-[#ff385c] focus:outline-none text-zinc-900 dark:text-white text-sm" />
+                  <input value={form.model} onChange={e => setForm({...form, model: e.target.value})} placeholder="e.g. iPhone 13 Pro" className="w-full px-4 py-2.5 rounded-xl bg-zinc-100 dark:bg-zinc-800 border border-transparent focus:border-primary focus:outline-none text-zinc-900 dark:text-white text-sm" />
                 </div>
                 <div>
                   <label className="block text-sm font-bold mb-1.5 text-zinc-700 dark:text-zinc-300">Color</label>
-                  <input value={form.color} onChange={e => setForm({...form, color: e.target.value})} placeholder="e.g. Pacific Blue" className="w-full px-4 py-2.5 rounded-xl bg-zinc-100 dark:bg-zinc-800 border border-transparent focus:border-[#ff385c] focus:outline-none text-zinc-900 dark:text-white text-sm" />
+                  <input value={form.color} onChange={e => setForm({...form, color: e.target.value})} placeholder="e.g. Pacific Blue" className="w-full px-4 py-2.5 rounded-xl bg-zinc-100 dark:bg-zinc-800 border border-transparent focus:border-primary focus:outline-none text-zinc-900 dark:text-white text-sm" />
                 </div>
               </div>
 
               <div className="grid grid-cols-3 gap-4">
                 <div>
                   <label className="block text-sm font-bold mb-1.5 text-zinc-700 dark:text-zinc-300">Weight</label>
-                  <input value={form.weight} onChange={e => setForm({...form, weight: e.target.value})} placeholder="e.g. 0.5kg" className="w-full px-4 py-2.5 rounded-xl bg-zinc-100 dark:bg-zinc-800 border border-transparent focus:border-[#ff385c] focus:outline-none text-zinc-900 dark:text-white text-sm" />
+                  <input value={form.weight} onChange={e => setForm({...form, weight: e.target.value})} placeholder="e.g. 0.5kg" className="w-full px-4 py-2.5 rounded-xl bg-zinc-100 dark:bg-zinc-800 border border-transparent focus:border-primary focus:outline-none text-zinc-900 dark:text-white text-sm" />
                 </div>
                 <div>
                   <label className="block text-sm font-bold mb-1.5 text-zinc-700 dark:text-zinc-300">SKU <span className="font-normal text-zinc-400">(auto-generated)</span></label>
@@ -628,12 +628,12 @@ export default function AdminProducts() {
                       value={form.sku}
                       onChange={e => setForm({...form, sku: e.target.value})}
                       placeholder="Auto-generated"
-                      className="flex-1 px-4 py-2.5 rounded-xl bg-zinc-100 dark:bg-zinc-800 border border-transparent focus:border-[#ff385c] focus:outline-none text-zinc-900 dark:text-white text-sm font-mono"
+                      className="flex-1 px-4 py-2.5 rounded-xl bg-zinc-100 dark:bg-zinc-800 border border-transparent focus:border-primary focus:outline-none text-zinc-900 dark:text-white text-sm font-mono"
                     />
                     <button
                       type="button"
                       onClick={() => setForm(prev => ({ ...prev, sku: generateSKU(form.category) }))}
-                      className="px-3 py-2.5 rounded-xl bg-zinc-100 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 text-zinc-500 hover:text-[#ff385c] hover:border-[#ff385c] transition-colors text-sm font-bold"
+                      className="px-3 py-2.5 rounded-xl bg-zinc-100 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 text-zinc-500 hover:text-primary hover:border-primary transition-colors text-sm font-bold"
                       title="Regenerate SKU"
                     >
                       Refresh
@@ -642,7 +642,7 @@ export default function AdminProducts() {
                 </div>
                 <div>
                   <label className="block text-sm font-bold mb-1.5 text-zinc-700 dark:text-zinc-300">Tags</label>
-                  <input value={form.tags} onChange={e => setForm({...form, tags: e.target.value})} placeholder="e.g. iphone, apple, phone" className="w-full px-4 py-2.5 rounded-xl bg-zinc-100 dark:bg-zinc-800 border border-transparent focus:border-[#ff385c] focus:outline-none text-zinc-900 dark:text-white text-sm" />
+                  <input value={form.tags} onChange={e => setForm({...form, tags: e.target.value})} placeholder="e.g. iphone, apple, phone" className="w-full px-4 py-2.5 rounded-xl bg-zinc-100 dark:bg-zinc-800 border border-transparent focus:border-primary focus:outline-none text-zinc-900 dark:text-white text-sm" />
                 </div>
               </div>
 
@@ -665,17 +665,17 @@ export default function AdminProducts() {
               {/* Size Guide */}
               <div>
                 <label className="block text-sm font-bold mb-1.5 text-zinc-700 dark:text-zinc-300">Size Guide <span className="font-normal text-zinc-400">(optional)</span></label>
-                <textarea rows="2" value={form.size_guide} onChange={e => setForm({...form, size_guide: e.target.value})} placeholder={'e.g. M: Chest 38-40 inch, Length 27-29 inch. Or paste a link to size chart.'} className="w-full px-4 py-2.5 rounded-xl bg-zinc-100 dark:bg-zinc-800 border border-transparent focus:border-[#ff385c] focus:outline-none text-zinc-900 dark:text-white text-sm resize-none" />
+                <textarea rows="2" value={form.size_guide} onChange={e => setForm({...form, size_guide: e.target.value})} placeholder={'e.g. M: Chest 38-40 inch, Length 27-29 inch. Or paste a link to size chart.'} className="w-full px-4 py-2.5 rounded-xl bg-zinc-100 dark:bg-zinc-800 border border-transparent focus:border-primary focus:outline-none text-zinc-900 dark:text-white text-sm resize-none" />
               </div>
 
               <div>
                 <label className="block text-sm font-bold mb-1.5 text-zinc-700 dark:text-zinc-300">Description</label>
-                <textarea rows="3" value={form.description} onChange={e => setForm({...form, description: e.target.value})} placeholder="Describe the product..." className="w-full px-4 py-2.5 rounded-xl bg-zinc-100 dark:bg-zinc-800 border border-transparent focus:border-[#ff385c] focus:outline-none text-zinc-900 dark:text-white text-sm resize-none" />
+                <textarea rows="3" value={form.description} onChange={e => setForm({...form, description: e.target.value})} placeholder="Describe the product..." className="w-full px-4 py-2.5 rounded-xl bg-zinc-100 dark:bg-zinc-800 border border-transparent focus:border-primary focus:outline-none text-zinc-900 dark:text-white text-sm resize-none" />
               </div>
 
               <div className="flex gap-3 pt-2">
                 <button type="button" onClick={() => setModalOpen(false)} className="flex-1 bg-zinc-100 dark:bg-zinc-800 text-zinc-700 dark:text-zinc-300 font-bold py-2.5 rounded-xl text-sm">Cancel</button>
-                <button type="submit" disabled={submitting || form.images.length === 0} className="flex-1 bg-[#ff385c] text-white font-bold py-2.5 rounded-xl text-sm disabled:opacity-50">
+                <button type="submit" disabled={submitting || form.images.length === 0} className="flex-1 bg-primary text-white font-bold py-2.5 rounded-xl text-sm disabled:opacity-50">
                   {submitting ? <><Loader2 className="w-4 h-4 animate-spin inline mr-2" />Saving...</> : (editingId ? 'Save Changes' : 'Add Product')}
                 </button>
               </div>

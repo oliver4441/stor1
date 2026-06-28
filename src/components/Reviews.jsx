@@ -83,8 +83,8 @@ export function ReviewList({ listingId }) {
           <div key={review.id} className="p-4 bg-zinc-50 dark:bg-zinc-800/50 rounded-xl">
             <div className="flex items-center justify-between mb-2">
               <div className="flex items-center gap-2">
-                <div className="w-8 h-8 rounded-full bg-[var(--seasonal-primary,#ff385c)]/10 flex items-center justify-center">
-                  <span className="text-xs font-bold text-[var(--seasonal-primary,#ff385c)]">
+                <div className="w-8 h-8 rounded-full bg-[var(--seasonal-primary,#1a5632)]/10 flex items-center justify-center">
+                  <span className="text-xs font-bold text-[var(--seasonal-primary,#1a5632)]">
                     {(review.user_name || 'A')[0].toUpperCase()}
                   </span>
                 </div>
@@ -107,7 +107,7 @@ export function ReviewList({ listingId }) {
       {reviews.length > 3 && (
         <button
           onClick={() => setShowAll(!showAll)}
-          className="mt-3 flex items-center gap-1 text-sm font-bold text-[var(--seasonal-primary,#ff385c)] hover:underline mx-auto"
+          className="mt-3 flex items-center gap-1 text-sm font-bold text-[var(--seasonal-primary,#1a5632)] hover:underline mx-auto"
         >
           {showAll ? 'Show less' : `View all ${reviews.length} reviews`}
           {showAll ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
@@ -178,13 +178,13 @@ export function ReviewForm({ listingId, onSubmitted }) {
         value={review}
         onChange={(e) => setReview(e.target.value)}
         placeholder="Share your experience with this product (optional)"
-        className="w-full px-4 py-3 rounded-xl bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-700 text-sm resize-none h-24 focus:outline-none focus:border-[var(--seasonal-primary,#ff385c)]"
+        className="w-full px-4 py-3 rounded-xl bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-700 text-sm resize-none h-24 focus:outline-none focus:border-[var(--seasonal-primary,#1a5632)]"
       />
       {error && <p className="text-red-500 text-xs mt-1">{error}</p>}
       <button
         type="submit"
         disabled={submitting || rating === 0}
-        className="mt-3 px-6 py-2.5 bg-[var(--seasonal-primary,#ff385c)] text-white rounded-xl font-bold text-sm disabled:opacity-50 hover:bg-[var(--seasonal-secondary,#e03150)] transition-all"
+        className="mt-3 px-6 py-2.5 bg-[var(--seasonal-primary,#1a5632)] text-white rounded-xl font-bold text-sm disabled:opacity-50 hover:bg-[var(--seasonal-secondary,#14472a)] transition-all"
       >
         {submitting ? 'Submitting...' : 'Submit Review'}
       </button>

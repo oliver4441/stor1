@@ -147,7 +147,7 @@ export default function QuickViewModal({ listing, onClose }) {
             <h2 className="text-xl font-black text-zinc-900 dark:text-white mb-2">{listing.title}</h2>
 
             <div className="flex items-center gap-2 mb-4">
-              <p className="text-2xl font-black text-[var(--seasonal-primary,#ff385c)]">{formatKES(listing.price)}</p>
+              <p className="text-2xl font-black text-[var(--seasonal-primary,#1a5632)]">{formatKES(listing.price)}</p>
               {listing.compare_at_price && listing.compare_at_price > listing.price && (
                 <>
                   <p className="text-sm text-zinc-400 line-through">{formatKES(listing.compare_at_price)}</p>
@@ -178,8 +178,8 @@ export default function QuickViewModal({ listing, onClose }) {
                     justAdded
                       ? 'bg-emerald-500 text-white'
                       : inCart
-                      ? 'bg-[var(--seasonal-primary,#ff385c)]/10 text-[var(--seasonal-primary,#ff385c)] border border-[var(--seasonal-primary,#ff385c)]/20'
-                      : 'bg-[var(--seasonal-primary,#ff385c)] text-white hover:bg-[var(--seasonal-secondary,#e03150)] shadow-lg shadow-[var(--seasonal-primary,#ff385c)]/20'
+                      ? 'bg-[var(--seasonal-primary,#1a5632)]/10 text-[var(--seasonal-primary,#1a5632)] border border-[var(--seasonal-primary,#1a5632)]/20'
+                      : 'bg-[var(--seasonal-primary,#1a5632)] text-white hover:bg-[var(--seasonal-secondary,#14472a)] shadow-lg shadow-[var(--seasonal-primary,#1a5632)]/20'
                   }`}
                 >
                   <ShoppingCart className="w-4 h-4" />
@@ -197,7 +197,7 @@ export default function QuickViewModal({ listing, onClose }) {
             <Link
               to={`/listing/${listing.id}`}
               onClick={onClose}
-              className="mt-3 text-center text-xs font-bold text-[var(--seasonal-primary,#ff385c)] hover:underline"
+              className="mt-3 text-center text-xs font-bold text-[var(--seasonal-primary,#1a5632)] hover:underline"
             >
               View full details
             </Link>

@@ -4,39 +4,39 @@
 
 @layer base {
   :root {
-    --font-sans: 'DM Sans', sans-serif;
-    
+    --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
+
     /* =============================================
        SEASONAL THEME CSS VARIABLES (set by ThemeStyles)
        These defaults are used when no theme is active.
        ============================================= */
-    --seasonal-primary: #ff385c;
-    --seasonal-secondary: #e03150;
-    --seasonal-accent: #ff385c;
-    
+    --seasonal-primary: #1a5632;
+    --seasonal-secondary: #14472a;
+    --seasonal-accent: #d4a017;
+
     /* Hero section */
-    --seasonal-hero-from: #ff385c;
-    --seasonal-hero-via: #e03150;
-    --seasonal-hero-to: #c02040;
+    --seasonal-hero-from: #1a5632;
+    --seasonal-hero-via: #14472a;
+    --seasonal-hero-to: #103820;
     --seasonal-hero-text: #ffffff;
     --seasonal-hero-subtext: #e0e0e0;
     --seasonal-hero-accent: #ffffff;
-    --seasonal-hero-overlay: rgba(192,32,64,0.3);
-    
+    --seasonal-hero-overlay: rgba(26,86,50,0.3);
+
     /* CTA buttons */
     --seasonal-cta-bg: #ffffff;
-    --seasonal-cta-text: #ff385c;
+    --seasonal-cta-text: #1a5632;
     --seasonal-cta-hover: #f0f0f0;
-    
+
     /* Badge */
-    --seasonal-badge-bg: #ff385c;
+    --seasonal-badge-bg: #1a5632;
     --seasonal-badge-text: #ffffff;
-    
+
     /* Navbar */
-    --seasonal-nav-accent: #ff385c;
-    --seasonal-nav-accent-text: #ffffff;
-    --seasonal-nav-bg-from: #ff385c;
-    --seasonal-nav-bg-to: #e03150;
+    --seasonal-nav-accent: #d4a017;
+    --seasonal-nav-accent-text: #1a5632;
+    --seasonal-nav-bg-from: #1a5632;
+    --seasonal-nav-bg-to: #14472a;
     
     /* Surfaces */
     --seasonal-surface: #ffffff;
@@ -51,20 +51,20 @@
     /* Footer */
     --seasonal-footer-bg: #ffffff;
     --seasonal-footer-text: #71717a;
-    --seasonal-footer-link: #ff385c;
+    --seasonal-footer-link: #d4a017;
     
     /* Cards */
     --seasonal-card-bg: #ffffff;
     --seasonal-card-border: #e4e4e7;
-    --seasonal-price-color: #ff385c;
+    --seasonal-price-color: #1a5632;
     
     /* Buttons */
-    --seasonal-button-bg: #ff385c;
+    --seasonal-button-bg: #1a5632;
     --seasonal-button-text: #ffffff;
     
     /* Effects */
-    --seasonal-shadow: #ff385c;
-    --seasonal-glow: #ff385c;
+    --seasonal-shadow: #1a5632;
+    --seasonal-glow: #d4a017;
     --seasonal-bg-pattern: none;
     --seasonal-sticker: "";
   }
@@ -565,7 +565,7 @@ body[data-theme-id]:not([data-theme-id="none"]) .theme-card-shimmer::after {
 
 /* Theme-aware focus ring */
 *:focus-visible {
-  outline-color: var(--seasonal-primary, #ff385c);
+  outline-color: var(--seasonal-primary, #1a5632);
   outline-width: 2px;
   outline-offset: 2px;
 }
@@ -584,7 +584,7 @@ body[data-theme-id]:not([data-theme-id="none"]) .theme-card-shimmer::after {
    ============================================= */
 @keyframes card-glow {
   0%, 100% { box-shadow: 0 0 0 0 rgba(255,215,0,0); }
-  50% { box-shadow: 0 0 12px 2px var(--seasonal-glow, #ff385c); }
+  50% { box-shadow: 0 0 12px 2px var(--seasonal-glow, #1a5632); }
 }
 
 body[data-theme-id]:not([data-theme-id="none"]) .theme-card-glow {
@@ -767,7 +767,7 @@ body[data-theme-id]:not([data-theme-id="none"]) main {
     90deg,
     transparent 0%,
     var(--seasonal-border, #e4e4e7) 20%,
-    var(--seasonal-primary, #ff385c) 50%,
+    var(--seasonal-primary, #1a5632) 50%,
     var(--seasonal-border, #e4e4e7) 80%,
     transparent 100%
   );

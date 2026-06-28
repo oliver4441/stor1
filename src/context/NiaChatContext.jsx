@@ -5,22 +5,22 @@ const NiaChatContext = createContext(null);
 
 // ── Design Tokens ────────────────────────────────────────────────
 const COLORS = {
-  accent: '#ff385c',
-  accentDark: '#e03150',
-  bg: '#ffffff',
-  bgDark: '#18181b',
+  accent: '#1a5632',
+  accentDark: '#14472a',
+  bubbleUser: '#1a5632',
+  bubbleUser: '#1a5632',
   bgGray: '#f9fafb',
   bgGrayDark: '#18181b',
   bubbleBot: '#ffffff',
   bubbleBotDark: '#27272a',
-  bubbleUser: '#ff385c',
+  chipText: '#1a5632',
   textBot: '#27272a',
   textBotDark: '#e4e4e7',
   textUser: '#ffffff',
   border: '#e4e4e7',
   borderDark: '#3f3f46',
-  chipBorder: 'rgba(255,56,92,0.3)',
-  chipText: '#ff385c',
+  chipBorder: 'rgba(26,86,50,0.3)',
+  chipText: '#1a5632',
 };
 
 // ── Provider ──────────────────────────────────────────────────────

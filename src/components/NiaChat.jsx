@@ -221,7 +221,7 @@ export default function NiaChat() {
             type="button"
             onClick={startVoiceInput}
             className={`p-2.5 rounded-xl transition-all ${
-              voiceListening ? 'bg-[var(--seasonal-primary,#ff385c)] text-white animate-pulse' : 'text-zinc-400 hover:bg-zinc-100 dark:hover:bg-zinc-800'
+              voiceListening ? 'bg-[var(--seasonal-primary,#1a5632)] text-white animate-pulse' : 'text-zinc-400 hover:bg-zinc-100 dark:hover:bg-zinc-800'
             }`}
             title={voiceListening ? 'Listening...' : 'Speak your question'}
             style={voiceListening ? { backgroundColor: COLORS.accent } : {}}

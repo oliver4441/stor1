@@ -75,7 +75,7 @@ function ListingDetails() {
     return (
       <div className="max-w-7xl mx-auto px-4 py-20 text-center">
         <h2 className="text-3xl font-bold mb-4 text-zinc-900 dark:text-white">{error || t('listing.listingNotFound')}</h2>
-        <Link to="/" className="text-[var(--seasonal-primary,#ff385c)] font-bold hover:underline">{t('listing.goBackHome')}</Link>
+        <Link to="/" className="text-[var(--seasonal-primary,#1a5632)] font-bold hover:underline">{t('listing.goBackHome')}</Link>
       </div>
     );
   }
@@ -183,7 +183,7 @@ function ListingDetails() {
           <div className="mb-4">
             <h1 className="text-2xl md:text-3xl font-bold mb-2 text-zinc-900 dark:text-white leading-tight">{listing.title}</h1>
             <div className="flex items-center gap-3 flex-wrap">
-              <p className="text-3xl font-black text-[var(--seasonal-primary,#ff385c)]">
+              <p className="text-3xl font-black text-[var(--seasonal-primary,#1a5632)]">
                 {hasVariants && selectedVariantObj && selectedVariantObj.priceAdjustment !== 0
                   ? formatKES(effectivePrice)
                   : formatKES(listing.price)}
@@ -223,7 +223,7 @@ function ListingDetails() {
                   const Icon = spec.icon;
                   return (
                     <div key={i} className="flex items-center gap-2 bg-zinc-50 dark:bg-zinc-900/60 border border-zinc-200 dark:border-zinc-800 rounded-xl px-3 py-2.5 flex-shrink-0">
-                      <Icon className="w-4 h-4 text-[var(--seasonal-primary,#ff385c)]" />
+                      <Icon className="w-4 h-4 text-[var(--seasonal-primary,#1a5632)]" />
                       <div className="leading-tight">
                         <p className="text-[10px] text-zinc-400 dark:text-zinc-500 uppercase tracking-wider">{spec.label}</p>
                         <p className="text-xs font-bold text-zinc-900 dark:text-white">{spec.value}</p>
@@ -279,7 +279,7 @@ function ListingDetails() {
           {/* Seller / About the Store */}
           <div className="bg-zinc-50 dark:bg-zinc-900/50 rounded-2xl p-4 mb-4 border border-zinc-200 dark:border-zinc-800">
             <div className="flex items-center gap-3 mb-3">
-              <div className="w-11 h-11 bg-gradient-to-br from-[var(--seasonal-primary,#ff385c)] to-[#ff6b8a] rounded-full flex items-center justify-center font-black text-lg text-white shadow-md shadow-[var(--seasonal-primary,#ff385c)]/20">O</div>
+              <div className="w-11 h-11 bg-gradient-to-br from-[var(--seasonal-primary,#1a5632)] to-[#ff6b8a] rounded-full flex items-center justify-center font-black text-lg text-white shadow-md shadow-[var(--seasonal-primary,#1a5632)]/20">O</div>
               <div className="flex-1">
                 <p className="font-bold text-sm text-zinc-900 dark:text-white">{t('listing.omixStore')}</p>
                 <p className="text-xs text-zinc-500 dark:text-zinc-400">{t('listing.kerichoKenya')} &bull; {t('listing.officialStore')}</p>
@@ -288,15 +288,15 @@ function ListingDetails() {
             </div>
             <div className="grid grid-cols-3 gap-2">
               <div className="text-center bg-white dark:bg-zinc-800 rounded-xl py-2 px-1">
-                <p className="text-sm font-black text-[var(--seasonal-primary,#ff385c)]">100%</p>
+                <p className="text-sm font-black text-[var(--seasonal-primary,#1a5632)]">100%</p>
                 <p className="text-[9px] text-zinc-500 dark:text-zinc-400 uppercase tracking-wider">{t('listing.quality')}</p>
               </div>
               <div className="text-center bg-white dark:bg-zinc-800 rounded-xl py-2 px-1">
-                <p className="text-sm font-black text-[var(--seasonal-primary,#ff385c)]">{t('listing.fast')}</p>
+                <p className="text-sm font-black text-[var(--seasonal-primary,#1a5632)]">{t('listing.fast')}</p>
                 <p className="text-[9px] text-zinc-500 dark:text-zinc-400 uppercase tracking-wider">{t('listing.shipping')}</p>
               </div>
               <div className="text-center bg-white dark:bg-zinc-800 rounded-xl py-2 px-1">
-                <p className="text-sm font-black text-[var(--seasonal-primary,#ff385c)]">24/7</p>
+                <p className="text-sm font-black text-[var(--seasonal-primary,#1a5632)]">24/7</p>
                 <p className="text-[9px] text-zinc-500 dark:text-zinc-400 uppercase tracking-wider">{t('listing.support')}</p>
               </div>
             </div>
@@ -329,10 +329,10 @@ function ListingDetails() {
                           onClick={() => { setSelectedColor(c.hex); setSelectedVariant(null); }}
                           className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl border-2 text-xs font-bold transition-all ${
                             isSelected
-                              ? 'border-[var(--seasonal-primary,#ff385c)] bg-[var(--seasonal-primary,#ff385c)]/5'
+                              ? 'border-[var(--seasonal-primary,#1a5632)] bg-[var(--seasonal-primary,#1a5632)]/5'
                               : disabled
                                 ? 'border-zinc-200 dark:border-zinc-700 opacity-40 cursor-not-allowed'
-                                : 'border-zinc-200 dark:border-zinc-700 hover:border-[var(--seasonal-primary,#ff385c)]'
+                                : 'border-zinc-200 dark:border-zinc-700 hover:border-[var(--seasonal-primary,#1a5632)]'
                           }`}
                         >
                           <div className="w-4 h-4 rounded-full border border-zinc-300 dark:border-zinc-600 flex-shrink-0" style={{ backgroundColor: c.hex?.startsWith('#') ? c.hex : '#ccc' }} />
@@ -352,7 +352,7 @@ function ListingDetails() {
                       Size {selectedSize && <span className="text-zinc-700 dark:text-zinc-300 normal-case">— {selectedSize}</span>}
                     </label>
                     {listing.size_guide && (
-                      <button type="button" className="text-[10px] text-[var(--seasonal-primary,#ff385c)] font-bold hover:underline">
+                      <button type="button" className="text-[10px] text-[var(--seasonal-primary,#1a5632)] font-bold hover:underline">
                         Size Guide
                       </button>
                     )}
@@ -370,10 +370,10 @@ function ListingDetails() {
                           onClick={() => { setSelectedSize(size); setSelectedVariant(null); }}
                           className={`min-w-[36px] px-2.5 py-1.5 rounded-xl border-2 text-xs font-bold text-center transition-all ${
                             isSelected
-                              ? 'border-[var(--seasonal-primary,#ff385c)] bg-[var(--seasonal-primary,#ff385c)] text-white'
+                              ? 'border-[var(--seasonal-primary,#1a5632)] bg-[var(--seasonal-primary,#1a5632)] text-white'
                               : disabled
                                 ? 'border-zinc-200 dark:border-zinc-700 opacity-40 cursor-not-allowed line-through'
-                                : 'border-zinc-200 dark:border-zinc-700 text-zinc-700 dark:text-zinc-300 hover:border-[var(--seasonal-primary,#ff385c)]'
+                                : 'border-zinc-200 dark:border-zinc-700 text-zinc-700 dark:text-zinc-300 hover:border-[var(--seasonal-primary,#1a5632)]'
                           }`}
                         >
                           {size}
@@ -448,7 +448,7 @@ function ListingDetails() {
                       } : null,
                     });
                   }}
-                  className="w-full flex items-center justify-center gap-2 bg-[var(--seasonal-primary,#ff385c)] text-white font-black py-4 rounded-2xl hover:bg-[var(--seasonal-secondary,#e03150)] transition-all shadow-lg shadow-[var(--seasonal-primary,#ff385c)]/20 text-lg"
+                  className="w-full flex items-center justify-center gap-2 bg-[var(--seasonal-primary,#1a5632)] text-white font-black py-4 rounded-2xl hover:bg-[var(--seasonal-secondary,#14472a)] transition-all shadow-lg shadow-[var(--seasonal-primary,#1a5632)]/20 text-lg"
                 >
                   <ShoppingCart className="w-5 h-5" /> {inCart ? t('cart.title') : t('productCard.addToCart')} — {formatKES(effectivePrice * quantity)}
                 </button>
@@ -475,7 +475,7 @@ function ListingDetails() {
               </>
             ) : (
               <>
-                <Link to={`/signup?redirect=/listing/${listing.id}`} className="w-full flex items-center justify-center gap-2 bg-[var(--seasonal-primary,#ff385c)] text-white font-black py-4 rounded-2xl hover:bg-[var(--seasonal-secondary,#e03150)] transition-all shadow-lg shadow-[var(--seasonal-primary,#ff385c)]/20 text-lg">
+                <Link to={`/signup?redirect=/listing/${listing.id}`} className="w-full flex items-center justify-center gap-2 bg-[var(--seasonal-primary,#1a5632)] text-white font-black py-4 rounded-2xl hover:bg-[var(--seasonal-secondary,#14472a)] transition-all shadow-lg shadow-[var(--seasonal-primary,#1a5632)]/20 text-lg">
                   <ShoppingCart className="w-5 h-5" /> {t('listing.signUpToAddToCart')}
                 </Link>
                 <Link to={`/login?redirect=/listing/${listing.id}`} className="w-full flex items-center justify-center gap-2 bg-zinc-900 dark:bg-white text-white dark:text-zinc-900 font-bold py-4 rounded-2xl hover:opacity-90 transition-all">
@@ -499,7 +499,7 @@ function ListingDetails() {
                   setNotifyMsg('You\'ll be notified when the price drops!');
                   setTimeout(() => setNotifyMsg(''), 3000);
                 }}
-                className="w-full flex items-center justify-center gap-2 border-2 border-[var(--seasonal-primary,#ff385c)] text-[var(--seasonal-primary,#ff385c)] font-bold py-3 rounded-xl hover:bg-[var(--seasonal-primary,#ff385c)]/5 transition-all"
+                className="w-full flex items-center justify-center gap-2 border-2 border-[var(--seasonal-primary,#1a5632)] text-[var(--seasonal-primary,#1a5632)] font-bold py-3 rounded-xl hover:bg-[var(--seasonal-primary,#1a5632)]/5 transition-all"
               >
                 <Bell className="w-4 h-4" /> Notify me when price drops
               </button>
@@ -509,7 +509,7 @@ function ListingDetails() {
                   setNotifyMsg('You\'ll be notified when back in stock!');
                   setTimeout(() => setNotifyMsg(''), 3000);
                 }}
-                className="w-full flex items-center justify-center gap-2 border-2 border-[var(--seasonal-primary,#ff385c)] text-[var(--seasonal-primary,#ff385c)] font-bold py-3 rounded-xl hover:bg-[var(--seasonal-primary,#ff385c)]/5 transition-all"
+                className="w-full flex items-center justify-center gap-2 border-2 border-[var(--seasonal-primary,#1a5632)] text-[var(--seasonal-primary,#1a5632)] font-bold py-3 rounded-xl hover:bg-[var(--seasonal-primary,#1a5632)]/5 transition-all"
               >
                 <Bell className="w-4 h-4" /> Notify when back in stock
               </button>

@@ -8,7 +8,7 @@ export default function ScreenshotGuide({ steps }) {
         <div key={index} className="flex gap-4">
           {/* Step number + icon */}
           <div className="flex-shrink-0">
-            <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-[var(--seasonal-primary,#ff385c)] to-[var(--seasonal-secondary,#e03150)] flex items-center justify-center text-white font-bold text-lg">
+            <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-[var(--seasonal-primary,#1a5632)] to-[var(--seasonal-secondary,#14472a)] flex items-center justify-center text-white font-bold text-lg">
               {index + 1}
             </div>
           </div>

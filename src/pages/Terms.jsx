@@ -5,7 +5,7 @@ import { ArrowLeft } from 'lucide-react';
 function Terms() {
   return (
     <div className="max-w-3xl mx-auto px-4 py-8 w-full">
-      <Link to="/" className="inline-flex items-center gap-1 text-sm text-zinc-500 hover:text-[var(--seasonal-primary,#ff385c)] transition-colors mb-6">
+      <Link to="/" className="inline-flex items-center gap-1 text-sm text-zinc-500 hover:text-[var(--seasonal-primary,#1a5632)] transition-colors mb-6">
         <ArrowLeft className="w-4 h-4" />
         Back to Home
       </Link>

@@ -8,7 +8,7 @@ const faqSteps = [
     svg: `<svg viewBox="0 0 400 60" xmlns="http://www.w3.org/2000/svg" class="w-full">
       <rect x="0" y="0" width="400" height="60" rx="8" fill="#f8fafc" stroke="#e2e8f0"/>
       <text x="40" y="38" font-size="14" fill="#0f172a">Browse &gt; Add to Cart &gt;</text>
-      <rect x="180" y="15" width="90" height="30" rx="6" fill="#ff385c"/>
+      <rect x="180" y="15" width="90" height="30" rx="6" fill="#1a5632"/>
       <text x="225" y="34" font-size="12" fill="white" text-anchor="middle" font-weight="bold">Sign Up</text>
       <text x="300" y="38" font-size="14" fill="#0f172a">to Order</text>
     </svg>`

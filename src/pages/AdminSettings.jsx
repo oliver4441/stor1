@@ -211,25 +211,25 @@ export default function AdminSettings() {
       {/* Store Info */}
       <div className="bg-white dark:bg-zinc-900 rounded-2xl border border-zinc-200 dark:border-zinc-800 p-6">
         <div className="flex items-center gap-3 mb-5">
-          <Store className="w-5 h-5 text-[#ff385c]" />
+          <Store className="w-5 h-5 text-primary" />
           <h3 className="text-base font-bold text-zinc-900 dark:text-white">Store Information</h3>
         </div>
         <div className="space-y-4">
           <div>
             <label className="block text-sm font-bold mb-1.5 text-zinc-700 dark:text-zinc-300">Store Name</label>
             <input value={form.storeName} onChange={e => updateField('storeName', e.target.value)}
-              className="w-full px-4 py-2.5 rounded-xl bg-zinc-100 dark:bg-zinc-800 border border-transparent focus:border-[#ff385c] focus:outline-none text-zinc-900 dark:text-white text-sm" />
+              className="w-full px-4 py-2.5 rounded-xl bg-zinc-100 dark:bg-zinc-800 border border-transparent focus:border-primary focus:outline-none text-zinc-900 dark:text-white text-sm" />
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
               <label className="block text-sm font-bold mb-1.5 text-zinc-700 dark:text-zinc-300">Email</label>
               <input type="email" value={form.storeEmail} onChange={e => updateField('storeEmail', e.target.value)}
-                className="w-full px-4 py-2.5 rounded-xl bg-zinc-100 dark:bg-zinc-800 border border-transparent focus:border-[#ff385c] focus:outline-none text-zinc-900 dark:text-white text-sm" />
+                className="w-full px-4 py-2.5 rounded-xl bg-zinc-100 dark:bg-zinc-800 border border-transparent focus:border-primary focus:outline-none text-zinc-900 dark:text-white text-sm" />
             </div>
             <div>
               <label className="block text-sm font-bold mb-1.5 text-zinc-700 dark:text-zinc-300">Phone</label>
               <input value={form.storePhone} onChange={e => updateField('storePhone', e.target.value)}
-                className="w-full px-4 py-2.5 rounded-xl bg-zinc-100 dark:bg-zinc-800 border border-transparent focus:border-[#ff385c] focus:outline-none text-zinc-900 dark:text-white text-sm" />
+                className="w-full px-4 py-2.5 rounded-xl bg-zinc-100 dark:bg-zinc-800 border border-transparent focus:border-primary focus:outline-none text-zinc-900 dark:text-white text-sm" />
             </div>
           </div>
         </div>
@@ -246,23 +246,23 @@ export default function AdminSettings() {
             <div>
               <label className="block text-sm font-bold mb-1.5 text-zinc-700 dark:text-zinc-300">CBD Delivery (KES)</label>
               <input type="number" value={form.deliveryCBD} onChange={e => updateField('deliveryCBD', e.target.value)}
-                className="w-full px-4 py-2.5 rounded-xl bg-zinc-100 dark:bg-zinc-800 border border-transparent focus:border-[#ff385c] focus:outline-none text-zinc-900 dark:text-white text-sm" />
+                className="w-full px-4 py-2.5 rounded-xl bg-zinc-100 dark:bg-zinc-800 border border-transparent focus:border-primary focus:outline-none text-zinc-900 dark:text-white text-sm" />
             </div>
             <div>
               <label className="block text-sm font-bold mb-1.5 text-zinc-700 dark:text-zinc-300">Kericho (KES)</label>
               <input type="number" value={form.deliveryKericho} onChange={e => updateField('deliveryKericho', e.target.value)}
-                className="w-full px-4 py-2.5 rounded-xl bg-zinc-100 dark:bg-zinc-800 border border-transparent focus:border-[#ff385c] focus:outline-none text-zinc-900 dark:text-white text-sm" />
+                className="w-full px-4 py-2.5 rounded-xl bg-zinc-100 dark:bg-zinc-800 border border-transparent focus:border-primary focus:outline-none text-zinc-900 dark:text-white text-sm" />
             </div>
             <div>
               <label className="block text-sm font-bold mb-1.5 text-zinc-700 dark:text-zinc-300">Outside Kericho (KES)</label>
               <input type="number" value={form.deliveryOutside} onChange={e => updateField('deliveryOutside', e.target.value)}
-                className="w-full px-4 py-2.5 rounded-xl bg-zinc-100 dark:bg-zinc-800 border border-transparent focus:border-[#ff385c] focus:outline-none text-zinc-900 dark:text-white text-sm" />
+                className="w-full px-4 py-2.5 rounded-xl bg-zinc-100 dark:bg-zinc-800 border border-transparent focus:border-primary focus:outline-none text-zinc-900 dark:text-white text-sm" />
             </div>
           </div>
           <div>
             <label className="block text-sm font-bold mb-1.5 text-zinc-700 dark:text-zinc-300">Free Shipping Threshold (KES)</label>
             <input type="number" value={form.freeShippingThreshold} onChange={e => updateField('freeShippingThreshold', e.target.value)}
-              className="w-full md:w-1/3 px-4 py-2.5 rounded-xl bg-zinc-100 dark:bg-zinc-800 border border-transparent focus:border-[#ff385c] focus:outline-none text-zinc-900 dark:text-white text-sm" />
+              className="w-full md:w-1/3 px-4 py-2.5 rounded-xl bg-zinc-100 dark:bg-zinc-800 border border-transparent focus:border-primary focus:outline-none text-zinc-900 dark:text-white text-sm" />
             <p className="text-xs text-zinc-500 mt-1">Orders above this amount get free delivery</p>
           </div>
         </div>
@@ -280,7 +280,7 @@ export default function AdminSettings() {
               <p className="text-sm font-semibold text-zinc-900 dark:text-white">Email Notifications</p>
               <p className="text-xs text-zinc-500">Receive email for new orders</p>
             </div>
-            <div className={`w-11 h-6 rounded-full transition-colors relative ${form.emailNotifications ? 'bg-[#ff385c]' : 'bg-zinc-300 dark:bg-zinc-700'}`}
+            <div className={`w-11 h-6 rounded-full transition-colors relative ${form.emailNotifications ? 'bg-primary' : 'bg-zinc-300 dark:bg-zinc-700'}`}
               onClick={() => updateField('emailNotifications', !form.emailNotifications)}>
               <div className={`absolute top-0.5 w-5 h-5 bg-white rounded-full shadow transition-transform ${form.emailNotifications ? 'translate-x-5.5' : 'translate-x-0.5'}`} />
             </div>
@@ -447,7 +447,7 @@ export default function AdminSettings() {
           onChange={e => setUpdateMsg(e.target.value)}
           placeholder="What's new at Omix Store?..."
           rows={3}
-          className="w-full px-4 py-3 rounded-xl bg-zinc-100 dark:bg-zinc-800 border border-transparent focus:border-[#ff385c] focus:outline-none text-zinc-900 dark:text-white text-sm resize-none"
+          className="w-full px-4 py-3 rounded-xl bg-zinc-100 dark:bg-zinc-800 border border-transparent focus:border-primary focus:outline-none text-zinc-900 dark:text-white text-sm resize-none"
         />
         <div className="flex items-center justify-between mt-3">
           <span className="text-[11px] text-zinc-400">{updateMsg.length}/200</span>
@@ -467,7 +467,7 @@ export default function AdminSettings() {
 
       {/* Save */}
       <div className="flex justify-end">
-        <button onClick={handleSave} disabled={saving} className="flex items-center gap-2 bg-[#ff385c] text-white px-6 py-3 rounded-xl font-bold text-sm hover:bg-[#e03150] disabled:opacity-50 shadow-lg shadow-[#ff385c]/20 transition-all">
+        <button onClick={handleSave} disabled={saving} className="flex items-center gap-2 bg-primary text-white px-6 py-3 rounded-xl font-bold text-sm hover:bg-primary-hover disabled:opacity-50 shadow-lg shadow-primary/20 transition-all">
           <Save className={`w-4 h-4 ${saving ? 'animate-spin' : ''}`} /> {saving ? 'Saving...' : 'Save Settings'}
         </button>
       </div>

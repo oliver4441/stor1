@@ -59,9 +59,9 @@ export default function HelpCenter() {
                 <Link
                   key={link.to}
                   to={link.to}
-                  className="group bg-white dark:bg-zinc-900/70 border border-zinc-200 dark:border-zinc-800 rounded-xl p-5 hover:border-[#ff385c]/30 hover:shadow-md transition-all"
+                  className="group bg-white dark:bg-zinc-900/70 border border-zinc-200 dark:border-zinc-800 rounded-xl p-5 hover:border-primary/30 hover:shadow-md transition-all"
                 >
-                  <h3 className="font-bold text-zinc-900 dark:text-white text-sm mb-1 group-hover:text-[#ff385c] transition-colors">
+                  <h3 className="font-bold text-zinc-900 dark:text-white text-sm mb-1 group-hover:text-primary transition-colors">
                     {link.label}
                   </h3>
                   <p className="text-xs text-zinc-500 dark:text-zinc-400 leading-relaxed">

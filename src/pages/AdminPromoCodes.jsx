@@ -142,7 +142,7 @@ export default function AdminPromoCodes() {
         <button
           onClick={openCreate}
           className="flex items-center gap-2 px-4 py-2.5 rounded-xl text-white font-semibold text-sm transition-all hover:opacity-90 active:scale-95"
-          style={{ backgroundColor: '#ff385c' }}
+          style={{ backgroundColor: '#1a5632' }}
         >
           <Plus className="w-4 h-4" />
           New Promo Code
@@ -160,7 +160,7 @@ export default function AdminPromoCodes() {
       {/* Codes List */}
       {loading ? (
         <div className="flex items-center justify-center py-16">
-          <Loader2 className="w-6 h-6 animate-spin" style={{ color: '#ff385c' }} />
+          <Loader2 className="w-6 h-6 animate-spin" style={{ color: '#1a5632' }} />
         </div>
       ) : codes.length === 0 ? (
         <div className="text-center py-16 rounded-2xl border" style={{ borderColor: '#e4e4e7' }}>
@@ -189,7 +189,7 @@ export default function AdminPromoCodes() {
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-2 mb-1">
                       <code className="text-sm font-bold px-2 py-0.5 rounded-lg tracking-wider"
-                        style={{ backgroundColor: '#fef2f2', color: '#ff385c' }}>
+                        style={{ backgroundColor: '#fef2f2', color: '#1a5632' }}>
                         {c.code}
                       </code>
                       <button
@@ -423,7 +423,7 @@ export default function AdminPromoCodes() {
                   type="submit"
                   disabled={submitting}
                   className="flex-1 px-4 py-2.5 rounded-xl text-white text-sm font-semibold transition-all hover:opacity-90 disabled:opacity-50 flex items-center justify-center gap-2"
-                  style={{ backgroundColor: '#ff385c' }}
+                  style={{ backgroundColor: '#1a5632' }}
                 >
                   {submitting ? (
                     <Loader2 className="w-4 h-4 animate-spin" />

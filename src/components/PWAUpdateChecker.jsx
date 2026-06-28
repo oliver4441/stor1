@@ -120,7 +120,7 @@ export default function PWAUpdateChecker() {
           <div
             className="h-1.5 w-full rounded-t-3xl"
             style={{
-              background: `linear-gradient(90deg, var(--seasonal-primary, #ff385c), var(--seasonal-secondary, #e03150))`,
+              background: `linear-gradient(90deg, var(--seasonal-primary, #1a5632), var(--seasonal-secondary, #14472a))`,
             }}
           />
 
@@ -141,7 +141,7 @@ export default function PWAUpdateChecker() {
                 <div
                   className="w-14 h-14 rounded-2xl flex items-center justify-center shadow-lg"
                   style={{
-                    background: `linear-gradient(135deg, var(--seasonal-primary, #ff385c), var(--seasonal-secondary, #e03150))`,
+                    background: `linear-gradient(135deg, var(--seasonal-primary, #1a5632), var(--seasonal-secondary, #14472a))`,
                   }}
                 >
                   <ArrowUpCircle className="w-7 h-7 text-white" />
@@ -149,7 +149,7 @@ export default function PWAUpdateChecker() {
                 {/* Sparkle badge */}
                 <div
                   className="absolute -top-1.5 -right-1.5 w-5 h-5 rounded-full flex items-center justify-center animate-bounce-subtle ring-2 ring-white dark:ring-zinc-900"
-                  style={{ backgroundColor: 'var(--seasonal-primary, #ff385c)' }}
+                  style={{ backgroundColor: 'var(--seasonal-primary, #1a5632)' }}
                 >
                   <Sparkles className="w-3 h-3 text-white" />
                 </div>
@@ -176,7 +176,7 @@ export default function PWAUpdateChecker() {
                     className="mt-3 inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-[10px] font-mono font-semibold"
                     style={{
                       backgroundColor: 'var(--seasonal-surface-alt, #f5f5f5)',
-                      color: 'var(--seasonal-primary, #ff385c)',
+                      color: 'var(--seasonal-primary, #1a5632)',
                     }}
                   >
                     <RefreshCw className="w-3 h-3" />
@@ -193,7 +193,7 @@ export default function PWAUpdateChecker() {
                 disabled={isUpdating}
                 className="flex-1 flex items-center justify-center gap-2 text-white text-sm font-bold py-3 rounded-2xl transition-all duration-300 hover:scale-[1.02] active:scale-[0.98] disabled:opacity-60 shadow-lg"
                 style={{
-                  background: `linear-gradient(135deg, var(--seasonal-primary, #ff385c), var(--seasonal-secondary, #e03150))`,
+                  background: `linear-gradient(135deg, var(--seasonal-primary, #1a5632), var(--seasonal-secondary, #14472a))`,
                 }}
               >
                 <RefreshCw className={`w-4 h-4 ${isUpdating ? 'animate-spin' : ''}`} />
@@ -217,7 +217,7 @@ export default function PWAUpdateChecker() {
                 <div
                   className="h-full rounded-full animate-progress-bar"
                   style={{
-                    background: `linear-gradient(90deg, var(--seasonal-primary, #ff385c), var(--seasonal-secondary, #e03150))`,
+                    background: `linear-gradient(90deg, var(--seasonal-primary, #1a5632), var(--seasonal-secondary, #14472a))`,
                   }}
                 />
               </div>

@@ -90,13 +90,13 @@ export default function AdminCustomers() {
         <input
           type="text" placeholder="Search by name, email, or phone..."
           value={searchQuery} onChange={e => setSearchQuery(e.target.value)}
-          className="w-full pl-10 pr-4 py-2.5 rounded-xl bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 text-sm text-zinc-900 dark:text-white focus:border-[#ff385c] focus:outline-none"
+          className="w-full pl-10 pr-4 py-2.5 rounded-xl bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 text-sm text-zinc-900 dark:text-white focus:border-primary focus:outline-none"
         />
       </div>
 
       {loading ? (
         <div className="flex items-center justify-center h-40">
-          <div className="inline-block w-8 h-8 border-4 border-[#ff385c] border-t-transparent rounded-full animate-spin" />
+          <div className="inline-block w-8 h-8 border-4 border-primary border-t-transparent rounded-full animate-spin" />
         </div>
       ) : filteredCustomers.length > 0 ? (
         <div className="bg-white dark:bg-zinc-900 rounded-2xl border border-zinc-200 dark:border-zinc-800 overflow-hidden">
@@ -117,8 +117,8 @@ export default function AdminCustomers() {
                     onClick={() => setSelectedCustomer(customer)}>
                     <td className="px-4 py-3">
                       <div className="flex items-center gap-3">
-                        <div className="w-9 h-9 rounded-full bg-[#ff385c]/10 flex items-center justify-center flex-shrink-0">
-                          <span className="text-xs font-bold text-[#ff385c]">
+                        <div className="w-9 h-9 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0">
+                          <span className="text-xs font-bold text-primary">
                             {customer.name.charAt(0).toUpperCase()}
                           </span>
                         </div>
@@ -171,8 +171,8 @@ export default function AdminCustomers() {
           <div className="relative bg-white dark:bg-zinc-900 rounded-2xl border border-zinc-200 dark:border-zinc-800 p-6 w-full max-w-lg shadow-2xl max-h-[90vh] overflow-y-auto">
             <div className="flex items-center justify-between mb-6">
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-full bg-[#ff385c]/10 flex items-center justify-center">
-                  <span className="text-sm font-bold text-[#ff385c]">{selectedCustomer.name.charAt(0).toUpperCase()}</span>
+                <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center">
+                  <span className="text-sm font-bold text-primary">{selectedCustomer.name.charAt(0).toUpperCase()}</span>
                 </div>
                 <div>
                   <h3 className="text-lg font-bold text-zinc-900 dark:text-white">{selectedCustomer.name}</h3>
@@ -231,7 +231,7 @@ export default function AdminCustomers() {
                       <p className="text-xs text-zinc-500">{new Date(order.created_at).toLocaleDateString('en-KE', { month: 'short', day: 'numeric', year: 'numeric' })}</p>
                     </div>
                     <div className="text-right">
-                      <p className="text-sm font-bold text-[#ff385c]">{formatKES(order.total_amount)}</p>
+                      <p className="text-sm font-bold text-primary">{formatKES(order.total_amount)}</p>
                       <span className={`text-[10px] uppercase font-bold px-2 py-0.5 rounded-full ${
                         order.status === 'pending' ? 'bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400' :
                         order.status === 'delivered' ? 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400' :

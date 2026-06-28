@@ -14,7 +14,7 @@ export default function CartMiniPopup() {
   const count = getItemCount();
   const total = getTotal();
 
-  const colors = ['#ff385c', '#10b981', '#3b82f6', '#f59e0b', '#8b5cf6', '#ec4899'];
+  const colors = ['#1a5632', '#10b981', '#3b82f6', '#f59e0b', '#8b5cf6', '#ec4899'];
 
   // Listen for add-to-cart events from ProductCard
   useEffect(() => {
@@ -57,7 +57,7 @@ export default function CartMiniPopup() {
           {/* Header */}
           <div className="flex items-center justify-between px-4 py-3 border-b border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-900/50">
             <div className="flex items-center gap-2">
-              <ShoppingCart className="w-4 h-4 text-[var(--seasonal-primary,#ff385c)]" />
+              <ShoppingCart className="w-4 h-4 text-[var(--seasonal-primary,#1a5632)]" />
               <span className="font-bold text-sm text-zinc-900 dark:text-white">Cart ({count})</span>
             </div>
             <button onClick={() => setOpen(false)} className="p-1 rounded-lg hover:bg-zinc-200 dark:hover:bg-zinc-800 text-zinc-400">
@@ -74,7 +74,7 @@ export default function CartMiniPopup() {
                 <Link
                   to="/"
                   onClick={() => setOpen(false)}
-                  className="inline-flex items-center gap-1 mt-3 text-xs font-bold text-[var(--seasonal-primary,#ff385c)] hover:underline"
+                  className="inline-flex items-center gap-1 mt-3 text-xs font-bold text-[var(--seasonal-primary,#1a5632)] hover:underline"
                 >
                   Browse products <ArrowRight className="w-3 h-3" />
                 </Link>
@@ -96,11 +96,11 @@ export default function CartMiniPopup() {
                       <Link
                         to={`/listing/${item.id}`}
                         onClick={() => setOpen(false)}
-                        className="text-xs font-bold text-zinc-900 dark:text-white hover:text-[var(--seasonal-primary,#ff385c)] truncate block"
+                        className="text-xs font-bold text-zinc-900 dark:text-white hover:text-[var(--seasonal-primary,#1a5632)] truncate block"
                       >
                         {item.name}
                       </Link>
-                      <p className="text-xs font-bold text-[var(--seasonal-primary,#ff385c)]">{formatKES(item.price * item.quantity)}</p>
+                      <p className="text-xs font-bold text-[var(--seasonal-primary,#1a5632)]">{formatKES(item.price * item.quantity)}</p>
                     </div>
                     <div className="flex items-center gap-1">
                       <button
@@ -147,7 +147,7 @@ export default function CartMiniPopup() {
                 <Link
                   to="/checkout"
                   onClick={() => setOpen(false)}
-                  className="flex-1 flex items-center justify-center gap-1.5 py-2.5 rounded-xl bg-[var(--seasonal-primary,#ff385c)] text-white text-xs font-bold hover:bg-[var(--seasonal-secondary,#e03150)] transition-colors shadow-lg shadow-[var(--seasonal-primary,#ff385c)]/20"
+                  className="flex-1 flex items-center justify-center gap-1.5 py-2.5 rounded-xl bg-[var(--seasonal-primary,#1a5632)] text-white text-xs font-bold hover:bg-[var(--seasonal-secondary,#14472a)] transition-colors shadow-lg shadow-[var(--seasonal-primary,#1a5632)]/20"
                 >
                   Checkout <ArrowRight className="w-3 h-3" />
                 </Link>
@@ -165,8 +165,8 @@ export default function CartMiniPopup() {
           animating ? 'scale-125' : 'scale-100'
         } ${open ? 'bg-zinc-800 dark:bg-white text-white dark:text-zinc-900' : ''}`}
         style={{
-          backgroundColor: open ? undefined : (animating && flashColor ? flashColor : '#ff385c'),
-          boxShadow: animating ? `0 0 20px ${flashColor || '#ff385c'}80` : '0 4px 12px rgba(0,0,0,0.15)',
+          backgroundColor: open ? undefined : (animating && flashColor ? flashColor : '#1a5632'),
+          boxShadow: animating ? `0 0 20px ${flashColor || '#1a5632'}80` : '0 4px 12px rgba(0,0,0,0.15)',
         }}
         aria-label={`Shopping cart, ${count} items`}
       >
@@ -176,7 +176,7 @@ export default function CartMiniPopup() {
             className={`absolute -top-1 -right-1 min-w-[20px] h-5 rounded-full flex items-center justify-center text-[10px] font-bold px-1 transition-transform duration-300 ${
               animating ? 'scale-150' : 'scale-100'
             }`}
-            style={{ backgroundColor: animating ? flashColor : '#fff', color: animating ? '#fff' : '#ff385c' }}
+            style={{ backgroundColor: animating ? flashColor : '#fff', color: animating ? '#fff' : '#1a5632' }}
           >
             {count > 99 ? '99+' : count}
           </span>

@@ -38,7 +38,7 @@ export default function FloatingCartButton() {
       >
         <ShoppingCart className="w-6 h-6 text-white dark:text-zinc-900" />
         {cartCount > 0 && (
-          <span className={`absolute -top-1 -right-1 w-5 h-5 text-white text-[10px] font-bold rounded-full flex items-center justify-center transition-all duration-300 ${bump ? 'scale-125' : 'scale-100'} bg-[var(--seasonal-primary,#ff385c)]`}>
+          <span className={`absolute -top-1 -right-1 w-5 h-5 text-white text-[10px] font-bold rounded-full flex items-center justify-center transition-all duration-300 ${bump ? 'scale-125' : 'scale-100'} bg-[var(--seasonal-primary,#1a5632)]`}>
             {cartCount > 9 ? '9+' : cartCount}
           </span>
         )}
@@ -61,7 +61,7 @@ export default function FloatingCartButton() {
                 <div className="px-5 py-10 text-center">
                   <ShoppingCart className="w-10 h-10 text-zinc-300 dark:text-zinc-600 mx-auto mb-3" />
                   <p className="text-sm text-zinc-500 dark:text-zinc-400">Your cart is empty</p>
-                  <Link to="/" onClick={() => setCartOpen(false)} className="inline-block mt-4 text-sm font-bold text-[var(--seasonal-primary,#ff385c)] hover:underline">
+                  <Link to="/" onClick={() => setCartOpen(false)} className="inline-block mt-4 text-sm font-bold text-[var(--seasonal-primary,#1a5632)] hover:underline">
                     Browse Products
                   </Link>
                 </div>
@@ -80,7 +80,7 @@ export default function FloatingCartButton() {
                       </div>
                       <div className="flex-grow min-w-0">
                         <p className="font-bold text-sm text-zinc-900 dark:text-white truncate">{item.name}</p>
-                        <p className="text-[var(--seasonal-primary,#ff385c)] font-bold text-sm">{formatKES(item.price * item.quantity)}</p>
+                        <p className="text-[var(--seasonal-primary,#1a5632)] font-bold text-sm">{formatKES(item.price * item.quantity)}</p>
                       </div>
                       <div className="flex items-center gap-1 flex-shrink-0">
                         <button onClick={() => updateQuantity(item.id, Math.max(0, item.quantity - 1))} className="w-7 h-7 rounded-lg bg-zinc-100 dark:bg-zinc-800 flex items-center justify-center hover:bg-zinc-200 dark:hover:bg-zinc-700">
@@ -104,12 +104,12 @@ export default function FloatingCartButton() {
               <div className="border-t border-zinc-200 dark:border-zinc-700 p-4 space-y-3">
                 <div className="flex justify-between items-center">
                   <span className="text-sm font-bold text-zinc-500 dark:text-zinc-400">Total</span>
-                  <span className="text-xl font-black text-[var(--seasonal-primary,#ff385c)]">{formatKES(cartTotal)}</span>
+                  <span className="text-xl font-black text-[var(--seasonal-primary,#1a5632)]">{formatKES(cartTotal)}</span>
                 </div>
                 <Link
                   to="/checkout"
                   onClick={() => setCartOpen(false)}
-                  className="flex items-center justify-center gap-2 w-full bg-[var(--seasonal-primary,#ff385c)] text-white font-black py-3.5 rounded-2xl hover:bg-[var(--seasonal-secondary,#e03150)] transition-all shadow-lg shadow-[var(--seasonal-primary,#ff385c)]/20"
+                  className="flex items-center justify-center gap-2 w-full bg-[var(--seasonal-primary,#1a5632)] text-white font-black py-3.5 rounded-2xl hover:bg-[var(--seasonal-secondary,#14472a)] transition-all shadow-lg shadow-[var(--seasonal-primary,#1a5632)]/20"
                 >
                   <CreditCard className="w-4 h-4" />
                   Checkout — {formatKES(cartTotal)}
@@ -117,7 +117,7 @@ export default function FloatingCartButton() {
                 <Link
                   to="/cart"
                   onClick={() => setCartOpen(false)}
-                  className="block text-center text-sm text-zinc-500 hover:text-[var(--seasonal-primary,#ff385c)] font-medium"
+                  className="block text-center text-sm text-zinc-500 hover:text-[var(--seasonal-primary,#1a5632)] font-medium"
                 >
                   View Full Cart
                 </Link>

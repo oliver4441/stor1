@@ -37,7 +37,7 @@ function App() {
             <div className="flex flex-col gap-2">
               <div className="flex items-center gap-2">
                 <div className="icon-mail text-zinc-400"></div>
-                <a href="mailto:hello@omix.co.ke" className="text-[#ff385c] font-medium">hello@omix.co.ke</a>
+                <a href="mailto:hello@omix.co.ke" className="text-[#1a5632] font-medium">hello@omix.co.ke</a>
               </div>
               <div className="flex items-center gap-2">
                 <div className="icon-phone text-zinc-400"></div>
