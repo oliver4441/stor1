@@ -19,6 +19,28 @@ import ProductCard from '../components/ProductCard';
 import Breadcrumb from '../components/Breadcrumb';
 import { isPushSupported, subscribeToPush, unsubscribeFromPush } from '../utils/pushNotifications';
 
+// ── Telegram-style Toggle Switch ──────────────────────────────────────
+function ToggleSwitch({ checked, onChange, disabled }) {
+  return (
+    <button
+      type="button"
+      role="switch"
+      aria-checked={checked}
+      disabled={disabled}
+      onClick={() => onChange(!checked)}
+      className={`relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-[var(--seasonal-primary,#1a5632)] focus:ring-offset-2 focus:ring-offset-zinc-900 ${
+        checked ? 'bg-emerald-500' : 'bg-zinc-600'
+      } ${disabled ? 'opacity-50 cursor-not-allowed' : ''}`}
+    >
+      <span
+        className={`pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out ${
+          checked ? 'translate-x-5' : 'translate-x-0'
+        }`}
+      />
+    </button>
+  );
+}
+
 // ── Tabs ──────────────────────────────────────────────────────────────
 const TABS = [
   { id: 'profile',   label: 'Profile',   icon: User },
@@ -327,6 +349,17 @@ function UserDashboard() {
   const [notifBusy, setNotifBusy] = useState(false);
   const [notifMsg, setNotifMsg] = useState(null);
 
+  // Notification Preferences (user_settings)
+  const [notifPrefs, setNotifPrefs] = useState({
+    order_updates: true,
+    price_drops: true,
+    back_in_stock: true,
+    promotions: false,
+  });
+  const [notifPrefsLoaded, setNotifPrefsLoaded] = useState(false);
+  const [notifPrefsBusy, setNotifPrefsBusy] = useState(false);
+  const [notifPrefsMsg, setNotifPrefsMsg] = useState(null);
+
   // Password change
   const [pwForm, setPwForm] = useState({ current: '', newPw: '', confirm: '' });
   const [pwBusy, setPwBusy] = useState(false);
@@ -388,6 +421,65 @@ function UserDashboard() {
     else if (Notification.permission === 'denied') setNotifStatus('blocked');
     else setNotifStatus('off');
   }, []);
+
+  // Load notification preferences from user_settings
+  useEffect(() => {
+    if (!user) return;
+    let cancelled = false;
+    (async () => {
+      try {
+        const { data, error } = await supabase
+          .from('user_settings')
+          .select('order_updates, price_drops, back_in_stock, promotions')
+          .eq('user_id', user.id)
+          .maybeSingle();
+        if (cancelled) return;
+        if (error && error.code !== 'PGRST116') throw error;
+        if (data) {
+          setNotifPrefs({
+            order_updates: data.order_updates ?? true,
+            price_drops: data.price_drops ?? true,
+            back_in_stock: data.back_in_stock ?? true,
+            promotions: data.promotions ?? false,
+          });
+        } else {
+          // No row yet — upsert defaults so future loads are instant
+          await supabase
+            .from('user_settings')
+            .upsert({ user_id: user.id, order_updates: true, price_drops: true, back_in_stock: true, promotions: false }, { onConflict: 'user_id' });
+        }
+      } catch (err) {
+        console.error('Failed to load notification preferences:', err);
+      } finally {
+        if (!cancelled) setNotifPrefsLoaded(true);
+      }
+    })();
+    return () => { cancelled = true; };
+  }, [user]);
+
+  // Handle toggling a single preference
+  const handlePrefToggle = async (key) => {
+    if (notifPrefsBusy || !user) return;
+    const newVal = !notifPrefs[key];
+    const next = { ...notifPrefs, [key]: newVal };
+    setNotifPrefs(next);
+    setNotifPrefsBusy(true);
+    setNotifPrefsMsg(null);
+    try {
+      const { error } = await supabase
+        .from('user_settings')
+        .upsert({ user_id: user.id, ...next }, { onConflict: 'user_id' });
+      if (error) throw error;
+      setNotifPrefsMsg({ type: 'success', text: 'Preference saved.' });
+    } catch (err) {
+      // Revert on failure
+      setNotifPrefs(notifPrefs);
+      setNotifPrefsMsg({ type: 'error', text: 'Failed to save preference.' });
+    } finally {
+      setNotifPrefsBusy(false);
+      setTimeout(() => setNotifPrefsMsg(null), 3000);
+    }
+  };
 
   const handleNotifToggle = async () => {
     setNotifBusy(true);
@@ -879,75 +971,50 @@ function UserDashboard() {
       case 'settings':
         return (
           <div className="space-y-6">
-            {/* Notifications */}
+            {/* Notification Preferences */}
             <div className="bg-zinc-900 rounded-2xl border border-zinc-800 p-6">
               <div className="flex items-center gap-3 mb-5">
                 <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-amber-400 to-orange-500 flex items-center justify-center">
                   {notifStatus === 'on' ? <BellRing className="w-5 h-5 text-white" /> : <Bell className="w-5 h-5 text-white" />}
                 </div>
                 <div>
-                  <h2 className="text-lg font-bold text-white">Notifications</h2>
+                  <h2 className="text-lg font-bold text-white">Notification Preferences</h2>
                   <p className="text-xs text-zinc-400">Manage push notification settings</p>
                 </div>
               </div>
 
               <div className="space-y-4">
+                {/* Master Push Toggle */}
                 <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-3">
-                    {notifStatus === 'loading' ? (
-                      <div className="w-5 h-5 border-2 border-zinc-300 border-t-transparent rounded-full animate-spin" />
-                    ) : notifStatus === 'on' ? (
-                      <div className="flex items-center gap-2">
-                        <div className="w-2.5 h-2.5 rounded-full bg-green-500 animate-pulse" />
-                        <span className="text-sm font-semibold text-green-400">Enabled</span>
-                      </div>
-                    ) : notifStatus === 'blocked' ? (
-                      <div className="flex items-center gap-2">
-                        <div className="w-2.5 h-2.5 rounded-full bg-red-500" />
-                        <span className="text-sm font-semibold text-red-400">Blocked</span>
-                      </div>
-                    ) : notifStatus === 'unsupported' ? (
-                      <div className="flex items-center gap-2">
-                        <div className="w-2.5 h-2.5 rounded-full bg-zinc-400" />
-                        <span className="text-sm font-semibold text-zinc-500">Unsupported</span>
-                      </div>
-                    ) : (
-                      <div className="flex items-center gap-2">
-                        <div className="w-2.5 h-2.5 rounded-full bg-zinc-400" />
-                        <span className="text-sm font-semibold text-zinc-500">Off</span>
-                      </div>
-                    )}
+                  <div className="flex-1 min-w-0 mr-4">
+                    <p className="text-sm font-semibold text-white">Push Notifications</p>
+                    <p className="text-xs text-zinc-500 mt-0.5">
+                      {notifStatus === 'loading'
+                        ? 'Checking support...'
+                        : notifStatus === 'on'
+                        ? 'You will receive notifications about order updates, new arrivals, deals, and cart reminders.'
+                        : notifStatus === 'blocked'
+                        ? 'Notifications are blocked in your browser. Update your site permissions to enable them.'
+                        : notifStatus === 'unsupported'
+                        ? 'Not available in this browser'
+                        : 'Enable notifications to stay updated on order status, new products, and special offers.'}
+                    </p>
                   </div>
 
-                  {notifStatus === 'on' && (
-                    <button onClick={handleNotifToggle} disabled={notifBusy}
-                      className="flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold text-red-400 bg-red-900/20 hover:bg-red-100 dark:hover:bg-red-900/40 transition-all disabled:opacity-50">
-                      <BellOff className="w-3.5 h-3.5" /> {notifBusy ? '...' : 'Turn Off'}
-                    </button>
-                  )}
-                  {notifStatus === 'off' && (
-                    <button onClick={handleNotifToggle} disabled={notifBusy}
-                      className="flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold text-white bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 transition-all disabled:opacity-50 shadow-lg shadow-amber-500/20">
-                      <BellRing className="w-3.5 h-3.5" /> {notifBusy ? '...' : 'Enable'}
-                    </button>
-                  )}
-                  {notifStatus === 'blocked' && (
-                    <div className="text-xs text-zinc-500 text-right max-w-[200px]">
-                      <p>Enable in browser settings</p>
-                    </div>
-                  )}
-                  {notifStatus === 'unsupported' && (
-                    <span className="text-xs text-zinc-400">Not available in this browser</span>
+                  {notifStatus === 'loading' ? (
+                    <div className="w-5 h-5 border-2 border-zinc-300 border-t-transparent rounded-full animate-spin flex-shrink-0" />
+                  ) : notifStatus === 'blocked' ? (
+                    <span className="text-xs text-zinc-500 flex-shrink-0">Blocked</span>
+                  ) : notifStatus === 'unsupported' ? (
+                    <span className="text-xs text-zinc-400 flex-shrink-0">Unsupported</span>
+                  ) : (
+                    <ToggleSwitch
+                      checked={notifStatus === 'on'}
+                      onChange={() => handleNotifToggle()}
+                      disabled={notifBusy}
+                    />
                   )}
                 </div>
-
-                <p className="text-xs text-zinc-400 leading-relaxed">
-                  {notifStatus === 'on'
-                    ? 'You will receive notifications about order updates, new arrivals, deals, and cart reminders.'
-                    : notifStatus === 'blocked'
-                    ? 'Notifications are blocked in your browser. Update your site permissions to enable them.'
-                    : 'Enable notifications to stay updated on order status, new products, and special offers.'}
-                </p>
 
                 {notifMsg && (
                   <div className={`p-3 rounded-xl text-xs font-semibold ${
@@ -956,6 +1023,72 @@ function UserDashboard() {
                       : 'bg-red-900/20 text-red-400 border border-red-800'
                   }`}>
                     {notifMsg.text}
+                  </div>
+                )}
+
+                {/* Divider */}
+                <div className="border-t border-zinc-800" />
+
+                {/* Individual Preference Toggles */}
+                <div className="space-y-1">
+                  <p className="text-xs font-bold text-zinc-400 uppercase tracking-wider mb-3">Notify me about</p>
+
+                  <div className="flex items-center justify-between py-2">
+                    <div className="flex-1 min-w-0 mr-4">
+                      <p className="text-sm font-medium text-white">Order Updates</p>
+                      <p className="text-xs text-zinc-500">Status changes, shipping, delivery</p>
+                    </div>
+                    <ToggleSwitch
+                      checked={notifPrefs.order_updates}
+                      onChange={() => handlePrefToggle('order_updates')}
+                      disabled={notifPrefsBusy || notifStatus !== 'on'}
+                    />
+                  </div>
+
+                  <div className="flex items-center justify-between py-2">
+                    <div className="flex-1 min-w-0 mr-4">
+                      <p className="text-sm font-medium text-white">Price Drops</p>
+                      <p className="text-xs text-zinc-500">Items you viewed or saved go on sale</p>
+                    </div>
+                    <ToggleSwitch
+                      checked={notifPrefs.price_drops}
+                      onChange={() => handlePrefToggle('price_drops')}
+                      disabled={notifPrefsBusy || notifStatus !== 'on'}
+                    />
+                  </div>
+
+                  <div className="flex items-center justify-between py-2">
+                    <div className="flex-1 min-w-0 mr-4">
+                      <p className="text-sm font-medium text-white">Back in Stock</p>
+                      <p className="text-xs text-zinc-500">Out-of-stock items become available</p>
+                    </div>
+                    <ToggleSwitch
+                      checked={notifPrefs.back_in_stock}
+                      onChange={() => handlePrefToggle('back_in_stock')}
+                      disabled={notifPrefsBusy || notifStatus !== 'on'}
+                    />
+                  </div>
+
+                  <div className="flex items-center justify-between py-2">
+                    <div className="flex-1 min-w-0 mr-4">
+                      <p className="text-sm font-medium text-white">Promotions</p>
+                      <p className="text-xs text-zinc-500">Deals, discounts, and special offers</p>
+                    </div>
+                    <ToggleSwitch
+                      checked={notifPrefs.promotions}
+                      onChange={() => handlePrefToggle('promotions')}
+                      disabled={notifPrefsBusy || notifStatus !== 'on'}
+                    />
+                  </div>
+                </div>
+
+                {notifPrefsMsg && (
+                  <div className={`p-3 rounded-xl text-xs font-semibold ${
+                    notifPrefsMsg.type === 'success'
+                      ? 'bg-green-900/20 text-green-400 border border-green-800'
+                      : 'bg-red-900/20 text-red-400 border border-red-800'
+                  }`}>
+                    {notifPrefsMsg.text}
                   </div>
                 )}
               </div>

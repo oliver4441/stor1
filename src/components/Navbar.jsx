@@ -80,13 +80,28 @@ function Navbar() {
     return () => { document.body.style.overflow = ''; };
   }, [menuOpen]);
 
+  // Collapsible navbar — hide on scroll down, show on scroll up
+  const [navVisible, setNavVisible] = useState(true);
+  const lastScrollY = useRef(0);
+  useEffect(() => {
+    const handleScroll = () => {
+      const currentY = window.scrollY;
+      if (currentY < 50) { setNavVisible(true); lastScrollY.current = currentY; return; }
+      if (currentY > lastScrollY.current + 5) setNavVisible(false);
+      else if (currentY < lastScrollY.current - 5) setNavVisible(true);
+      lastScrollY.current = currentY;
+    };
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
   const handleLogout = async () => {
     await supabase.auth.signOut();
     setMenuOpen(false);
   };
 
   return (
-    <nav className="border-b border-zinc-800/50 bg-white/80 dark:bg-zinc-950/80 backdrop-blur-xl sticky top-0 z-50 transition-all" style={{ paddingTop: 'env(safe-area-inset-top)' }}>
+    <nav className={`border-b border-zinc-800/50 bg-white/80 dark:bg-zinc-950/80 backdrop-blur-xl sticky top-0 z-50 transition-transform duration-200 ease-out ${navVisible ? 'translate-y-0' : '-translate-y-full'}`} style={{ paddingTop: 'env(safe-area-inset-top)' }}>
       <div className="max-w-7xl mx-auto px-4 h-14 flex items-center justify-between">
         {/* Logo */}
         <Link to="/" className="flex items-center gap-2 shrink-0">
