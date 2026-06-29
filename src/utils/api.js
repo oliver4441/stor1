@@ -136,7 +136,7 @@ export async function fetchListings(category = 'All', searchQuery = '', page = 1
     // Sanitize: only allow alphanumeric, spaces, hyphens, periods
     const sanitized = searchQuery.replace(/[^a-zA-Z0-9\s\-.]/g, '').trim();
     if (sanitized.length > 0) {
-      query = query.or(`(title.ilike.%${sanitized}%,description.ilike.%${sanitized}%)`);
+      query = query.or(`title.ilike.%${sanitized}%,description.ilike.%${sanitized}%`);
     }
   }
 
@@ -578,7 +578,7 @@ export async function adminDeleteListing(id) {
 
 // ── Orders (Online Store) ────────────────────────────────
 
-export async function createOrder({ items, total, customerName, phone, email, address, city, area, landmark, promoCode, promoCodeId, isFreeDelivery, loyaltyPointsUsed, referralCode }) {
+export async function createOrder({ items, total, customerName, phone, email, address, city, area, landmark, promoCode, promoCodeId, isFreeDelivery, loyaltyPointsUsed, referralCode, paymentMethod = 'online' }) {
   const { data: { user }, error: userError } = await supabase.auth.getUser()
 
   if (userError) {
@@ -640,6 +640,8 @@ export async function createOrder({ items, total, customerName, phone, email, ad
       delivery_discount: isFreeDelivery ? 1 : 0,
       loyalty_points_used: loyaltyPointsUsed || 0,
       referral_code: referralCode || null,
+      payment_method: paymentMethod,
+      status: paymentMethod === 'cod' ? 'cod_pending' : 'pending',
     })
     .select('*')
     .single()

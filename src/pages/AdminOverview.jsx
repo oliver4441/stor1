@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
-import { Package, ShoppingBag, DollarSign, AlertTriangle, TrendingUp, Eye } from 'lucide-react';
+import { Package, ShoppingBag, DollarSign, Banknote, AlertTriangle, TrendingUp, Eye } from 'lucide-react';
 import { supabase } from '../utils/supabase';
 import { formatKES } from '../utils/constants';
 import { fetchAllListings, fetchAllOrders } from '../utils/api';
@@ -25,11 +25,16 @@ export default function AdminOverview() {
 
   useEffect(() => { loadData(); }, [loadData]);
 
-  const totalRevenue = orders.reduce((sum, o) => sum + parseFloat(o.total_amount || 0), 0);
+  const totalRevenue = orders.filter(o => o.status === 'paid').reduce((sum, o) => sum + parseFloat(o.total_amount || 0), 0);
   const pendingOrders = orders.filter(o => o.status === 'pending').length;
   const activeListings = listings.filter(l => l.status === 'active').length;
   const lowStock = listings.filter(l => l.quantity > 0 && l.quantity <= 3).length;
   const outOfStock = listings.filter(l => l.quantity === 0).length;
+
+  // COD stats
+  const codOrders = orders.filter(o => o.status === 'cod_pending' || o.payment_method === 'cod');
+  const codRevenue = codOrders.reduce((sum, o) => sum + parseFloat(o.total_amount || 0), 0);
+  const codProductCount = codOrders.reduce((sum, o) => sum + (o.omix_order_items || []).reduce((s, i) => s + (i.quantity || 1), 0), 0);
 
   // Recent orders (last 5)
   const recentOrders = orders.slice(0, 5);
@@ -58,7 +63,8 @@ export default function AdminOverview() {
   const stats = [
     { label: 'Total Products', value: listings.length, icon: Package, color: 'text-primary', bg: 'bg-primary/10', change: `${activeListings} active` },
     { label: 'Total Orders', value: orders.length, icon: ShoppingBag, color: 'text-blue-500', bg: 'bg-blue-500/10', change: `${pendingOrders} pending` },
-    { label: 'Revenue', value: formatKES(totalRevenue), icon: DollarSign, color: 'text-emerald-500', bg: 'bg-emerald-500/10', change: 'All time' },
+    { label: 'Revenue (Online)', value: formatKES(totalRevenue), icon: DollarSign, color: 'text-emerald-500', bg: 'bg-emerald-500/10', change: 'Paid orders' },
+    { label: 'Cash on Delivery', value: formatKES(codRevenue), icon: Banknote, color: 'text-orange-500', bg: 'bg-orange-500/10', change: `${codOrders.length} orders • ${codProductCount} items` },
     { label: 'Low Stock', value: lowStock + outOfStock, icon: AlertTriangle, color: 'text-amber-500', bg: 'bg-amber-500/10', change: `${outOfStock} out of stock` },
   ];
 
@@ -103,11 +109,12 @@ export default function AdminOverview() {
                   <div className="text-right">
                     <p className="text-sm font-bold text-primary">{formatKES(order.total_amount)}</p>
                     <span className={`text-[10px] uppercase font-bold px-2 py-0.5 rounded-full ${
+                      order.status === 'cod_pending' ? 'bg-orange-100 text-orange-700 dark:bg-orange-900/30 dark:text-orange-400' :
                       order.status === 'pending' ? 'bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400' :
                       order.status === 'delivered' ? 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400' :
                       order.status === 'cancelled' ? 'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400' :
                       'bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400'
-                    }`}>{order.status}</span>
+                    }`}>{order.status === 'cod_pending' ? 'COD' : order.status}</span>
                   </div>
                 </div>
               ))}

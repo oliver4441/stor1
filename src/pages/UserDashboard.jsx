@@ -7,6 +7,7 @@ import {
   User, Mail, Phone, Camera, Edit2, MapPin, Plus, Trash2, AlertTriangle,
   Loader2, CheckCircle2, Shield, Lock, CreditCard, Settings, Home,
 } from 'lucide-react';
+import 'leaflet/dist/leaflet.css';
 import { supabase } from '../utils/supabase';
 import {
   fetchOrders, fetchListings, fetchAddresses, saveAddress, deleteAddress,
@@ -1331,16 +1332,152 @@ function AddressForm({ onSave, onClose }) {
     label: '',
     area: '',
     landmark: '',
+    address_line: '',
     phone: '',
     is_default: false,
+    latitude: null,
+    longitude: null,
   });
+  const [locating, setLocating] = useState(false);
+  const [locationStatus, setLocationStatus] = useState(null);
+  const mapRef = useRef(null);
+  const markerRef = useRef(null);
+  const [mapReady, setMapReady] = useState(false);
 
-  const AREA_OPTIONS = ['Kericho CBD', 'Moi Junction', 'Litein', 'Kapsoit', 'Brooke', 'Sosiot', 'Kaitet', 'Awasi', 'Kipchimchim', 'Chepseon', 'Londiani', 'Kedowa', 'Kabianga', 'Kipkelion', 'Ainamoi', 'Roret', 'Fort Ternan', 'Other'];
+  const AREA_OPTIONS = ['Kericho CBD', 'Moi Junction', 'Litein', 'Kapsoit', 'Brooke', 'Sosiot', 'Kaitet', 'Awasi', 'Kipchimchim', 'Chepseon', 'Londiani', 'Kedowa', 'Kabianga', 'Kipkelion', 'Ainamoi', 'Roret', 'Fort Ternan', 'OTHER'];
+
+  // Reverse geocode using Nominatim (free, no API key)
+  const reverseGeocode = async (lat, lng) => {
+    try {
+      const res = await fetch(
+        `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}&zoom=18&addressdetails=1`,
+        { headers: { 'Accept-Language': 'en' } }
+      );
+      const data = await res.json();
+      if (data.address) {
+        const addr = data.address;
+        const area =
+          addr.suburb || addr.neighbourhood || addr.village || addr.town || addr.county || '';
+        const landmark = addr.road || addr.pedestrian || '';
+        const fullAddress = data.display_name || '';
+        return { area, landmark, fullAddress };
+      }
+    } catch (e) {
+      console.warn('Reverse geocode failed:', e.message);
+    }
+    return null;
+  };
+
+  // Use browser geolocation
+  const handleUseLocation = () => {
+    if (!navigator.geolocation) {
+      setLocationStatus({ type: 'error', msg: 'Geolocation not supported on this device' });
+      return;
+    }
+    setLocating(true);
+    setLocationStatus(null);
+    navigator.geolocation.getCurrentPosition(
+      async (pos) => {
+        const { latitude, longitude } = pos.coords;
+        setForm(f => ({ ...f, latitude, longitude }));
+        setLocationStatus({ type: 'success', msg: 'Location detected! Looking up address...' });
+
+        // Auto-fill from reverse geocoding
+        const geo = await reverseGeocode(latitude, longitude);
+        if (geo) {
+          setForm(f => ({
+            ...f,
+            area: AREA_OPTIONS.includes(geo.area) ? geo.area : 'OTHER',
+            landmark: geo.landmark || f.landmark,
+            address_line: geo.fullAddress || f.address_line,
+            latitude,
+            longitude,
+          }));
+          setLocationStatus({ type: 'success', msg: 'Location found and fields auto-filled!' });
+        } else {
+          setLocationStatus({ type: 'warning', msg: 'Location found but address lookup failed. Fill manually.' });
+        }
+        setLocating(false);
+      },
+      (err) => {
+        setLocating(false);
+        const msgs = {
+          1: 'Permission denied. Please allow location access.',
+          2: 'Location unavailable. Try again.',
+          3: 'Location request timed out.',
+        };
+        setLocationStatus({ type: 'error', msg: msgs[err.code] || 'Could not get location.' });
+      },
+      { enableHighAccuracy: true, timeout: 15000, maximumAge: 60000 }
+    );
+  };
+
+  // Initialize mini map when coordinates are available
+  useEffect(() => {
+    if (!form.latitude || !form.longitude || !mapRef.current) return;
+    let map;
+    let mapInited = false;
+    const initMap = async () => {
+      const L = await import('leaflet');
+      // Fix default marker icon
+      delete L.Icon.Default.prototype._getIconUrl;
+      L.Icon.Default.mergeOptions({
+        iconRetinaUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon-2x.png',
+        iconUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png',
+        shadowUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png',
+      });
+
+      // Clean up previous map instance if exists
+      if (mapRef.current._leaflet_id) {
+        mapRef.current._leaflet_id = null;
+      }
+
+      map = L.map(mapRef.current).setView([form.latitude, form.longitude], 15);
+      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '&copy; OpenStreetMap',
+        maxZoom: 19,
+      }).addTo(map);
+
+      markerRef.current = L.marker([form.latitude, form.longitude], { draggable: true }).addTo(map);
+
+      // Allow user to drag marker to fine-tune
+      markerRef.current.on('dragend', async (e) => {
+        const { lat, lng } = e.target.getLatLng();
+        setForm(f => ({ ...f, latitude: lat, longitude: lng }));
+        const geo = await reverseGeocode(lat, lng);
+        if (geo) {
+          setForm(f => ({
+            ...f,
+            area: AREA_OPTIONS.includes(geo.area) ? geo.area : f.area,
+            landmark: geo.landmark || f.landmark,
+            address_line: geo.fullAddress || f.address_line,
+            latitude: lat,
+            longitude: lng,
+          }));
+        }
+      });
+
+      mapInited = true;
+      setMapReady(true);
+    };
+    initMap();
+
+    return () => { if (map) { map.remove(); } };
+  }, [form.latitude, form.longitude]);
 
   const handleSubmit = (e) => {
     e.preventDefault();
     if (!form.area.trim()) return;
-    onSave(form);
+    onSave({
+      label: form.label,
+      area: form.area,
+      landmark: form.landmark,
+      address_line: form.address_line,
+      phone: form.phone,
+      is_default: form.is_default,
+      latitude: form.latitude,
+      longitude: form.longitude,
+    });
   };
 
   return (
@@ -1356,6 +1493,33 @@ function AddressForm({ onSave, onClose }) {
           ))}
         </div>
       </div>
+
+      {/* Use My Location button */}
+      <button type="button" onClick={handleUseLocation} disabled={locating}
+        className="w-full flex items-center justify-center gap-2 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-sm font-bold transition-colors disabled:opacity-50">
+        <MapPin className={`w-4 h-4 ${locating ? 'animate-pulse' : ''}`} />
+        {locating ? 'Detecting location...' : '📍 Use My Current Location'}
+      </button>
+
+      {locationStatus && (
+        <div className={`text-xs px-3 py-2 rounded-lg font-semibold ${
+          locationStatus.type === 'success' ? 'bg-green-900/30 text-green-400' :
+          locationStatus.type === 'warning' ? 'bg-yellow-900/30 text-yellow-400' :
+          'bg-red-900/30 text-red-400'
+        }`}>
+          {locationStatus.msg}
+        </div>
+      )}
+
+      {/* Mini map */}
+      {form.latitude && form.longitude && (
+        <div>
+          <label className="text-xs font-bold text-zinc-400 uppercase tracking-wider mb-1 block">Pin your exact location</label>
+          <div ref={mapRef} className="w-full h-48 rounded-xl border border-zinc-700 overflow-hidden" />
+          <p className="text-[10px] text-zinc-500 mt-1">Drag the marker to adjust your exact delivery spot</p>
+        </div>
+      )}
+
       <div>
         <label className="text-xs font-bold text-zinc-400 uppercase tracking-wider mb-1 block">Area</label>
         <select value={form.area} onChange={e => setForm({ ...form, area: e.target.value })}
@@ -1368,6 +1532,12 @@ function AddressForm({ onSave, onClose }) {
         <label className="text-xs font-bold text-zinc-400 uppercase tracking-wider mb-1 block">Landmark</label>
         <input type="text" value={form.landmark} onChange={e => setForm({ ...form, landmark: e.target.value })}
           placeholder="Nearby landmark"
+          className="w-full px-3 py-2.5 rounded-xl bg-zinc-800/50 border border-zinc-700 text-sm text-white focus:outline-none focus:border-[var(--seasonal-primary,#1a5632)]" />
+      </div>
+      <div>
+        <label className="text-xs font-bold text-zinc-400 uppercase tracking-wider mb-1 block">Full Address</label>
+        <input type="text" value={form.address_line} onChange={e => setForm({ ...form, address_line: e.target.value })}
+          placeholder="Street/Building address"
           className="w-full px-3 py-2.5 rounded-xl bg-zinc-800/50 border border-zinc-700 text-sm text-white focus:outline-none focus:border-[var(--seasonal-primary,#1a5632)]" />
       </div>
       <div>

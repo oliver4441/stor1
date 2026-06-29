@@ -181,6 +181,7 @@ export default function CheckoutPage() {
   const items = getItems();
   const { isMaintenance } = useMaintenanceMode();
   const [loading, setLoading] = useState(false);
+  const [paymentMethod, setPaymentMethod] = useState('online');
   const [error, setError] = useState('');
   const [fieldErrors, setFieldErrors] = useState({});
   const [form, setForm] = useState({
@@ -325,11 +326,106 @@ export default function CheckoutPage() {
 
   const orderCreated = useRef(false);
 
-  const handleSubmit = async (e) => {
+  const handleCOD = async (e) => {
     e.preventDefault();
     setError('');
 
     if (!validate()) return;
+
+    setLoading(true);
+    sounds.processing();
+
+    const currentItems = getItems();
+    const currentDiscounted = (() => {
+      let t = getTotal();
+      if (promoApplied) {
+        if (promoApplied.discount_type === 'percentage') t = Math.round(t * (1 - promoApplied.discount_value / 100));
+        else if (promoApplied.discount_type === 'fixed') t = Math.max(0, t - promoApplied.discount_value);
+      }
+      if (redeemPoints) t = Math.max(0, t - computedPtsDiscount);
+      return t;
+    })();
+
+    try {
+      if (isMaintenance) {
+        setError('Checkout is temporarily disabled due to maintenance. Please try again later.');
+        setLoading(false);
+        return;
+      }
+
+      if (orderCreated.current) {
+        setError('Order already being processed. Please wait...');
+        setLoading(false);
+        return;
+      }
+
+      const orderResult = await createOrder({
+        items: currentItems.map(item => ({
+          product_id: item.id,
+          product_name: item.name,
+          product_image: item.image_url,
+          price: item.price,
+          quantity: item.quantity,
+          subtotal: item.price * item.quantity,
+          variant: item.variant || null,
+          variant_sku: item.variant?.sku || null,
+        })),
+        total: currentDiscounted,
+        customerName: form.fullName.trim(),
+        phone: form.phone.trim(),
+        email: form.email.trim(),
+        address: `${form.landmark}, ${form.area}, Kericho`,
+        city: 'Kericho',
+        area: form.area,
+        landmark: form.landmark,
+        promoCode: promoApplied ? promoApplied.code : null,
+        promoCodeId: promoApplied ? promoApplied.id : null,
+        isFreeDelivery,
+        loyaltyPointsUsed: redeemPoints ? computedPtsDiscount : 0,
+        referralCode: form.referralCode || null,
+        paymentMethod: 'cod',
+      });
+
+      if (!orderResult.success) {
+        setError(orderResult.error || 'Failed to create order');
+        setLoading(false);
+        sounds.error();
+        return;
+      }
+
+      const orderId = orderResult.order?.id;
+      if (!orderId) {
+        setError('Order created but could not get order ID. Please contact support.');
+        setLoading(false);
+        return;
+      }
+      orderCreated.current = true;
+      sounds.checkout();
+
+      // Build WhatsApp message with order details
+      const itemList = currentItems.map(item =>
+        `• ${item.name} x${item.quantity} — KES ${(item.price * item.quantity).toLocaleString()}`
+      ).join('\n');
+
+      const message = `Hello Omix Store!\n\nI have placed a Cash on Delivery order.\n\nOrder ID: #${orderId.toString().slice(0,8).toUpperCase()}\n\nItems:\n${itemList}\n\nTotal: KES ${currentDiscounted.toLocaleString()}\nPayment: Cash on Delivery\n\nDelivery Address: ${form.landmark}, ${form.area}, Kericho\nPhone: ${form.phone}\nName: ${form.fullName}\n\nPlease confirm my order. Asante!`;
+
+      const whatsappUrl = `https://wa.me/254746674392?text=${encodeURIComponent(message)}`;
+      window.open(whatsappUrl, '_blank');
+
+      clearCart();
+      navigate(`/order-success?orderId=${orderId}&cod=true`);
+
+    } catch (err) {
+      console.error('COD checkout error:', err);
+      setError(err.message || 'Something went wrong. Please try again.');
+      orderCreated.current = false;
+      setLoading(false);
+    }
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setError('');
 
     setLoading(true);
     sounds.processing();
@@ -428,6 +524,7 @@ export default function CheckoutPage() {
         isFreeDelivery,
         loyaltyPointsUsed: redeemPoints ? computedPtsDiscount : 0,
         referralCode: form.referralCode || null,
+        paymentMethod: 'online',
       });
 
       if (!orderResult.success) {
@@ -875,7 +972,71 @@ export default function CheckoutPage() {
                 </div>
               </div>
 
+              {/* ── Payment Method Selector ── */}
+              <div>
+                <label className="block text-xs font-bold mb-1.5 uppercase tracking-wider" style={{ color: C.textMuted }}>
+                  Payment Method <span style={{ color: '#ef4444' }}>*</span>
+                </label>
+                <div className="space-y-2">
+                  <button
+                    type="button"
+                    onClick={() => setPaymentMethod('online')}
+                    className="w-full flex items-center gap-3 p-3 rounded-xl text-left transition-all"
+                    style={{
+                      border: `2px solid ${paymentMethod === 'online' ? C.accent : C.border}`,
+                      backgroundColor: paymentMethod === 'online' ? `${C.accent}10` : C.bgGray,
+                    }}
+                  >
+                    <div className="w-5 h-5 rounded-full border-2 flex items-center justify-center" style={{ borderColor: paymentMethod === 'online' ? C.accent : C.border }}>
+                      {paymentMethod === 'online' && <div className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: C.accent }} />}
+                    </div>
+                    <div className="flex-1">
+                      <p className="text-sm font-semibold" style={{ color: C.text }}>Pay Online (M-Pesa)</p>
+                      <p className="text-xs" style={{ color: C.textMuted }}>Secure STK Push payment</p>
+                    </div>
+                    <CreditCard className="w-5 h-5" style={{ color: C.accent }} />
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={() => setPaymentMethod('cod')}
+                    className="w-full flex items-center gap-3 p-3 rounded-xl text-left transition-all"
+                    style={{
+                      border: `2px solid ${paymentMethod === 'cod' ? C.accent : C.border}`,
+                      backgroundColor: paymentMethod === 'cod' ? `${C.accent}10` : C.bgGray,
+                    }}
+                  >
+                    <div className="w-5 h-5 rounded-full border-2 flex items-center justify-center" style={{ borderColor: paymentMethod === 'cod' ? C.accent : C.border }}>
+                      {paymentMethod === 'cod' && <div className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: C.accent }} />}
+                    </div>
+                    <div className="flex-1">
+                      <p className="text-sm font-semibold" style={{ color: C.text }}>Cash on Delivery</p>
+                      <p className="text-xs" style={{ color: C.textMuted }}>We deliver first, you pay on delivery</p>
+                    </div>
+                    <Package className="w-5 h-5" style={{ color: C.accent }} />
+                  </button>
+                </div>
+              </div>
+
               {/* Submit */}
+              {paymentMethod === 'cod' ? (
+                <button
+                  type="button"
+                  onClick={handleCOD}
+                  disabled={loading}
+                  className="w-full text-white font-black py-4 rounded-xl transition-all disabled:opacity-50 flex items-center justify-center gap-2 text-base hover:opacity-90 active:98]"
+                  style={{
+                    background: `linear-gradient(135deg, #059669, #047857)`,
+                    boxShadow: `0 8px 24px #05966930`,
+                  }}
+                >
+                  {loading ? (
+                    <><Loader2 className="w-5 h-5 animate-spin" /> Processing...</>
+                  ) : (
+                    <><Package className="w-5 h-5" /> Order via WhatsApp — {formatKES(discountedTotal)}</>
+                  )}
+                </button>
+              ) : (
               <button
                 type="submit"
                 disabled={loading}
@@ -891,6 +1052,7 @@ export default function CheckoutPage() {
                   <><CreditCard className="w-5 h-5" /> Pay {formatKES(discountedTotal)} via M-Pesa</>
                 )}
               </button>
+              )}
 
               <p className="text-center text-xs" style={{ color: C.textMuted }}>
                 Powered by Paystack. Your payment is secure and encrypted.
