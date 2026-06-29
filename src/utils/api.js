@@ -116,11 +116,20 @@ export async function getCurrentUser() {
 }
 
 // Listings
-export async function fetchListings(category = 'All', searchQuery = '', page = 1, limit = null) {
+export async function fetchListings(category = 'All', searchQuery = '', page = 1, limit = null, productType = 'all') {
   let query = supabase
     .from('listings')
     .select('*', { count: 'exact' })
     .eq('status', 'active')
+
+  // Filter by product type (new / refurbished)
+  if (productType === 'new') {
+    // Show only new (or untyped) products — exclude refurbished
+    query = query.neq('product_type', 'refurbished');
+  } else if (productType === 'refurbished') {
+    query = query.eq('product_type', 'refurbished');
+  }
+  // 'all' = no filter (shows everything)
 
   if (category && category !== 'All') {
     // Use category_id for filtering (Blue Prism DB uses integer FK, not text column)

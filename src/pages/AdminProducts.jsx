@@ -33,7 +33,7 @@ export default function AdminProducts() {
   const [form, setForm] = useState({
     title: '', price: '', description: '', category: 'Electronics', condition: 'new', location: 'CBD',
     images: [], brand: '', model: '', color: '', weight: '', sku: '', status: 'active', tags: '',
-    has_variants: false, variants: [], size_guide: '',
+    has_variants: false, variants: [], size_guide: '', product_type: 'new',
   });
   const [submitting, setSubmitting] = useState(false);
   const [successMsg, setSuccessMsg] = useState('');
@@ -142,7 +142,7 @@ export default function AdminProducts() {
       title: '', price: '', description: '', category: cat, condition: 'new', location: 'CBD',
       images: [], brand: '', model: '', color: '', weight: '',
       sku: generateSKU(cat), status: 'active', tags: '',
-      has_variants: false, variants: [], size_guide: '',
+      has_variants: false, variants: [], size_guide: '', product_type: 'new',
     });
     setModalOpen(true);
   };
@@ -159,6 +159,7 @@ export default function AdminProducts() {
       has_variants: listing.has_variants || false,
       variants: Array.isArray(listing.variants) ? listing.variants : [],
       size_guide: listing.size_guide || '',
+      product_type: listing.product_type || 'new',
     });
     setModalOpen(true);
   };
@@ -218,6 +219,7 @@ export default function AdminProducts() {
       has_variants: form.has_variants,
       variants: form.variants,
       size_guide: form.size_guide,
+      product_type: form.product_type,
     };
     const result = editingId ? await updateListing(editingId, payload) : await createListing(payload);
     if (result.success) {
@@ -588,6 +590,14 @@ export default function AdminProducts() {
                   <select value={form.condition} onChange={e => setForm({...form, condition: e.target.value})} className="w-full px-4 py-2.5 rounded-xl bg-zinc-800 border border-transparent focus:border-primary focus:outline-none text-white text-sm appearance-none">
                     {CONDITIONS.map(c => <option key={c.value} value={c.value}>{c.label}</option>)}
                   </select>
+                </div>
+                <div>
+                  <label className="block text-sm font-bold mb-1.5 text-zinc-300">Listing Page</label>
+                  <select value={form.product_type} onChange={e => setForm({...form, product_type: e.target.value})} className="w-full px-4 py-2.5 rounded-xl bg-zinc-800 border border-transparent focus:border-primary focus:outline-none text-white text-sm appearance-none">
+                    <option value="new">New Arrivals (Main Page)</option>
+                    <option value="refurbished">Refurbished Deals</option>
+                  </select>
+                  <p className="text-[10px] text-zinc-500 mt-1">Refurbished items appear on /refurbished page only</p>
                 </div>
                 <div>
                   <label className="block text-sm font-bold mb-1.5 text-zinc-300">Status</label>

@@ -65,7 +65,7 @@ function Home() {
   useEffect(() => {
     setLoading(true);
     const fetch = async () => {
-      const result = await fetchListings(activeCategory, isAiMode ? '' : searchQuery, 1, ITEMS_PER_PAGE);
+      const result = await fetchListings(activeCategory, isAiMode ? '' : searchQuery, 1, ITEMS_PER_PAGE, 'new');
       setListings(result.listings);
       setTotalCount(result.total);
       setHasMore(result.listings.length < result.total);
@@ -79,7 +79,7 @@ function Home() {
     if (loadingMore || !hasMore) return;
     setLoadingMore(true);
     const nextPage = page + 1;
-    const result = await fetchListings(activeCategory, isAiMode ? '' : searchQuery, nextPage, ITEMS_PER_PAGE);
+    const result = await fetchListings(activeCategory, isAiMode ? '' : searchQuery, nextPage, ITEMS_PER_PAGE, 'new');
     setListings(prev => [...prev, ...result.listings]);
     setPage(nextPage);
     setHasMore(nextPage * ITEMS_PER_PAGE < result.total);

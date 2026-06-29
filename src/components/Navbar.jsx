@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { User, Globe, Shield, Package, HelpCircle, Info, LogIn, UserPlus, Menu, X, Download, ShoppingCart, ChevronDown, LogOut } from 'lucide-react';
+import { User, Globe, Shield, Package, HelpCircle, Info, LogIn, UserPlus, Menu, X, Download, ShoppingCart, ChevronDown, LogOut, RefreshCw } from 'lucide-react';
 import { supabase } from '../utils/supabase';
 import { useLang } from '../utils/lang';
 import { isAdmin } from '../utils/api';
@@ -9,6 +9,7 @@ import { useActiveTheme } from '../context/SeasonalContext';
 import { sounds } from '../utils/sounds';
 
 const FEATURE_LINKS = [
+  { to: '/refurbished', label: 'Refurbished', icon: RefreshCw, color: 'from-orange-500 to-amber-600', glow: 'shadow-orange-500/40' },
   { to: 'https://blog.omixsystems.store', label: 'Blog', icon: Globe, color: 'from-violet-500 to-purple-600', glow: 'shadow-violet-500/40', external: true },
   { to: '/how-it-works', label: 'How It Works', icon: HelpCircle, color: 'from-amber-500 to-orange-600', glow: 'shadow-amber-500/40' },
   { to: '/help', label: 'Help', icon: Package, color: 'from-emerald-500 to-green-600', glow: 'shadow-emerald-500/40' },

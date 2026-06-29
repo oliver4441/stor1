@@ -41,6 +41,7 @@ import About from './pages/About';
 import Privacy from './pages/Privacy';
 import Terms from './pages/Terms';
 import QRCodePage from './pages/QRCodePage';
+import Refurbished from './pages/Refurbished';
 import AdminLayout from './pages/AdminLayout';
 import AdminOverview from './pages/AdminOverview';
 import AdminProducts from './pages/AdminProducts';
@@ -111,6 +112,7 @@ function App() {
             <Route path="/help/payment" element={<Payment />} />
             <Route path="/help/delivery-time" element={<DeliveryTime />} />
             <Route path="/help/flash-sale" element={<FlashSale />} />
+            <Route path="/refurbished" element={<Refurbished />} />
             <Route path="/admin" element={<AdminLayout />}>
               <Route index element={<AdminOverview />} />
               <Route path="products" element={<AdminProducts />} />

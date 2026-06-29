@@ -9,6 +9,7 @@ export default function PushNudge() {
   const [visible, setVisible] = useState(false);
   const [subscribing, setSubscribing] = useState(false);
   const [result, setResult] = useState(null); // 'success' | 'error' | null
+  const [errorMsg, setErrorMsg] = useState(null); // string | null
 
   useEffect(() => {
     // Don't show if push not supported
@@ -33,6 +34,7 @@ export default function PushNudge() {
 
   const handleEnable = useCallback(async () => {
     setSubscribing(true);
+    setErrorMsg(null);
     const res = await subscribeToPush();
     setSubscribing(false);
 
@@ -41,7 +43,8 @@ export default function PushNudge() {
       setTimeout(() => setVisible(false), 2000);
     } else {
       setResult('error');
-      setTimeout(() => setResult(null), 3000);
+      setErrorMsg(res.error || 'Could not enable notifications.');
+      setTimeout(() => { setResult(null); setErrorMsg(null); }, 5000);
     }
   }, []);
 
@@ -88,7 +91,7 @@ export default function PushNudge() {
           ) : result === 'error' ? (
             <div className="mt-3 p-2.5 rounded-xl bg-red-900/20 border border-red-800">
               <p className="text-xs font-semibold text-red-400">
-                Could not enable notifications. Please check browser settings.
+                {errorMsg || 'Could not enable notifications. Please check browser settings.'}
               </p>
             </div>
           ) : (

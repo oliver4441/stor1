@@ -6,6 +6,10 @@ import { supabase } from './supabase';
 
 const PUBLIC_VAPID_KEY = import.meta.env.VITE_VAPID_PUBLIC_KEY || '';
 
+function isVapidConfigured() {
+  return PUBLIC_VAPID_KEY.length >= 64;
+}
+
 /**
  * Check if the browser supports push notifications and service workers.
  * @returns {boolean}
@@ -44,6 +48,10 @@ export async function requestNotificationPermission() {
 export async function subscribeToPush() {
   if (!isPushSupported()) {
     return { success: false, error: 'Push notifications not supported.' };
+  }
+
+  if (!isVapidConfigured()) {
+    return { success: false, error: 'Push notifications are not configured on this server. Please contact support.' };
   }
 
   const permission = await requestNotificationPermission();
