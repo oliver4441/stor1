@@ -1,5 +1,6 @@
 import { createContext, useContext, useState, useCallback, useRef, useEffect } from 'react';
-import { niaChat, getGreeting } from '../utils/nia-ai';
+import { niaChat, getGreeting, getSwahiliGreeting } from '../utils/nia-ai';
+import { useLang } from '../utils/lang';
 
 const NiaChatContext = createContext(null);
 
@@ -98,17 +99,19 @@ export function NiaChatProvider({ children }) {
     }, delay);
   }, [scrollToBottom, isOpen, setIsOpen]);
 
+  const { lang } = useLang();
+
   const openChat = useCallback(() => {
     setIsOpen(true);
     setHasOpened(true);
     try { localStorage.setItem('nia-has-opened', 'true'); } catch {}
 
     if (messages.length === 0) {
-      const greeting = getGreeting(userName);
+      const greeting = lang === 'sw' ? getSwahiliGreeting(userName) : getGreeting(userName);
       conversationHistoryRef.current.push({ sender: 'nia', text: greeting.text, isChipResponse: false, timestamp: new Date() });
       addBotMessage(greeting.text, greeting.chips, 0);
     }
-  }, [messages.length, addBotMessage, userName]);
+  }, [messages.length, addBotMessage, userName, lang]);
 
   const closeChat = useCallback(() => {
     setIsOpen(false);
@@ -133,7 +136,15 @@ export function NiaChatProvider({ children }) {
     setCurrentChips([]);
     setIsTyping(true);
 
-    const response = await niaChat(conversationHistoryRef.current, text.trim());
+    // Get user ID from auth for personalized responses
+    let userId = '';
+    try {
+      const { supabase } = await import('../utils/supabase');
+      const { data: { session } } = await supabase.auth.getSession();
+      userId = session?.user?.id || '';
+    } catch {}
+
+    const response = await niaChat(conversationHistoryRef.current, text.trim(), userId);
     addBotMessage(response.text, response.chips, 300);
   }, [addBotMessage]);
 

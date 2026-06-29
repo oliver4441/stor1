@@ -1,5 +1,4 @@
-// Nia AI — powers the Omix Store chatbot
-// Routes through the backend API proxy to avoid Cloudflare blocking
+// Nia AI — upgraded with product awareness, user context, Swahili support
 
 const API_URL = import.meta.env.VITE_API_URL || 'https://stor1-api.onrender.com';
 const OMIX_API_KEY = import.meta.env.VITE_OMIX_API_KEY || '';
@@ -14,7 +13,6 @@ function buildMessages(conversationHistory, userText) {
     if (msg.sender === 'user') {
       messages.push({ role: 'user', content: msg.text });
     } else if (msg.sender === 'nia' && !msg.isChipResponse) {
-      // Strip the CHIPS line from the assistant message for context
       const cleanText = msg.text.replace(/\nCHIPS:.*$/, '');
       messages.push({ role: 'assistant', content: cleanText });
     }
@@ -25,7 +23,7 @@ function buildMessages(conversationHistory, userText) {
 }
 
 // ── Call the backend Nia proxy ──────────────────────────────────
-export async function niaChat(conversationHistory, userText) {
+export async function niaChat(conversationHistory, userText, userId = '') {
   try {
     const messages = buildMessages(conversationHistory, userText);
 
@@ -35,7 +33,7 @@ export async function niaChat(conversationHistory, userText) {
         'Content-Type': 'application/json',
         'x-api-key': OMIX_API_KEY,
       },
-      body: JSON.stringify({ messages }),
+      body: JSON.stringify({ messages, userId }),
     });
 
     if (!res.ok) {
@@ -71,15 +69,41 @@ export async function niaChat(conversationHistory, userText) {
 function fallbackResponse(text) {
   const lower = text.toLowerCase();
 
-  if (lower.match(/hello|\bhi\b|hey|good morning|good evening|howdy/i)) {
+  // Swahili greetings
+  if (lower.match(/jambo|habari|habari ya|mambo|shikamoo|niko/i)) {
+    return {
+      text: "Habari! Mimi ni Nia, msaidizi wako wa Omix Store. Naweza kukusaidia nini leo? 😊",
+      chips: ['Ona bidhaa', 'Fuatilia oda', 'Jinsi inavyofanya kazi', 'Wasiliana nasi'],
+    };
+  }
+
+  // English greetings
+  if (lower.match(/hello|\bhi\b|hey|good morning|good evening|howdy|what'?s up/i)) {
     return {
       text: "Hello! I'm Nia, your Omix Store assistant. How can I help you today?",
       chips: ['Browse products', 'Track my order', 'How it works', 'Refer a friend'],
     };
   }
+
+  // Swahili product queries
+  if (lower.match(/bei|ghama|nunua|leta|naomba|nataka.*bidhaa|bidhaa.*gani| Electronics|vatovu|simu|nguo/i)) {
+    return {
+      text: "Unaweza kutafuta bidhaa kwenye ukurasa wa nyumbani! Tumia kijaribio au chagua kwa aghamu. Nikusaidie na bidhaa maalum? 😊",
+      chips: ['Browse products', 'Electronics', 'Clothing', 'Contact support'],
+    };
+  }
+
+  // Swahili order queries
+  if (lower.match(/oda|fuatilia|order|imefika wapi|delivery|usafirishaji/i)) {
+    return {
+      text: "Unaweza kufuatilia oda yako kwenye ukurasa wa 'Track Order' au kwenye Account yako. Unahitaji msaada zaidi?",
+      chips: ['Track my order', 'Contact support', 'Browse products'],
+    };
+  }
+
   if (lower.match(/refer|invite|friend|share/i)) {
     return {
-      text: "Our referral program is live!\n\nShare your unique referral link (find it in your Account page under 'Refer a Friend') — when someone signs up and places their first order, you both get KES 100 off!\n\nWant me to take you to your account?",
+      text: "Our referral program is live!\n\nShare your unique referral link (find it in your Account page under 'Refer a Friend') — when someone signs up and places their first order, you both get KES 100 off!",
       chips: ['Go to my account', 'Browse products', 'How it works'],
     };
   }
@@ -146,10 +170,26 @@ export function getGreeting(userName) {
   else if (hour < 17) timeGreeting = 'Good afternoon';
   else timeGreeting = 'Good evening';
 
-  const name = userName ? ` ${userName}` : '';
+  const name = userName ? `, ${userName.split(' ')[0]}` : '';
 
   return {
-    text: `${timeGreeting}${name}! I'm Nia, your Omix Store assistant.\n\nI can help you find products, track orders, and answer questions about delivery, payments, and more!\n\nWhat would you like to do?`,
-    chips: ['Browse products', 'Track my order', 'How it works', 'Contact support'],
+    text: `${timeGreeting}${name}! I'm Nia, your Omix Store assistant. 👋\n\nI can help you find products, track orders, answer payments & delivery questions, and more!\n\nWhat would you like to do?`,
+    chips: ['Browse products', 'Track my order', 'How it works', 'Refer a friend'],
+  };
+}
+
+// ── Generate Swahili greeting ───────────────────────────────────
+export function getSwahiliGreeting(userName) {
+  const hour = new Date().getHours();
+  let timeGreeting = 'Habari';
+  if (hour < 12) timeGreeting = 'Habari za asubuhi';
+  else if (hour < 17) timeGreeting = 'Habari za mchana';
+  else timeGreeting = 'Habari za jioni';
+
+  const name = userName ? `, ${userName.split(' ')[0]}` : '';
+
+  return {
+    text: `${timeGreeting}${name}! Mimi ni Nia, msaidizi wako wa Omix Store. 👢\n\nNaweza kukusaidia kutafuta bidhaa, kufuatilia oda, na kujua bei, malipo na usafirishaji!\n\nUngependa kufanya nini leo?`,
+    chips: ['Ona bidhaa', 'Fuatilia oda', 'Jinsi inavyofanya kazi', 'Wasiliana nasi'],
   };
 }

@@ -434,6 +434,80 @@ app.post('/api/push/broadcast', async (req, res) => {
 
 // ── Nia AI Chat Proxy ──────────────────────────────────────────────
 // Proxies OpenCode Zen API calls so the API key stays server-side
+// Now with product awareness, user context, and Swahili support
+
+// Fetch products for Nia context
+async function fetchProducts(query = '', limit = 5) {
+  try {
+    const supabaseUrl = SUPABASE_URL;
+    const supabaseKey = SUPABASE_SERVICE_KEY;
+    if (!supabaseUrl || !supabaseKey) return [];
+
+    let url = `${supabaseUrl}/rest/v1/products?select=id,title,price,category,condition,image_url,location&status=eq.active&order=created_at.desc&limit=${limit}`;
+    if (query) {
+      // Search by title or category
+      url = `${supabaseUrl}/rest/v1/products?select=id,title,price,category,condition,image_url,location&status=eq.active&or=(title.ilike.*${encodeURIComponent(query)}*,category.ilike.*${encodeURIComponent(query)}*)&order=created_at.desc&limit=${limit}`;
+    }
+
+    const resp = await fetch(url, {
+      headers: {
+        'apikey': supabaseKey,
+        'Authorization': `Bearer ${supabaseKey}`,
+      },
+    });
+    if (!resp.ok) return [];
+    return await resp.json();
+  } catch {
+    return [];
+  }
+}
+
+// Fetch user's recent orders for Nia context
+async function fetchUserOrders(userId, limit = 3) {
+  try {
+    const supabaseUrl = SUPABASE_URL;
+    const supabaseKey = SUPABASE_SERVICE_KEY;
+    if (!supabaseUrl || !supabaseKey || !userId) return [];
+
+    const resp = await fetch(
+      `${supabaseUrl}/rest/v1/omix_orders?select=id,status,total_amount,created_at,order_items:omix_order_items(product_id,quantity,price)&user_id=eq.${userId}&order=created_at.desc&limit=${limit}`,
+      {
+        headers: {
+          'apikey': supabaseKey,
+          'Authorization': `Bearer ${supabaseKey}`,
+        },
+      }
+    );
+    if (!resp.ok) return [];
+    return await resp.json();
+  } catch {
+    return [];
+  }
+}
+
+// Fetch user profile for Nia context
+async function fetchUserProfile(userId) {
+  try {
+    const supabaseUrl = SUPABASE_URL;
+    const supabaseKey = SUPABASE_SERVICE_KEY;
+    if (!supabaseUrl || !supabaseKey || !userId) return null;
+
+    const resp = await fetch(
+      `${supabaseUrl}/rest/v1/profiles?id=eq.${userId}&select=full_name,loyalty_points,referral_code`,
+      {
+        headers: {
+          'apikey': supabaseKey,
+          'Authorization': `Bearer ${supabaseKey}`,
+        },
+      }
+    );
+    if (!resp.ok) return null;
+    const data = await resp.json();
+    return data?.[0] || null;
+  } catch {
+    return null;
+  }
+}
 
 app.post('/api/nia/chat', async (req, res) => {
   const apiKey = process.env.VITE_OPENCODE_API_KEY;
@@ -442,13 +516,81 @@ app.post('/api/nia/chat', async (req, res) => {
     return res.status(503).json({ error: 'AI service not configured' });
   }
 
-  const { messages, model = 'nemotron-3-ultra-free' } = req.body;
+  const { messages, model = 'nemotron-3-ultra-free', userId } = req.body;
 
   if (!messages || !Array.isArray(messages)) {
     return res.status(400).json({ error: 'Messages array required' });
   }
 
   try {
+    // Gather context in parallel
+    const [userProfile, recentOrders] = await Promise.all([
+      userId ? fetchUserProfile(userId) : null,
+      userId ? fetchUserOrders(userId) : [],
+    ]);
+
+    // Detect if user is asking about products
+    const lastUserMsg = messages.filter(m => m.role === 'user').pop()?.content?.toLowerCase() || '';
+    const isProductQuery = /product|item|buy|shop|find|search|price|cost|available|stock|recommend|suggest/i.test(lastUserMsg);
+    
+    let productContext = '';
+    if (isProductQuery) {
+      // Extract search terms from the message
+      const searchTerms = lastUserMsg.replace(/^(show|find|search|look|get|i want|i need|do you have|any|recommend|suggest|what|where)\s*/i, '').trim();
+      const products = await fetchProducts(searchTerms, 5);
+      if (products.length > 0) {
+        productContext = '\n\n## Available Products:\n' + products.map(p =>
+          `- ${p.title}: KES ${p.price.toLocaleString()} (${p.condition || 'used'}${p.category ? `, ${p.category}` : ''})`
+        ).join('\n');
+      }
+    }
+
+    // Build user context
+    let userContext = '';
+    if (userProfile) {
+      userContext = `\n\n## User Info:\n- Name: ${userProfile.full_name || 'Customer'}\n- Loyalty Points: ${userProfile.loyalty_points || 0}`;
+      if (userProfile.referral_code) {
+        userContext += `\n- Referral Code: ${userProfile.referral_code}`;
+      }
+    }
+    if (recentOrders.length > 0) {
+      userContext += '\n\n## Recent Orders:\n' + recentOrders.map(o =>
+        `- Order #${String(o.id).slice(0, 8).toUpperCase()}: ${o.status} (KES ${o.total_amount?.toLocaleString() || '?'}) - ${new Date(o.created_at).toLocaleDateString('en-KE')}`
+      ).join('\n');
+    }
+
+    // Detect Swahili
+    const isSwahili = /jambo|habari|naomba|nataka|bei|pesa|shilingi|asante|ndio|hapana|nini|wapi|vipi|ngapi/i.test(lastUserMsg);
+
+    const systemPrompt = `You are Nia, the AI assistant for Omix Store — an e-commerce marketplace in Kericho, Kenya.
+
+## What you help with:
+- Product search and recommendations (use the product list provided)
+- Order tracking and status updates
+- Payment questions (M-Pesa via Paystack STK Push)
+- Delivery info (free within Kericho CBD, 1-3 days)
+- Loyalty points (1 point per KES 100 spent, 100 points = KES 50 off)
+- Referral program (share code, both get KES 100 off)
+- Returns policy (7 days electronics, 3 days clothing/shoes)
+- General app navigation
+
+## Store Info:
+- Location: Kericho, Kenya
+- Payment: M-Pesa STK Push via Paystack
+- Contact: omixsystems@gmail.com | +254 768 213 649
+- Website: stor1-web.onrender.com
+
+## Rules:
+- Be warm, concise, and helpful. Use short bullet points.
+- If products are listed, recommend specific ones with prices.
+- If user asks about their orders, reference the order info provided.
+- Never make up prices or product info not in the context.
+- If you don't know, say so and offer human support.
+- Keep responses under 100 words.
+- ${isSwahili ? 'Respond in Swahili (Kiswahili) since the user is speaking Swahili. Keep it natural and conversational.' : 'Respond in English.'}
+- End with a relevant suggestion or question to keep the conversation going.
+- Never output reasoning or thinking process. Just the answer.${userContext}${productContext}`;
+
     const response = await fetch('https://opencode.ai/zen/v1/chat/completions', {
       method: 'POST',
       headers: {
@@ -458,22 +600,10 @@ app.post('/api/nia/chat', async (req, res) => {
       body: JSON.stringify({
         model,
         messages: [
-          {
-            role: 'system',
-            content: `You are Nia, the Omix Store assistant. You help customers with:
-- Browsing products on the marketplace
-- Tracking orders
-- Payment questions (M-Pesa via Paystack STK Push)
-- Delivery information (Kericho, Kenya)
-- General app guidance
-
-Be concise, friendly, and helpful. Use short bullet points. Never make up product info or prices. If you don't know something, say so honestly and offer to connect to human support (omixsystems@gmail.com or +254 768 213 649).
-
-Keep responses under 80 words. Answer directly without any reasoning or thinking process. Just give the answer.`,
-          },
+          { role: 'system', content: systemPrompt },
           ...messages,
         ],
-        max_tokens: 500,
+        max_tokens: 600,
         temperature: 0.7,
       }),
     });
@@ -498,6 +628,13 @@ Keep responses under 80 words. Answer directly without any reasoning or thinking
     console.error('[Nia Proxy] Error:', err.message);
     res.status(500).json({ error: 'Internal server error' });
   }
+});
+
+// ── Nia Product Search Endpoint ────────────────────────────────────
+// Returns products for Nia to reference in conversations
+app.get('/api/nia/products', async (req, res) => {
+  const products = await fetchProducts(req.query.q || '', parseInt(req.query.limit) || 10);
+  res.json({ products });
 });
 
 // Serve static files from the dist directory

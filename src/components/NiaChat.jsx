@@ -1,28 +1,31 @@
 import { useState, useRef, useEffect } from 'react';
-import { X, Send } from 'lucide-react';
+import { X, Send, RotateCcw } from 'lucide-react';
 import { useNiaChat } from '../context/NiaChatContext';
 import { useAuth } from '../context/AuthContext';
+import { useLang } from '../utils/lang';
 
-const QUICK_ACTIONS = ['Track my order', 'Find a product', 'Help'];
+const QUICK_ACTIONS_EN = ['Browse products', 'Track my order', 'How it works', 'Contact support'];
+const QUICK_ACTIONS_SW = ['Ona bidhaa', 'Fuatilia oda', 'Jinsi inavyofanya kazi', 'Wasiliana nasi'];
 
 export default function NiaChat() {
   const {
-    isOpen, closeChat,
+    isOpen, closeChat, resetChat,
     messages, isTyping,
-    handleUserInput,
+    handleUserInput, handleChipClick,
     messagesEndRef, COLORS,
   } = useNiaChat();
   const { user } = useAuth();
+  const { lang } = useLang();
 
   if (!user || !isOpen) return null;
 
   const [inputText, setInputText] = useState('');
   const inputRef = useRef(null);
+  const isSwahili = lang === 'sw';
+  const QUICK_ACTIONS = isSwahili ? QUICK_ACTIONS_SW : QUICK_ACTIONS_EN;
 
-  // Auto-focus input when chat opens
   useEffect(() => {
     if (isOpen && inputRef.current) {
-      // Small delay to allow animation to start
       const timer = setTimeout(() => inputRef.current?.focus(), 100);
       return () => clearTimeout(timer);
     }
@@ -41,18 +44,14 @@ export default function NiaChat() {
     }
   };
 
-  const handleQuickAction = (action) => {
-    handleUserInput(action);
-  };
-
   return (
     <div
-      className="fixed bottom-44 right-4 sm:bottom-48 sm:right-6 z-[60] w-[380px] max-w-[calc(100vw-2rem)] flex flex-col rounded-2xl shadow-2xl overflow-hidden border transition-all duration-300 ease-out origin-bottom-right"
+      className="fixed bottom-44 right-4 sm:bottom-48 sm:right-6 z-[60] w-[400px] max-w-[calc(100vw-2rem)] flex flex-col rounded-2xl shadow-2xl overflow-hidden border transition-all duration-300 ease-out origin-bottom-right"
       style={{
         backgroundColor: '#18181b',
         borderColor: '#27272a',
         boxShadow: '0 25px 50px -12px rgba(0,0,0,0.5)',
-        maxHeight: isOpen ? 'min(560px, calc(100vh - 8rem))' : '0px',
+        maxHeight: isOpen ? 'min(640px, calc(100vh - 8rem))' : '0px',
         opacity: isOpen ? 1 : 0,
         transform: isOpen ? 'scale(1) translateY(0)' : 'scale(0.95) translateY(8px)',
         pointerEvents: isOpen ? 'auto' : 'none',
@@ -60,20 +59,39 @@ export default function NiaChat() {
     >
       {/* Header */}
       <div className="flex items-center justify-between px-4 py-3 flex-shrink-0 border-b border-zinc-800">
-        <h2 className="text-white font-semibold text-base">Ask Nia</h2>
-        <button
-          onClick={closeChat}
-          className="flex items-center justify-center w-11 h-11 rounded-lg text-zinc-400 hover:text-white hover:bg-zinc-800 transition-colors"
-          aria-label="Close chat"
-        >
-          <X className="w-5 h-5" />
-        </button>
+        <div className="flex items-center gap-2">
+          <img src="/nia-avatar.jpg" alt="Nia" className="w-8 h-8 rounded-full object-cover" />
+          <div>
+            <h2 className="text-white font-semibold text-sm">Nia</h2>
+            <span className="text-[10px] text-emerald-400 font-medium">Online</span>
+          </div>
+        </div>
+        <div className="flex items-center gap-1">
+          <button
+            onClick={resetChat}
+            className="p-2 rounded-lg text-zinc-400 hover:text-white hover:bg-zinc-800 transition-colors"
+            aria-label="Reset chat"
+            title="Reset chat"
+          >
+            <RotateCcw className="w-4 h-4" />
+          </button>
+          <button
+            onClick={closeChat}
+            className="p-2 rounded-lg text-zinc-400 hover:text-white hover:bg-zinc-800 transition-colors"
+            aria-label="Close chat"
+          >
+            <X className="w-4 h-4" />
+          </button>
+        </div>
       </div>
 
       {/* Messages */}
       <div className="flex-1 overflow-y-auto px-4 py-4 space-y-3">
         {messages.map((msg) => (
           <div key={msg.id} className={`flex ${msg.sender === 'user' ? 'justify-end' : 'justify-start'}`}>
+            {msg.sender === 'nia' && (
+              <img src="/nia-avatar.jpg" alt="Nia" className="w-6 h-6 rounded-full object-cover mr-2 mt-1 flex-shrink-0" />
+            )}
             <div
               className="max-w-[80%] px-4 py-2.5 text-[13px] leading-relaxed whitespace-pre-wrap"
               style={{
@@ -89,8 +107,9 @@ export default function NiaChat() {
 
         {isTyping && (
           <div className="flex justify-start">
+            <img src="/nia-avatar.jpg" alt="Nia" className="w-6 h-6 rounded-full object-cover mr-2 mt-1 flex-shrink-0" />
             <div className="rounded-2xl rounded-bl-md px-4 py-3 bg-zinc-800">
-              <div className="flex gap-1">
+              <div className="flex gap-1.5">
                 <span className="w-2 h-2 rounded-full animate-bounce bg-zinc-500" style={{ animationDelay: '0ms' }} />
                 <span className="w-2 h-2 rounded-full animate-bounce bg-zinc-500" style={{ animationDelay: '150ms' }} />
                 <span className="w-2 h-2 rounded-full animate-bounce bg-zinc-500" style={{ animationDelay: '300ms' }} />
@@ -108,8 +127,8 @@ export default function NiaChat() {
           {QUICK_ACTIONS.map((action) => (
             <button
               key={action}
-              onClick={() => handleQuickAction(action)}
-              className="px-3.5 py-1.5 text-xs font-medium rounded-full border border-zinc-700 text-zinc-300 hover:border-zinc-500 hover:text-white hover:bg-zinc-800 transition-colors active:scale-95"
+              onClick={() => handleChipClick(action)}
+              className="px-3 py-1.5 text-xs font-medium rounded-full border border-zinc-700 text-zinc-300 hover:border-zinc-500 hover:text-white hover:bg-zinc-800 transition-colors active:scale-95"
             >
               {action}
             </button>
@@ -126,7 +145,7 @@ export default function NiaChat() {
             value={inputText}
             onChange={(e) => setInputText(e.target.value)}
             onKeyDown={handleKeyDown}
-            placeholder="Type a message..."
+            placeholder={isSwahili ? "Andika ujumbe..." : "Type a message..."}
             className="flex-1 px-4 py-2.5 rounded-xl text-sm outline-none transition-colors bg-zinc-800 text-white placeholder-zinc-500 border border-zinc-700 focus:border-zinc-500"
           />
           <button
