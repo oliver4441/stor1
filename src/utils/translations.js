@@ -123,6 +123,8 @@ const translations = {
       signUpWithGoogle: 'Sign up with Google',
       signInWithFacebook: 'Sign in with Facebook',
       signUpWithFacebook: 'Sign up with Facebook',
+      signInWithLinkedIn: 'Sign in with LinkedIn',
+      signUpWithLinkedIn: 'Sign up with LinkedIn',
     },
 
     // ── Events ──
@@ -698,6 +700,8 @@ const translations = {
       signUpWithGoogle: 'Jisajili na Google',
       signInWithFacebook: 'Ingia na Facebook',
       signUpWithFacebook: 'Jisajili na Facebook',
+      signInWithLinkedIn: 'Ingia na LinkedIn',
+      signUpWithLinkedIn: 'Jisajili na LinkedIn',
     },
 
     // ── Events ──
