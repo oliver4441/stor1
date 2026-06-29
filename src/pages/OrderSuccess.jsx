@@ -2,6 +2,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { CheckCircle, Package, ArrowRight } from 'lucide-react';
 import { trackPurchase } from '../utils/analytics';
+import { sounds } from '../utils/sounds';
 
 export default function OrderSuccess() {
   const params = new URLSearchParams(window.location.search);
@@ -9,6 +10,7 @@ export default function OrderSuccess() {
 
   // Track purchase on page load
   React.useEffect(() => {
+    sounds.checkout();
     // Get order details from sessionStorage if available
     const storageKey = `omix_order_${orderId}`;
     const orderData = sessionStorage.getItem(storageKey);

@@ -23,7 +23,7 @@ function buildMessages(conversationHistory, userText) {
 }
 
 // ── Call the backend Nia proxy ──────────────────────────────────
-export async function niaChat(conversationHistory, userText, userId = '') {
+export async function niaChat(conversationHistory, userText, userId = '', pageContext = '', cartItems = []) {
   try {
     const messages = buildMessages(conversationHistory, userText);
 
@@ -33,7 +33,7 @@ export async function niaChat(conversationHistory, userText, userId = '') {
         'Content-Type': 'application/json',
         'x-api-key': OMIX_API_KEY,
       },
-      body: JSON.stringify({ messages, userId }),
+      body: JSON.stringify({ messages, userId, pageContext, cartItems }),
     });
 
     if (!res.ok) {

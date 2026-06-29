@@ -5,6 +5,7 @@ import { useLang } from '../utils/lang';
 import { supabase } from '../utils/supabase';
 import { checkRateLimit, recordActionAttempt, clearRateLimit } from '../utils/rateLimit';
 import { trackUserLogin, trackError } from '../utils/analytics';
+import { sounds } from '../utils/sounds';
 
 function Login() {
   const { t } = useLang();
@@ -35,6 +36,7 @@ function Login() {
 
       if (result.success) {
         clearRateLimit('login');
+        sounds.login();
         trackUserLogin('email', result.user.id);
         try {
           const { data: profile } = await supabase
@@ -50,6 +52,7 @@ function Login() {
           navigate('/account');
         }
       } else {
+        sounds.error();
         const msg = result.error || '';
         const emailErrors = ['confirm', 'verify', 'email not confirmed', 'email not verified'];
         if (emailErrors.some(k => msg.toLowerCase().includes(k))) {

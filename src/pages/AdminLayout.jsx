@@ -7,6 +7,7 @@ import {
   LogOut, Shield, Menu, X, ChevronRight, Tag, Bell
 } from 'lucide-react';
 import { useState, useEffect } from 'react';
+import { sounds } from '../utils/sounds';
 
 const NAV_ITEMS = [
   { path: '/admin/dashboard', label: 'Dashboard', icon: LayoutDashboard },
@@ -44,6 +45,7 @@ export default function AdminLayout() {
   }, [navigate]);
 
   const handleLogout = async () => {
+    sounds.logout();
     await supabase.auth.signOut();
     navigate('/login');
   };

@@ -46,11 +46,16 @@ export function ReviewList({ listingId }) {
 
   const loadReviews = async () => {
     try {
-      const { data } = await supabase
+      const { data, error } = await supabase
         .from('product_reviews')
         .select('*')
         .eq('listing_id', listingId)
         .order('created_at', { ascending: false });
+      if (error) {
+        console.error('Failed to load reviews:', error);
+        setReviews([]);
+        return;
+      }
       setReviews(data || []);
     } catch (err) {
       console.error('Failed to load reviews:', err);
@@ -143,11 +148,14 @@ export function ReviewForm({ listingId, onSubmitted }) {
       const { error: err } = await supabase.from('product_reviews').insert({
         listing_id: listingId,
         user_id: user.id,
-        user_name: user.user_metadata?.full_name || user.email?.split('@')[0] || 'User',
+        user_name: user.user_metadata?.full_name || user.user_metadata?.name || user.email?.split('@')[0] || 'User',
         rating,
         review: review.trim() || null,
       });
-      if (err) throw err;
+      if (err) {
+        console.error('Review submit error:', err);
+        throw err;
+      }
       setSuccess(true);
       setRating(0);
       setReview('');

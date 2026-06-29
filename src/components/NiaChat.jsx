@@ -17,7 +17,7 @@ export default function NiaChat() {
   const { user } = useAuth();
   const { lang } = useLang();
 
-  if (!user || !isOpen) return null;
+  if (!isOpen) return null;
 
   const [inputText, setInputText] = useState('');
   const inputRef = useRef(null);

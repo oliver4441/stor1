@@ -18,6 +18,7 @@ import { formatKES, CATEGORIES } from '../utils/constants';
 import ProductCard from '../components/ProductCard';
 import Breadcrumb from '../components/Breadcrumb';
 import { isPushSupported, subscribeToPush, unsubscribeFromPush } from '../utils/pushNotifications';
+import { sounds } from '../utils/sounds';
 
 // ── Telegram-style Toggle Switch ──────────────────────────────────────
 function ToggleSwitch({ checked, onChange, disabled }) {
@@ -519,7 +520,7 @@ function UserDashboard() {
     }
   };
 
-  const handleLogout = async () => { await supabase.auth.signOut(); navigate('/login'); };
+  const handleLogout = async () => { sounds.logout(); await supabase.auth.signOut(); navigate('/login'); };
 
   // ── Change Password ──────────────────────────────────────────────
   const handleChangePassword = async (e) => {

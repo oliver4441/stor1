@@ -144,7 +144,17 @@ export function NiaChatProvider({ children }) {
       userId = session?.user?.id || '';
     } catch {}
 
-    const response = await niaChat(conversationHistoryRef.current, text.trim(), userId);
+    // Get page context for better responses
+    const pageContext = document.title || window.location.pathname;
+
+    // Get cart items from localStorage for cart-aware responses
+    let cartItems = [];
+    try {
+      const cartData = localStorage.getItem('omix_cart') || localStorage.getItem('cart');
+      if (cartData) cartItems = JSON.parse(cartData);
+    } catch {}
+
+    const response = await niaChat(conversationHistoryRef.current, text.trim(), userId, pageContext, cartItems);
     addBotMessage(response.text, response.chips, 300);
   }, [addBotMessage]);
 

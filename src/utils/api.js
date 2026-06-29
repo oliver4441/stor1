@@ -1,6 +1,7 @@
 // API layer — back to Supabase
 import { supabase } from './supabase'
 import { CATEGORY_TO_ID, ID_TO_CATEGORY } from './constants'
+import { sounds } from './sounds'
 
 // Batch chunk size for bulk operations to avoid Supabase REST API URL length limits
 const BATCH_SIZE = 200;
@@ -578,7 +579,11 @@ export async function adminDeleteListing(id) {
 // ── Orders (Online Store) ────────────────────────────────
 
 export async function createOrder({ items, total, customerName, phone, email, address, city, area, landmark, promoCode, promoCodeId, isFreeDelivery, loyaltyPointsUsed, referralCode }) {
-  const { data: { user } } = await supabase.auth.getUser()
+  const { data: { user }, error: userError } = await supabase.auth.getUser()
+
+  if (userError) {
+    return { success: false, error: 'Authentication error. Please log in and try again.' }
+  }
 
   if (!user) {
     return { success: false, error: 'You must be logged in to place an order. Please log in and try again.' }
@@ -586,6 +591,34 @@ export async function createOrder({ items, total, customerName, phone, email, ad
 
   if (!items || items.length === 0) {
     return { success: false, error: 'Your cart is empty. Please add items before checking out.' }
+  }
+
+  // Ensure user profile exists before creating order (avoids FK violation on user_id)
+  try {
+    const { data: profile } = await supabase
+      .from('profiles')
+      .select('id')
+      .eq('id', user.id)
+      .single();
+    
+    if (!profile) {
+      // Profile doesn't exist yet — create it from auth user metadata
+      const fullName = user.user_metadata?.full_name || user.user_metadata?.name || customerName || '';
+      const { error: profileErr } = await supabase
+        .from('profiles')
+        .upsert({ 
+          id: user.id, 
+          full_name: fullName,
+          email: user.email || email || null,
+          updated_at: new Date().toISOString()
+        });
+      if (profileErr) {
+        console.warn('Profile auto-create failed:', profileErr.message);
+        // Continue anyway — the order insert will fail with a clearer error if truly broken
+      }
+    }
+  } catch (profileCheckErr) {
+    console.warn('Profile check failed, proceeding with order:', profileCheckErr.message);
   }
 
   // Create the order
@@ -1221,6 +1254,7 @@ export async function addToWishlist(listingId) {
       if (error.code === '23505') return { success: true, message: 'Already in wishlist' };
       throw error;
     }
+    sounds.wishlist();
     return { success: true, item: data };
   } catch (err) {
     return { success: false, error: err.message };

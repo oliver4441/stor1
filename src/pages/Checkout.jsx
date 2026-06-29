@@ -8,6 +8,7 @@ import { supabase } from '../utils/supabase';
 import { useMaintenanceMode } from '../hooks/useMaintenanceMode';
 import NiaContextualTrigger from '../components/NiaContextualTrigger';
 import Breadcrumb from '../components/Breadcrumb';
+import { sounds } from '../utils/sounds';
 import TrustBadges from '../components/TrustBadges';
 import { trackBeginCheckout, trackError } from '../utils/analytics';
 
@@ -331,6 +332,7 @@ export default function CheckoutPage() {
     if (!validate()) return;
 
     setLoading(true);
+    sounds.processing();
 
     // Get fresh cart state to avoid stale closure
     const currentItems = getItems();
@@ -431,6 +433,7 @@ export default function CheckoutPage() {
       if (!orderResult.success) {
         setError(orderResult.error || 'Failed to create order');
         setLoading(false);
+        sounds.error();
         return;
       }
 

@@ -6,6 +6,7 @@ import { User, Mail, Lock, CheckCircle2, ShoppingBag } from 'lucide-react';
 import { supabase } from '../utils/supabase';
 import { checkRateLimit, recordActionAttempt, clearRateLimit } from '../utils/rateLimit';
 import { trackUserSignup, trackError } from '../utils/analytics';
+import { sounds } from '../utils/sounds';
 
 function Signup() {
   const { t } = useLang();
@@ -53,6 +54,7 @@ function Signup() {
       const result = await signUp({ email: formData.email, password: formData.password, fullName: formData.fullName, refCode: refCodeToUse });
       if (result.success) {
         clearRateLimit('signup');
+        sounds.signup();
         trackUserSignup('email', result.user.id);
 
         // Send welcome email (fire and forget)

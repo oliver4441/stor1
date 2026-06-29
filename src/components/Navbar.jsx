@@ -6,6 +6,7 @@ import { useLang } from '../utils/lang';
 import { isAdmin } from '../utils/api';
 import { useCart } from '../context/CartContext';
 import { useActiveTheme } from '../context/SeasonalContext';
+import { sounds } from '../utils/sounds';
 
 const FEATURE_LINKS = [
   { to: 'https://blog.omixsystems.store', label: 'Blog', icon: Globe, color: 'from-violet-500 to-purple-600', glow: 'shadow-violet-500/40', external: true },
@@ -96,6 +97,7 @@ function Navbar() {
   }, []);
 
   const handleLogout = async () => {
+    sounds.logout();
     await supabase.auth.signOut();
     setMenuOpen(false);
   };
