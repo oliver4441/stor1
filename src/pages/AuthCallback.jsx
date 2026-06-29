@@ -7,34 +7,44 @@ export default function AuthCallback() {
 
   useEffect(() => {
     const handleCallback = async () => {
-      // Supabase client automatically reads session from URL hash
-      const { data: { session }, error } = await supabase.auth.getSession();
+      try {
+        // Supabase v2: exchangeCodeForSession processes the OAuth callback
+        // This reads the code from the URL hash/params and exchanges it for a session
+        const { error } = await supabase.auth.exchangeCodeForSession(
+          window.location.href
+        );
 
-      if (error) {
-        console.error('Auth callback error:', error.message);
-        navigate('/login?error=oauth_failed');
-        return;
-      }
+        if (error) {
+          console.error('Auth exchange error:', error.message);
+          navigate('/login?error=oauth_failed');
+          return;
+        }
 
-      if (session) {
-        // Check if user is admin
-        try {
-          const { data: profile } = await supabase
-            .from('profiles')
-            .select('role')
-            .eq('id', session.user.id)
-            .single();
+        // Now get the session (it should exist after exchange)
+        const { data: { session } } = await supabase.auth.getSession();
 
-          if (profile?.role === 'admin') {
-            navigate('/admin');
-          } else {
+        if (session) {
+          try {
+            const { data: profile } = await supabase
+              .from('profiles')
+              .select('role')
+              .eq('id', session.user.id)
+              .single();
+
+            if (profile?.role === 'admin') {
+              navigate('/admin');
+            } else {
+              navigate('/account');
+            }
+          } catch {
             navigate('/account');
           }
-        } catch {
-          navigate('/account');
+        } else {
+          navigate('/login');
         }
-      } else {
-        navigate('/login');
+      } catch (err) {
+        console.error('Auth callback error:', err.message);
+        navigate('/login?error=oauth_failed');
       }
     };
 
