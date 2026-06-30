@@ -656,15 +656,53 @@ export async function createOrder({ items, total, customerName, phone, email, ad
     .single()
 
   if (orderError) {
-    console.error('createOrder error:', orderError)
-    // Provide user-friendly error messages
-    if (orderError.code === '42501' || orderError.message?.includes('policy') || orderError.message?.includes('permission')) {
-      return { success: false, error: 'Permission denied. Please log out and log in again, then try.' }
+    // If payment_method column doesn't exist, retry without it
+    if (orderError.message?.includes('payment_method')) {
+      console.warn('[Order] payment_method column missing, retrying without it...')
+      const retryPayload = {
+        user_id: user.id,
+        status: paymentMethod === 'cod' ? 'cod_pending' : 'pending',
+        total_amount: total,
+        customer_name: customerName,
+        email: email || null,
+        phone: phone || null,
+        address: address || null,
+        city: city || null,
+        area: area || null,
+        landmark: landmark || null,
+        promo_code_id: promoCodeId || null,
+        promo_code_text: promoCode || null,
+        delivery_discount: isFreeDelivery ? 1 : 0,
+        loyalty_points_used: loyaltyPointsUsed || 0,
+        referral_code: referralCode || null,
+      }
+      const { data: retryOrder, error: retryError } = await supabase
+        .from('omix_orders')
+        .insert(retryPayload)
+        .select('*')
+        .single()
+
+      if (retryError) {
+        console.error('createOrder retry error:', retryError)
+        if (retryError.code === '42501' || retryError.message?.includes('policy') || retryError.message?.includes('permission')) {
+          return { success: false, error: 'Permission denied. Please log out and log in again, then try.' }
+        }
+        if (retryError.code === '23502') {
+          return { success: false, error: 'Missing required information. Please fill in all fields.' }
+        }
+        return { success: false, error: `Order creation failed: ${retryError.message}` }
+      }
+      order = retryOrder
+    } else {
+      console.error('createOrder error:', orderError)
+      if (orderError.code === '42501' || orderError.message?.includes('policy') || orderError.message?.includes('permission')) {
+        return { success: false, error: 'Permission denied. Please log out and log in again, then try.' }
+      }
+      if (orderError.code === '23502') {
+        return { success: false, error: 'Missing required information. Please fill in all fields.' }
+      }
+      return { success: false, error: `Order creation failed: ${orderError.message}` }
     }
-    if (orderError.code === '23502') {
-      return { success: false, error: 'Missing required information. Please fill in all fields.' }
-    }
-    return { success: false, error: `Order creation failed: ${orderError.message}` }
   }
 
   // Create order items

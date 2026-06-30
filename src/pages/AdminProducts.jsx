@@ -22,6 +22,7 @@ export default function AdminProducts() {
   const [searchQuery, setSearchQuery] = useState('');
   const [filterCategory, setFilterCategory] = useState('All');
   const [filterStatus, setFilterStatus] = useState('All');
+  const [filterPage, setFilterPage] = useState('All');
 
   // Selection
   const [selectedIds, setSelectedIds] = useState([]);
@@ -82,7 +83,8 @@ export default function AdminProducts() {
     const matchSearch = !searchQuery || l.title?.toLowerCase().includes(searchQuery.toLowerCase()) || l.sku?.toLowerCase().includes(searchQuery.toLowerCase());
     const matchCategory = filterCategory === 'All' || l.category === filterCategory;
     const matchStatus = filterStatus === 'All' || l.status === filterStatus;
-    return matchSearch && matchCategory && matchStatus;
+    const matchPage = filterPage === 'All' || (l.product_type || 'new') === filterPage;
+    return matchSearch && matchCategory && matchStatus && matchPage;
   });
 
   const allFilteredSelected = filteredListings.length > 0 && filteredListings.every(l => selectedIds.includes(l.id));
