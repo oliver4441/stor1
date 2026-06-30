@@ -213,8 +213,35 @@
 }
 
 /* Safe area padding for bottom banners on notched phones */
-.safe-area-bottom {
+.safe-area-bottom, .safe-bottom {
   padding-bottom: max(0.75rem, env(safe-area-inset-bottom));
+}
+
+/* Prevent pull-to-refresh on mobile when at top/bottom */
+html, body {
+  overscroll-behavior: none;
+}
+
+/* Smooth scrolling for mobile momentum */
+@media (hover: none) and (pointer: coarse) {
+  html {
+    scroll-behavior: auto;
+  }
+}
+
+/* iOS status bar background (matches app theme) */
+@supports (-webkit-touch-callout: none) {
+  body::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: env(safe-area-inset-top, 0);
+    background: var(--seasonal-primary, #1a5632);
+    z-index: 9999;
+    pointer-events: none;
+  }
 }
 
 /* PWA Update banner animation */
