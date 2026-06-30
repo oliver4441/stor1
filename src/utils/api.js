@@ -1300,10 +1300,16 @@ export async function addToWishlist(listingId) {
       .single();
 
     if (error) {
-      if (error.code === '23505') return { success: true, message: 'Already in wishlist' };
+      if (error.code === '23505') {
+        return { success: true, message: 'Already in wishlist' };
+      }
       throw error;
     }
     sounds.wishlist();
+    // Notify other components of wishlist change
+    if (typeof window !== 'undefined') {
+      window.dispatchEvent(new CustomEvent('omix:wishlist-changed'));
+    }
     return { success: true, item: data };
   } catch (err) {
     return { success: false, error: err.message };
@@ -1322,6 +1328,10 @@ export async function removeFromWishlist(listingId) {
       .eq('listing_id', listingId);
 
     if (error) throw error;
+    // Notify other components of wishlist change
+    if (typeof window !== 'undefined') {
+      window.dispatchEvent(new CustomEvent('omix:wishlist-changed'));
+    }
     return { success: true };
   } catch (err) {
     return { success: false, error: err.message };

@@ -3,6 +3,7 @@ import { Link, useLocation } from 'react-router-dom';
 import { Home, Search, ShoppingCart, Heart, User } from 'lucide-react';
 import { useCart } from '../context/CartContext';
 import { supabase } from '../utils/supabase';
+import { WISHLIST_CHANGE_EVENT } from './CartWishlistNudge';
 
 const navItems = [
   { to: '/', icon: Home, label: 'Home' },
@@ -31,8 +32,11 @@ export default function MobileBottomNav() {
       } catch {}
     };
     checkWishCount();
+    // Listen for wishlist changes (instant update)
+    const handleChange = () => checkWishCount();
+    window.addEventListener(WISHLIST_CHANGE_EVENT, handleChange);
     const interval = setInterval(checkWishCount, 30000);
-    return () => { mounted = false; clearInterval(interval); };
+    return () => { mounted = false; clearInterval(interval); window.removeEventListener(WISHLIST_CHANGE_EVENT, handleChange); };
   }, []);
 
   const getBadgeCount = (type) => {

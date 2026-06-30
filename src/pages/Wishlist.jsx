@@ -6,6 +6,8 @@ import { formatKES } from '../utils/constants';
 import { useCart } from '../context/CartContext';
 import { watchPriceDrop, watchBackInStock } from '../utils/api';
 import Breadcrumb from '../components/Breadcrumb';
+import { WISHLIST_CHANGE_EVENT } from '../components/CartWishlistNudge';
+import { sendNotification, NotifType } from '../utils/notifications';
 
 export default function Wishlist() {
   const [user, setUser] = useState(null);
@@ -40,11 +42,21 @@ export default function Wishlist() {
   const removeItem = async (listingId) => {
     if (!user) return;
     setItems(prev => prev.filter(i => i.listing_id !== listingId));
+    // Emit event so CartWishlistNudge and MobileBottomNav update instantly
+    window.dispatchEvent(new CustomEvent(WISHLIST_CHANGE_EVENT));
     try {
       const { error } = await supabase.from('omix_wishlist').delete().eq('user_id', user.id).eq('listing_id', listingId);
       if (error) {
         console.error('Failed to remove wishlist item:', error);
         loadWishlist(user.id);
+      } else {
+        // Send native notification with sound
+        sendNotification({
+          ...NotifType.WISHLIST_REMINDER,
+          title: 'Item Removed ✓',
+          body: 'Item removed from your wishlist.',
+          url: '/wishlist',
+        });
       }
     } catch (err) {
       console.error('Failed to remove wishlist item:', err);

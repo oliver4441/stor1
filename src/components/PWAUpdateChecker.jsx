@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
 import { RefreshCw, X, Sparkles, ArrowUpCircle } from 'lucide-react';
+import { sendNotification, NotifType } from '../utils/notifications';
 
 const VERSION_CHECK_INTERVAL = 5 * 60 * 1000;
 const STORAGE_KEY = 'omix_last_version';
@@ -27,6 +28,12 @@ export default function PWAUpdateChecker() {
       
       if (lastVersion && lastVersion !== serverVersion) {
         setUpdateAvailable(true);
+        // Send real notification
+        sendNotification({
+          ...NotifType.UPDATE_AVAILABLE,
+          body: `Version ${serverVersion.replace('build-', '').slice(0, 8)} is ready — refresh to update!`,
+          url: '/',
+        });
         // Delay show for a smooth entrance after page load
         setTimeout(() => setShow(true), 500);
       }

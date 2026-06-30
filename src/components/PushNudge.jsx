@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback } from 'react';
-import { Bell, X, BellRing } from 'lucide-react';
+import { Bell, X, BellRing, CheckCircle } from 'lucide-react';
 import { isPushSupported, subscribeToPush } from '../utils/pushNotifications';
+import { sendNotification, NotifType } from '../utils/notifications';
 
 const STORAGE_KEY = 'omix_push_nudge_dismissed';
 const DISMISS_DAYS = 3;
@@ -40,6 +41,13 @@ export default function PushNudge() {
 
     if (res.success) {
       setResult('success');
+      // Send a welcome notification
+      sendNotification({
+        title: 'Notifications Active ✓',
+        body: 'You will now receive order updates, deal alerts, and Nia tips!',
+        url: '/account',
+        sound: 'checkout',
+      });
       setTimeout(() => setVisible(false), 2000);
     } else {
       setResult('error');
