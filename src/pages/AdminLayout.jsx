@@ -6,7 +6,6 @@ import {
   LayoutDashboard, Package, ShoppingBag, Users, BarChart3, Settings,
   LogOut, Shield, Menu, X, ChevronRight, Tag, Bell, Link as LinkIcon
 } from 'lucide-react';
-import { Navigate, Outlet, useLocation, Link, useNavigate } from 'react-router-dom';
 import { sounds } from '../utils/sounds';
 
 const NAV_ITEMS = [
