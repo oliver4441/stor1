@@ -7,6 +7,12 @@ import { formatKES } from '../utils/constants';
 export default function FloatingCartButton() {
   const [cartOpen, setCartOpen] = useState(false);
   const [bump, setBump] = useState(false);
+  
+  // Draggable state
+  const [position, setPosition] = useState({ x: 16, y: 160 }); // Default to match bottom-40 right-4
+  const [isDragging, setIsDragging] = useState(false);
+  const dragStartPos = useRef({ x: 0, y: 0 });
+
   const { getItemCount, setOnAddCallback, getItems, getTotal, updateQuantity, removeItem } = useCart();
   const cartCount = getItemCount();
   const cartTotal = getTotal();
@@ -28,12 +34,50 @@ export default function FloatingCartButton() {
     prevCount.current = cartCount;
   }, [cartCount]);
 
+  const startDragging = (e) => {
+    setIsDragging(true);
+    dragStartPos.current = { 
+      x: e.clientX - position.x, 
+      y: window.innerHeight - e.clientY - position.y 
+    };
+  };
+
+  useEffect(() => {
+    const handleMouseMove = (e) => {
+      if (!isDragging) return;
+      setPosition({
+        x: e.clientX - dragStartPos.current.x,
+        y: window.innerHeight - e.clientY - dragStartPos.current.y
+      });
+    };
+
+    const handleMouseUp = () => {
+      setIsDragging(false);
+    };
+
+    if (isDragging) {
+      window.addEventListener('mousemove', handleMouseMove);
+      window.addEventListener('mouseup', handleMouseUp);
+    }
+
+    return () => {
+      window.removeEventListener('mousemove', handleMouseMove);
+      window.removeEventListener('mouseup', handleMouseUp);
+    };
+  }, [isDragging]);
+
   return (
     <>
       {/* Floating Cart Button */}
       <button
         onClick={() => setCartOpen(!cartOpen)}
         className={`fixed bottom-40 right-4 sm:bottom-44 sm:right-6 z-50 w-14 h-14 rounded-full flex items-center justify-center shadow-2xl hover:scale-110 transition-all duration-300 bg-zinc-900 dark:bg-white ${bump ? 'animate-bounce-once' : ''}`}
+        style={{ 
+          bottom: position.y, 
+          right: position.x, 
+          cursor: isDragging ? 'grabbing' : 'pointer' 
+        }}
+        onMouseDown={startDragging}
         aria-label={`Shopping cart, ${cartCount} items`}
       >
         <ShoppingCart className="w-6 h-6 text-white dark:text-zinc-900" />

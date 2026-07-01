@@ -46,6 +46,7 @@ function Login() {
           const redirect = params.get('redirect');
           if (redirect && ALLOWED_REDIRECTS.includes(redirect)) navigate(redirect);
           else if (profile?.role === 'admin') navigate('/admin');
+          else if (profile?.role === 'affiliate') navigate('/affiliate-dashboard');
           else navigate('/account');
         } catch {
           // Profile fetch failed, still navigate

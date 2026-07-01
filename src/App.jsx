@@ -7,6 +7,7 @@ import { AuthProvider } from './context/AuthContext';
 import { CartProvider } from './context/CartContext';
 import { NiaChatProvider } from './context/NiaChatContext';
 import { initTracking } from './utils/analytics';
+import { initReferralTracking } from './utils/affiliate_api';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
 import MobileBottomNav from './components/MobileBottomNav';
@@ -51,6 +52,8 @@ import AdminAnalytics from './pages/AdminAnalytics';
 import AdminPromoCodes from './pages/AdminPromoCodes';
 import AdminSettings from './pages/AdminSettings';
 import AdminNotifications from './pages/AdminNotifications';
+import AdminAffiliates from './pages/AdminAffiliates';
+import AffiliateDashboard from './pages/AffiliateDashboard';
 
 // Help Center pages
 import HelpCenter from './pages/help/HelpCenter';
@@ -68,6 +71,7 @@ function App() {
   // Initialize tracking cookies and activity monitoring
   useEffect(() => {
     initTracking();
+    initReferralTracking();
   }, []);
 
   return (
@@ -113,6 +117,7 @@ function App() {
             <Route path="/help/delivery-time" element={<DeliveryTime />} />
             <Route path="/help/flash-sale" element={<FlashSale />} />
             <Route path="/refurbished" element={<Refurbished />} />
+            <Route path="/affiliate-dashboard" element={<AffiliateDashboard />} />
             <Route path="/admin" element={<AdminLayout />}>
               <Route index element={<AdminOverview />} />
               <Route path="products" element={<AdminProducts />} />
@@ -121,6 +126,7 @@ function App() {
               <Route path="analytics" element={<AdminAnalytics />} />
               <Route path="promo-codes" element={<AdminPromoCodes />} />
               <Route path="settings" element={<AdminSettings />} />
+              <Route path="affiliates" element={<AdminAffiliates />} />
               <Route path="notifications" element={<AdminNotifications />} />
             </Route>
           </Routes>

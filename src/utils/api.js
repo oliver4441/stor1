@@ -31,12 +31,14 @@ export async function signUp({ email, password, fullName, phone, refCode }) {
     // Look up referrer if referral code provided
     let referredBy = null;
     if (refCode) {
-      const { data: referrer } = await supabase
-        .from('profiles')
-        .select('id')
-        .eq('referral_code', refCode.toUpperCase())
-        .maybeSingle();
-      if (referrer) referredBy = referrer.id;
+      try {
+        const { data: affiliate } = await supabase
+          .from('affiliates')
+          .select('id')
+          .eq('referral_code', refCode)
+          .single();
+        if (affiliate) referredBy = affiliate.id;
+      } catch (e) { console.error('Affiliate lookup error:', e); }
     }
 
     // Generate a referral code for this new user
@@ -325,8 +327,31 @@ export async function uploadImage(file, onProgress) {
 
 // Create listing
 export async function createListing(formData) {
-  const { data: { user } } = await supabase.auth.getUser()
-  const catId = CATEGORY_TO_ID[formData.category] || null
+  const { data: { session } } = await supabase.auth.getSession();
+  const user = session?.user;
+  
+  if (!user) return { success: false, error: 'Authentication required' };
+
+  // Extract referral code from cookie if present
+  const refCode = getCookie('omix_ref');
+  
+  if (refCode) {
+    // Find affiliate with this code
+    const { data: affiliate } = await supabase
+      .from('affiliates')
+      .select('id')
+      .eq('referral_code', refCode)
+      .single();
+
+    if (affiliate) {
+      // Permanent attribution: link this user to the affiliate
+      // Use a helper to ensure "first win" logic
+      await linkUserToAffiliate(user.id, affiliate.id);
+    }
+  }
+
+  const catId = CATEGORY_TO_ID[formData.category] || null;
+  // ... (rest of the original createListing code)
 
   const { data, error } = await supabase
     .from('listings')
@@ -352,6 +377,7 @@ export async function createListing(formData) {
       has_variants: formData.has_variants || false,
       variants: Array.isArray(formData.variants) ? formData.variants : [],
       size_guide: formData.size_guide || null,
+      product_type: formData.product_type || 'new',  // Refurbished support
     })
     .select('id')
     .single()
@@ -401,8 +427,8 @@ export async function updateListing(id, formData) {
       has_variants: formData.has_variants || false,
       variants: Array.isArray(formData.variants) ? formData.variants : [],
       size_guide: formData.size_guide || null,
-    })
-    .eq('id', id)
+      product_type: formData.product_type || 'new',  // Refurbished support
+    })\n    .eq('id', id)
     .select('id')
     .single()
 
