@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
 import { supabase } from '../utils/supabase';
-import { Users, Plus, Search, X, Loader2, Check, AlertTriangle, DollarSign, Activity } from 'lucide-react';
+import { Users, Plus, Search, X, Loader2, Check, AlertTriangle, DollarSign, Activity, Link as LinkIcon } from 'lucide-react';
 import { formatKES } from '../utils/constants';
 
 export default function AdminAffiliates() {
@@ -254,7 +254,7 @@ export default function AdminAffiliates() {
       <div className="flex items-center justify-between">
         <div>
           <h2 className="text-xl font-bold text-white flex items-center gap-2">
-            <Link className="w-5 h-5" /> Affiliates
+            <LinkIcon className="w-5 h-5" /> Affiliates
           </h2>
           <p className="text-sm text-zinc-400">{affiliates.length} affiliates</p>
         </div>
