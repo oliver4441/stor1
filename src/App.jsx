@@ -55,6 +55,7 @@ import AdminSettings from './pages/AdminSettings';
 import AdminNotifications from './pages/AdminNotifications';
 import AdminAffiliates from './pages/AdminAffiliates';
 import AffiliateDashboard from './pages/AffiliateDashboard';
+import BecomeAffiliate from './pages/BecomeAffiliate';
 
 // Help Center pages
 import HelpCenter from './pages/help/HelpCenter';
@@ -119,6 +120,7 @@ function App() {
             <Route path="/help/flash-sale" element={<FlashSale />} />
             <Route path="/refurbished" element={<Refurbished />} />
             <Route path="/affiliate-dashboard" element={<AffiliateDashboard />} />
+            <Route path="/apply-affiliate" element={<BecomeAffiliate />} />
             <Route path="/admin" element={<AdminLayout />}>
               <Route index element={<AdminOverview />} />
               <Route path="products" element={<AdminProducts />} />

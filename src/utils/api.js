@@ -946,6 +946,23 @@ export async function isAdmin() {
   }
 }
 
+export async function isAffiliate() {
+  try {
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) return false;
+
+    const { data: profile, error } = await supabase
+      .from('profiles')
+      .select('role')
+      .eq('id', user.id)
+      .single();
+
+    return !error && profile?.role === 'affiliate';
+  } catch {
+    return false;
+  }
+}
+
 // ── Listing Payment (Paystack) ──────────────────────────────────────
 export async function createListingPayment(formData) {
   try {

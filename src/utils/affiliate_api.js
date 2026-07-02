@@ -193,3 +193,24 @@ export async function lookupAffiliateByCode(referralCode) {
     return null;
   }
 }
+
+// ─── Affiliate Application (Self-Signup) ────────────────────────
+
+/**
+ * Submit a "Become an Affiliate" self-signup application
+ */
+export async function submitAffiliateApplication({ full_name, phone, mpesa_number }) {
+  return apiPost(AFFILIATE_CONFIG.ENDPOINTS.APPLICATION, { full_name, phone, mpesa_number });
+}
+
+/**
+ * Check affiliate application status for a user
+ */
+export async function getApplicationStatus(userId) {
+  try {
+    const data = await apiGet(`${AFFILIATE_CONFIG.ENDPOINTS.APPLICATION_STATUS}/${userId}`);
+    return data || null;
+  } catch {
+    return null;
+  }
+}

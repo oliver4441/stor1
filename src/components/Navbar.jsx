@@ -3,7 +3,7 @@ import { Link, useLocation } from 'react-router-dom';
 import { User, Globe, Shield, Package, HelpCircle, Info, LogIn, UserPlus, Menu, X, Download, ShoppingCart, ChevronDown, LogOut, RefreshCw } from 'lucide-react';
 import { supabase } from '../utils/supabase';
 import { useLang } from '../utils/lang';
-import { isAdmin } from '../utils/api';
+import { isAdmin, isAffiliate } from '../utils/api';
 import { useCart } from '../context/CartContext';
 import { useActiveTheme } from '../context/SeasonalContext';
 import { sounds } from '../utils/sounds';
@@ -20,6 +20,7 @@ const FEATURE_LINKS = [
 function Navbar() {
   const [user, setUser] = useState(null);
   const [isUserAdmin, setIsUserAdmin] = useState(false);
+  const [isUserAffiliate, setIsUserAffiliate] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   const menuRef = useRef(null);
   const { t } = useLang();
@@ -41,16 +42,20 @@ function Navbar() {
       setUser(session?.user ?? null);
       if (session?.user) {
         isAdmin().then(admin => setIsUserAdmin(admin));
+        isAffiliate().then(aff => setIsUserAffiliate(aff));
       } else {
         setIsUserAdmin(false);
+        setIsUserAffiliate(false);
       }
     });
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
       setUser(session?.user ?? null);
       if (session?.user) {
         isAdmin().then(admin => setIsUserAdmin(admin));
+        isAffiliate().then(aff => setIsUserAffiliate(aff));
       } else {
         setIsUserAdmin(false);
+        setIsUserAffiliate(false);
       }
     });
     return () => subscription.unsubscribe();
@@ -177,6 +182,15 @@ function Navbar() {
               <User className="w-5 h-5" />
               <span className="text-sm font-medium">{t('nav.account') || 'Account'}</span>
             </Link>
+            {isUserAffiliate ? (
+              <Link to="/affiliate-dashboard" className="flex items-center gap-2 p-2 rounded-full hover:bg-zinc-800 text-zinc-300 transition-colors">
+                <span className="text-sm font-medium">Affiliate Dashboard</span>
+              </Link>
+            ) : (
+              <Link to="/apply-affiliate" className="flex items-center gap-2 p-2 rounded-full hover:bg-zinc-800 text-zinc-300 transition-colors">
+                <span className="text-sm font-medium">Become an Affiliate</span>
+              </Link>
+            )}
           ) : (
             <>
               <Link to="/login" className="flex items-center gap-1.5 text-sm font-medium text-zinc-300 hover:text-white px-3 py-2 rounded-full hover:bg-zinc-800 transition-all">
@@ -267,6 +281,17 @@ function Navbar() {
                   <User className="w-5 h-5" />
                   My Account
                 </Link>
+                {isUserAffiliate ? (
+                  <Link to="/affiliate-dashboard" className="flex items-center gap-3 px-4 py-3 rounded-2xl text-sm font-bold text-zinc-300 hover:bg-zinc-800" onClick={() => setMenuOpen(false)}>
+                    <User className="w-5 h-5" />
+                    Affiliate Dashboard
+                  </Link>
+                ) : (
+                  <Link to="/apply-affiliate" className="flex items-center gap-3 px-4 py-3 rounded-2xl text-sm font-bold text-zinc-300 hover:bg-zinc-800" onClick={() => setMenuOpen(false)}>
+                    <User className="w-5 h-5" />
+                    Become an Affiliate
+                  </Link>
+                )}
                 {isUserAdmin && (
                   <Link to="/admin" className="flex items-center gap-3 px-4 py-3 rounded-2xl text-sm font-bold text-[var(--seasonal-primary,#1a5632)] hover:bg-[var(--seasonal-primary,#1a5632)]/10" onClick={() => setMenuOpen(false)}>
                     <Shield className="w-5 h-5" />
