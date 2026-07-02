@@ -2,6 +2,13 @@
 import { supabase } from './supabase'
 import { CATEGORY_TO_ID, ID_TO_CATEGORY } from './constants'
 import { sounds } from './sounds'
+import { linkUserToAffiliate } from './affiliate_logic'
+
+// Cookie helper
+function getCookie(name) {
+  const match = document.cookie.match(new RegExp('(^| )' + name + '=([^;]+)'))
+  return match ? decodeURIComponent(match[2]) : null
+}
 
 // Batch chunk size for bulk operations to avoid Supabase REST API URL length limits
 const BATCH_SIZE = 200;

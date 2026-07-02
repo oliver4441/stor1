@@ -8,11 +8,16 @@ import { checkRateLimit, recordActionAttempt, clearRateLimit } from '../utils/ra
 import { trackUserSignup, trackError } from '../utils/analytics';
 import { sounds } from '../utils/sounds';
 
+function getCookie(name) {
+  const match = document.cookie.match(new RegExp('(^| )' + name + '=([^;]+)'))
+  return match ? decodeURIComponent(match[2]) : null
+}
+
 function Signup() {
   const { t } = useLang();
   const navigate = useNavigate();
   const params = new URLSearchParams(window.location.search);
-  const refCode = params.get('ref');
+  const refCode = params.get('ref') || getCookie('omix_ref');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState(false);
