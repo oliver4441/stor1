@@ -428,7 +428,8 @@ export async function updateListing(id, formData) {
       variants: Array.isArray(formData.variants) ? formData.variants : [],
       size_guide: formData.size_guide || null,
       product_type: formData.product_type || 'new',  // Refurbished support
-    })\n    .eq('id', id)
+    })
+    .eq('id', id)
     .select('id')
     .single()
 
