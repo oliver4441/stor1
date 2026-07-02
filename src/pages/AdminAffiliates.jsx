@@ -211,9 +211,12 @@ export default function AdminAffiliates() {
 
   const approveCommission = async (id) => {
     try {
-      await supabase.from('monthly_commissions').update({
-        status: 'approved', approved_at: new Date().toISOString(),
-      }).eq('id', id);
+      const res = await fetch(`${API_URL}/api/admin/commissions/${id}/approve`, {
+        method: 'PATCH', headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
+      });
+      const data = await res.json();
+      if (!data.success) throw new Error(data.error);
       showSuccess('Commission approved');
       await loadData();
     } catch (err) { showError(err.message); }
@@ -221,9 +224,12 @@ export default function AdminAffiliates() {
 
   const markPaid = async (id) => {
     try {
-      await supabase.from('monthly_commissions').update({
-        status: 'paid', paid_at: new Date().toISOString(),
-      }).eq('id', id);
+      const res = await fetch(`${API_URL}/api/admin/commissions/${id}/pay`, {
+        method: 'PATCH', headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
+      });
+      const data = await res.json();
+      if (!data.success) throw new Error(data.error);
       showSuccess('Commission marked as paid');
       await loadData();
     } catch (err) { showError(err.message); }
