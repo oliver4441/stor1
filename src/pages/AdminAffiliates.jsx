@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback } from 'react';
 import { supabase } from '../utils/supabase';
 import { Users, Plus, Search, X, Loader2, Check, AlertTriangle, DollarSign, Activity, Link as LinkIcon } from 'lucide-react';
 import { formatKES } from '../utils/constants';
+const API_BASE = import.meta.env.VITE_API_URL || 'https://stor1-api.onrender.com';
 
 export default function AdminAffiliates() {
   const [affiliates, setAffiliates] = useState([]);
@@ -64,38 +65,29 @@ export default function AdminAffiliates() {
     e.preventDefault();
     setSubmitting(true);
     try {
-      // Create auth user
-      const { data: authData, error: authError } = await supabase.auth.admin.createUser({
-        email: form.email,
-        password: form.password,
-        email_confirm: true,
-        user_metadata: { full_name: form.full_name, role: 'affiliate' },
-      });
-      if (authError) throw new Error(authError.message);
-      const userId = authData.user.id;
+      // Get auth token from the current Supabase session
+      const { data: { session } } = await supabase.auth.getSession();
+      const token = session?.access_token;
 
-      // Create profile
-      const refCode = userId.replace(/-/g, '').slice(0, 8).toUpperCase();
-      await supabase.from('profiles').upsert({
-        id: userId, full_name: form.full_name, email: form.email,
-        phone: form.phone || null, role: 'affiliate', referral_code: refCode,
+      const res = await fetch(`${API_BASE}/api/admin/affiliates`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          ...(token ? { 'Authorization': `Bearer ${token}` } : {}),
+        },
+        credentials: 'include',
+        body: JSON.stringify({
+          full_name: form.full_name,
+          email: form.email,
+          phone: form.phone || null,
+          mpesa_number: form.mpesa_number || null,
+          password: form.password,
+        }),
       });
+      const data = await res.json();
+      if (!data.success) throw new Error(data.error);
 
-      // Create affiliate record
-      const code = `AFF-${Math.random().toString(36).substring(2, 6).toUpperCase()}`;
-      const { error: affError } = await supabase.from('affiliates').insert({
-        user_id: userId, full_name: form.full_name, email: form.email,
-        phone: form.phone || null, mpesa_number: form.mpesa_number || null,
-        referral_code: code, status: 'active',
-      });
-      if (affError) throw new Error(affError.message);
-
-      await supabase.from('affiliate_logs').insert({
-        affiliate_id: userId, event_type: 'ACCOUNT_CREATED',
-        details: { full_name: form.full_name, email: form.email, referral_code: code },
-      });
-
-      showSuccess(`Affiliate created! Referral code: ${code}`);
+      showSuccess(`Affiliate created! Referral code: ${data.referral_code}`);
       setModalOpen(false);
       setForm({ full_name: '', email: '', phone: '', mpesa_number: '', password: '' });
       await loadData();
@@ -211,8 +203,13 @@ export default function AdminAffiliates() {
 
   const approveCommission = async (id) => {
     try {
-      const res = await fetch(`${API_URL}/api/admin/commissions/${id}/approve`, {
-        method: 'PATCH', headers: { 'Content-Type': 'application/json' },
+      const { data: { session } } = await supabase.auth.getSession();
+      const token = session?.access_token;
+      const res = await fetch(`${API_BASE}/api/admin/commissions/${id}/approve`, {
+        method: 'PATCH', headers: {
+          'Content-Type': 'application/json',
+          ...(token ? { 'Authorization': `Bearer ${token}` } : {}),
+        },
         credentials: 'include',
       });
       const data = await res.json();
@@ -224,8 +221,13 @@ export default function AdminAffiliates() {
 
   const markPaid = async (id) => {
     try {
-      const res = await fetch(`${API_URL}/api/admin/commissions/${id}/pay`, {
-        method: 'PATCH', headers: { 'Content-Type': 'application/json' },
+      const { data: { session } } = await supabase.auth.getSession();
+      const token = session?.access_token;
+      const res = await fetch(`${API_BASE}/api/admin/commissions/${id}/pay`, {
+        method: 'PATCH', headers: {
+          'Content-Type': 'application/json',
+          ...(token ? { 'Authorization': `Bearer ${token}` } : {}),
+        },
         credentials: 'include',
       });
       const data = await res.json();

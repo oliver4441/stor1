@@ -34,12 +34,12 @@ CREATE INDEX IF NOT EXISTS idx_affiliates_ref_code ON public.affiliates(referral
 
 -- Trigger to update updated_at on affiliates
 CREATE OR REPLACE FUNCTION update_modified_column()
-RETURNS TRIGGER AS 567001
+RETURNS TRIGGER AS $$
 BEGIN
     NEW.updated_at = now();
     RETURN NEW;
 END;
-567001 language 'plpgsql';
+$$ LANGUAGE plpgsql;
 
 CREATE TRIGGER update_affiliates_modtime
     BEFORE UPDATE ON public.affiliates
