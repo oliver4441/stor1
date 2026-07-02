@@ -22,6 +22,7 @@ import CartReminder from './components/CartReminder';
 import CartWishlistNudge from './components/CartWishlistNudge';
 import ThemeStyles from './components/ThemeStyles';
 import PWAUpdateChecker from './components/PWAUpdateChecker';
+import CookieConsentBanner from './components/CookieConsentBanner';
 
 // Pages
 import Home from './pages/Home';
@@ -142,6 +143,7 @@ function App() {
         <CartReminder />
         <CartWishlistNudge />
         <PWAUpdateChecker />
+        <CookieConsentBanner />
       </div>
     </ErrorBoundary>
     </NiaChatProvider>

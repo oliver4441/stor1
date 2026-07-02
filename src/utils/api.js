@@ -2,9 +2,12 @@
 import { supabase } from './supabase'
 import { CATEGORY_TO_ID, ID_TO_CATEGORY } from './constants'
 import { sounds } from './sounds'
-import { linkUserToAffiliate } from './affiliate_logic'
+import { lookupAffiliateByCode } from './affiliate_api'
+import { processSignupReferral, processReferralPending } from './affiliate_logic'
 
-// Cookie helper
+const API_BASE = import.meta.env.VITE_API_URL || 'https://stor1-api.onrender.com'
+
+// Cookie helper — also used for referral cookie
 function getCookie(name) {
   const match = document.cookie.match(new RegExp('(^| )' + name + '=([^;]+)'))
   return match ? decodeURIComponent(match[2]) : null
@@ -35,68 +38,33 @@ export async function signUp({ email, password, fullName, phone, refCode }) {
   });
   if (authError) return { success: false, error: authError.message };
   if (data.user) {
-    // Look up referrer if referral code provided
-    let referredBy = null;
-    if (refCode) {
-      try {
-        const { data: affiliate } = await supabase
-          .from('affiliates')
-          .select('id')
-          .eq('referral_code', refCode)
-          .single();
-        if (affiliate) referredBy = affiliate.id;
-      } catch (e) { console.error('Affiliate lookup error:', e); }
-    }
-
-    // Generate a referral code for this new user
     const genRefCode = (data.user.id || '').replace(/-/g, '').slice(0, 8).toUpperCase();
 
+    // Upsert the profile with minimal fields — backend handles referral attribution
     const { error: profileError } = await supabase.from('profiles').upsert({
       id: data.user.id,
       full_name: fullName,
       email,
       phone: phone || null,
       role: 'customer',
-      referred_by: referredBy,
       loyalty_points: 0,
       referral_code: genRefCode,
     }, { onConflict: 'id' });
     if (profileError) {
       console.error('Profile insert failed:', profileError.message);
-      // Note: auth user cleanup should be handled by a DB trigger or edge function,
-      // never call admin methods from the client
       return { success: false, error: 'Account creation failed. Please try again.' };
     }
 
-    // Award 1 loyalty point to the referrer (if valid referral code was used)
-    if (referredBy) {
+    // Process referral attribution via backend API (last-touch model)
+    // Reads referral cookie, looks up affiliate, links user, awards reward
+    if (refCode || document.cookie.includes('omix_ref=')) {
       try {
-        await supabase.from('points_transactions').insert({
-          user_id: referredBy,
-          points: 1,
-          description: `Referral reward: ${fullName || email} signed up`,
-          reference_type: 'referral',
-          reference_id: data.user.id,
-        });
-        // Update referrer's loyalty_points total
-        const { data: referrerProfile } = await supabase
-          .from('profiles')
-          .select('loyalty_points')
-          .eq('id', referredBy)
-          .single();
-        if (referrerProfile) {
-          await supabase
-            .from('profiles')
-            .update({ loyalty_points: (referrerProfile.loyalty_points || 0) + 1 })
-            .eq('id', referredBy);
-        }
+        await processSignupReferral(data.user.id);
       } catch (refErr) {
-        console.warn('Referral point award failed:', refErr.message);
-        // Don't fail signup if referral reward fails
+        console.warn('Referral processing skipped:', refErr);
       }
     }
   }
-  // Return session if auto-signed in (email confirmation disabled), null if verification needed
   return { success: true, user: data.user, session: data.session };
 }
 
@@ -341,19 +309,17 @@ export async function createListing(formData) {
 
   // Extract referral code from cookie if present
   const refCode = getCookie('omix_ref');
-  
-  if (refCode) {
-    // Find affiliate with this code
-    const { data: affiliate } = await supabase
-      .from('affiliates')
-      .select('id')
-      .eq('referral_code', refCode)
-      .single();
 
-    if (affiliate) {
-      // Permanent attribution: link this user to the affiliate
-      // Use a helper to ensure "first win" logic
-      await linkUserToAffiliate(user.id, affiliate.id);
+  if (refCode) {
+    // Look up affiliate via backend API
+    try {
+      const affiliate = await lookupAffiliateByCode(refCode);
+      if (affiliate?.id) {
+        // Permanent attribution: link this user to the affiliate
+        await processReferralPending(user.id, refCode);
+      }
+    } catch (e) {
+      console.warn('Affiliate referral skip:', e);
     }
   }
 

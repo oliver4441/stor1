@@ -1,74 +1,210 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { supabase } from '../utils/supabase';
-import { getAffiliateProfile, getReferralLink, getYearlyStats, getLifetimeStats, getMonthlyEarnings, getRecentReferrals, getRecentAffiliateOrders } from '../utils/affiliate_api';
-import { formatKES } from '../utils/constants';
-import { Copy, Share2, Users, ShoppingBag, TrendingUp, Award, Calendar, ChevronDown, ChevronUp, ExternalLink } from 'lucide-react';
+import { getAffiliateProfile, getDashboardStats, getMonthlyEarnings, getRecentReferrals, getRecentAffiliateOrders, requestPayout, getPayoutHistory } from '../utils/affiliate_api';
+import { AFFILIATE_CONFIG, computeTier, formatKES, getReferralLink } from '../config/affiliate';
+import { Copy, Share2, Users, ShoppingBag, TrendingUp, Award, Calendar, ChevronDown, ChevronUp, Wallet, Send, CheckCircle, X, Loader2 } from 'lucide-react';
+
+const TIER_META = {
+  bronze:   { label: 'Bronze',   color: 'text-amber-700',  bg: 'bg-amber-700/20',  bar: 'bg-amber-700',  iconBg: 'bg-amber-700/20 text-amber-600' },
+  silver:   { label: 'Silver',   color: 'text-zinc-300',   bg: 'bg-zinc-600/20',   bar: 'bg-zinc-400',   iconBg: 'bg-gradient-to-br from-zinc-500 to-zinc-200 text-white' },
+  gold:     { label: 'Gold',     color: 'text-amber-400',  bg: 'bg-amber-500/20',  bar: 'bg-amber-400',  iconBg: 'bg-gradient-to-br from-amber-500 to-yellow-300 text-white' },
+  platinum: { label: 'Platinum', color: 'text-blue-300',   bg: 'bg-blue-500/20',   bar: 'bg-blue-400',   iconBg: 'bg-gradient-to-br from-blue-500 to-cyan-300 text-white' },
+};
+
+function TierBadge({ tier }) {
+  const meta = TIER_META[tier] || TIER_META.bronze;
+  return (
+    <span className={`px-3 py-1 rounded-full text-xs font-bold ${meta.bg} ${meta.color}`}>
+      {meta.label}
+    </span>
+  );
+}
+
+function TierProgress({ currentCount, currentTier }) {
+  const tiers = AFFILIATE_CONFIG.TIERS;
+  const currentIdx = tiers.findIndex(t => t.id === currentTier);
+  const nextTier = currentIdx < tiers.length - 1 ? tiers[currentIdx + 1] : null;
+  const currentTierObj = tiers[currentIdx] || tiers[0];
+
+  if (!nextTier) {
+    // At platinum max
+    return (
+      <div className="mt-3">
+        <div className="flex justify-between text-xs text-zinc-500 mb-1">
+          <span>Sales: {currentCount}</span>
+          <span className="text-blue-300 font-bold">Platinum (Max Tier)</span>
+        </div>
+        <div className="h-2.5 bg-zinc-800 rounded-full overflow-hidden">
+          <div className="h-full rounded-full bg-blue-500" style={{ width: '100%' }} />
+        </div>
+      </div>
+    );
+  }
+
+  const progress = ((currentCount - currentTierObj.min_sales) / (nextTier.min_sales - currentTierObj.min_sales)) * 100;
+  const remaining = nextTier.min_sales - currentCount;
+
+  return (
+    <div className="mt-3">
+      <div className="flex justify-between text-xs text-zinc-500 mb-1">
+        <span>{currentTierObj.label}: {currentCount} sales</span>
+        <span>{nextTier.label}: need {remaining} more</span>
+      </div>
+      <div className="h-2.5 bg-zinc-800 rounded-full overflow-hidden">
+        <div
+          className={`h-full rounded-full transition-all ${TIER_META[currentTier]?.bar || 'bg-zinc-400'}`}
+          style={{ width: `${Math.min(100, Math.max(0, progress))}%` }}
+        />
+      </div>
+    </div>
+  );
+}
+
+function PayoutModal({ isOpen, onClose, affiliate, onSuccess }) {
+  const [amount, setAmount] = useState(AFFILIATE_CONFIG.MIN_PAYOUT);
+  const [mpesaNumber, setMpesaNumber] = useState(affiliate?.mpesa_number || '');
+  const [submitting, setSubmitting] = useState(false);
+  const [error, setError] = useState('');
+  const [result, setResult] = useState(null);
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setError('');
+    setSubmitting(true);
+    try {
+      const res = await requestPayout(affiliate.id, amount, mpesaNumber);
+      setResult(res);
+      if (onSuccess) onSuccess();
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
+  if (!isOpen) return null;
+
+  if (result) {
+    return (
+      <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+        <div className="absolute inset-0 bg-black/50 backdrop-blur-sm" onClick={onClose} />
+        <div className="relative bg-zinc-900 rounded-2xl border border-zinc-800 p-6 w-full max-w-sm shadow-2xl text-center">
+          <CheckCircle className="w-12 h-12 text-green-400 mx-auto mb-3" />
+          <h3 className="text-lg font-bold text-white mb-1">Payout Requested</h3>
+          <p className="text-sm text-zinc-400 mb-2">{formatKES(amount)} to {mpesaNumber}</p>
+          <p className="text-xs text-zinc-500 mb-4">Status: {result.status || 'pending'}</p>
+          <button onClick={onClose}
+            className="w-full py-2.5 bg-primary text-white rounded-xl font-bold text-sm hover:bg-primary-hover">
+            Done
+          </button>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+      <div className="absolute inset-0 bg-black/50 backdrop-blur-sm" onClick={onClose} />
+      <div className="relative bg-zinc-900 rounded-2xl border border-zinc-800 p-6 w-full max-w-sm shadow-2xl">
+        <div className="flex items-center justify-between mb-4">
+          <h3 className="text-lg font-bold text-white flex items-center gap-2">
+            <Send className="w-5 h-5" /> Request Payout
+          </h3>
+          <button onClick={onClose} className="p-1 rounded-lg hover:bg-zinc-800 text-zinc-400">
+            <X className="w-5 h-5" />
+          </button>
+        </div>
+        <form onSubmit={handleSubmit} className="space-y-4">
+          <div>
+            <label className="block text-sm font-bold mb-1.5 text-zinc-300">Amount (KES)</label>
+            <input
+              type="number"
+              value={amount}
+              onChange={e => setAmount(parseInt(e.target.value) || 0)}
+              min={AFFILIATE_CONFIG.MIN_PAYOUT}
+              className="w-full px-4 py-2.5 rounded-xl bg-zinc-800 border border-zinc-700 text-white text-sm font-bold"
+            />
+            <p className="text-xs text-zinc-500 mt-1">Minimum: {formatKES(AFFILIATE_CONFIG.MIN_PAYOUT)}</p>
+          </div>
+          <div>
+            <label className="block text-sm font-bold mb-1.5 text-zinc-300">M-Pesa Number</label>
+            <input
+              type="tel"
+              value={mpesaNumber}
+              onChange={e => setMpesaNumber(e.target.value)}
+              placeholder="254712345678"
+              required
+              className="w-full px-4 py-2.5 rounded-xl bg-zinc-800 border border-zinc-700 text-white text-sm"
+            />
+          </div>
+          {error && <p className="text-sm text-red-400">{error}</p>}
+          <button type="submit" disabled={submitting || amount < AFFILIATE_CONFIG.MIN_PAYOUT || !mpesaNumber}
+            className="w-full py-2.5 bg-primary text-white rounded-xl font-bold text-sm hover:bg-primary-hover disabled:opacity-50 flex items-center justify-center gap-2">
+            {submitting ? <Loader2 className="w-4 h-4 animate-spin" /> : <Send className="w-4 h-4" />}
+            {submitting ? 'Submitting...' : `Request ${formatKES(amount)}`}
+          </button>
+        </form>
+      </div>
+    </div>
+  );
+}
 
 export default function AffiliateDashboard() {
   const [user, setUser] = useState(null);
   const [affiliate, setAffiliate] = useState(null);
-  const [yearlyStats, setYearlyStats] = useState(null);
-  const [lifetimeStats, setLifetimeStats] = useState(null);
+  const [dashboardStats, setDashboardStats] = useState(null);
   const [earnings, setEarnings] = useState([]);
   const [referrals, setReferrals] = useState([]);
   const [orders, setOrders] = useState([]);
+  const [payouts, setPayouts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [copied, setCopied] = useState(false);
   const [showEarnings, setShowEarnings] = useState(false);
+  const [showPayouts, setShowPayouts] = useState(false);
+  const [showPayoutModal, setShowPayoutModal] = useState(false);
   const [error, setError] = useState('');
 
-  useEffect(() => {
-    const loadData = async () => {
-      try {
-        const { data: { session } } = await supabase.auth.getSession();
-        if (!session?.user) {
-          setError('Not authenticated');
-          setLoading(false);
-          return;
-        }
-        setUser(session.user);
+  const loadData = async () => {
+    try {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session?.user) { setError('Not authenticated'); setLoading(false); return; }
+      setUser(session.user);
 
-        // Get affiliate profile
-        const profile = await getAffiliateProfile(session.user.id);
-        if (!profile) {
-          setError('Affiliate account not found');
-          setLoading(false);
-          return;
-        }
-        setAffiliate(profile);
+      const profile = await getAffiliateProfile(session.user.id);
+      if (!profile) { setError('Affiliate account not found'); setLoading(false); return; }
+      setAffiliate(profile);
 
-        // Load stats
-        const [yearStats, lifeStats, earnData, recentRefs, recentOrders] = await Promise.all([
-          getYearlyStats(profile.id),
-          getLifetimeStats(profile.id),
-          getMonthlyEarnings(profile.id),
-          getRecentReferrals(profile.id),
-          getRecentAffiliateOrders(profile.id),
-        ]);
+      const [stats, earnData, recentRefs, recentOrders, payoutData] = await Promise.all([
+        getDashboardStats(profile.id),
+        getMonthlyEarnings(profile.id),
+        getRecentReferrals(profile.id),
+        getRecentAffiliateOrders(profile.id),
+        getPayoutHistory(profile.id),
+      ]);
 
-        setYearlyStats(yearStats);
-        setLifetimeStats(lifeStats);
-        setEarnings(earnData);
-        setReferrals(recentRefs);
-        setOrders(recentOrders);
-      } catch (err) {
-        setError(err.message);
-      } finally {
-        setLoading(false);
-      }
-    };
-    loadData();
-  }, []);
+      setDashboardStats(stats);
+      setEarnings(earnData);
+      setReferrals(recentRefs);
+      setOrders(recentOrders);
+      setPayouts(payoutData);
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => { loadData(); }, []);
 
   const referralLink = affiliate ? getReferralLink(affiliate.referral_code) : '';
-  const currentYear = new Date().getFullYear();
-  const pendingCommission = earnings
-    .filter(e => e.status === 'pending')
-    .reduce((sum, e) => sum + e.commission, 0);
-  const paidCommission = earnings
-    .filter(e => e.status !== 'pending')
-    .reduce((sum, e) => sum + e.commission, 0);
+  const stats = dashboardStats || { lifetime: {}, yearly: {} };
+  const currentTier = stats.yearly?.tier || affiliate?.tier || 'bronze';
+  const qualifiedCount = stats.yearly?.qualifiedCount || 0;
+  const commissionRate = stats.yearly?.commissionRate || 0.03;
+  const pendingCommission = stats.pendingCommission || 0;
+  const paidCommission = stats.paidCommission || 0;
+  const availableForPayout = pendingCommission;
 
   const copyToClipboard = () => {
     navigator.clipboard.writeText(referralLink);
@@ -79,7 +215,7 @@ export default function AffiliateDashboard() {
   if (loading) {
     return (
       <div className="min-h-screen bg-zinc-950 flex items-center justify-center">
-        <div className="animate-spin w-8 h-8 border-4 border-primary border-t-transparent rounded-full"></div>
+        <Loader2 className="w-8 h-8 animate-spin text-primary" />
       </div>
     );
   }
@@ -110,15 +246,17 @@ export default function AffiliateDashboard() {
       <div className="max-w-4xl mx-auto px-4 space-y-6 mt-6">
         {/* Tier & Status Card */}
         <div className="bg-zinc-900 rounded-2xl border border-zinc-800 p-5">
-          <div className="flex items-center justify-between mb-4">
+          <div className="flex items-center justify-between mb-1">
             <div className="flex items-center gap-3">
-              <div className={`w-12 h-12 rounded-full flex items-center justify-center ${yearlyStats?.tier === 'gold' ? 'bg-amber-500/20 text-amber-400' : 'bg-zinc-800 text-zinc-400'}`}>
+              <div className={`w-12 h-12 rounded-full flex items-center justify-center ${(TIER_META[currentTier]?.iconBg) || 'bg-zinc-800 text-zinc-400'}`}>
                 <Award className="w-6 h-6" />
               </div>
               <div>
-                <p className="text-lg font-bold text-white capitalize">{yearlyStats?.tier || 'Silver'} Tier</p>
+                <p className="text-lg font-bold text-white">
+                  {TIER_META[currentTier]?.label || 'Bronze'} Tier
+                </p>
                 <p className="text-xs text-zinc-400">
-                  {yearlyStats?.tier === 'gold' ? '10% commission' : '5% commission'} • {yearlyStats?.qualifiedCount || 0}/{yearlyStats?.tier === 'gold' ? '30+' : '30'} sales this year
+                  {(commissionRate * 100).toFixed(0)}% commission on referred sales
                 </p>
               </div>
             </div>
@@ -126,26 +264,21 @@ export default function AffiliateDashboard() {
               {affiliate?.status || 'inactive'}
             </span>
           </div>
-          {/* Tier Progress Bar */}
-          <div className="mt-3">
-            <div className="flex justify-between text-xs text-zinc-500 mb-1">
-              <span>Silver (0-29)</span>
-              <span>Gold (30+)</span>
-            </div>
-            <div className="h-2 bg-zinc-800 rounded-full overflow-hidden">
-              <div
-                className={`h-full rounded-full transition-all ${yearlyStats?.tier === 'gold' ? 'bg-amber-500' : 'bg-zinc-600'}`}
-                style={{ width: `${Math.min(100, ((yearlyStats?.qualifiedCount || 0) / 30) * 100)}%` }}
-              />
-            </div>
-            <p className="text-xs text-zinc-500 mt-1">{yearlyStats?.qualifiedCount || 0} / 30 qualified sales to reach Gold</p>
+          <TierProgress currentCount={qualifiedCount} currentTier={currentTier} />
+          {/* Commission rates for all tiers */}
+          <div className="mt-3 flex flex-wrap gap-1.5">
+            {AFFILIATE_CONFIG.TIERS.map(t => (
+              <span key={t.id} className={`text-[10px] px-2 py-0.5 rounded-full ${t.id === currentTier ? 'bg-primary/20 text-primary font-bold' : 'bg-zinc-800 text-zinc-500'}`}>
+                {t.label} {(t.rate * 100).toFixed(0)}%
+              </span>
+            ))}
           </div>
         </div>
 
         {/* Referral Link Card */}
         <div className="bg-zinc-900 rounded-2xl border border-zinc-800 p-5">
           <h3 className="text-sm font-bold text-zinc-300 mb-3 flex items-center gap-2">
-            <Share2 className="w-4 h-4" /> Your Referral Link
+            <Share2 className="w-4 h-4" /> Referral Link
           </h3>
           <div className="flex gap-2">
             <input
@@ -167,65 +300,121 @@ export default function AffiliateDashboard() {
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
           <div className="bg-zinc-900 rounded-2xl border border-zinc-800 p-4">
             <Users className="w-5 h-5 text-primary mb-2" />
-            <p className="text-2xl font-black text-white">{lifetimeStats?.totalReferred || 0}</p>
+            <p className="text-2xl font-black text-white">{stats.lifetime?.totalReferred || 0}</p>
             <p className="text-xs text-zinc-400">Total Referrals</p>
           </div>
           <div className="bg-zinc-900 rounded-2xl border border-zinc-800 p-4">
             <ShoppingBag className="w-5 h-5 text-blue-500 mb-2" />
-            <p className="text-2xl font-black text-white">{yearlyStats?.qualifiedCount || 0}</p>
-            <p className="text-xs text-zinc-400">Yearly Sales</p>
+            <p className="text-2xl font-black text-white">{qualifiedCount}</p>
+            <p className="text-xs text-zinc-400">Qualified Sales</p>
           </div>
           <div className="bg-zinc-900 rounded-2xl border border-zinc-800 p-4">
             <TrendingUp className="w-5 h-5 text-green-500 mb-2" />
-            <p className="text-xl font-black text-white">{formatKES(yearlyStats?.totalSales || 0)}</p>
-            <p className="text-xs text-zinc-400">Yearly Sales Value</p>
+            <p className="text-xl font-black text-white">{formatKES(stats.yearly?.totalSales || 0)}</p>
+            <p className="text-xs text-zinc-400">Sales Value</p>
           </div>
           <div className="bg-zinc-900 rounded-2xl border border-zinc-800 p-4">
-            <Calendar className="w-5 h-5 text-amber-500 mb-2" />
+            <Wallet className="w-5 h-5 text-amber-400 mb-2" />
             <p className="text-lg font-black text-white">{formatKES(pendingCommission)}</p>
             <p className="text-xs text-zinc-400">Pending Commission</p>
           </div>
         </div>
 
-        {/* Earnings History */}
+        {/* Payout Section */}
+        {availableForPayout >= AFFILIATE_CONFIG.MIN_PAYOUT && (
+          <div className="bg-gradient-to-r from-amber-500/10 to-green-500/10 rounded-2xl border border-amber-500/20 p-5">
+            <div className="flex items-center justify-between">
+              <div>
+                <h3 className="text-sm font-bold text-white flex items-center gap-2">
+                  <Wallet className="w-4 h-4 text-amber-400" /> Available for Payout
+                </h3>
+                <p className="text-2xl font-black text-green-400 mt-1">{formatKES(availableForPayout)}</p>
+                <p className="text-xs text-zinc-400 mt-1">Minimum payout: {formatKES(AFFILIATE_CONFIG.MIN_PAYOUT)}</p>
+              </div>
+              <button onClick={() => setShowPayoutModal(true)}
+                className="px-5 py-3 bg-primary text-white rounded-xl font-bold text-sm hover:bg-primary-hover flex items-center gap-2 transition-all">
+                <Send className="w-4 h-4" /> Request Payout
+              </button>
+            </div>
+          </div>
+        )}
+
+        {/* Payout History */}
+        {payouts.length > 0 && (
+          <div className="bg-zinc-900 rounded-2xl border border-zinc-800 overflow-hidden">
+            <button
+              onClick={() => setShowPayouts(!showPayouts)}
+              className="w-full flex items-center justify-between px-5 py-4 text-left"
+            >
+              <h3 className="text-sm font-bold text-zinc-300 flex items-center gap-2">
+                <Send className="w-4 h-4" /> Payout History
+              </h3>
+              {showPayouts ? <ChevronUp className="w-4 h-4 text-zinc-400" /> : <ChevronDown className="w-4 h-4 text-zinc-400" />}
+            </button>
+            {showPayouts && (
+              <div className="border-t border-zinc-800 divide-y divide-zinc-800">
+                {payouts.map((p, i) => (
+                  <div key={p.id || i} className="flex items-center justify-between px-5 py-3">
+                    <div>
+                      <p className="text-sm font-bold text-white">{formatKES(p.amount)}</p>
+                      <p className="text-xs text-zinc-400">{p.mpesa_number}</p>
+                    </div>
+                    <span className={`text-xs font-bold ${p.status === 'paid' ? 'text-green-400' : p.status === 'processing' ? 'text-blue-400' : 'text-amber-400'}`}>
+                      {p.status}
+                    </span>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        )}
+
+        {/* Monthly Earnings */}
         <div className="bg-zinc-900 rounded-2xl border border-zinc-800 overflow-hidden">
           <button
             onClick={() => setShowEarnings(!showEarnings)}
             className="w-full flex items-center justify-between px-5 py-4 text-left"
           >
             <h3 className="text-sm font-bold text-zinc-300 flex items-center gap-2">
-              <TrendingUp className="w-4 h-4" /> Monthly Earnings History
+              <TrendingUp className="w-4 h-4" /> Monthly Commission
             </h3>
             {showEarnings ? <ChevronUp className="w-4 h-4 text-zinc-400" /> : <ChevronDown className="w-4 h-4 text-zinc-400" />}
           </button>
           {showEarnings && (
             <div className="border-t border-zinc-800">
               {earnings.length === 0 ? (
-                <p className="px-5 py-6 text-sm text-zinc-500 text-center">No earnings data yet</p>
+                <p className="px-5 py-6 text-sm text-zinc-500 text-center">No commission records yet</p>
               ) : (
                 <div className="divide-y divide-zinc-800">
-                  {earnings.map((e, i) => (
-                    <div key={i} className="flex items-center justify-between px-5 py-3">
-                      <div>
-                        <p className="text-sm font-bold text-white">{e.year}-{String(e.month).padStart(2, '0')}</p>
-                        <p className="text-xs text-zinc-400">{e.qualifiedCount} orders • {formatKES(e.totalSales)} sales</p>
+                  {earnings.map((e, i) => {
+                    const tierInfo = computeTier(e.qualified_order_count || e.qualifiedCount || 0);
+                    return (
+                      <div key={i} className="flex items-center justify-between px-5 py-3">
+                        <div>
+                          <p className="text-sm font-bold text-white">
+                            {e.year}-{String(e.month).padStart(2, '0')}
+                          </p>
+                          <p className="text-xs text-zinc-400">
+                            {e.qualifiedCount || e.qualified_order_count || 0} orders | {formatKES(e.totalSales || e.total_sales || 0)} sales | {tierInfo.label}
+                          </p>
+                        </div>
+                        <div className="text-right">
+                          <p className="text-sm font-bold text-primary">{formatKES(e.commission || e.commission_amount || 0)}</p>
+                          <span className={`text-xs font-bold ${(e.status === 'pending' || e.status === 'calculated') ? 'text-amber-400' : 'text-green-400'}`}>
+                            {e.status || 'pending'}
+                          </span>
+                        </div>
                       </div>
-                      <div className="text-right">
-                        <p className="text-sm font-bold text-primary">{formatKES(e.commission)}</p>
-                        <p className={`text-xs ${e.status === 'pending' ? 'text-amber-400' : 'text-green-400'}`}>
-                          {e.status === 'pending' ? 'Pending' : 'Paid'}
-                        </p>
-                      </div>
-                    </div>
-                  ))}
+                    );
+                  })}
                 </div>
               )}
               <div className="border-t border-zinc-800 px-5 py-3 flex justify-between">
-                <span className="text-sm text-zinc-400">Pending Total</span>
+                <span className="text-sm text-zinc-400">Pending Commission</span>
                 <span className="text-sm font-bold text-amber-400">{formatKES(pendingCommission)}</span>
               </div>
               <div className="px-5 py-3 flex justify-between bg-zinc-800/50">
-                <span className="text-sm text-zinc-400">Paid Total</span>
+                <span className="text-sm text-zinc-400">Paid Commission</span>
                 <span className="text-sm font-bold text-green-400">{formatKES(paidCommission)}</span>
               </div>
             </div>
@@ -238,13 +427,13 @@ export default function AffiliateDashboard() {
             <Users className="w-4 h-4" /> Recent Referrals
           </h3>
           {referrals.length === 0 ? (
-            <p className="text-sm text-zinc-500 text-center py-4">No referrals yet. Share your link to start earning!</p>
+            <p className="text-sm text-zinc-500 text-center py-4">Share your referral link to start earning.</p>
           ) : (
             <div className="divide-y divide-zinc-800">
               {referrals.map((r, i) => (
                 <div key={i} className="flex items-center justify-between py-2.5">
                   <div>
-                    <p className="text-sm font-bold text-white">{r.full_name || 'Anonymous'}</p>
+                    <p className="text-sm font-bold text-white">{r.full_name || 'Customer'}</p>
                     <p className="text-xs text-zinc-400">{r.email}</p>
                   </div>
                   <span className="text-xs text-zinc-400">{new Date(r.created_at).toLocaleDateString()}</span>
@@ -254,13 +443,13 @@ export default function AffiliateDashboard() {
           )}
         </div>
 
-        {/* Recent Qualified Orders */}
+        {/* Recent Orders */}
         <div className="bg-zinc-900 rounded-2xl border border-zinc-800 p-5">
           <h3 className="text-sm font-bold text-zinc-300 mb-3 flex items-center gap-2">
-            <ShoppingBag className="w-4 h-4" /> Recent Qualifying Orders
+            <ShoppingBag className="w-4 h-4" /> Qualifying Orders
           </h3>
           {orders.length === 0 ? (
-            <p className="text-sm text-zinc-500 text-center py-4">No qualifying orders yet</p>
+            <p className="text-sm text-zinc-500 text-center py-4">No qualifying orders yet.</p>
           ) : (
             <div className="divide-y divide-zinc-800">
               {orders.map((o, i) => (
@@ -278,6 +467,14 @@ export default function AffiliateDashboard() {
           )}
         </div>
       </div>
+
+      {/* Payout Modal */}
+      <PayoutModal
+        isOpen={showPayoutModal}
+        onClose={() => { setShowPayoutModal(false); loadData(); }}
+        affiliate={affiliate}
+        onSuccess={loadData}
+      />
     </div>
   );
 }

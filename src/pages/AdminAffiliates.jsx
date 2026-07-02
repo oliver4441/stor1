@@ -1,16 +1,56 @@
 import { useState, useEffect, useCallback } from 'react';
 import { supabase } from '../utils/supabase';
-import { Users, Plus, Search, X, Loader2, Check, AlertTriangle, DollarSign, Activity, Link as LinkIcon } from 'lucide-react';
-import { formatKES } from '../utils/constants';
+import { Users, Plus, Search, X, Loader2, Check, AlertTriangle, DollarSign, Activity, Link as LinkIcon, Filter, ChevronDown, ChevronUp, Award } from 'lucide-react';
+import { formatKES, AFFILIATE_CONFIG } from '../config/affiliate';
+
 const API_BASE = import.meta.env.VITE_API_URL || 'https://stor1-api.onrender.com';
+
+async function getAuthHeaders() {
+  const { data: { session } } = await supabase.auth.getSession();
+  const headers = { 'Content-Type': 'application/json' };
+  if (session?.access_token) headers['Authorization'] = `Bearer ${session.access_token}`;
+  return headers;
+}
+
+async function apiGet(url) {
+  const headers = await getAuthHeaders();
+  const res = await fetch(url, { headers, credentials: 'include' });
+  const data = await res.json();
+  if (!data.success) throw new Error(data.error || 'Request failed');
+  return data.data ?? data;
+}
+
+async function apiPost(url, body = {}) {
+  const headers = await getAuthHeaders();
+  const res = await fetch(url, {
+    method: 'POST', headers, credentials: 'include',
+    body: JSON.stringify(body),
+  });
+  const data = await res.json();
+  if (!data.success) throw new Error(data.error || 'Request failed');
+  return data.data ?? data;
+}
+
+async function apiPatch(url, body = {}) {
+  const headers = await getAuthHeaders();
+  const res = await fetch(url, {
+    method: 'PATCH', headers, credentials: 'include',
+    body: JSON.stringify(body),
+  });
+  const data = await res.json();
+  if (!data.success) throw new Error(data.error || 'Request failed');
+  return data.data ?? data;
+}
 
 export default function AdminAffiliates() {
   const [affiliates, setAffiliates] = useState([]);
   const [commissions, setCommissions] = useState([]);
   const [logs, setLogs] = useState([]);
+  const [payouts, setPayouts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState('affiliates');
   const [searchQuery, setSearchQuery] = useState('');
+  const [tierFilter, setTierFilter] = useState('all');
   const [successMsg, setSuccessMsg] = useState('');
   const [errorMsg, setErrorMsg] = useState('');
 
@@ -22,8 +62,10 @@ export default function AdminAffiliates() {
   const [submitting, setSubmitting] = useState(false);
 
   // Commission calculation
-  const [calcYear, setCalcYear] = useState(new Date().getFullYear());
-  const [calcMonth, setCalcMonth] = useState(new Date().getMonth() + 1);
+  const [calcPeriod, setCalcPeriod] = useState(() => {
+    const d = new Date();
+    return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`;
+  });
   const [calculating, setCalculating] = useState(false);
 
   const showSuccess = (msg) => { setSuccessMsg(msg); setTimeout(() => setSuccessMsg(''), 3000); };
@@ -32,26 +74,16 @@ export default function AdminAffiliates() {
   const loadData = useCallback(async () => {
     setLoading(true);
     try {
-      const { data: affData } = await supabase
-        .from('affiliates')
-        .select('*')
-        .order('created_at', { ascending: false });
-      setAffiliates(affData || []);
-
-      const { data: commData } = await supabase
-        .from('monthly_commissions')
-        .select('*, affiliates(full_name, email, referral_code)')
-        .order('year', { ascending: false })
-        .order('month', { ascending: false })
-        .limit(100);
-      setCommissions(commData || []);
-
-      const { data: logData } = await supabase
-        .from('affiliate_logs')
-        .select('*')
-        .order('created_at', { ascending: false })
-        .limit(50);
-      setLogs(logData || []);
+      const [affData, commData, logData, payoutData] = await Promise.all([
+        apiGet(`${API_BASE}/api/admin/affiliates`),
+        apiGet(`${API_BASE}/api/admin/commissions?limit=100`),
+        apiGet(`${API_BASE}/api/admin/audit-logs?limit=50`),
+        apiGet(`${API_BASE}/api/admin/payouts?limit=50`),
+      ]);
+      setAffiliates(Array.isArray(affData) ? affData : []);
+      setCommissions(Array.isArray(commData) ? commData : []);
+      setLogs(Array.isArray(logData) ? logData : []);
+      setPayouts(Array.isArray(payoutData) ? payoutData : []);
     } catch (err) {
       showError('Failed to load data: ' + err.message);
     } finally {
@@ -65,29 +97,8 @@ export default function AdminAffiliates() {
     e.preventDefault();
     setSubmitting(true);
     try {
-      // Get auth token from the current Supabase session
-      const { data: { session } } = await supabase.auth.getSession();
-      const token = session?.access_token;
-
-      const res = await fetch(`${API_BASE}/api/admin/affiliates`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          ...(token ? { 'Authorization': `Bearer ${token}` } : {}),
-        },
-        credentials: 'include',
-        body: JSON.stringify({
-          full_name: form.full_name,
-          email: form.email,
-          phone: form.phone || null,
-          mpesa_number: form.mpesa_number || null,
-          password: form.password,
-        }),
-      });
-      const data = await res.json();
-      if (!data.success) throw new Error(data.error);
-
-      showSuccess(`Affiliate created! Referral code: ${data.referral_code}`);
+      const res = await apiPost(`${API_BASE}/api/admin/affiliates`, form);
+      showSuccess(`Affiliate created! Code: ${res.referral_code}`);
       setModalOpen(false);
       setForm({ full_name: '', email: '', phone: '', mpesa_number: '', password: '' });
       await loadData();
@@ -98,10 +109,10 @@ export default function AdminAffiliates() {
     }
   };
 
-  const toggleStatus = async (affiliate) => {
-    const newStatus = affiliate.status === 'active' ? 'inactive' : 'active';
+  const toggleStatus = async (affiliateId, currentStatus) => {
+    const newStatus = currentStatus === 'active' ? 'inactive' : 'active';
     try {
-      await supabase.from('affiliates').update({ status: newStatus }).eq('id', affiliate.id);
+      await apiPatch(`${API_BASE}/api/admin/affiliates/${affiliateId}/status`, { status: newStatus });
       showSuccess(`Affiliate ${newStatus === 'active' ? 'activated' : 'deactivated'}`);
       await loadData();
     } catch (err) {
@@ -112,87 +123,9 @@ export default function AdminAffiliates() {
   const calculateCommissions = async () => {
     setCalculating(true);
     try {
-      const { data: affiliates } = await supabase
-        .from('affiliates').select('*').eq('status', 'active');
-
-      let calculated = 0;
-      for (const aff of affiliates || []) {
-        const monthStart = new Date(calcYear, calcMonth - 1, 1).toISOString();
-        const monthEnd = new Date(calcYear, calcMonth, 1).toISOString();
-
-        const { data: referredUsers } = await supabase
-          .from('profiles').select('id').eq('referred_by', aff.id);
-        const userIds = (referredUsers || []).map(u => u.id);
-        if (userIds.length === 0) continue;
-
-        const { data: orders } = await supabase
-          .from('omix_orders')
-          .select('id, total_amount')
-          .in('user_id', userIds)
-          .gte('created_at', monthStart)
-          .lt('created_at', monthEnd)
-          .in('status', ['paid', 'completed', 'delivered']);
-
-        if (!orders || orders.length === 0) continue;
-        const totalSales = orders.reduce((s, o) => s + parseFloat(o.total_amount || 0), 0);
-        const orderCount = orders.length;
-
-        const yearStart = new Date(calcYear, 0, 1).toISOString();
-        const { data: yearOrders } = await supabase
-          .from('omix_orders').select('id')
-          .in('user_id', userIds)
-          .gte('created_at', yearStart)
-          .lt('created_at', monthEnd)
-          .in('status', ['paid', 'completed', 'delivered']);
-        const yearlyCount = (yearOrders || []).length;
-        const tier = yearlyCount >= 30 ? 'gold' : 'silver';
-        const rate = tier === 'gold' ? 0.10 : 0.05;
-
-        const commissionAmount = Math.round(totalSales * rate);
-
-        // Upsert commission record
-        const { data: existing } = await supabase
-          .from('monthly_commissions')
-          .select('id')
-          .eq('affiliate_id', aff.id)
-          .eq('year', calcYear)
-          .eq('month', calcMonth)
-          .single();
-
-        if (existing) {
-          await supabase
-            .from('monthly_commissions')
-            .update({
-              total_sales: totalSales,
-              qualified_order_count: orderCount,
-              commission_rate: rate,
-              commission_amount: commissionAmount,
-            })
-            .eq('id', existing.id);
-        } else {
-          await supabase
-            .from('monthly_commissions')
-            .insert({
-              affiliate_id: aff.id,
-              year: calcYear,
-              month: calcMonth,
-              total_sales: totalSales,
-              qualified_order_count: orderCount,
-              commission_rate: rate,
-              commission_amount: commissionAmount,
-            });
-        }
-
-        // Log
-        await supabase.from('affiliate_logs').insert({
-          affiliate_id: aff.id,
-          event_type: 'COMMISSION_CALCULATED',
-          details: { year: calcYear, month: calcMonth, totalSales, orderCount, rate, commissionAmount },
-        });
-
-        calculated++;
-      }
-      showSuccess(`Commissions calculated for ${calculated} affiliates`);
+      const [year, month] = calcPeriod.split('-').map(Number);
+      const res = await apiPost(`${API_BASE}/api/admin/commissions/calculate`, { year, month });
+      showSuccess(`Commissions calculated for ${res.count || 0} affiliates`);
       await loadData();
     } catch (err) {
       showError('Calculation error: ' + err.message);
@@ -203,17 +136,7 @@ export default function AdminAffiliates() {
 
   const approveCommission = async (id) => {
     try {
-      const { data: { session } } = await supabase.auth.getSession();
-      const token = session?.access_token;
-      const res = await fetch(`${API_BASE}/api/admin/commissions/${id}/approve`, {
-        method: 'PATCH', headers: {
-          'Content-Type': 'application/json',
-          ...(token ? { 'Authorization': `Bearer ${token}` } : {}),
-        },
-        credentials: 'include',
-      });
-      const data = await res.json();
-      if (!data.success) throw new Error(data.error);
+      await apiPatch(`${API_BASE}/api/admin/commissions/${id}/approve`);
       showSuccess('Commission approved');
       await loadData();
     } catch (err) { showError(err.message); }
@@ -221,36 +144,47 @@ export default function AdminAffiliates() {
 
   const markPaid = async (id) => {
     try {
-      const { data: { session } } = await supabase.auth.getSession();
-      const token = session?.access_token;
-      const res = await fetch(`${API_BASE}/api/admin/commissions/${id}/pay`, {
-        method: 'PATCH', headers: {
-          'Content-Type': 'application/json',
-          ...(token ? { 'Authorization': `Bearer ${token}` } : {}),
-        },
-        credentials: 'include',
-      });
-      const data = await res.json();
-      if (!data.success) throw new Error(data.error);
+      await apiPatch(`${API_BASE}/api/admin/commissions/${id}/pay`);
       showSuccess('Commission marked as paid');
       await loadData();
     } catch (err) { showError(err.message); }
   };
 
-  const filtered = affiliates.filter(a =>
-    !searchQuery || a.full_name?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    a.email?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    a.referral_code?.toLowerCase().includes(searchQuery.toLowerCase())
+  const triggerPayout = async (payoutId) => {
+    try {
+      await apiPost(`${API_BASE}/api/admin/payouts/${payoutId}/process`);
+      showSuccess('Payout processing triggered');
+      await loadData();
+    } catch (err) { showError(err.message); }
+  };
+
+  // Filters
+  const filteredAffiliates = affiliates.filter(a => {
+    if (searchQuery && !a.full_name?.toLowerCase().includes(searchQuery.toLowerCase()) &&
+        !a.email?.toLowerCase().includes(searchQuery.toLowerCase()) &&
+        !a.referral_code?.toLowerCase().includes(searchQuery.toLowerCase())) return false;
+    if (tierFilter !== 'all' && a.tier !== tierFilter) return false;
+    return true;
+  });
+
+  const pendingCommissions = commissions.filter(c =>
+    c.status === 'calculated' || c.status === 'pending'
   );
+  const approvedPending = commissions.filter(c => c.status === 'approved');
+  const paidCommissions = commissions.filter(c => c.status === 'paid');
+
+  const pendingPayouts = payouts.filter(p => p.status === 'pending');
 
   const tabs = [
     { id: 'affiliates', label: 'Affiliates', count: affiliates.length },
-    { id: 'commissions', label: 'Commissions', count: commissions.filter(c => c.status === 'calculated' || c.status === 'approved').length },
-    { id: 'logs', label: 'Audit Logs', count: logs.length },
+    { id: 'commissions', label: 'Commissions', count: pendingCommissions.length, badge: 'text-amber-400' },
+    { id: 'payouts', label: 'Payouts', count: pendingPayouts.length, badge: 'text-green-400' },
+    { id: 'logs', label: 'Audit Logs' },
   ];
 
   return (
     <div className="space-y-6">
+      {/* Toast notifications */}
       {successMsg && (
         <div className="fixed top-20 right-4 z-50 bg-green-500 text-white px-6 py-3 rounded-2xl shadow-lg text-sm font-bold">{successMsg}</div>
       )}
@@ -262,9 +196,9 @@ export default function AdminAffiliates() {
       <div className="flex items-center justify-between">
         <div>
           <h2 className="text-xl font-bold text-white flex items-center gap-2">
-            <LinkIcon className="w-5 h-5" /> Affiliates
+            <Users className="w-5 h-5" /> Affiliates
           </h2>
-          <p className="text-sm text-zinc-400">{affiliates.length} affiliates</p>
+          <p className="text-sm text-zinc-400">{affiliates.length} registered affiliates</p>
         </div>
         <button onClick={() => setModalOpen(true)}
           className="flex items-center gap-2 bg-primary text-white px-5 py-2.5 rounded-xl font-bold text-sm hover:bg-primary-hover transition-all">
@@ -276,21 +210,35 @@ export default function AdminAffiliates() {
       <div className="flex gap-2 border-b border-zinc-800">
         {tabs.map(tab => (
           <button key={tab.id} onClick={() => setActiveTab(tab.id)}
-            className={`px-4 py-3 text-sm font-bold border-b-2 transition-colors ${
+            className={`px-4 py-3 text-sm font-bold border-b-2 transition-colors flex items-center gap-1.5 ${
               activeTab === tab.id ? 'border-primary text-primary' : 'border-transparent text-zinc-400 hover:text-white'
             }`}>
-            {tab.label} ({tab.count})
+            {tab.label}
+            {tab.count !== undefined && (
+              <span className={`text-xs ${tab.badge || 'text-zinc-500'}`}>({tab.count})</span>
+            )}
           </button>
         ))}
       </div>
 
-      {/* Search */}
-      <div className="relative">
-        <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-zinc-400" />
-        <input type="text" placeholder="Search affiliates..."
-          value={searchQuery} onChange={e => setSearchQuery(e.target.value)}
-          className="w-full pl-10 pr-4 py-2.5 rounded-xl bg-zinc-900 border border-zinc-800 text-sm text-white" />
-      </div>
+      {/* Search + Filters (affiliates tab) */}
+      {activeTab === 'affiliates' && (
+        <div className="flex gap-3">
+          <div className="relative flex-1">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-zinc-400" />
+            <input type="text" placeholder="Search by name, email, or code..."
+              value={searchQuery} onChange={e => setSearchQuery(e.target.value)}
+              className="w-full pl-10 pr-4 py-2.5 rounded-xl bg-zinc-900 border border-zinc-800 text-sm text-white" />
+          </div>
+          <select value={tierFilter} onChange={e => setTierFilter(e.target.value)}
+            className="px-3 py-2.5 rounded-xl bg-zinc-900 border border-zinc-800 text-sm text-white">
+            <option value="all">All Tiers</option>
+            {AFFILIATE_CONFIG.TIERS.map(t => (
+              <option key={t.id} value={t.id}>{t.label}</option>
+            ))}
+          </select>
+        </div>
+      )}
 
       {loading ? (
         <div className="flex justify-center py-12">
@@ -298,22 +246,35 @@ export default function AdminAffiliates() {
         </div>
       ) : activeTab === 'affiliates' ? (
         <div className="bg-zinc-900 rounded-2xl border border-zinc-800 overflow-hidden">
-          {filtered.length === 0 ? (
+          {filteredAffiliates.length === 0 ? (
             <div className="p-12 text-center">
               <Users className="w-10 h-10 text-zinc-700 mx-auto mb-3" />
               <p className="text-zinc-400">No affiliates found</p>
             </div>
           ) : (
             <div className="divide-y divide-zinc-800">
-              {filtered.map(a => (
+              {filteredAffiliates.map(a => (
                 <div key={a.id} className="flex items-center justify-between px-5 py-4 hover:bg-zinc-800/30">
                   <div className="flex-1 min-w-0">
-                    <p className="font-bold text-white truncate">{a.full_name}</p>
-                    <p className="text-xs text-zinc-400">{a.email} • {a.referral_code}</p>
+                    <div className="flex items-center gap-2">
+                      <p className="font-bold text-white truncate">{a.full_name}</p>
+                      <span className={`text-[10px] px-1.5 py-0.5 rounded font-bold ${
+                        a.tier === 'platinum' ? 'bg-blue-500/20 text-blue-300' :
+                        a.tier === 'gold' ? 'bg-amber-500/20 text-amber-400' :
+                        a.tier === 'silver' ? 'bg-zinc-600/20 text-zinc-300' :
+                        'bg-amber-700/20 text-amber-600'
+                      }`}>
+                        {a.tier || 'bronze'}
+                      </span>
+                    </div>
+                    <p className="text-xs text-zinc-400">
+                      {a.email} | {a.referral_code}
+                      {a.mpesa_number && ` | M-Pesa: ${a.mpesa_number}`}
+                    </p>
                   </div>
                   <div className="flex items-center gap-3 ml-4">
-                    <span className="text-xs text-zinc-500">{a.mpesa_number || 'No M-Pesa'}</span>
-                    <button onClick={() => toggleStatus(a)}
+                    <span className="text-xs text-zinc-500">{formatKES(a.total_earned || 0)} earned</span>
+                    <button onClick={() => toggleStatus(a.id, a.status)}
                       className={`px-3 py-1 rounded-full text-xs font-bold ${
                         a.status === 'active' ? 'bg-green-900/30 text-green-400' : 'bg-zinc-800 text-zinc-400'
                       }`}>
@@ -324,22 +285,38 @@ export default function AdminAffiliates() {
               ))}
             </div>
           )}
+          <div className="px-5 py-3 border-t border-zinc-800 text-xs text-zinc-500">
+            {filteredAffiliates.length} of {affiliates.length} affiliates
+          </div>
         </div>
       ) : activeTab === 'commissions' ? (
         <div>
-          {/* Calculate button */}
+          {/* Calculate controls */}
           <div className="flex items-center gap-3 mb-4 p-4 bg-zinc-900 rounded-2xl border border-zinc-800">
             <span className="text-sm text-zinc-400">Calculate for:</span>
-            <input type="number" value={calcYear} onChange={e => setCalcYear(parseInt(e.target.value))}
-              className="w-20 px-3 py-2 rounded-lg bg-zinc-800 border border-zinc-700 text-white text-sm text-center" />
-            <span className="text-zinc-400">/</span>
-            <input type="number" value={calcMonth} onChange={e => setCalcMonth(parseInt(e.target.value))} min={1} max={12}
-              className="w-16 px-3 py-2 rounded-lg bg-zinc-800 border border-zinc-700 text-white text-sm text-center" />
+            <input type="month" value={calcPeriod} onChange={e => setCalcPeriod(e.target.value)}
+              className="px-3 py-2 rounded-lg bg-zinc-800 border border-zinc-700 text-white text-sm" />
             <button onClick={calculateCommissions} disabled={calculating}
               className="px-4 py-2 bg-primary text-white rounded-lg text-sm font-bold hover:bg-primary-hover disabled:opacity-50 flex items-center gap-2">
               {calculating ? <Loader2 className="w-4 h-4 animate-spin" /> : <DollarSign className="w-4 h-4" />}
               {calculating ? 'Calculating...' : 'Calculate'}
             </button>
+          </div>
+
+          {/* Summary cards */}
+          <div className="grid grid-cols-3 gap-3 mb-4">
+            <div className="bg-zinc-900 rounded-xl border border-zinc-800 p-3 text-center">
+              <p className="text-lg font-black text-yellow-400">{pendingCommissions.length}</p>
+              <p className="text-xs text-zinc-400">Pending</p>
+            </div>
+            <div className="bg-zinc-900 rounded-xl border border-zinc-800 p-3 text-center">
+              <p className="text-lg font-black text-blue-400">{approvedPending.length}</p>
+              <p className="text-xs text-zinc-400">Approved</p>
+            </div>
+            <div className="bg-zinc-900 rounded-xl border border-zinc-800 p-3 text-center">
+              <p className="text-lg font-black text-green-400">{paidCommissions.length}</p>
+              <p className="text-xs text-zinc-400">Paid</p>
+            </div>
           </div>
 
           <div className="bg-zinc-900 rounded-2xl border border-zinc-800 overflow-hidden">
@@ -351,25 +328,26 @@ export default function AdminAffiliates() {
                   <div key={c.id} className="px-5 py-4">
                     <div className="flex items-center justify-between mb-2">
                       <div>
-                        <p className="font-bold text-white">{c.affiliates?.full_name || 'Affiliate'}</p>
-                        <p className="text-xs text-zinc-400">{c.year}-{String(c.month).padStart(2, '0')} • {c.qualified_order_count} orders • {formatKES(c.total_sales)} sales</p>
+                        <p className="font-bold text-white">{c.affiliate_name || c.affiliates?.full_name || 'Affiliate'}</p>
+                        <p className="text-xs text-zinc-400">
+                          {c.year}-{String(c.month).padStart(2, '0')} | {c.qualified_order_count || 0} orders | {formatKES(c.total_sales || 0)} sales
+                        </p>
                       </div>
                       <div className="text-right">
                         <p className="text-lg font-black text-primary">{formatKES(c.commission_amount)}</p>
                         <span className={`text-xs font-bold ${
                           c.status === 'calculated' ? 'text-yellow-400' :
+                          c.status === 'pending' ? 'text-yellow-400' :
                           c.status === 'approved' ? 'text-blue-400' :
                           c.status === 'paid' ? 'text-green-400' : 'text-red-400'
                         }`}>{c.status}</span>
                       </div>
                     </div>
                     {c.status === 'calculated' && (
-                      <div className="flex gap-2">
-                        <button onClick={() => approveCommission(c.id)}
-                          className="flex-1 py-2 bg-blue-600 text-white rounded-lg text-xs font-bold hover:bg-blue-700 flex items-center justify-center gap-1">
-                          <Check className="w-3 h-3" /> Approve
-                        </button>
-                      </div>
+                      <button onClick={() => approveCommission(c.id)}
+                        className="w-full py-2 bg-blue-600 text-white rounded-lg text-xs font-bold hover:bg-blue-700 flex items-center justify-center gap-1">
+                        <Check className="w-3 h-3" /> Approve Commission
+                      </button>
                     )}
                     {c.status === 'approved' && (
                       <button onClick={() => markPaid(c.id)}
@@ -383,6 +361,39 @@ export default function AdminAffiliates() {
             )}
           </div>
         </div>
+      ) : activeTab === 'payouts' ? (
+        <div className="bg-zinc-900 rounded-2xl border border-zinc-800 overflow-hidden">
+          {payouts.length === 0 ? (
+            <div className="p-12 text-center text-zinc-400">No payout requests yet</div>
+          ) : (
+            <div className="divide-y divide-zinc-800">
+              {payouts.map(p => (
+                <div key={p.id} className="px-5 py-4">
+                  <div className="flex items-center justify-between mb-2">
+                    <div>
+                      <p className="font-bold text-white">{p.affiliate_name || p.affiliates?.full_name || 'Affiliate'}</p>
+                      <p className="text-xs text-zinc-400">{p.mpesa_number} | {new Date(p.created_at).toLocaleDateString()}</p>
+                    </div>
+                    <div className="text-right">
+                      <p className="text-lg font-black text-primary">{formatKES(p.amount)}</p>
+                      <span className={`text-xs font-bold ${
+                        p.status === 'pending' ? 'text-yellow-400' :
+                        p.status === 'processing' ? 'text-blue-400' :
+                        p.status === 'paid' ? 'text-green-400' : 'text-red-400'
+                      }`}>{p.status}</span>
+                    </div>
+                  </div>
+                  {p.status === 'pending' && (
+                    <button onClick={() => triggerPayout(p.id)}
+                      className="w-full py-2 bg-green-600 text-white rounded-lg text-xs font-bold hover:bg-green-700 flex items-center justify-center gap-1">
+                      <DollarSign className="w-3 h-3" /> Process Payout (M-Pesa)
+                    </button>
+                  )}
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
       ) : activeTab === 'logs' ? (
         <div className="bg-zinc-900 rounded-2xl border border-zinc-800 overflow-hidden">
           {logs.length === 0 ? (
@@ -392,12 +403,15 @@ export default function AdminAffiliates() {
               {logs.map((log, i) => (
                 <div key={log.id || i} className="px-5 py-3">
                   <div className="flex items-center justify-between">
-                    <span className="text-xs font-mono text-primary">{log.event_type}</span>
+                    <div className="flex items-center gap-2">
+                      <Activity className="w-3 h-3 text-primary" />
+                      <span className="text-xs font-mono text-primary">{log.event_type}</span>
+                    </div>
                     <span className="text-xs text-zinc-500">{new Date(log.created_at).toLocaleString()}</span>
                   </div>
                   {log.details && (
-                    <pre className="text-xs text-zinc-400 mt-1 font-mono overflow-x-auto">
-                      {JSON.stringify(log.details, null, 1)}
+                    <pre className="text-xs text-zinc-400 mt-1 font-mono overflow-x-auto whitespace-pre-wrap">
+                      {typeof log.details === 'string' ? log.details : JSON.stringify(log.details, null, 1)}
                     </pre>
                   )}
                 </div>
@@ -437,7 +451,7 @@ export default function AdminAffiliates() {
               <div>
                 <label className="block text-sm font-bold mb-1.5 text-zinc-300">M-Pesa Number (payout)</label>
                 <input value={form.mpesa_number} onChange={e => setForm({...form, mpesa_number: e.target.value})}
-                  placeholder="e.g. 254712345678"
+                  placeholder="254712345678"
                   className="w-full px-4 py-2.5 rounded-xl bg-zinc-800 border border-transparent focus:border-primary focus:outline-none text-white text-sm" />
               </div>
               <div>
