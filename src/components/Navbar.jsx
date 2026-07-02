@@ -178,19 +178,21 @@ function Navbar() {
           )}
 
           {user ? (
-            <Link to="/account" className="flex items-center gap-2 p-2 rounded-full hover:bg-zinc-800 text-zinc-300 transition-colors">
-              <User className="w-5 h-5" />
-              <span className="text-sm font-medium">{t('nav.account') || 'Account'}</span>
-            </Link>
-            {isUserAffiliate ? (
-              <Link to="/affiliate-dashboard" className="flex items-center gap-2 p-2 rounded-full hover:bg-zinc-800 text-zinc-300 transition-colors">
-                <span className="text-sm font-medium">Affiliate Dashboard</span>
+            <>
+              <Link to="/account" className="flex items-center gap-2 p-2 rounded-full hover:bg-zinc-800 text-zinc-300 transition-colors">
+                <User className="w-5 h-5" />
+                <span className="text-sm font-medium">{t('nav.account') || 'Account'}</span>
               </Link>
-            ) : (
-              <Link to="/apply-affiliate" className="flex items-center gap-2 p-2 rounded-full hover:bg-zinc-800 text-zinc-300 transition-colors">
-                <span className="text-sm font-medium">Become an Affiliate</span>
-              </Link>
-            )}
+              {isUserAffiliate ? (
+                <Link to="/affiliate-dashboard" className="flex items-center gap-2 p-2 rounded-full hover:bg-zinc-800 text-zinc-300 transition-colors">
+                  <span className="text-sm font-medium">Affiliate Dashboard</span>
+                </Link>
+              ) : (
+                <Link to="/apply-affiliate" className="flex items-center gap-2 p-2 rounded-full hover:bg-zinc-800 text-zinc-300 transition-colors">
+                  <span className="text-sm font-medium">Become an Affiliate</span>
+                </Link>
+              )}
+            </>
           ) : (
             <>
               <Link to="/login" className="flex items-center gap-1.5 text-sm font-medium text-zinc-300 hover:text-white px-3 py-2 rounded-full hover:bg-zinc-800 transition-all">
