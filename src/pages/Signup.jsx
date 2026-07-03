@@ -75,7 +75,7 @@ function Signup() {
           }
         } catch {}
 
-        if (result.session) { setSuccess(true); successTimer.current = setTimeout(() => navigate('/account'), 1500); }
+        if (result.session) { setSuccess(true); successTimer.current = setTimeout(() => navigate('/'), 1500); }
         else { setNeedsVerification(true); setRegisteredEmail(formData.email); setLoading(false); }
       } else { setError(result.error); setLoading(false); }
     } catch (err) { 

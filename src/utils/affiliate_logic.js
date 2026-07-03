@@ -14,7 +14,7 @@ export async function generateAffiliateCode() {
 
 /**
  * Process referral attribution at signup.
- * Last-touch model: the most recent referral cookie wins.
+ * First-touch model: the backend checks for an existing referral and never overwrites.
  * Delegates to backend for the actual DB operations.
  */
 export async function processSignupReferral(userId) {
