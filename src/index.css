@@ -788,3 +788,13 @@ body[data-theme-id]:not([data-theme-id="none"]) main {
   margin: 2.5rem 0;
   opacity: 0.5;
 }
+
+/* Cascade menu item staggered entrance */
+@keyframes cascade-up {
+  from { opacity: 0; transform: translateY(16px) scale(0.9); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+.animate-cascade-up {
+  animation: cascade-up 0.25s ease-out both;
+}

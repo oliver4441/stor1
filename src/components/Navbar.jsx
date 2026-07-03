@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { User, Globe, Shield, Package, HelpCircle, Info, LogIn, UserPlus, Menu, X, Download, ShoppingCart, ChevronDown, LogOut, RefreshCw } from 'lucide-react';
 import { supabase } from '../utils/supabase';
@@ -22,7 +22,7 @@ function Navbar() {
   const [isUserAdmin, setIsUserAdmin] = useState(false);
   const [isUserAffiliate, setIsUserAffiliate] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
-  const menuRef = useRef(null);
+  const drawerRef = useRef(null);
   const { t } = useLang();
   const location = useLocation();
   const { getItemCount } = useCart();
@@ -64,22 +64,17 @@ function Navbar() {
   // Close menu on route change
   useEffect(() => { setMenuOpen(false); }, [location.pathname]);
 
-  // Close menu on click outside
+  // Close menu on Escape key
+  const handleKeyDown = useCallback((e) => {
+    if (e.key === 'Escape') setMenuOpen(false);
+  }, []);
+
   useEffect(() => {
-    function handleClickOutside(e) {
-      if (menuRef.current && !menuRef.current.contains(e.target)) {
-        setMenuOpen(false);
-      }
-    }
     if (menuOpen) {
-      document.addEventListener('mousedown', handleClickOutside);
-      document.addEventListener('touchstart', handleClickOutside);
+      document.addEventListener('keydown', handleKeyDown);
     }
-    return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
-      document.removeEventListener('touchstart', handleClickOutside);
-    };
-  }, [menuOpen]);
+    return () => document.removeEventListener('keydown', handleKeyDown);
+  }, [menuOpen, handleKeyDown]);
 
   // Lock body scroll when menu open on mobile
   useEffect(() => {
@@ -228,98 +223,119 @@ function Navbar() {
           <button
             onClick={() => setMenuOpen(!menuOpen)}
             className="p-2 rounded-full hover:bg-zinc-800 text-zinc-300 transition-colors"
-            aria-label="Toggle menu"
+            aria-label={menuOpen ? 'Close menu' : 'Open menu'}
           >
             {menuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
           </button>
         </div>
       </div>
 
-      {/* Collapsible Menu - slides down below the navbar */}
+      {/* Mobile Sidebar — slides in from the right (lg+ hidden) */}
+      {/* Backdrop overlay */}
       <div
-        ref={menuRef}
-        className={`lg:hidden overflow-hidden transition-all duration-300 ease-in-out ${
-          menuOpen ? 'max-h-[85vh] opacity-100' : 'max-h-0 opacity-0'
+        className={`fixed inset-0 bg-black/40 backdrop-blur-sm z-[60] lg:hidden transition-opacity duration-300 ease-out ${
+          menuOpen ? 'opacity-100' : 'opacity-0 pointer-events-none'
         }`}
+        onClick={() => setMenuOpen(false)}
+        aria-hidden="true"
+      />
+
+      {/* Drawer */}
+      <div
+        ref={drawerRef}
+        className={`fixed top-0 right-0 bottom-0 w-80 max-w-[85vw] bg-zinc-950/95 backdrop-blur-xl border-l border-zinc-800 shadow-2xl z-[61] lg:hidden flex flex-col transition-transform duration-300 ease-out ${
+          menuOpen ? 'translate-x-0' : 'translate-x-full'
+        }`}
+        style={{ paddingTop: 'env(safe-area-inset-top)' }}
+        role="dialog"
+        aria-modal="true"
+        aria-label="Navigation menu"
       >
-        <div className="border-t border-zinc-800 bg-zinc-950">
-          <div className="max-w-7xl mx-auto px-4 py-4 space-y-1 overflow-y-auto max-h-[80vh]">
-            {/* Navigation Links */}
-            {FEATURE_LINKS.map(link => {
-              const Icon = link.icon;
-              const isActive = !link.external && location.pathname === link.to;
-              const linkClass = `flex items-center gap-3 px-4 py-3 rounded-2xl text-sm font-bold transition-all ${
-                isActive
-                  ? `bg-gradient-to-r ${link.color} text-white shadow-lg`
-                  : 'text-zinc-300 hover:bg-zinc-800'
-              }`;
-              if (link.external) {
-                return (
-                  <a key={link.to} href={link.to} target="_blank" rel="noopener noreferrer" className={linkClass} onClick={() => setMenuOpen(false)}>
-                    <Icon className="w-5 h-5" />
-                    {link.label}
-                  </a>
-                );
-              }
+        {/* Header */}
+        <div className="flex items-center justify-between px-5 h-14 border-b border-zinc-800 shrink-0">
+          <span className="text-sm font-bold tracking-wide text-zinc-400 uppercase">Menu</span>
+          <button
+            onClick={() => setMenuOpen(false)}
+            className="p-2 rounded-full hover:bg-zinc-800 text-zinc-300 transition-colors"
+            aria-label="Close menu"
+          >
+            <X className="w-5 h-5" />
+          </button>
+        </div>
+
+        {/* Navigation Links */}
+        <div className="flex-1 overflow-y-auto px-4 py-4 space-y-1">
+          {FEATURE_LINKS.map(link => {
+            const Icon = link.icon;
+            const isActive = !link.external && location.pathname === link.to;
+            const linkClass = `flex items-center gap-3 px-4 py-3 rounded-2xl text-sm font-bold transition-all ${
+              isActive
+                ? `bg-gradient-to-r ${link.color} text-white shadow-lg`
+                : 'text-zinc-300 hover:bg-zinc-800'
+            }`;
+            if (link.external) {
               return (
-                <Link key={link.to} to={link.to} className={linkClass} onClick={() => setMenuOpen(false)}>
+                <a key={link.to} href={link.to} target="_blank" rel="noopener noreferrer" className={linkClass} onClick={() => setMenuOpen(false)}>
                   <Icon className="w-5 h-5" />
                   {link.label}
-                </Link>
+                </a>
               );
-            })}
+            }
+            return (
+              <Link key={link.to} to={link.to} className={linkClass} onClick={() => setMenuOpen(false)}>
+                <Icon className="w-5 h-5" />
+                {link.label}
+              </Link>
+            );
+          })}
 
-            {/* Divider */}
-            <div className="border-t border-zinc-800 my-1" />
+          {/* Divider */}
+          <div className="border-t border-zinc-800 my-1" />
 
-            {/* Account */}
-            {user ? (
-              <>
-                <Link to="/account" className="flex items-center gap-3 px-4 py-3 rounded-2xl text-sm font-bold text-zinc-300 hover:bg-zinc-800" onClick={() => setMenuOpen(false)}>
+          {/* Account section */}
+          {user ? (
+            <>
+              <Link to="/account" className="flex items-center gap-3 px-4 py-3 rounded-2xl text-sm font-bold text-zinc-300 hover:bg-zinc-800" onClick={() => setMenuOpen(false)}>
+                <User className="w-5 h-5" />
+                My Account
+              </Link>
+              {isUserAffiliate && (
+                <Link to="/affiliate-dashboard" className="flex items-center gap-3 px-4 py-3 rounded-2xl text-sm font-bold text-zinc-300 hover:bg-zinc-800" onClick={() => setMenuOpen(false)}>
                   <User className="w-5 h-5" />
-                  My Account
+                  Affiliate Dashboard
                 </Link>
-                {isUserAffiliate && (
-                  <Link to="/affiliate-dashboard" className="flex items-center gap-3 px-4 py-3 rounded-2xl text-sm font-bold text-zinc-300 hover:bg-zinc-800" onClick={() => setMenuOpen(false)}>
-                    <User className="w-5 h-5" />
-                    Affiliate Dashboard
-                  </Link>
-                )}
-                {isUserAdmin && (
-                  <Link to="/admin" className="flex items-center gap-3 px-4 py-3 rounded-2xl text-sm font-bold text-[var(--seasonal-primary,#1a5632)] hover:bg-[var(--seasonal-primary,#1a5632)]/10" onClick={() => setMenuOpen(false)}>
-                    <Shield className="w-5 h-5" />
-                    Admin Dashboard
-                  </Link>
-                )}
-                <button
-                  onClick={handleLogout}
-                  className="flex items-center gap-3 px-4 py-3 rounded-2xl text-sm font-bold text-red-400 hover:bg-red-900/20 w-full text-left"
-                >
-                  <LogOut className="w-5 h-5" />
-                  Log Out
-                </button>
-              </>
-            ) : (
-              <>
-                <Link to="/login" className="flex items-center gap-3 px-4 py-3 rounded-2xl text-sm font-bold text-zinc-300 hover:bg-zinc-800" onClick={() => setMenuOpen(false)}>
-                  <LogIn className="w-5 h-5" />
-                  Log In
+              )}
+              {isUserAdmin && (
+                <Link to="/admin" className="flex items-center gap-3 px-4 py-3 rounded-2xl text-sm font-bold text-[var(--seasonal-primary,#1a5632)] hover:bg-[var(--seasonal-primary,#1a5632)]/10" onClick={() => setMenuOpen(false)}>
+                  <Shield className="w-5 h-5" />
+                  Admin Dashboard
                 </Link>
-                <Link
-                  to="/signup"
-                  className="flex items-center gap-3 px-4 py-3 rounded-2xl text-sm font-bold text-white"
-                  style={{ background: `linear-gradient(135deg, ${navAccentColor}, ${secondaryColor})` }}
-                  onClick={() => setMenuOpen(false)}
-                >
-                  <UserPlus className="w-4 h-4" />
-                  Sign Up
-                </Link>
-              </>
-            )}
-
-            {/* Divider */}
-            <div className="border-t border-zinc-800 my-1" />
-          </div>
+              )}
+              <button
+                onClick={handleLogout}
+                className="flex items-center gap-3 px-4 py-3 rounded-2xl text-sm font-bold text-red-400 hover:bg-red-900/20 w-full text-left"
+              >
+                <LogOut className="w-5 h-5" />
+                Log Out
+              </button>
+            </>
+          ) : (
+            <>
+              <Link to="/login" className="flex items-center gap-3 px-4 py-3 rounded-2xl text-sm font-bold text-zinc-300 hover:bg-zinc-800" onClick={() => setMenuOpen(false)}>
+                <LogIn className="w-5 h-5" />
+                Log In
+              </Link>
+              <Link
+                to="/signup"
+                className="flex items-center gap-3 px-4 py-3 rounded-2xl text-sm font-bold text-white"
+                style={{ background: `linear-gradient(135deg, ${navAccentColor}, ${secondaryColor})` }}
+                onClick={() => setMenuOpen(false)}
+              >
+                <UserPlus className="w-4 h-4" />
+                Sign Up
+              </Link>
+            </>
+          )}
         </div>
       </div>
     </nav>
