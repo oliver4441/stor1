@@ -4,8 +4,8 @@
   "description": "Shop online in Kericho, Kenya. Browse products, add to cart, and pay via M-Pesa.",
   "start_url": "/",
   "display": "standalone",
-  "background_color": "#ffffff",
-  "theme_color": "#ff385c",
+  "background_color": "#0a0a0a",
+  "theme_color": "#1a5632",
   "orientation": "portrait-primary",
   "icons": [
     {
