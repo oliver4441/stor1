@@ -64,7 +64,7 @@ export default function AdminAffiliates() {
   // Create affiliate modal
   const [modalOpen, setModalOpen] = useState(false);
   const [form, setForm] = useState({
-    full_name: '', email: '', phone: '', mpesa_number: '', password: '',
+    full_name: '', email: '', phone: '', mpesa_number: '', password: '', status: 'active',
   });
   const [submitting, setSubmitting] = useState(false);
 
@@ -107,7 +107,7 @@ export default function AdminAffiliates() {
       const res = await apiPost(`${API_BASE}/api/admin/affiliates`, form);
       showSuccess(`Affiliate created! Code: ${res.referral_code}`);
       setModalOpen(false);
-      setForm({ full_name: '', email: '', phone: '', mpesa_number: '', password: '' });
+      setForm({ full_name: '', email: '', phone: '', mpesa_number: '', password: '', status: 'active' });
       await loadData();
     } catch (err) {
       showError(err.message);
@@ -459,6 +459,14 @@ export default function AdminAffiliates() {
                 <input value={form.mpesa_number} onChange={e => setForm({...form, mpesa_number: e.target.value})}
                   placeholder="254712345678"
                   className="w-full px-4 py-2.5 rounded-xl bg-zinc-800 border border-transparent focus:border-primary focus:outline-none text-white text-sm" />
+              </div>
+              <div>
+                <label className="block text-sm font-bold mb-1.5 text-zinc-300">Status</label>
+                <select value={form.status} onChange={e => setForm({...form, status: e.target.value})}
+                  className="w-full px-4 py-2.5 rounded-xl bg-zinc-800 border border-transparent focus:border-primary focus:outline-none text-white text-sm">
+                  <option value="active">Active</option>
+                  <option value="inactive">Inactive</option>
+                </select>
               </div>
               <div>
                 <label className="block text-sm font-bold mb-1.5 text-zinc-300">Password *</label>
