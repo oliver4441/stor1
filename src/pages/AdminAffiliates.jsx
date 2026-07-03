@@ -119,7 +119,7 @@ export default function AdminAffiliates() {
   const toggleStatus = async (affiliateId, currentStatus) => {
     const newStatus = currentStatus === 'active' ? 'inactive' : 'active';
     try {
-      await apiPatch(`${API_BASE}/api/admin/affiliates/${affiliateId}/status`, { status: newStatus });
+      await apiPatch(`${API_BASE}/api/admin/affiliates/${affiliateId}`, { status: newStatus });
       showSuccess(`Affiliate ${newStatus === 'active' ? 'activated' : 'deactivated'}`);
       await loadData();
     } catch (err) {
