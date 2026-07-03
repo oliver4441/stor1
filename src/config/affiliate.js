@@ -6,12 +6,12 @@ const API_BASE = import.meta.env.VITE_API_URL || 'https://stor1-api.onrender.com
 export const AFFILIATE_CONFIG = {
   API_BASE,
   
-  // Tiers definition (mirrors affiliate_tiers table)
+  // Tiers definition (mirrors affiliate_tiers table — uses order count for frontend progression)
   TIERS: [
-    { id: 'bronze',   label: 'Bronze',   min_sales: 0,  rate: 0.03, color: 'text-amber-700', badge: 'bg-amber-700/20 text-amber-600' },
-    { id: 'silver',   label: 'Silver',   min_sales: 10, rate: 0.05, color: 'text-zinc-300',  badge: 'bg-zinc-600/20 text-zinc-300' },
-    { id: 'gold',     label: 'Gold',     min_sales: 30, rate: 0.08, color: 'text-amber-400',  badge: 'bg-amber-500/20 text-amber-400' },
-    { id: 'platinum', label: 'Platinum', min_sales: 60, rate: 0.12, color: 'text-blue-300',   badge: 'bg-blue-500/20 text-blue-300' },
+    { id: 'bronze',   label: 'Bronze',   min_orders: 0,  min_sales: 0,    rate: 0.03, color: 'text-amber-700', badge: 'bg-amber-700/20 text-amber-600' },
+    { id: 'silver',   label: 'Silver',   min_orders: 5,  min_sales: 50000,    rate: 0.05, color: 'text-zinc-300',  badge: 'bg-zinc-600/20 text-zinc-300' },
+    { id: 'gold',     label: 'Gold',     min_orders: 20, min_sales: 250000,   rate: 0.08, color: 'text-amber-400',  badge: 'bg-amber-500/20 text-amber-400' },
+    { id: 'platinum', label: 'Platinum', min_orders: 50, min_sales: 1000000,  rate: 0.12, color: 'text-blue-300',   badge: 'bg-blue-500/20 text-blue-300' },
   ],
 
   // Default referral reward points
@@ -48,9 +48,9 @@ export const AFFILIATE_CONFIG = {
 
 // Helper to compute tier from qualified order count
 export function computeTier(qualifiedCount) {
-  const tiers = [...AFFILIATE_CONFIG.TIERS].sort((a, b) => b.min_sales - a.min_sales);
+  const tiers = [...AFFILIATE_CONFIG.TIERS].sort((a, b) => b.min_orders - a.min_orders);
   for (const t of tiers) {
-    if (qualifiedCount >= t.min_sales) return t;
+    if (qualifiedCount >= t.min_orders) return t;
   }
   return AFFILIATE_CONFIG.TIERS[0];
 }

@@ -46,12 +46,30 @@ export async function getAffiliateProfile(userId) {
 export async function getDashboardStats(affiliateId) {
   try {
     const result = await apiGet(`${AFFILIATE_CONFIG.ENDPOINTS.DASHBOARD}/${affiliateId}`);
-    return result;
+    // Map backend response to frontend's expected structure
+    return {
+      lifetime: {
+        totalReferred: result.stats?.totalReferrals || 0,
+        totalSales: result.stats?.monthlySales || 0,
+        totalOrders: result.stats?.monthlyOrders || 0,
+        totalCommission: result.latestCommission?.commission_amount || 0,
+      },
+      yearly: {
+        totalSales: result.stats?.monthlySales || 0,
+        qualifiedCount: result.stats?.convertedReferrals || 0,
+        tier: result.currentTier?.name?.toLowerCase() || 'bronze',
+        commissionRate: result.currentTier?.commission_rate || 0.03,
+      },
+      progress: result.progress || null,
+      pendingCommission: 0,
+      paidCommission: 0,
+    };
   } catch (err) {
     console.error('getDashboardStats error:', err);
     return {
       lifetime: { totalReferred: 0, totalSales: 0, totalOrders: 0, totalCommission: 0 },
       yearly: { totalSales: 0, qualifiedCount: 0, tier: 'bronze', commissionRate: 0.03 },
+      progress: null,
       pendingCommission: 0,
       paidCommission: 0,
     };

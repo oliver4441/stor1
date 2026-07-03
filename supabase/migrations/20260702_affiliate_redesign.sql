@@ -25,9 +25,7 @@ DROP TABLE IF EXISTS public.affiliates CASCADE;
 DROP TABLE IF EXISTS public.affiliate_tiers CASCADE;
 DROP TABLE IF EXISTS public.affiliate_settings CASCADE;
 
--- Remove old trigger and function if they exist
-DROP TRIGGER IF EXISTS update_affiliates_modtime ON public.affiliates;
-DROP TRIGGER IF EXISTS update_monthly_commissions_modtime ON public.monthly_commissions;
+-- Remove old function if it exists (triggers get dropped with tables)
 DROP FUNCTION IF EXISTS public.update_modified_column();
 
 -- ═══════════════════════════════════════════════════════════════════

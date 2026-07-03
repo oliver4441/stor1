@@ -32,7 +32,7 @@ function TierProgress({ currentCount, currentTier }) {
     return (
       <div className="mt-3">
         <div className="flex justify-between text-xs text-zinc-500 mb-1">
-          <span>Sales: {currentCount}</span>
+          <span>Orders: {currentCount}</span>
           <span className="text-blue-300 font-bold">Platinum (Max Tier)</span>
         </div>
         <div className="h-2.5 bg-zinc-800 rounded-full overflow-hidden">
@@ -42,13 +42,13 @@ function TierProgress({ currentCount, currentTier }) {
     );
   }
 
-  const progress = ((currentCount - currentTierObj.min_sales) / (nextTier.min_sales - currentTierObj.min_sales)) * 100;
-  const remaining = nextTier.min_sales - currentCount;
+  const progress = ((currentCount - currentTierObj.min_orders) / (nextTier.min_orders - currentTierObj.min_orders)) * 100;
+  const remaining = nextTier.min_orders - currentCount;
 
   return (
     <div className="mt-3">
       <div className="flex justify-between text-xs text-zinc-500 mb-1">
-        <span>{currentTierObj.label}: {currentCount} sales</span>
+        <span>{currentTierObj.label}: {currentCount} orders</span>
         <span>{nextTier.label}: need {remaining} more</span>
       </div>
       <div className="h-2.5 bg-zinc-800 rounded-full overflow-hidden">
