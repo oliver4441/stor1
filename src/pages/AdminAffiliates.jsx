@@ -7,8 +7,15 @@ const API_BASE = import.meta.env.VITE_API_URL || 'https://stor1-api.onrender.com
 
 async function getAuthHeaders() {
   const { data: { session } } = await supabase.auth.getSession();
+  let token = session?.access_token;
+  if (!token) {
+    try {
+      const stored = JSON.parse(localStorage.getItem('supabase.auth.token') || '{}');
+      token = stored?.currentSession?.access_token || stored?.access_token;
+    } catch {}
+  }
   const headers = { 'Content-Type': 'application/json' };
-  if (session?.access_token) headers['Authorization'] = `Bearer ${session.access_token}`;
+  if (token) headers['Authorization'] = `Bearer ${token}`;
   return headers;
 }
 
