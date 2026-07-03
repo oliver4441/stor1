@@ -6,14 +6,12 @@ import { AFFILIATE_CONFIG, computeTier, formatKES, getReferralLink } from '../co
 import { Copy, Share2, Users, ShoppingBag, TrendingUp, Award, Calendar, ChevronDown, ChevronUp, Wallet, Send, CheckCircle, X, Loader2 } from 'lucide-react';
 
 const TIER_META = {
-  bronze:   { label: 'Bronze',   color: 'text-amber-700',  bg: 'bg-amber-700/20',  bar: 'bg-amber-700',  iconBg: 'bg-amber-700/20 text-amber-600' },
   silver:   { label: 'Silver',   color: 'text-zinc-300',   bg: 'bg-zinc-600/20',   bar: 'bg-zinc-400',   iconBg: 'bg-gradient-to-br from-zinc-500 to-zinc-200 text-white' },
   gold:     { label: 'Gold',     color: 'text-amber-400',  bg: 'bg-amber-500/20',  bar: 'bg-amber-400',  iconBg: 'bg-gradient-to-br from-amber-500 to-yellow-300 text-white' },
-  platinum: { label: 'Platinum', color: 'text-blue-300',   bg: 'bg-blue-500/20',   bar: 'bg-blue-400',   iconBg: 'bg-gradient-to-br from-blue-500 to-cyan-300 text-white' },
 };
 
 function TierBadge({ tier }) {
-  const meta = TIER_META[tier] || TIER_META.bronze;
+  const meta = TIER_META[tier] || TIER_META.silver;
   return (
     <span className={`px-3 py-1 rounded-full text-xs font-bold ${meta.bg} ${meta.color}`}>
       {meta.label}
@@ -199,9 +197,9 @@ export default function AffiliateDashboard() {
 
   const referralLink = affiliate ? getReferralLink(affiliate.referral_code) : '';
   const stats = dashboardStats || { lifetime: {}, yearly: {} };
-  const currentTier = stats.yearly?.tier || affiliate?.tier || 'bronze';
+  const currentTier = stats.yearly?.tier || affiliate?.tier || 'silver';
   const qualifiedCount = stats.yearly?.qualifiedCount || 0;
-  const commissionRate = stats.yearly?.commissionRate || 0.03;
+  const commissionRate = stats.yearly?.commissionRate || 0.05;
   const pendingCommission = stats.pendingCommission || 0;
   const paidCommission = stats.paidCommission || 0;
   const availableForPayout = pendingCommission;
@@ -253,7 +251,7 @@ export default function AffiliateDashboard() {
               </div>
               <div>
                 <p className="text-lg font-bold text-white">
-                  {TIER_META[currentTier]?.label || 'Bronze'} Tier
+                  {TIER_META[currentTier]?.label || 'Silver'} Tier
                 </p>
                 <p className="text-xs text-zinc-400">
                   {(commissionRate * 100).toFixed(0)}% commission on referred sales

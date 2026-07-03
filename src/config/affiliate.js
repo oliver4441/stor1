@@ -1,32 +1,30 @@
 // Affiliate Program Configuration
-// Matches the new 4-tier schema and backend settings
+// Aligned with spec: admin-managed, first-attribution, Silver/Gold tiers
 
 const API_BASE = import.meta.env.VITE_API_URL || 'https://stor1-api.onrender.com';
 
 export const AFFILIATE_CONFIG = {
   API_BASE,
   
-  // Tiers definition (mirrors affiliate_tiers table — uses order count for frontend progression)
+  // Tier definition (matches affiliate_tiers table — spec: Silver 0-29, Gold 30+)
   TIERS: [
-    { id: 'bronze',   label: 'Bronze',   min_orders: 0,  min_sales: 0,    rate: 0.03, color: 'text-amber-700', badge: 'bg-amber-700/20 text-amber-600' },
-    { id: 'silver',   label: 'Silver',   min_orders: 5,  min_sales: 50000,    rate: 0.05, color: 'text-zinc-300',  badge: 'bg-zinc-600/20 text-zinc-300' },
-    { id: 'gold',     label: 'Gold',     min_orders: 20, min_sales: 250000,   rate: 0.08, color: 'text-amber-400',  badge: 'bg-amber-500/20 text-amber-400' },
-    { id: 'platinum', label: 'Platinum', min_orders: 50, min_sales: 1000000,  rate: 0.12, color: 'text-blue-300',   badge: 'bg-blue-500/20 text-blue-300' },
+    { id: 'silver', label: 'Silver', min_orders: 0,  min_sales: 0,   rate: 0.05, color: 'text-zinc-300',  badge: 'bg-zinc-600/20 text-zinc-300' },
+    { id: 'gold',   label: 'Gold',   min_orders: 30, min_sales: 0,   rate: 0.10, color: 'text-amber-400',  badge: 'bg-amber-500/20 text-amber-400' },
   ],
 
-  // Default referral reward points
-  DEFAULT_REWARD_POINTS: 1,
+  // Default referral reward points (not used — purely monetary)
+  DEFAULT_REWARD_POINTS: 0,
 
-  // Min payout for M-Pesa B2C
+  // Min payout for M-Pesa
   MIN_PAYOUT: 2000,
 
-  // Attribution
-  ATTRIBUTION_MODEL: 'last_touch',
-  COOKIE_CONSENT_REQUIRED: true,
+  // Attribution — first touch always wins
+  ATTRIBUTION_MODEL: 'first_touch',
+  COOKIE_CONSENT_REQUIRED: false,
 
-  // Cookie name for referral tracking
+  // Cookie name for referral tracking (permanent — never expires)
   REF_COOKIE: 'omix_ref',
-  REF_COOKIE_MAX_AGE: 60 * 60 * 24 * 365 * 10, // 10 years
+  REF_COOKIE_MAX_AGE: 60 * 60 * 24 * 365 * 100, // 100 years (effectively permanent)
 
   // API endpoints
   ENDPOINTS: {
@@ -40,9 +38,7 @@ export const AFFILIATE_CONFIG = {
     LINK_AFFILIATE: `${API_BASE}/api/affiliate/link`,
     LOG_CLICK: `${API_BASE}/api/affiliate/log-click`,
     TIERS: `${API_BASE}/api/affiliate/tiers`,
-    APPLICATION: `${API_BASE}/api/affiliate/apply`,
-    APPLICATION_STATUS: `${API_BASE}/api/affiliate/application`,
-    ADMIN_APPROVE: `${API_BASE}/api/admin/affiliates`,
+    ADMIN_AFFILIATES: `${API_BASE}/api/admin/affiliates`,
   },
 };
 

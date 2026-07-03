@@ -55,7 +55,7 @@ export async function signUp({ email, password, fullName, phone, refCode }) {
       return { success: false, error: 'Account creation failed. Please try again.' };
     }
 
-    // Process referral attribution via backend API (last-touch model)
+    // Process referral attribution via backend API (first-touch — never overwrites)
     // Reads referral cookie, looks up affiliate, links user, awards reward
     if (refCode || document.cookie.includes('omix_ref=')) {
       try {

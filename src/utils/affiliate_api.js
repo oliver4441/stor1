@@ -57,8 +57,8 @@ export async function getDashboardStats(affiliateId) {
       yearly: {
         totalSales: result.stats?.monthlySales || 0,
         qualifiedCount: result.stats?.convertedReferrals || 0,
-        tier: result.currentTier?.name?.toLowerCase() || 'bronze',
-        commissionRate: result.currentTier?.commission_rate || 0.03,
+        tier: result.currentTier?.name?.toLowerCase() || 'silver',
+        commissionRate: result.currentTier?.commission_rate || 0.05,
       },
       progress: result.progress || null,
       pendingCommission: result.totalPendingCommission || 0,
@@ -68,7 +68,7 @@ export async function getDashboardStats(affiliateId) {
     console.error('getDashboardStats error:', err);
     return {
       lifetime: { totalReferred: 0, totalSales: 0, totalOrders: 0, totalCommission: 0 },
-      yearly: { totalSales: 0, qualifiedCount: 0, tier: 'bronze', commissionRate: 0.03 },
+      yearly: { totalSales: 0, qualifiedCount: 0, tier: 'silver', commissionRate: 0.05 },
       progress: null,
       pendingCommission: 0,
       paidCommission: 0,
@@ -146,7 +146,7 @@ export async function getTierInfo() {
 // ─── Referral Tracking (Cookie + Logging) ──────────────────────
 /**
  * Set the referral cookie on page load when ref param is present.
- * Cookie is permanent (10 year expiry).
+ * Cookie is permanent (100 year expiry, effectively never expires).
  */
 export function setReferralCookie(refCode) {
   const maxAge = AFFILIATE_CONFIG.REF_COOKIE_MAX_AGE;
@@ -206,27 +206,6 @@ export async function linkUserToAffiliate(userId, referralCode) {
 export async function lookupAffiliateByCode(referralCode) {
   try {
     const data = await apiGet(`${AFFILIATE_CONFIG.ENDPOINTS.PROFILE}/by-code/${referralCode}`);
-    return data || null;
-  } catch {
-    return null;
-  }
-}
-
-// ─── Affiliate Application (Self-Signup) ────────────────────────
-
-/**
- * Submit a "Become an Affiliate" self-signup application
- */
-export async function submitAffiliateApplication({ full_name, phone, mpesa_number }) {
-  return apiPost(AFFILIATE_CONFIG.ENDPOINTS.APPLICATION, { full_name, phone, mpesa_number });
-}
-
-/**
- * Check affiliate application status for a user
- */
-export async function getApplicationStatus(userId) {
-  try {
-    const data = await apiGet(`${AFFILIATE_CONFIG.ENDPOINTS.APPLICATION_STATUS}/${userId}`);
     return data || null;
   } catch {
     return null;

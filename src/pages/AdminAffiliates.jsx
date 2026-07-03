@@ -259,12 +259,11 @@ export default function AdminAffiliates() {
                     <div className="flex items-center gap-2">
                       <p className="font-bold text-white truncate">{a.full_name}</p>
                       <span className={`text-[10px] px-1.5 py-0.5 rounded font-bold ${
-                        a.tier === 'platinum' ? 'bg-blue-500/20 text-blue-300' :
                         a.tier === 'gold' ? 'bg-amber-500/20 text-amber-400' :
                         a.tier === 'silver' ? 'bg-zinc-600/20 text-zinc-300' :
-                        'bg-amber-700/20 text-amber-600'
+                        'bg-zinc-600/20 text-zinc-300'
                       }`}>
-                        {a.tier || 'bronze'}
+                        {a.tier || 'silver'}
                       </span>
                     </div>
                     <p className="text-xs text-zinc-400">

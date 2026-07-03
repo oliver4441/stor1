@@ -183,13 +183,9 @@ function Navbar() {
                 <User className="w-5 h-5" />
                 <span className="text-sm font-medium">{t('nav.account') || 'Account'}</span>
               </Link>
-              {isUserAffiliate ? (
+              {isUserAffiliate && (
                 <Link to="/affiliate-dashboard" className="flex items-center gap-2 p-2 rounded-full hover:bg-zinc-800 text-zinc-300 transition-colors">
                   <span className="text-sm font-medium">Affiliate Dashboard</span>
-                </Link>
-              ) : (
-                <Link to="/apply-affiliate" className="flex items-center gap-2 p-2 rounded-full hover:bg-zinc-800 text-zinc-300 transition-colors">
-                  <span className="text-sm font-medium">Become an Affiliate</span>
                 </Link>
               )}
             </>
@@ -283,15 +279,10 @@ function Navbar() {
                   <User className="w-5 h-5" />
                   My Account
                 </Link>
-                {isUserAffiliate ? (
+                {isUserAffiliate && (
                   <Link to="/affiliate-dashboard" className="flex items-center gap-3 px-4 py-3 rounded-2xl text-sm font-bold text-zinc-300 hover:bg-zinc-800" onClick={() => setMenuOpen(false)}>
                     <User className="w-5 h-5" />
                     Affiliate Dashboard
-                  </Link>
-                ) : (
-                  <Link to="/apply-affiliate" className="flex items-center gap-3 px-4 py-3 rounded-2xl text-sm font-bold text-zinc-300 hover:bg-zinc-800" onClick={() => setMenuOpen(false)}>
-                    <User className="w-5 h-5" />
-                    Become an Affiliate
                   </Link>
                 )}
                 {isUserAdmin && (
