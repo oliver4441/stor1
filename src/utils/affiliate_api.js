@@ -61,8 +61,8 @@ export async function getDashboardStats(affiliateId) {
         commissionRate: result.currentTier?.commission_rate || 0.03,
       },
       progress: result.progress || null,
-      pendingCommission: 0,
-      paidCommission: 0,
+      pendingCommission: result.totalPendingCommission || 0,
+      paidCommission: result.totalPaidCommission || 0,
     };
   } catch (err) {
     console.error('getDashboardStats error:', err);

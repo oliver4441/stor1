@@ -60,10 +60,14 @@ export default function BecomeAffiliate() {
         const appStatus = await getApplicationStatus(session.user.id);
         if (appStatus) {
           if (!cancelled) {
-            setApplicationData(appStatus);
             let s = appStatus.status || 'pending';
-            if (s === 'approved') s = 'active'; // treat approved as active
-            setStatus(s === 'active' ? 'pending' : s);
+            // Approved/active → redirect to affiliate dashboard
+            if (s === 'approved' || s === 'active') {
+              navigate('/affiliate-dashboard');
+              return;
+            }
+            setApplicationData(appStatus);
+            setStatus(s === 'terminated' ? 'rejected' : s);
           }
           return;
         }
