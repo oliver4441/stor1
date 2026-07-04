@@ -109,8 +109,8 @@ export default function MobileBottomNav() {
       {/* Cascade items panel */}
       <div
         ref={cascadeRef}
-        className={`fixed left-0 right-0 bottom-0 z-50 lg:hidden transition-all duration-300 ease-out pointer-events-none ${
-          cascadeOpen ? 'opacity-100' : 'opacity-0'
+        className={`fixed left-0 right-0 bottom-0 z-[52] lg:hidden transition-all duration-300 ease-out ${
+          cascadeOpen ? 'opacity-100' : 'opacity-0 pointer-events-none'
         }`}
       >
         <div

@@ -232,7 +232,7 @@ export default function AffiliateDashboard() {
   }
 
   return (
-    <div className="min-h-screen bg-zinc-950 pb-24">
+    <div className="min-h-screen bg-zinc-950">
       {/* Header */}
       <div className="bg-gradient-to-b from-primary/20 to-zinc-950 px-4 py-8">
         <div className="max-w-4xl mx-auto">

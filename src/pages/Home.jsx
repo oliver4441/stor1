@@ -107,7 +107,7 @@ function Home() {
   const vibe = theme?.vibe || 'default';
 
   return (
-    <div data-name="home-page" className="pb-24">
+    <div data-name="home-page">
       {/* Seasonal Particles */}
       <SeasonalParticles type={particleType} count={25} />
 

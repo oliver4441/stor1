@@ -67,7 +67,7 @@ function Refurbished() {
   const particleType = theme?.particleType || 'none';
 
   return (
-    <div data-name="refurbished-page" className="pb-24">
+    <div data-name="refurbished-page">
       <SeasonalParticles type={particleType} count={15} />
 
       {/* Hero */}

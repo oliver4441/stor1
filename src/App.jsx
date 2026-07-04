@@ -87,7 +87,7 @@ function App() {
       <div className="min-h-screen flex flex-col bg-zinc-950">
         <a href="#main-content" className="sr-only focus:not-sr-only focus:absolute focus:top-2 focus:left-2 focus:z-[100] focus:bg-white focus:text-black focus:px-4 focus:py-2 focus:rounded-lg focus:font-bold">Skip to main content</a>
         <Navbar />
-        <main id="main-content" className="flex-grow">
+        <main id="main-content" className="flex-grow pb-16 lg:pb-0">
           <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/login" element={<Login />} />

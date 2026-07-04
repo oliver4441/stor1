@@ -104,133 +104,135 @@ function Navbar() {
   };
 
   return (
-    <nav className={`border-b border-zinc-800/50 bg-white/80 dark:bg-zinc-950/80 backdrop-blur-xl sticky top-0 z-50 transition-transform duration-200 ease-out ${navVisible ? 'translate-y-0' : '-translate-y-full'}`} style={{ paddingTop: 'env(safe-area-inset-top)' }}>
-      <div className="max-w-7xl mx-auto px-4 h-14 flex items-center justify-between">
-        {/* Logo */}
-        <Link to="/" className="flex items-center gap-2 shrink-0">
-          {sticker && <span className="theme-sticker text-lg">{sticker}</span>}
-          <span className="text-xl font-bold tracking-tight text-white" style={{ color: navAccentText || '#ffffff' }}>
-            Omix Store
-          </span>
-          {badgeText && (
-            <span
-              className="seasonal-badge text-[8px] font-black px-1.5 py-0.5 rounded-full leading-none"
-              style={{ backgroundColor: badgeBg, color: badgeTextColor }}
-            >
-              {badgeText}
+    <>
+      <nav className={`border-b border-zinc-800/50 bg-white/80 dark:bg-zinc-950/80 backdrop-blur-xl sticky top-0 z-50 transition-transform duration-200 ease-out ${navVisible ? 'translate-y-0' : '-translate-y-full'}`} style={{ paddingTop: 'env(safe-area-inset-top)' }}>
+        <div className="max-w-7xl mx-auto px-4 h-14 flex items-center justify-between">
+          {/* Logo */}
+          <Link to="/" className="flex items-center gap-2 shrink-0">
+            {sticker && <span className="theme-sticker text-lg">{sticker}</span>}
+            <span className="text-xl font-bold tracking-tight text-white" style={{ color: navAccentText || '#ffffff' }}>
+              Omix Store
             </span>
-          )}
-        </Link>
+            {badgeText && (
+              <span
+                className="seasonal-badge text-[8px] font-black px-1.5 py-0.5 rounded-full leading-none"
+                style={{ backgroundColor: badgeBg, color: badgeTextColor }}
+              >
+                {badgeText}
+              </span>
+            )}
+          </Link>
 
-        {/* Desktop (lg+): Feature Links */}
-        <div className="hidden lg:flex items-center gap-1.5">
-          {FEATURE_LINKS.map(link => {
-            const Icon = link.icon;
-            const isActive = !link.external && location.pathname === link.to;
-            const linkClass = `relative flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-sm font-bold transition-all duration-300 group ${
-              isActive
-                ? `bg-gradient-to-r ${link.color} text-white shadow-lg ${link.glow}`
-                : `text-zinc-300 hover:text-white hover:bg-gradient-to-r hover:${link.color} hover:shadow-md hover:${link.glow}`
-            }`;
-            const iconEl = <Icon className={`w-4 h-4 ${isActive ? 'animate-bounce-subtle' : 'group-hover:animate-bounce-subtle'}`} />;
-            const labelEl = <span>{link.label}</span>;
-            const pingEl = <span className={`absolute inset-0 rounded-full bg-gradient-to-r ${link.color} opacity-0 group-hover:opacity-20 animate-ping-slow pointer-events-none`} />;
-            if (link.external) {
+          {/* Desktop (lg+): Feature Links */}
+          <div className="hidden lg:flex items-center gap-1.5">
+            {FEATURE_LINKS.map(link => {
+              const Icon = link.icon;
+              const isActive = !link.external && location.pathname === link.to;
+              const linkClass = `relative flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-sm font-bold transition-all duration-300 group ${
+                isActive
+                  ? `bg-gradient-to-r ${link.color} text-white shadow-lg ${link.glow}`
+                  : `text-zinc-300 hover:text-white hover:bg-gradient-to-r hover:${link.color} hover:shadow-md hover:${link.glow}`
+              }`;
+              const iconEl = <Icon className={`w-4 h-4 ${isActive ? 'animate-bounce-subtle' : 'group-hover:animate-bounce-subtle'}`} />;
+              const labelEl = <span>{link.label}</span>;
+              const pingEl = <span className={`absolute inset-0 rounded-full bg-gradient-to-r ${link.color} opacity-0 group-hover:opacity-20 animate-ping-slow pointer-events-none`} />;
+              if (link.external) {
+                return (
+                  <a key={link.to} href={link.to} target="_blank" rel="noopener noreferrer" className={linkClass}>
+                    {iconEl}{labelEl}{pingEl}
+                  </a>
+                );
+              }
               return (
-                <a key={link.to} href={link.to} target="_blank" rel="noopener noreferrer" className={linkClass}>
+                <Link key={link.to} to={link.to} className={linkClass}>
                   {iconEl}{labelEl}{pingEl}
-                </a>
-              );
-            }
-            return (
-              <Link key={link.to} to={link.to} className={linkClass}>
-                {iconEl}{labelEl}{pingEl}
-              </Link>
-            );
-          })}
-        </div>
-
-        {/* Desktop (lg+): Right side */}
-        <div className="hidden lg:flex items-center gap-2">
-          <Link to="/cart" className="relative p-2 rounded-full hover:bg-zinc-800 text-zinc-300 transition-colors" aria-label={`Shopping cart, ${cartCount} items`}>
-            <ShoppingCart className="w-5 h-5" />
-            {cartCount > 0 && (
-              <span className="absolute -top-1 -right-1 w-5 h-5 text-zinc-900 text-[10px] font-bold rounded-full flex items-center justify-center"
-                style={{ backgroundColor: '#34d399' }}
-              >
-                {cartCount > 9 ? '9+' : cartCount}
-              </span>
-            )}
-          </Link>
-
-          {isUserAdmin && (
-            <Link to="/admin" className="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold transition-all border"
-              style={{ color: navAccentColor, borderColor: navAccentColor + '33' }}
-            >
-              <Shield className="w-3.5 h-3.5" />
-              Admin
-            </Link>
-          )}
-
-          {user ? (
-            <>
-              <Link to="/account" className="flex items-center gap-2 p-2 rounded-full hover:bg-zinc-800 text-zinc-300 transition-colors">
-                <User className="w-5 h-5" />
-                <span className="text-sm font-medium">{t('nav.account') || 'Account'}</span>
-              </Link>
-              {isUserAffiliate && (
-                <Link to="/affiliate-dashboard" className="flex items-center gap-2 p-2 rounded-full hover:bg-zinc-800 text-zinc-300 transition-colors">
-                  <span className="text-sm font-medium">Affiliate Dashboard</span>
                 </Link>
+              );
+            })}
+          </div>
+
+          {/* Desktop (lg+): Right side */}
+          <div className="hidden lg:flex items-center gap-2">
+            <Link to="/cart" className="relative p-2 rounded-full hover:bg-zinc-800 text-zinc-300 transition-colors" aria-label={`Shopping cart, ${cartCount} items`}>
+              <ShoppingCart className="w-5 h-5" />
+              {cartCount > 0 && (
+                <span className="absolute -top-1 -right-1 w-5 h-5 text-zinc-900 text-[10px] font-bold rounded-full flex items-center justify-center"
+                  style={{ backgroundColor: '#34d399' }}
+                >
+                  {cartCount > 9 ? '9+' : cartCount}
+                </span>
               )}
-            </>
-          ) : (
-            <>
-              <Link to="/login" className="flex items-center gap-1.5 text-sm font-medium text-zinc-300 hover:text-white px-3 py-2 rounded-full hover:bg-zinc-800 transition-all">
-                <LogIn className="w-4 h-4" />
-                Log In
-              </Link>
-              <Link
-                to="/signup"
-                className="flex items-center gap-1.5 text-white px-5 py-2.5 rounded-full text-sm font-bold shadow-lg transition-all hover:scale-105 active:scale-95"
-                style={{
-                  background: `linear-gradient(135deg, ${navAccentColor}, ${theme?.colors?.secondary || '#14472a'})`,
-                  boxShadow: `0 4px 14px ${navAccentColor}40`,
-                }}
-              >
-                <UserPlus className="w-4 h-4" />
-                Sign Up
-              </Link>
-            </>
-          )}
-        </div>
+            </Link>
 
-        {/* Below lg: Compact controls + Hamburger */}
-        <div className="flex lg:hidden items-center gap-1">
-          {/* Cart icon always visible on mobile */}
-          <Link to="/cart" className="relative p-2 rounded-full hover:bg-zinc-800 text-zinc-300 transition-colors" aria-label={`Shopping cart, ${cartCount} items`}>
-            <ShoppingCart className="w-5 h-5" />
-            {cartCount > 0 && (
-              <span className="absolute -top-1 -right-1 w-5 h-5 text-zinc-900 text-[10px] font-bold rounded-full flex items-center justify-center"
-                style={{ backgroundColor: '#34d399' }}
+            {isUserAdmin && (
+              <Link to="/admin" className="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold transition-all border"
+                style={{ color: navAccentColor, borderColor: navAccentColor + '33' }}
               >
-                {cartCount > 9 ? '9+' : cartCount}
-              </span>
+                <Shield className="w-3.5 h-3.5" />
+                Admin
+              </Link>
             )}
-          </Link>
 
-          {/* Hamburger */}
-          <button
-            onClick={() => setMenuOpen(!menuOpen)}
-            className="p-2 rounded-full hover:bg-zinc-800 text-zinc-300 transition-colors"
-            aria-label={menuOpen ? 'Close menu' : 'Open menu'}
-          >
-            {menuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
-          </button>
+            {user ? (
+              <>
+                <Link to="/account" className="flex items-center gap-2 p-2 rounded-full hover:bg-zinc-800 text-zinc-300 transition-colors">
+                  <User className="w-5 h-5" />
+                  <span className="text-sm font-medium">{t('nav.account') || 'Account'}</span>
+                </Link>
+                {isUserAffiliate && (
+                  <Link to="/affiliate-dashboard" className="flex items-center gap-2 p-2 rounded-full hover:bg-zinc-800 text-zinc-300 transition-colors">
+                    <span className="text-sm font-medium">Affiliate Dashboard</span>
+                  </Link>
+                )}
+              </>
+            ) : (
+              <>
+                <Link to="/login" className="flex items-center gap-1.5 text-sm font-medium text-zinc-300 hover:text-white px-3 py-2 rounded-full hover:bg-zinc-800 transition-all">
+                  <LogIn className="w-4 h-4" />
+                  Log In
+                </Link>
+                <Link
+                  to="/signup"
+                  className="flex items-center gap-1.5 text-white px-5 py-2.5 rounded-full text-sm font-bold shadow-lg transition-all hover:scale-105 active:scale-95"
+                  style={{
+                    background: `linear-gradient(135deg, ${navAccentColor}, ${theme?.colors?.secondary || '#14472a'})`,
+                    boxShadow: `0 4px 14px ${navAccentColor}40`,
+                  }}
+                >
+                  <UserPlus className="w-4 h-4" />
+                  Sign Up
+                </Link>
+              </>
+            )}
+          </div>
+
+          {/* Below lg: Compact controls + Hamburger */}
+          <div className="flex lg:hidden items-center gap-1">
+            {/* Cart icon always visible on mobile */}
+            <Link to="/cart" className="relative p-2 rounded-full hover:bg-zinc-800 text-zinc-300 transition-colors" aria-label={`Shopping cart, ${cartCount} items`}>
+              <ShoppingCart className="w-5 h-5" />
+              {cartCount > 0 && (
+                <span className="absolute -top-1 -right-1 w-5 h-5 text-zinc-900 text-[10px] font-bold rounded-full flex items-center justify-center"
+                  style={{ backgroundColor: '#34d399' }}
+                >
+                  {cartCount > 9 ? '9+' : cartCount}
+                </span>
+              )}
+            </Link>
+
+            {/* Hamburger */}
+            <button
+              onClick={() => setMenuOpen(!menuOpen)}
+              className="p-2 rounded-full hover:bg-zinc-800 text-zinc-300 transition-colors"
+              aria-label={menuOpen ? 'Close menu' : 'Open menu'}
+            >
+              {menuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+            </button>
+          </div>
         </div>
-      </div>
+      </nav>
 
-      {/* Mobile Sidebar — slides in from the right (lg+ hidden) */}
+      {/* Mobile Sidebar — rendered OUTSIDE nav to avoid CSS transform containing block bug */}
       {/* Backdrop overlay */}
       <div
         className={`fixed inset-0 bg-black/40 backdrop-blur-sm z-[60] lg:hidden transition-opacity duration-300 ease-out ${
@@ -338,7 +340,7 @@ function Navbar() {
           )}
         </div>
       </div>
-    </nav>
+    </>
   );
 }
 

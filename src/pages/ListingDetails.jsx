@@ -577,7 +577,7 @@ function ListingDetails() {
 
       {/* Related */}
       {related.length > 0 && (
-        <div className="mt-16 pt-8 border-t border-zinc-800 pb-24 md:pb-0">
+        <div className="mt-16 pt-8 border-t border-zinc-800">
           <h2 className="text-2xl font-bold mb-6">{t('listing.youMayAlsoLike')}</h2>
           <AutoScrollCarousel itemMinWidth={260} gap={16} speed={40}>
             {related.map(l => (
