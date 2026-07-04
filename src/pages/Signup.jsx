@@ -64,7 +64,7 @@ function Signup() {
 
         // Send welcome email (fire and forget)
         try {
-          const API_BASE = import.meta.env.VITE_API_URL || 'https://stor1-api.onrender.com';
+          const API_BASE = '';
           const apiKey = import.meta.env.VITE_OMIX_API_KEY;
           if (apiKey) {
             fetch(`${API_BASE}/api/email/welcome`, {

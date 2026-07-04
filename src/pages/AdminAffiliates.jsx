@@ -3,7 +3,7 @@ import { supabase } from '../utils/supabase';
 import { Users, Plus, Search, X, Loader2, Check, AlertTriangle, DollarSign, Activity, Link as LinkIcon, Filter, ChevronDown, ChevronUp, Award } from 'lucide-react';
 import { formatKES, AFFILIATE_CONFIG } from '../config/affiliate';
 
-const API_BASE = import.meta.env.VITE_API_URL || 'https://stor1-api.onrender.com';
+const API_BASE = '';
 
 async function getAuthHeaders() {
   const { data: { session } } = await supabase.auth.getSession();

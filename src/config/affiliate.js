@@ -1,7 +1,7 @@
 // Affiliate Program Configuration
 // Aligned with spec: admin-managed, first-attribution, Silver/Gold tiers
 
-const API_BASE = import.meta.env.VITE_API_URL || 'https://stor1-api.onrender.com';
+const API_BASE = import.meta.env.VITE_API_URL || '';
 
 export const AFFILIATE_CONFIG = {
   API_BASE,

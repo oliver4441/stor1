@@ -4,7 +4,7 @@
 
 import { supabase } from './supabase';
 
-const API_BASE_URL = import.meta.env.VITE_API_URL || 'https://stor1-api.onrender.com';
+const API_BASE_URL = import.meta.env.VITE_API_URL || '';
 const EDGE_FUNCTION_URL = import.meta.env.VITE_PUSH_FUNCTION_URL || (API_BASE_URL + '/api/push/send');
 const VAPID_PRIVATE_KEY = import.meta.env.VITE_VAPID_PRIVATE_KEY || '';
 const VAPID_PUBLIC_KEY = import.meta.env.VITE_VAPID_PUBLIC_KEY || '';

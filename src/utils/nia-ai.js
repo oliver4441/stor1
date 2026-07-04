@@ -1,6 +1,6 @@
 // Nia AI — upgraded with product awareness, user context, Swahili support
 
-const API_URL = import.meta.env.VITE_API_URL || 'https://stor1-api.onrender.com';
+const API_URL = import.meta.env.VITE_API_URL || '';
 const OMIX_API_KEY = import.meta.env.VITE_OMIX_API_KEY || '';
 
 // ── Build message array for the API ─────────────────────────────
