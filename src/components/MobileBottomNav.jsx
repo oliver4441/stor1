@@ -13,7 +13,7 @@ const CASCADE_ITEMS = [
   { to: '/about', icon: Info, label: 'About' },
 ];
 
-const AUTH_CASCADE_ITEMS = [
+const AUTH_ITEMS = [
   { to: '/login', icon: LogIn, label: 'Log In' },
   { to: '/signup', icon: UserPlus, label: 'Sign Up' },
 ];
@@ -33,7 +33,6 @@ export default function MobileBottomNav() {
   const [user, setUser] = useState(null);
   const cascadeRef = useRef(null);
 
-  // Check auth state
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
       setUser(session?.user ?? null);
@@ -64,10 +63,8 @@ export default function MobileBottomNav() {
     return () => { mounted = false; clearInterval(interval); window.removeEventListener(WISHLIST_CHANGE_EVENT, handleChange); };
   }, []);
 
-  // Close cascade on route change
   useEffect(() => { setCascadeOpen(false); }, [location.pathname]);
 
-  // Close cascade on Escape key
   const handleKeyDown = useCallback((e) => {
     if (e.key === 'Escape') setCascadeOpen(false);
   }, []);
@@ -79,7 +76,6 @@ export default function MobileBottomNav() {
     return () => document.removeEventListener('keydown', handleKeyDown);
   }, [cascadeOpen, handleKeyDown]);
 
-  // Lock body scroll when cascade open
   useEffect(() => {
     document.body.style.overflow = cascadeOpen ? 'hidden' : '';
     return () => { document.body.style.overflow = ''; };
@@ -97,11 +93,11 @@ export default function MobileBottomNav() {
     return location.pathname === path;
   };
 
-  const cascadeItems = user ? CASCADE_ITEMS : [...AUTH_CASCADE_ITEMS.slice(0, 1), ...CASCADE_ITEMS, ...AUTH_CASCADE_ITEMS.slice(1)];
+  const cascadeItems = user ? CASCADE_ITEMS : [...AUTH_ITEMS, ...CASCADE_ITEMS];
 
   return (
     <>
-      {/* Cascade overlay backdrop */}
+      {/* Cascade backdrop overlay */}
       <div
         className={`fixed inset-0 bg-black/40 backdrop-blur-sm z-40 lg:hidden transition-opacity duration-300 ease-out ${
           cascadeOpen ? 'opacity-100' : 'opacity-0 pointer-events-none'
@@ -113,13 +109,15 @@ export default function MobileBottomNav() {
       {/* Cascade items panel */}
       <div
         ref={cascadeRef}
-        className={`fixed bottom-20 left-1/2 -translate-x-1/2 z-41 lg:hidden transition-all duration-300 ease-out ${
-          cascadeOpen
-            ? 'opacity-100 translate-y-0 pointer-events-auto'
-            : 'opacity-0 translate-y-4 pointer-events-none'
+        className={`fixed left-0 right-0 bottom-0 z-50 lg:hidden transition-all duration-300 ease-out pointer-events-none ${
+          cascadeOpen ? 'opacity-100' : 'opacity-0'
         }`}
       >
-        <div className="bg-zinc-900/95 backdrop-blur-xl border border-zinc-800 rounded-2xl shadow-2xl overflow-hidden min-w-[200px]">
+        <div
+          className={`mx-4 mb-24 bg-zinc-900/95 backdrop-blur-xl border border-zinc-800 rounded-2xl shadow-2xl overflow-hidden transition-all duration-300 ${
+            cascadeOpen ? 'translate-y-0' : 'translate-y-4'
+          }`}
+        >
           {cascadeItems.map((item, i) => {
             const Icon = item.icon;
             const isItemActive = location.pathname === item.to;
@@ -131,27 +129,24 @@ export default function MobileBottomNav() {
                 className={`flex items-center gap-3 px-4 py-3 text-sm font-bold transition-all ${
                   isItemActive
                     ? 'text-[var(--seasonal-primary,#1a5632)] bg-[var(--seasonal-primary,#1a5632)]/10'
-                    : 'text-zinc-300 hover:bg-zinc-800'
+                    : 'text-zinc-300 active:bg-zinc-800'
                 } ${i < cascadeItems.length - 1 ? 'border-b border-zinc-800/50' : ''}`}
-                style={{ animationDelay: `${i * 50}ms` }}
+                style={{ animationDelay: `${i * 50}ms`, animation: cascadeOpen ? `cascade-up 0.25s ease-out ${i * 50}ms both` : 'none' }}
               >
-                <Icon className="w-5 h-5" />
-                <span>{item.label}</span>
+                <Icon className="w-5 h-5 shrink-0" />
+                <span className="truncate">{item.label}</span>
               </Link>
             );
           })}
         </div>
-
-        {/* Arrow pointing down to the trigger */}
-        <div className="flex justify-center -mb-1">
-          <div className="w-3 h-3 bg-zinc-900 border-b border-r border-zinc-800 -rotate-45 transform -mt-1.5" />
-        </div>
       </div>
 
       {/* Bottom navigation bar */}
-      <nav className="lg:hidden fixed bottom-0 left-0 right-0 z-30 bg-zinc-900 border-t border-zinc-800 safe-bottom">
-        <div className="flex items-center justify-around h-16 max-w-lg mx-auto px-1">
-          {/* Left: Home, Search */}
+      <nav
+        className={`lg:hidden fixed bottom-0 left-0 right-0 z-30 bg-zinc-950/95 backdrop-blur-lg border-t border-zinc-800/50 safe-bottom`}
+      >
+        <div className="flex items-center justify-between h-16 max-w-lg mx-auto">
+          {/* Left items: Home, Search */}
           {navItems.slice(0, 2).map((item) => {
             const Icon = item.icon;
             const active = isActive(item.to);
@@ -161,17 +156,17 @@ export default function MobileBottomNav() {
               <Link
                 key={item.to}
                 to={item.to}
-                className={`relative flex flex-col items-center justify-center gap-0.5 min-w-[56px] py-1 transition-all duration-150 ${
+                className={`relative flex flex-col items-center justify-center gap-0.5 flex-1 min-w-0 h-full transition-all duration-150 ${
                   active
                     ? 'text-[var(--seasonal-primary,#1a5632)]'
-                    : 'text-zinc-400 active:scale-90'
+                    : 'text-zinc-400 active:text-zinc-200'
                 }`}
                 aria-label={item.label}
               >
                 <div className={`relative transition-transform duration-150 ${active ? 'scale-110 -translate-y-0.5' : ''}`}>
-                  <Icon className="w-5 h-5 transition-transform duration-150" />
+                  <Icon className="w-5 h-5" strokeWidth={active ? 2.5 : 1.5} />
                   {badge > 0 && (
-                    <span className="absolute -top-1.5 -right-2.5 min-w-[16px] h-4 px-1 bg-emerald-400 text-black text-[9px] font-bold rounded-full flex items-center justify-center">
+                    <span className="absolute -top-1.5 -right-2.5 min-w-[16px] h-4 px-1 bg-emerald-400 text-black text-[9px] font-bold rounded-full flex items-center justify-center shadow-lg">
                       {badge > 99 ? '99+' : badge}
                     </span>
                   )}
@@ -181,29 +176,26 @@ export default function MobileBottomNav() {
             );
           })}
 
-          {/* Center: Cascading trigger */}
-          <button
-            onClick={() => setCascadeOpen(!cascadeOpen)}
-            className={`relative -mt-4 w-14 h-14 rounded-full flex items-center justify-center shadow-xl transition-all duration-300 active:scale-90 ${
-              cascadeOpen
-                ? 'bg-red-500 rotate-45 scale-110'
-                : 'bg-gradient-to-br from-[var(--seasonal-primary,#1a5632)] to-[var(--seasonal-secondary,#14472a)] hover:scale-105'
-            }`}
-            style={{
-              boxShadow: cascadeOpen
-                ? '0 4px 15px rgba(239,68,68,0.4)'
-                : '0 4px 15px rgba(26,86,50,0.4)',
-            }}
-            aria-label={cascadeOpen ? 'Close menu' : 'Open actions'}
-          >
-            {cascadeOpen ? (
-              <X className="w-6 h-6 text-white" />
-            ) : (
-              <Plus className="w-6 h-6 text-white" />
-            )}
-          </button>
+          {/* Center: Cascading trigger - takes no flex space */}
+          <div className="flex items-center justify-center w-[72px] shrink-0">
+            <button
+              onClick={() => setCascadeOpen(!cascadeOpen)}
+              className={`relative -mt-5 w-[56px] h-[56px] rounded-full flex items-center justify-center shadow-xl transition-all duration-300 active:scale-90 ${
+                cascadeOpen
+                  ? 'bg-red-500 rotate-45 scale-110 shadow-red-500/40'
+                  : 'bg-gradient-to-br from-[var(--seasonal-primary,#1a5632)] to-[var(--seasonal-secondary,#14472a)] hover:scale-105 shadow-black/30'
+              }`}
+              aria-label={cascadeOpen ? 'Close menu' : 'Open actions'}
+            >
+              {cascadeOpen ? (
+                <X className="w-6 h-6 text-white" />
+              ) : (
+                <Plus className="w-6 h-6 text-white" />
+              )}
+            </button>
+          </div>
 
-          {/* Right: Cart, Wishlist */}
+          {/* Right items: Cart, Wishlist */}
           {navItems.slice(2, 4).map((item) => {
             const Icon = item.icon;
             const active = isActive(item.to);
@@ -213,17 +205,17 @@ export default function MobileBottomNav() {
               <Link
                 key={item.to}
                 to={item.to}
-                className={`relative flex flex-col items-center justify-center gap-0.5 min-w-[56px] py-1 transition-all duration-150 ${
+                className={`relative flex flex-col items-center justify-center gap-0.5 flex-1 min-w-0 h-full transition-all duration-150 ${
                   active
                     ? 'text-[var(--seasonal-primary,#1a5632)]'
-                    : 'text-zinc-400 active:scale-90'
+                    : 'text-zinc-400 active:text-zinc-200'
                 }`}
                 aria-label={item.label}
               >
                 <div className={`relative transition-transform duration-150 ${active ? 'scale-110 -translate-y-0.5' : ''}`}>
-                  <Icon className="w-5 h-5 transition-transform duration-150" />
+                  <Icon className="w-5 h-5" strokeWidth={active ? 2.5 : 1.5} />
                   {badge > 0 && (
-                    <span className="absolute -top-1.5 -right-2.5 min-w-[16px] h-4 px-1 bg-emerald-400 text-black text-[9px] font-bold rounded-full flex items-center justify-center">
+                    <span className="absolute -top-1.5 -right-2.5 min-w-[16px] h-4 px-1 bg-emerald-400 text-black text-[9px] font-bold rounded-full flex items-center justify-center shadow-lg">
                       {badge > 99 ? '99+' : badge}
                     </span>
                   )}
