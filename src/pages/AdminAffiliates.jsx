@@ -21,7 +21,7 @@ async function getAuthHeaders() {
 
 async function apiGet(url) {
   const headers = await getAuthHeaders();
-  const res = await fetch(url, { headers, credentials: 'include' });
+  const res = await fetch(url, { headers });
   const data = await res.json();
   if (!data.success) throw new Error(data.error || 'Request failed');
   return data.data ?? data;
@@ -30,7 +30,7 @@ async function apiGet(url) {
 async function apiPost(url, body = {}) {
   const headers = await getAuthHeaders();
   const res = await fetch(url, {
-    method: 'POST', headers, credentials: 'include',
+    method: 'POST', headers,
     body: JSON.stringify(body),
   });
   const data = await res.json();
@@ -41,7 +41,7 @@ async function apiPost(url, body = {}) {
 async function apiPatch(url, body = {}) {
   const headers = await getAuthHeaders();
   const res = await fetch(url, {
-    method: 'PATCH', headers, credentials: 'include',
+    method: 'PATCH', headers,
     body: JSON.stringify(body),
   });
   const data = await res.json();
