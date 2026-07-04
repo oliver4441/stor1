@@ -3,7 +3,7 @@ import { supabase } from '../utils/supabase';
 import { Users, Plus, Search, X, Loader2, Check, AlertTriangle, DollarSign, Activity, Link as LinkIcon, Filter, ChevronDown, ChevronUp, Award } from 'lucide-react';
 import { formatKES, AFFILIATE_CONFIG } from '../config/affiliate';
 
-const API_BASE = '';
+const API_BASE = import.meta.env.VITE_API_URL || 'https://stor1-api.onrender.com';
 
 async function getAuthHeaders() {
   const { data: { session } } = await supabase.auth.getSession();
@@ -109,13 +109,6 @@ export default function AdminAffiliates() {
 
   const loadData = useCallback(async () => {
     setLoading(true);
-    // First check if we even have a valid auth session
-    const { data: { session } } = await supabase.auth.getSession();
-    if (!session?.access_token) {
-      showError('You are not logged in. Please log in first.');
-      setLoading(false);
-      return;
-    }
     // Fetch each endpoint independently so one failure doesn't block the rest
     const [affData, commData, logData, payoutData] = await Promise.all([
       apiGet(`${API_BASE}/api/admin/affiliates`).catch(e => { console.warn('Failed to load affiliates:', e); return []; }),
