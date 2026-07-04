@@ -21,32 +21,61 @@ async function getAuthHeaders() {
 
 async function apiGet(url) {
   const headers = await getAuthHeaders();
-  const res = await fetch(url, { headers });
-  const data = await res.json();
-  if (!data.success) throw new Error(data.error || 'Request failed');
-  return data.data ?? data;
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), 15000);
+  try {
+    const res = await fetch(url, { headers, signal: controller.signal });
+    clearTimeout(timeout);
+    const data = await res.json();
+    if (!data.success) throw new Error(data.error || 'Request failed');
+    return data.data ?? data;
+  } catch (err) {
+    clearTimeout(timeout);
+    if (err.name === 'AbortError') throw new Error('Request timed out');
+    throw err;
+  }
 }
 
 async function apiPost(url, body = {}) {
   const headers = await getAuthHeaders();
-  const res = await fetch(url, {
-    method: 'POST', headers,
-    body: JSON.stringify(body),
-  });
-  const data = await res.json();
-  if (!data.success) throw new Error(data.error || 'Request failed');
-  return data.data ?? data;
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), 15000);
+  try {
+    const res = await fetch(url, {
+      method: 'POST', headers,
+      body: JSON.stringify(body),
+      signal: controller.signal,
+    });
+    clearTimeout(timeout);
+    const data = await res.json();
+    if (!data.success) throw new Error(data.error || 'Request failed');
+    return data.data ?? data;
+  } catch (err) {
+    clearTimeout(timeout);
+    if (err.name === 'AbortError') throw new Error('Request timed out');
+    throw err;
+  }
 }
 
 async function apiPatch(url, body = {}) {
   const headers = await getAuthHeaders();
-  const res = await fetch(url, {
-    method: 'PATCH', headers,
-    body: JSON.stringify(body),
-  });
-  const data = await res.json();
-  if (!data.success) throw new Error(data.error || 'Request failed');
-  return data.data ?? data;
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), 15000);
+  try {
+    const res = await fetch(url, {
+      method: 'PATCH', headers,
+      body: JSON.stringify(body),
+      signal: controller.signal,
+    });
+    clearTimeout(timeout);
+    const data = await res.json();
+    if (!data.success) throw new Error(data.error || 'Request failed');
+    return data.data ?? data;
+  } catch (err) {
+    clearTimeout(timeout);
+    if (err.name === 'AbortError') throw new Error('Request timed out');
+    throw err;
+  }
 }
 
 export default function AdminAffiliates() {
@@ -80,22 +109,22 @@ export default function AdminAffiliates() {
 
   const loadData = useCallback(async () => {
     setLoading(true);
-    try {
-      const [affData, commData, logData, payoutData] = await Promise.all([
-        apiGet(`${API_BASE}/api/admin/affiliates`),
-        apiGet(`${API_BASE}/api/admin/commissions?limit=100`),
-        apiGet(`${API_BASE}/api/admin/audit-logs?limit=50`),
-        apiGet(`${API_BASE}/api/admin/payouts?limit=50`),
-      ]);
-      setAffiliates(Array.isArray(affData) ? affData : []);
-      setCommissions(Array.isArray(commData) ? commData : []);
-      setLogs(Array.isArray(logData) ? logData : []);
-      setPayouts(Array.isArray(payoutData) ? payoutData : []);
-    } catch (err) {
-      showError('Failed to load data: ' + err.message);
-    } finally {
-      setLoading(false);
+    // Fetch each endpoint independently so one failure doesn't block the rest
+    const [affData, commData, logData, payoutData] = await Promise.all([
+      apiGet(`${API_BASE}/api/admin/affiliates`).catch(e => { console.warn('Failed to load affiliates:', e); return []; }),
+      apiGet(`${API_BASE}/api/admin/commissions?limit=100`).catch(e => { console.warn('Failed to load commissions:', e); return []; }),
+      apiGet(`${API_BASE}/api/admin/audit-logs?limit=50`).catch(e => { console.warn('Failed to load audit logs:', e); return []; }),
+      apiGet(`${API_BASE}/api/admin/payouts?limit=50`).catch(e => { console.warn('Failed to load payouts:', e); return []; }),
+    ]);
+    setAffiliates(Array.isArray(affData) ? affData : []);
+    setCommissions(Array.isArray(commData) ? commData : []);
+    setLogs(Array.isArray(logData) ? logData : []);
+    setPayouts(Array.isArray(payoutData) ? payoutData : []);
+    // Show error if any endpoint failed
+    if (!affData.length && !commData.length && !logData.length && !payoutData.length) {
+      showError('Failed to load data. Check your network connection and ensure you are logged in.');
     }
+    setLoading(false);
   }, []);
 
   useEffect(() => { loadData(); }, [loadData]);
@@ -110,7 +139,7 @@ export default function AdminAffiliates() {
       setForm({ full_name: '', email: '', phone: '', mpesa_number: '', password: '', status: 'active' });
       await loadData();
     } catch (err) {
-      showError(err.message);
+      showError(err.message === 'Failed to fetch' ? 'Cannot connect to server. Check your internet connection.' : err.message);
     } finally {
       setSubmitting(false);
     }
@@ -123,7 +152,7 @@ export default function AdminAffiliates() {
       showSuccess(`Affiliate ${newStatus === 'active' ? 'activated' : 'deactivated'}`);
       await loadData();
     } catch (err) {
-      showError(err.message);
+      showError(err.message === 'Failed to fetch' ? 'Cannot connect to server.' : err.message);
     }
   };
 
