@@ -109,6 +109,13 @@ export default function AdminAffiliates() {
 
   const loadData = useCallback(async () => {
     setLoading(true);
+    // First check if we even have a valid auth session
+    const { data: { session } } = await supabase.auth.getSession();
+    if (!session?.access_token) {
+      showError('You are not logged in. Please log in first.');
+      setLoading(false);
+      return;
+    }
     // Fetch each endpoint independently so one failure doesn't block the rest
     const [affData, commData, logData, payoutData] = await Promise.all([
       apiGet(`${API_BASE}/api/admin/affiliates`).catch(e => { console.warn('Failed to load affiliates:', e); return []; }),
