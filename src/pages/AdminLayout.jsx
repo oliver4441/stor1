@@ -28,17 +28,19 @@ export default function AdminLayout() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [accessDenied, setAccessDenied] = useState(false);
 
   useEffect(() => {
     (async () => {
       try {
         const { data: { user } } = await supabase.auth.getUser();
-        if (!user) { navigate('/login'); return; }
+        if (!user) { setAccessDenied(true); navigate('/login'); return; }
         const admin = await isAdmin();
-        if (!admin) { navigate('/account'); return; }
+        if (!admin) { setAccessDenied(true); navigate('/account'); return; }
         setUser(user);
       } catch (err) {
         console.error('Admin auth check failed:', err);
+        setAccessDenied(true);
         navigate('/login');
       } finally {
         setLoading(false);
@@ -56,7 +58,7 @@ export default function AdminLayout() {
     location.pathname === item.path || location.pathname === item.path.replace('/dashboard', '')
   ) || NAV_ITEMS[0];
 
-  if (loading) {
+  if (loading || accessDenied) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-zinc-950">
         <div className="inline-block w-8 h-8 border-4 border-primary border-t-transparent rounded-full animate-spin" />

@@ -52,6 +52,7 @@ const FlashDeals = React.lazy(() => import('./pages/FlashDeals'));
 const SellerProfile = React.lazy(() => import('./pages/SellerProfile'));
 
 // Admin pages — co-split as an admin chunk
+const AdminRoute = React.lazy(() => import('./components/AdminRoute'));
 const AdminLayout = React.lazy(() => import('./pages/AdminLayout'));
 const AdminOverview = React.lazy(() => import('./pages/AdminOverview'));
 const AdminProducts = React.lazy(() => import('./pages/AdminProducts'));
@@ -141,7 +142,7 @@ function App() {
               <Route path="/affiliate" element={<AffiliatePage />} />
               <Route path="/affiliate/apply" element={<AffiliateApply />} />
               <Route path="/affiliate/agreement" element={<AffiliateAgreement />} />
-              <Route path="/admin" element={<AdminLayout />}>
+              <Route path="/admin" element={<AdminRoute><AdminLayout /></AdminRoute>}>
                 <Route index element={<AdminOverview />} />
                 <Route path="products" element={<AdminProducts />} />
                 <Route path="orders" element={<AdminOrders />} />
