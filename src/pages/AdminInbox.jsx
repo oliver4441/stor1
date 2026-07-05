@@ -1,49 +1,28 @@
 import { useState, useEffect } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import { MessageSquare } from 'lucide-react';
-import { supabase } from '../utils/supabase';
 import { useAuth } from '../context/AuthContext';
 import ChatList from '../components/ChatList';
 import ChatWindow from '../components/ChatWindow';
 
 export default function AdminInbox() {
   const { user } = useAuth();
-  const [conversations, setConversations] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [searchParams, setSearchParams] = useSearchParams();
   const [activeConversationId, setActiveConversationId] = useState(null);
 
   useEffect(() => {
     document.title = 'Inbox - Omix Store';
   }, []);
 
-  // Fetch all conversations the admin is part of
+  // Auto-select conversation from URL ?conversation=xxx param
   useEffect(() => {
-    if (!user?.id) return;
-
-    const fetchConversations = async () => {
-      setLoading(true);
-      try {
-        const { data, error } = await supabase
-          .from('conversation_participants')
-          .select('conversations(id, last_message_at, created_at)')
-          .eq('user_id', user.id)
-          .order('last_read_at', { ascending: false, nullsFirst: false });
-
-        if (error) throw error;
-
-        const convs = (data || [])
-          .map((p) => p.conversations)
-          .filter(Boolean);
-
-        setConversations(convs);
-      } catch (err) {
-        console.error('Failed to fetch conversations:', err);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchConversations();
-  }, [user?.id]);
+    const urlConv = searchParams.get('conversation');
+    if (urlConv) {
+      setActiveConversationId(urlConv);
+      // Clean the param from the URL after reading it
+      setSearchParams({}, { replace: true });
+    }
+  }, [searchParams, setSearchParams]);
 
   const handleSelectConversation = (convId) => {
     setActiveConversationId(convId);
@@ -52,32 +31,6 @@ export default function AdminInbox() {
   const handleBack = () => {
     setActiveConversationId(null);
   };
-
-  // Loading state
-  if (loading) {
-    return (
-      <div className="flex items-center justify-center h-64">
-        <div className="inline-block w-8 h-8 border-4 border-primary border-t-transparent rounded-full animate-spin" />
-      </div>
-    );
-  }
-
-  // Empty state
-  if (!loading && conversations.length === 0) {
-    return (
-      <div className="space-y-6 max-w-7xl">
-        <div className="bg-zinc-900 rounded-2xl border border-zinc-800 p-12 text-center">
-          <div className="w-14 h-14 rounded-2xl bg-zinc-800/60 flex items-center justify-center mx-auto mb-4">
-            <MessageSquare className="w-7 h-7 text-zinc-500" />
-          </div>
-          <h3 className="text-lg font-bold text-white mb-1">No conversations yet</h3>
-          <p className="text-sm text-zinc-400">
-            Customer conversations will appear here when they start messaging.
-          </p>
-        </div>
-      </div>
-    );
-  }
 
   return (
     <div className="h-[calc(100vh-6rem)] max-w-7xl">

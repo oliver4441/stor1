@@ -37,7 +37,7 @@ function MessageSellerButton({ listingId, listingTitle, sellerId, className = ''
       if (lookupError) throw lookupError;
 
       if (existingConv) {
-        navigate(`/admin/inbox?conversation=${existingConv.id}`);
+        navigate(`/inbox?conversation=${existingConv.id}`);
         return;
       }
 
@@ -95,7 +95,7 @@ function MessageSellerButton({ listingId, listingTitle, sellerId, className = ''
         .eq('id', newConv.id);
 
       // 7. Navigate to inbox with the new conversation
-      navigate(`/admin/inbox?conversation=${newConv.id}`);
+      navigate(`/inbox?conversation=${newConv.id}`);
     } catch (err) {
       console.error('MessageSellerButton error:', err);
     } finally {

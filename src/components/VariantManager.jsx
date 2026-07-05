@@ -1,6 +1,6 @@
 import { useState, useMemo } from 'react';
 import { Palette, Plus, X, Trash2, Shirt, ChevronDown, ChevronUp, AlertCircle } from 'lucide-react';
-import { COLOR_PALETTE, SIZE_PRESETS, getPresetSizes, generateSKU } from '../utils/constants';
+import { COLOR_PALETTE, SIZE_PRESETS, getPresetSizes, generateSKU, formatKES } from '../utils/constants';
 
 /**
  * VariantManager — allows admin to create size/color variants for a product.
@@ -32,7 +32,8 @@ export default function VariantManager({ category, basePrice, baseSku, value = [
   const [customSize, setCustomSize] = useState('');
 
   const presetSizes = useMemo(() => getPresetSizes(category), [category]);
-  const isClothing = presetSizes || category === 'Clothing' || category === 'T-Shirts' || category.toLowerCase().includes('shoe') || category.toLowerCase().includes('cloth');
+  const catLower = (category || '').toLowerCase();
+  const isClothing = presetSizes || category === 'Clothing' || category === 'T-Shirts' || catLower.includes('shoe') || catLower.includes('cloth');
 
   // Sync variants to parent
   const updateVariants = (newVariants) => {

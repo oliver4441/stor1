@@ -104,10 +104,12 @@ export const SIZE_PRESETS = {
 
 // Get size preset for a category, fallback to generic
 export function getPresetSizes(category) {
+  if (!category) return [];
   if (SIZE_PRESETS[category]) return SIZE_PRESETS[category];
+  const cat = String(category);
   // Try partial match
   for (const [key, sizes] of Object.entries(SIZE_PRESETS)) {
-    if (category.toLowerCase().includes(key.toLowerCase().replace(/ *\(.*\)/, ''))) return sizes;
+    if (cat.toLowerCase().includes(key.toLowerCase().replace(/ *\(.*\)/, ''))) return sizes;
   }
   // Empty array means free-text sizes (no presets) — still allow adding custom sizes
   return [];
