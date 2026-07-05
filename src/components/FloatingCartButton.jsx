@@ -134,7 +134,7 @@ export default function FloatingCartButton() {
                         <button onClick={() => updateQuantity(item.id, item.quantity + 1)} className="w-7 h-7 rounded-lg bg-zinc-800 flex items-center justify-center hover:bg-zinc-700" aria-label={`Increase quantity of ${item.name}`}>
                           <Plus className="w-3 h-3 text-zinc-300" />
                         </button>
-                        <button onClick={() => removeItem(item.id)} className="w-7 h-7 rounded-lg flex items-center justify-center text-zinc-400 hover:text-red-500 hover:bg-red-900/20 ml-1" aria-label={`Remove ${item.name} from cart`}>
+                        <button onClick={() => removeItem(item)} className="w-7 h-7 rounded-lg flex items-center justify-center text-zinc-400 hover:text-red-500 hover:bg-red-900/20 ml-1" aria-label={`Remove ${item.name} from cart`}>
                           <Trash2 className="w-3 h-3" />
                         </button>
                       </div>

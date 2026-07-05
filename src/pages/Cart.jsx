@@ -75,7 +75,7 @@ export default function CartPage() {
                     <button onClick={() => updateQuantity(item.id, item.quantity + 1)} className="w-8 h-8 rounded-lg bg-zinc-800 flex items-center justify-center hover:bg-zinc-700 transition-colors" aria-label={`Increase quantity of ${item.name}`}>
                       <Plus className="w-3 h-3" />
                     </button>
-                    <button onClick={() => removeItem(item.id)} className="text-zinc-400 hover:text-red-500 p-1 transition-colors" aria-label={`Remove ${item.name} from cart`}>
+                    <button onClick={() => removeItem(item)} className="text-zinc-400 hover:text-red-500 p-1 transition-colors" aria-label={`Remove ${item.name} from cart`}>
                       <Trash2 className="w-4 h-4" />
                     </button>
                   </div>

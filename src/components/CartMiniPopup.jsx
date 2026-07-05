@@ -119,7 +119,7 @@ export default function CartMiniPopup() {
                         <Plus className="w-3 h-3" />
                       </button>
                       <button
-                        onClick={() => removeItem(item.id)}
+                        onClick={() => removeItem(item)}
                         className="w-6 h-6 rounded-md flex items-center justify-center text-zinc-400 hover:text-red-500 hover:bg-red-900/20 ml-1"
                         aria-label={`Remove ${item.name} from cart`}
                       >

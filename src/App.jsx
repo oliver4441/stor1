@@ -11,13 +11,11 @@ import { initReferralTracking } from './utils/affiliate_api';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
 import MobileBottomNav from './components/MobileBottomNav';
-import BackToTop from './components/BackToTop';
 import ScrollToTop from './components/ScrollToTop';
-import FloatingCartButton from './components/FloatingCartButton';
+import BackToTop from './components/BackToTop';
 import NiaChat from './components/NiaChat';
 import NiaFloatingButton from './components/NiaFloatingButton';
 import InstallBanner from './components/InstallBanner';
-import PushNudge from './components/PushNudge';
 import CartReminder from './components/CartReminder';
 import CartWishlistNudge from './components/CartWishlistNudge';
 import ThemeStyles from './components/ThemeStyles';
@@ -55,6 +53,7 @@ import AdminSettings from './pages/AdminSettings';
 import AdminNotifications from './pages/AdminNotifications';
 import AdminAffiliates from './pages/AdminAffiliates';
 import AffiliateDashboard from './pages/AffiliateDashboard';
+import NotFound from './pages/NotFound';
 
 // Help Center pages
 import HelpCenter from './pages/help/HelpCenter';
@@ -119,6 +118,7 @@ function App() {
             <Route path="/help/flash-sale" element={<FlashSale />} />
             <Route path="/refurbished" element={<Refurbished />} />
             <Route path="/affiliate-dashboard" element={<AffiliateDashboard />} />
+            <Route path="*" element={<NotFound />} />
             <Route path="/admin" element={<AdminLayout />}>
               <Route index element={<AdminOverview />} />
               <Route path="products" element={<AdminProducts />} />

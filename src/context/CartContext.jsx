@@ -98,8 +98,13 @@ function cartReducer(state, action) {
       return [...state, { ...payload, quantity: payload.quantity || 1, _cartKey: payload.id + '_' + variantKey }];
     }
 
-    case 'REMOVE_ITEM':
-      return state.filter(item => item.id !== action.payload);
+    case 'REMOVE_ITEM': {
+      const { id, _cartKey } = typeof action.payload === 'object' ? action.payload : { id: action.payload };
+      if (_cartKey) {
+        return state.filter(item => item._cartKey !== _cartKey);
+      }
+      return state.filter(item => item.id !== id);
+    }
 
     case 'UPDATE_QUANTITY': {
       const { id, quantity } = action.payload;
@@ -205,8 +210,9 @@ export function CartProvider({ children }) {
     }
   }, []);
 
-  const removeItem = useCallback((id) => {
-    dispatch({ type: 'REMOVE_ITEM', payload: id });
+  const removeItem = useCallback((item) => {
+    const payload = typeof item === 'object' ? item : { id: item };
+    dispatch({ type: 'REMOVE_ITEM', payload });
     sounds.removeFromCart();
   }, []);
 

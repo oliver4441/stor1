@@ -69,6 +69,26 @@
         font-weight: 600;
       }
     </style>
+    <!-- JSON-LD Schema -->
+    <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebSite",
+  "name": "Omix Marketplace",
+  "url": "https://market.omixsystems.store/",
+  "description": "Kericho's online marketplace — shop local with M-Pesa.",
+  "publisher": {
+    "@type": "Organization",
+    "name": "Omix Systems",
+    "url": "https://omixsystems.store/"
+  },
+  "potentialAction": {
+    "@type": "SearchAction",
+    "target": "https://market.omixsystems.store/search?q={search_term_string}",
+    "query-input": "required name=search_term_string"
+  }
+}
+</script>
   </head>
   <body>
     <div id="root"></div>
