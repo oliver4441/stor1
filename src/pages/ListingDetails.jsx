@@ -37,7 +37,7 @@ function ListingDetails() {
   const [wishlisted, setWishlisted] = useState(false);
   const [wishBusy, setWishBusy] = useState(false);
 
-  const listingId = Number(id);
+  const listingId = id;
   const inCart = cart.find(item => item.id === listingId);
 
   useEffect(() => {
