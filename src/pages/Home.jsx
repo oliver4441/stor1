@@ -13,6 +13,7 @@ import QuickViewModal from '../components/QuickViewModal';
 import SeasonalParticles from '../components/SeasonalParticles';
 import { useActiveTheme } from '../context/SeasonalContext';
 import AutoScrollCarousel from '../components/AutoScrollCarousel';
+import FlashDealsBar from '../components/FlashDealsBar';
 
 const ITEMS_PER_PAGE = 24;
 
@@ -110,6 +111,9 @@ function Home() {
     <div data-name="home-page">
       {/* Seasonal Particles */}
       <SeasonalParticles type={particleType} count={25} />
+
+      {/* Flash Deals Bar */}
+      <FlashDealsBar />
 
       {/* Hero Section */}
       <div className="relative overflow-hidden mb-8">

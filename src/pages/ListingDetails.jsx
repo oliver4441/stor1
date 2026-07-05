@@ -16,6 +16,8 @@ import NiaContextualTrigger from '../components/NiaContextualTrigger';
 import AutoScrollCarousel from '../components/AutoScrollCarousel';
 import { ReviewList, ReviewForm } from '../components/Reviews';
 import { useLang } from '../utils/lang';
+import MessageSellerButton from '../components/MessageSellerButton';
+import ProductRecommendations from '../components/ProductRecommendations';
 
 function ListingDetails() {
   const { t } = useLang();
@@ -532,8 +534,9 @@ function ListingDetails() {
           </div>
 
           {/* Share */}
-          <div className="mt-4">
+          <div className="mt-4 space-y-3">
             <WhatsAppShareButton title={listing.title} price={listing.price} url={`${window.location.origin}/listing/${listing.id}`} type="listing" className="flex-1 justify-center" />
+            <MessageSellerButton listingId={listingId} listingTitle={listing.title} sellerId={listing.seller_id} className="w-full" />
           </div>
 
           {/* Price Drop & Back in Stock Watchers */}
@@ -574,6 +577,11 @@ function ListingDetails() {
         <ReviewList listingId={listingId} />
         <ReviewForm listingId={listingId} onSubmitted={() => {}} />
       </div>
+
+      {/* Product Recommendations */}
+      {listing?.id && (
+        <ProductRecommendations title="You May Also Like" listingId={listing.id} />
+      )}
 
       {/* Related */}
       {related.length > 0 && (

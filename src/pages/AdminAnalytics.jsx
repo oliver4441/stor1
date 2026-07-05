@@ -1,8 +1,8 @@
 import { useState, useEffect, useCallback } from 'react';
-import { DollarSign, ShoppingBag, TrendingUp, Package, Calendar } from 'lucide-react';
+import { DollarSign, ShoppingBag, TrendingUp, Package, Calendar, Users, BarChart3, Activity } from 'lucide-react';
 import { fetchAllOrders, fetchAllListings } from '../utils/api';
 import { formatKES } from '../utils/constants';
-import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, AreaChart, Area } from 'recharts';
+import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, AreaChart, Area, Cell } from 'recharts';
 
 export default function AdminAnalytics() {
   const [orders, setOrders] = useState([]);
@@ -29,11 +29,34 @@ export default function AdminAnalytics() {
   const totalRevenue = filteredOrders.reduce((sum, o) => sum + parseFloat(o.total_amount || 0), 0);
   const avgOrderValue = filteredOrders.length > 0 ? totalRevenue / filteredOrders.length : 0;
 
+  // Unique customers
+  const uniqueCustomers = new Set(filteredOrders.map(o => o.customer_name || o.email || 'Unknown'));
+  const customerCount = uniqueCustomers.size;
+
+  // Active listings count
+  const activeListings = listings.filter(l => l.status === 'active' || l.status === 'published' || l.is_active === true).length;
+
+  // Growth vs previous period
+  const prevCutoffDate = new Date(cutoffDate);
+  prevCutoffDate.setDate(prevCutoffDate.getDate() - daysAgo);
+  const prevPeriodOrders = orders.filter(o => {
+    const d = new Date(o.created_at);
+    return d >= prevCutoffDate && d < cutoffDate;
+  });
+  const prevRevenue = prevPeriodOrders.reduce((sum, o) => sum + parseFloat(o.total_amount || 0), 0);
+  const prevOrderCount = prevPeriodOrders.length;
+  const revenueGrowth = prevRevenue > 0 ? ((totalRevenue - prevRevenue) / prevRevenue * 100).toFixed(1) : null;
+  const orderGrowth = prevOrderCount > 0 ? ((filteredOrders.length - prevOrderCount) / prevOrderCount * 100).toFixed(1) : null;
+
   // Orders by status
   const ordersByStatus = {};
   filteredOrders.forEach(o => {
     ordersByStatus[o.status] = (ordersByStatus[o.status] || 0) + 1;
   });
+  const statusData = Object.entries(ordersByStatus).map(([status, count]) => ({
+    status: status.charAt(0).toUpperCase() + status.slice(1),
+    count
+  }));
 
   // Revenue by day for chart
   const revenueByDay = {};
@@ -84,6 +107,7 @@ export default function AdminAnalytics() {
     .map(([name, value]) => ({ name, value: Math.round(value) }));
 
   const CHART_COLORS = ['#1a5632', '#3b82f6', '#10b981', '#f59e0b', '#8b5cf6', '#ec4899', '#06b6d4'];
+  const STATUS_COLORS = { pending: '#f59e0b', processing: '#3b82f6', shipped: '#8b5cf6', delivered: '#10b981', cancelled: '#ef4444' };
 
   // Custom tooltip
   const CustomTooltip = ({ active, payload, label }) => {
@@ -127,7 +151,7 @@ export default function AdminAnalytics() {
       </div>
 
       {/* Stats */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+      <div className="grid grid-cols-2 lg:grid-cols-5 gap-4">
         <div className="bg-zinc-900 rounded-2xl border border-zinc-800 p-5">
           <DollarSign className="w-5 h-5 text-emerald-500 mb-2" />
           <p className="text-2xl font-black text-white">{formatKES(totalRevenue)}</p>
@@ -144,9 +168,44 @@ export default function AdminAnalytics() {
           <p className="text-xs text-zinc-400 mt-1">Avg Order</p>
         </div>
         <div className="bg-zinc-900 rounded-2xl border border-zinc-800 p-5">
+          <Users className="w-5 h-5 text-sky-500 mb-2" />
+          <p className="text-2xl font-black text-white">{customerCount}</p>
+          <p className="text-xs text-zinc-400 mt-1">Customers</p>
+        </div>
+        <div className="bg-zinc-900 rounded-2xl border border-zinc-800 p-5">
           <Package className="w-5 h-5 text-amber-500 mb-2" />
-          <p className="text-2xl font-black text-white">{listings.length}</p>
+          <p className="text-2xl font-black text-white">{listings.length} / {activeListings}</p>
           <p className="text-xs text-zinc-400 mt-1">Products</p>
+        </div>
+      </div>
+
+      {/* Growth Metrics */}
+      <div className="bg-zinc-900 rounded-2xl border border-zinc-800 p-4 flex items-center gap-6">
+        <Activity className="w-5 h-5 text-emerald-500" />
+        <div className="flex flex-wrap items-center gap-4 text-sm">
+          <div className="flex items-center gap-2">
+            <span className="text-zinc-400">Revenue Growth:</span>
+            {revenueGrowth !== null ? (
+              <span className={`font-bold flex items-center gap-1 ${parseFloat(revenueGrowth) >= 0 ? 'text-emerald-500' : 'text-red-500'}`}>
+                <TrendingUp className={`w-4 h-4 ${parseFloat(revenueGrowth) < 0 ? 'rotate-180' : ''}`} />
+                {Math.abs(parseFloat(revenueGrowth))}%
+              </span>
+            ) : (
+              <span className="text-zinc-500">No prior data</span>
+            )}
+          </div>
+          <span className="text-zinc-700 hidden sm:inline">|</span>
+          <div className="flex items-center gap-2">
+            <span className="text-zinc-400">Order Growth:</span>
+            {orderGrowth !== null ? (
+              <span className={`font-bold flex items-center gap-1 ${parseFloat(orderGrowth) >= 0 ? 'text-emerald-500' : 'text-red-500'}`}>
+                <TrendingUp className={`w-4 h-4 ${parseFloat(orderGrowth) < 0 ? 'rotate-180' : ''}`} />
+                {Math.abs(parseFloat(orderGrowth))}%
+              </span>
+            ) : (
+              <span className="text-zinc-500">No prior data</span>
+            )}
+          </div>
         </div>
       </div>
 
@@ -242,6 +301,32 @@ export default function AdminAnalytics() {
             <p className="text-sm text-zinc-400 text-center py-8">No category data</p>
           )}
         </div>
+      </div>
+
+      {/* Orders by Status */}
+      <div className="bg-zinc-900 rounded-2xl border border-zinc-800 p-5">
+        <h3 className="text-base font-bold text-white mb-4">Orders by Status</h3>
+        {Object.keys(ordersByStatus).length > 0 ? (
+          <div className="h-64">
+            <ResponsiveContainer width="100%" height="100%">
+              <BarChart data={statusData} layout="vertical" margin={{ top: 5, right: 20, bottom: 5, left: 10 }}>
+                <XAxis type="number" tick={{ fontSize: 12, fill: '#71717a' }} tickLine={false} axisLine={false} />
+                <YAxis type="category" dataKey="status" tick={{ fontSize: 12, fill: '#e4e4e7' }} tickLine={false} axisLine={false} width={90} />
+                <Tooltip
+                  contentStyle={{ backgroundColor: '#18181b', border: '1px solid #27272a', borderRadius: '12px', color: '#fff' }}
+                  itemStyle={{ color: '#a1a1aa' }}
+                />
+                <Bar dataKey="count" radius={[0, 6, 6, 0]} barSize={24}>
+                  {statusData.map((entry, index) => (
+                    <Cell key={index} fill={STATUS_COLORS[entry.status.toLowerCase()] || '#71717a'} />
+                  ))}
+                </Bar>
+              </BarChart>
+            </ResponsiveContainer>
+          </div>
+        ) : (
+          <div className="flex items-center justify-center h-32 text-zinc-400 text-sm">No order data</div>
+        )}
       </div>
     </div>
   );

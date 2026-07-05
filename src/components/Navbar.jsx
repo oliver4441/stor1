@@ -7,6 +7,7 @@ import { isAdmin, isAffiliate } from '../utils/api';
 import { useCart } from '../context/CartContext';
 import { useActiveTheme } from '../context/SeasonalContext';
 import { sounds } from '../utils/sounds';
+import NotificationBell from './NotificationBell';
 
 const FEATURE_LINKS = [
   { to: '/refurbished', label: 'Refurbished', icon: RefreshCw, color: 'from-orange-500 to-amber-600', glow: 'shadow-orange-500/40' },
@@ -153,6 +154,7 @@ function Navbar() {
 
           {/* Desktop (lg+): Right side */}
           <div className="hidden lg:flex items-center gap-2">
+            <NotificationBell />
             <Link to="/cart" className="relative p-2 rounded-full hover:bg-zinc-800 text-zinc-300 transition-colors" aria-label={`Shopping cart, ${cartCount} items`}>
               <ShoppingCart className="w-5 h-5" />
               {cartCount > 0 && (
@@ -208,6 +210,9 @@ function Navbar() {
 
           {/* Below lg: Compact controls + Hamburger */}
           <div className="flex lg:hidden items-center gap-1">
+            {/* Notification bell always visible on mobile */}
+            <NotificationBell />
+
             {/* Cart icon always visible on mobile */}
             <Link to="/cart" className="relative p-2 rounded-full hover:bg-zinc-800 text-zinc-300 transition-colors" aria-label={`Shopping cart, ${cartCount} items`}>
               <ShoppingCart className="w-5 h-5" />

@@ -202,7 +202,7 @@ export default function ImageGallery({ images, title, condition }) {
                     activeIndex === i ? 'border-white' : 'border-transparent opacity-50 hover:opacity-80'
                   }`}
                 >
-                  <img src={img} alt="" className="w-full h-full object-cover" />
+                  <img src={img} alt="" className="w-full h-full object-cover" loading="lazy" />
                 </button>
               ))}
             </div>

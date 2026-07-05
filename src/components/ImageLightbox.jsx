@@ -119,7 +119,7 @@ export default function ImageLightbox({ images, initialIndex = 0, onClose }) {
                 i === index ? 'border-white opacity-100' : 'border-transparent opacity-50 hover:opacity-75'
               }`}
             >
-              <img src={img} alt="" className="w-full h-full object-cover" />
+              <img src={img} alt="" className="w-full h-full object-cover" loading="lazy" />
             </button>
           ))}
         </div>

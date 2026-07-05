@@ -51,6 +51,42 @@ export default defineConfig({
   build: {
     rollupOptions: {
       external: [],
+      output: {
+        manualChunks: {
+          // Vendor chunk — React, React Router, and Supabase core
+          vendor: [
+            'react',
+            'react-dom',
+            'react-router-dom',
+          ],
+          // Admin chunk — all admin pages grouped together
+          admin: [
+            resolve(__dirname, 'src/pages/AdminLayout.jsx'),
+            resolve(__dirname, 'src/pages/AdminOverview.jsx'),
+            resolve(__dirname, 'src/pages/AdminProducts.jsx'),
+            resolve(__dirname, 'src/pages/AdminOrders.jsx'),
+            resolve(__dirname, 'src/pages/AdminCustomers.jsx'),
+            resolve(__dirname, 'src/pages/AdminAnalytics.jsx'),
+            resolve(__dirname, 'src/pages/AdminPromoCodes.jsx'),
+            resolve(__dirname, 'src/pages/AdminSettings.jsx'),
+            resolve(__dirname, 'src/pages/AdminNotifications.jsx'),
+            resolve(__dirname, 'src/pages/AdminAffiliates.jsx'),
+          ],
+          // Help Center chunk
+          help: [
+            resolve(__dirname, 'src/pages/help/HelpCenter.jsx'),
+            resolve(__dirname, 'src/pages/help/ShoppingGuide.jsx'),
+            resolve(__dirname, 'src/pages/help/Refund.jsx'),
+            resolve(__dirname, 'src/pages/help/DisputeResolution.jsx'),
+            resolve(__dirname, 'src/pages/help/AfterSale.jsx'),
+            resolve(__dirname, 'src/pages/help/Delivery.jsx'),
+            resolve(__dirname, 'src/pages/help/FAQ.jsx'),
+            resolve(__dirname, 'src/pages/help/Payment.jsx'),
+            resolve(__dirname, 'src/pages/help/DeliveryTime.jsx'),
+            resolve(__dirname, 'src/pages/help/FlashSale.jsx'),
+          ],
+        },
+      },
     },
   },
 })

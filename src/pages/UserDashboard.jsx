@@ -20,6 +20,8 @@ import ProductCard from '../components/ProductCard';
 import Breadcrumb from '../components/Breadcrumb';
 import { isPushSupported, subscribeToPush, unsubscribeFromPush } from '../utils/pushNotifications';
 import { sounds } from '../utils/sounds';
+import { useNotifications } from '../context/NotificationContext';
+import NotificationBell from '../components/NotificationBell';
 
 // ── Telegram-style Toggle Switch ──────────────────────────────────────
 function ToggleSwitch({ checked, onChange, disabled }) {
@@ -49,6 +51,7 @@ const TABS = [
   { id: 'orders',    label: 'Orders',    icon: Package },
   { id: 'addresses', label: 'Addresses', icon: MapPin },
   { id: 'rewards',   label: 'Rewards',   icon: Gift },
+  { id: 'notifications', label: 'Notifications', icon: Bell },
   { id: 'settings',  label: 'Settings',  icon: Settings },
 ];
 
@@ -362,6 +365,13 @@ function UserDashboard() {
   const [notifPrefsBusy, setNotifPrefsBusy] = useState(false);
   const [notifPrefsMsg, setNotifPrefsMsg] = useState(null);
 
+  // Sound preferences (global mute)
+  const [soundMuted, setSoundMuted] = useState(() => {
+    try { return localStorage.getItem('omix_sound_muted') === 'true'; } catch { return false; }
+  });
+  const { notifications: inAppNotifs, unreadCount, markRead, markAllRead, clearAll, refresh: refreshNotifs } = useNotifications();
+  const [soundMutedMsg, setSoundMutedMsg] = useState(null);
+
   // Password change
   const [pwForm, setPwForm] = useState({ current: '', newPw: '', confirm: '' });
   const [pwBusy, setPwBusy] = useState(false);
@@ -522,6 +532,15 @@ function UserDashboard() {
   };
 
   const handleLogout = async () => { sounds.logout(); await supabase.auth.signOut(); navigate('/login'); };
+
+  // ── Sound Toggle ─────────────────────────────────────────────────
+  const handleSoundToggle = () => {
+    const next = sounds.toggleMute();
+    setSoundMuted(next);
+    setSoundMutedMsg({ type: 'success', text: next ? 'Sounds muted' : 'Sounds enabled' });
+    if (!next) sounds.confirm();
+    setTimeout(() => setSoundMutedMsg(null), 2000);
+  };
 
   // ── Change Password ──────────────────────────────────────────────
   const handleChangePassword = async (e) => {
@@ -1000,6 +1019,118 @@ function UserDashboard() {
           </div>
         );
 
+      // ═══════════════ NOTIFICATIONS ════════════════
+      case 'notifications':
+        return (
+          <div className="space-y-6">
+            {/* In-App Notifications */}
+            <div className="bg-zinc-900 rounded-2xl border border-zinc-800 p-6">
+              <div className="flex items-center justify-between mb-5">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-amber-400 to-orange-500 flex items-center justify-center">
+                    <Bell className="w-5 h-5 text-white" />
+                  </div>
+                  <div>
+                    <h2 className="text-lg font-bold text-white">Notifications</h2>
+                    <p className="text-xs text-zinc-400">
+                      {inAppNotifs.length > 0
+                        ? `${unreadCount} unread of ${inAppNotifs.length} total`
+                        : 'No notifications yet'}
+                    </p>
+                  </div>
+                </div>
+                <div className="flex items-center gap-2">
+                  {unreadCount > 0 && (
+                    <button
+                      onClick={markAllRead}
+                      className="flex items-center gap-1 px-3 py-1.5 rounded-xl bg-emerald-900/20 text-emerald-400 text-xs font-bold hover:bg-emerald-900/30 transition-colors"
+                    >
+                      <CheckCheck className="w-3.5 h-3.5" />
+                      Mark all read
+                    </button>
+                  )}
+                  {inAppNotifs.length > 0 && (
+                    <button
+                      onClick={clearAll}
+                      className="flex items-center gap-1 px-3 py-1.5 rounded-xl bg-red-900/20 text-red-400 text-xs font-bold hover:bg-red-900/30 transition-colors"
+                    >
+                      <X className="w-3.5 h-3.5" />
+                      Clear all
+                    </button>
+                  )}
+                  <button
+                    onClick={refreshNotifs}
+                    className="p-1.5 rounded-lg text-zinc-400 hover:text-white hover:bg-zinc-800 transition-colors"
+                    aria-label="Refresh"
+                  >
+                    <Loader2 className="w-4 h-4" />
+                  </button>
+                </div>
+              </div>
+
+              {inAppNotifs.length === 0 ? (
+                <div className="text-center py-10">
+                  <Bell className="w-12 h-12 text-zinc-600 mx-auto mb-3" />
+                  <p className="text-sm font-medium text-zinc-400">No notifications yet</p>
+                  <p className="text-xs text-zinc-500 mt-1">
+                    Updates about orders, deals, price drops, and more will appear here.
+                  </p>
+                </div>
+              ) : (
+                <div className="space-y-1">
+                  {inAppNotifs.map((notif) => (
+                    <div
+                      key={notif.id}
+                      className={`flex items-start gap-3 px-4 py-3 rounded-xl cursor-pointer transition-colors hover:bg-zinc-800/50 ${
+                        !notif.read ? 'bg-amber-500/5 border border-amber-500/10' : ''
+                      }`}
+                      onClick={() => { if (!notif.read) { markRead(notif.id); } }}
+                    >
+                      {/* Type indicator */}
+                      <div className={`w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0 ${
+                        !notif.read ? 'bg-amber-500/10' : 'bg-zinc-800'
+                      }`}>
+                        <svg className={`w-5 h-5 ${!notif.read ? 'text-amber-400' : 'text-zinc-400'}`}
+                          fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                          <path strokeLinecap="round" strokeLinejoin="round" d={
+                            notif.type === 'ORDER_CONFIRMED' || notif.type === 'ORDER_SHIPPED' || notif.type === 'ORDER_DELIVERED'
+                              ? 'M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z'
+                              : notif.type === 'REFUND_PROCESSED'
+                              ? 'M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z'
+                              : notif.type === 'PRICE_DROP'
+                              ? 'M13 7h8m0 0v8m0-8l-8 8-4-4-6 6'
+                              : notif.type === 'PROMOTION'
+                              ? 'M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z'
+                              : notif.type === 'ACHIEVEMENT'
+                              ? 'M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z'
+                              : 'M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9'
+                          } />
+                        </svg>
+                      </div>
+
+                      <div className="flex-1 min-w-0">
+                        <div className="flex items-start justify-between gap-2">
+                          <p className={`text-sm ${!notif.read ? 'font-bold text-white' : 'font-medium text-zinc-300'}`}>
+                            {notif.title}
+                          </p>
+                          <span className="text-[10px] text-zinc-500 whitespace-nowrap flex-shrink-0">
+                            {notif.created_at ? new Date(notif.created_at).toLocaleDateString('en-KE', { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' }) : ''}
+                          </span>
+                        </div>
+                        <p className="text-xs text-zinc-400 mt-0.5">{notif.body}</p>
+                      </div>
+
+                      {!notif.read && (
+                        <div className="w-2.5 h-2.5 rounded-full bg-amber-500 flex-shrink-0 mt-2" />
+                      )}
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          </div>
+        );
+
       // ═══════════════ SETTINGS ════════════════
       case 'settings':
         return (
@@ -1122,6 +1253,83 @@ function UserDashboard() {
                       : 'bg-red-900/20 text-red-400 border border-red-800'
                   }`}>
                     {notifPrefsMsg.text}
+                  </div>
+                )}
+              </div>
+            </div>
+
+            {/* Sound & Vibration Preferences */}
+            <div className="bg-zinc-900 rounded-2xl border border-zinc-800 p-6">
+              <div className="flex items-center gap-3 mb-5">
+                <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-blue-400 to-indigo-500 flex items-center justify-center">
+                  <svg className="w-5 h-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z" />
+                  </svg>
+                </div>
+                <div>
+                  <h2 className="text-lg font-bold text-white">Sound & Vibration</h2>
+                  <p className="text-xs text-zinc-400">Audio feedback and haptic settings (Android)</p>
+                </div>
+              </div>
+
+              <div className="space-y-4">
+                <div className="flex items-center justify-between">
+                  <div className="flex-1 min-w-0 mr-4">
+                    <p className="text-sm font-semibold text-white">App Sounds</p>
+                    <p className="text-xs text-zinc-400 mt-0.5">
+                      {soundMuted
+                        ? 'Sounds are muted — no audio feedback on actions'
+                        : 'Play sounds on checkout, cart, notifications, and other actions'}
+                    </p>
+                  </div>
+                  <ToggleSwitch
+                    checked={!soundMuted}
+                    onChange={handleSoundToggle}
+                  />
+                </div>
+
+                <div className="border-t border-zinc-800" />
+
+                <div>
+                  <p className="text-xs font-bold text-zinc-400 uppercase tracking-wider mb-3">Available Sounds</p>
+                  <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
+                    {[
+                      { key: 'checkout', label: 'Checkout' },
+                      { key: 'addToCart', label: 'Add to Cart' },
+                      { key: 'notification', label: 'Notification' },
+                      { key: 'error', label: 'Error' },
+                      { key: 'chat', label: 'Chat Message' },
+                      { key: 'delivery', label: 'Delivery' },
+                      { key: 'refund', label: 'Refund' },
+                      { key: 'coupon', label: 'Coupon' },
+                      { key: 'achievement', label: 'Achievement' },
+                    ].map(s => (
+                      <button
+                        key={s.key}
+                        onClick={() => { sounds[s.key]?.(); }}
+                        className="flex items-center gap-1.5 px-3 py-2 rounded-xl bg-zinc-800/50 hover:bg-zinc-800 transition-colors text-xs font-medium text-zinc-300 hover:text-white"
+                        disabled={soundMuted}
+                      >
+                        <svg className="w-3.5 h-3.5 text-zinc-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                          <path strokeLinecap="round" strokeLinejoin="round" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" />
+                          <path strokeLinecap="round" strokeLinejoin="round" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                        <span>{s.label}</span>
+                      </button>
+                    ))}
+                  </div>
+                  <p className="text-[10px] text-zinc-500 mt-2">
+                    Tap a sound to preview it
+                  </p>
+                </div>
+
+                {soundMutedMsg && (
+                  <div className={`p-3 rounded-xl text-xs font-semibold ${
+                    soundMutedMsg.type === 'success'
+                      ? 'bg-green-900/20 text-green-400 border border-green-800'
+                      : 'bg-red-900/20 text-red-400 border border-red-800'
+                  }`}>
+                    {soundMutedMsg.text}
                   </div>
                 )}
               </div>

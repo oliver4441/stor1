@@ -139,6 +139,30 @@ export async function fetchListings(category = 'All', searchQuery = '', page = 1
   return { listings: mapListingCategories(data || []), total: count || 0 }
 }
 
+// Advanced search via backend API with filters
+const API_BASE_SEARCH = import.meta.env.VITE_API_URL || 'https://stor1-api.onrender.com';
+export async function advancedSearch(filters = {}) {
+  const params = new URLSearchParams();
+  if (filters.q) params.set('q', filters.q);
+  if (filters.category) params.set('category', filters.category);
+  if (filters.min_price) params.set('min_price', filters.min_price);
+  if (filters.max_price) params.set('max_price', filters.max_price);
+  if (filters.condition) params.set('condition', filters.condition);
+  if (filters.location) params.set('location', filters.location);
+  if (filters.brand) params.set('brand', filters.brand);
+  if (filters.availability) params.set('availability', filters.availability);
+  if (filters.page) params.set('page', filters.page);
+  if (filters.limit) params.set('limit', filters.limit);
+  try {
+    const res = await fetch(`${API_BASE_SEARCH}/api/search?${params.toString()}`);
+    if (!res.ok) throw new Error('Search request failed');
+    return await res.json();
+  } catch (err) {
+    console.error('[advancedSearch]', err);
+    return { listings: [], total: 0, page: 1, limit: 20, total_pages: 0 };
+  }
+}
+
 export async function fetchListing(id) {
   const { data, error } = await supabase
     .from('listings')
@@ -587,19 +611,94 @@ export async function adminDeleteListing(id) {
 
 // ── Orders (Online Store) ────────────────────────────────
 
-export async function createOrder({ items, total, customerName, phone, email, address, city, area, landmark, promoCode, promoCodeId, isFreeDelivery, loyaltyPointsUsed, referralCode, paymentMethod = 'online' }) {
+export async function createOrder({ items, total, customerName, phone, email, address, city, area, landmark, promoCode, promoCodeId, isFreeDelivery, loyaltyPointsUsed, referralCode, paymentMethod = 'online', guestId }) {
   const { data: { user }, error: userError } = await supabase.auth.getUser()
 
   if (userError) {
     return { success: false, error: 'Authentication error. Please log in and try again.' }
   }
 
-  if (!user) {
-    return { success: false, error: 'You must be logged in to place an order. Please log in and try again.' }
-  }
-
   if (!items || items.length === 0) {
     return { success: false, error: 'Your cart is empty. Please add items before checking out.' }
+  }
+
+  // For guest checkout, skip profile lookup and set user_id to null
+  if (!user) {
+    // Create the order with guest_id and null user_id
+    const { data: order, error: orderError } = await supabase
+      .from('omix_orders')
+      .insert({
+        user_id: null,
+        guest_id: guestId || null,
+        status: 'pending',
+        total_amount: total,
+        customer_name: customerName,
+        email: email || null,
+        phone: phone || null,
+        address: address || null,
+        city: city || null,
+        area: area || null,
+        landmark: landmark || null,
+        promo_code_id: promoCodeId || null,
+        promo_code_text: promoCode || null,
+        delivery_discount: isFreeDelivery ? 1 : 0,
+        loyalty_points_used: loyaltyPointsUsed || 0,
+        referral_code: referralCode || null,
+        payment_method: paymentMethod,
+        status: paymentMethod === 'cod' ? 'cod_pending' : 'pending',
+      })
+      .select('*')
+      .single()
+
+    if (orderError) {
+      console.error('Guest createOrder error:', orderError)
+      if (orderError.code === '42501' || orderError.message?.includes('policy') || orderError.message?.includes('permission')) {
+        return { success: false, error: 'Permission denied. Please try again.' }
+      }
+      if (orderError.code === '23502') {
+        return { success: false, error: 'Missing required information. Please fill in all fields.' }
+      }
+      return { success: false, error: `Order creation failed: ${orderError.message}` }
+    }
+
+    // Create order items for guest order
+    const orderItems = items.map(item => ({
+      order_id: order.id,
+      product_id: item.product_id || null,
+      product_name: item.product_name,
+      product_sku: item.variant_sku || item.product_sku || null,
+      product_image: item.product_image || null,
+      price: item.price,
+      quantity: item.quantity,
+      subtotal: item.subtotal || (item.price * item.quantity),
+      variant: item.variant || null,
+    }))
+
+    if (orderItems.length > 0) {
+      const { error: itemsError } = await supabase
+        .from('omix_order_items')
+        .insert(orderItems)
+
+      if (itemsError) {
+        console.error('Guest createOrder items error:', itemsError)
+        await supabase.from('omix_orders').delete().eq('id', order.id)
+        return { success: false, error: `Order items failed: ${itemsError.message}` }
+      }
+    }
+
+    // Increment promo code usage for guest orders
+    if (promoCodeId) {
+      try {
+        const { error: rpcError } = await supabase.rpc('increment_promo_usage', { promo_id: promoCodeId });
+        if (rpcError) {
+          console.warn('Promo usage increment failed (RPC not available):', rpcError.message);
+        }
+      } catch (e) {
+        console.warn('Failed to increment promo usage:', e.message);
+      }
+    }
+
+    return { success: true, order }
   }
 
   // Ensure user profile exists before creating order (avoids FK violation on user_id)

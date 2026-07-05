@@ -6,9 +6,11 @@ import { createOrder } from '../utils/api';
 import { formatKES } from '../utils/constants';
 import { supabase } from '../utils/supabase';
 import { useMaintenanceMode } from '../hooks/useMaintenanceMode';
+import { generateGuestId } from '../utils/guest';
 import NiaContextualTrigger from '../components/NiaContextualTrigger';
 import Breadcrumb from '../components/Breadcrumb';
 import { sounds } from '../utils/sounds';
+import { sendTypedNotification } from '../utils/notifications';
 import TrustBadges from '../components/TrustBadges';
 import { trackBeginCheckout, trackError } from '../utils/analytics';
 
@@ -285,14 +287,17 @@ export default function CheckoutPage() {
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
-      if (!session) navigate('/login?redirect=/checkout');
+      // Guest checkout: don't redirect if no session, just set user=null
       if (session?.user) {
         supabase.from('profiles').select('loyalty_points').eq('id', session.user.id).single()
           .then(({ data }) => setUserPoints(data?.loyalty_points || 0))
           .catch(() => {});
       }
     }).catch(() => {});
-  }, [navigate]);
+  }, []);
+
+  // Generate or retrieve guest ID for guest checkout
+  const guestId = useRef(generateGuestId());
 
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -384,6 +389,7 @@ export default function CheckoutPage() {
         loyaltyPointsUsed: redeemPoints ? computedPtsDiscount : 0,
         referralCode: form.referralCode || null,
         paymentMethod: 'cod',
+        guestId: guestId.current,
       });
 
       if (!orderResult.success) {
@@ -401,6 +407,11 @@ export default function CheckoutPage() {
       }
       orderCreated.current = true;
       sounds.checkout();
+      sendTypedNotification('ORDER_CONFIRMED', {
+        title: 'Order Confirmed',
+        body: `Your order #${orderId.toString().slice(0,8).toUpperCase()} has been placed successfully! Total: KES ${currentDiscounted.toLocaleString()}`,
+        tag: `order_${orderId}`,
+      });
 
       // Build WhatsApp message with order details
       const itemList = currentItems.map(item =>
@@ -525,6 +536,7 @@ export default function CheckoutPage() {
         loyaltyPointsUsed: redeemPoints ? computedPtsDiscount : 0,
         referralCode: form.referralCode || null,
         paymentMethod: 'online',
+        guestId: guestId.current,
       });
 
       if (!orderResult.success) {
@@ -568,6 +580,12 @@ export default function CheckoutPage() {
           },
           callback: function(response) {
             if (response && response.trxref) {
+              sounds.checkout();
+              sendTypedNotification('ORDER_CONFIRMED', {
+                title: 'Payment Successful',
+                body: `Order #${orderId.toString().slice(0,8).toUpperCase()} confirmed! Payment of KES ${currentDiscounted.toLocaleString()} received.`,
+                tag: `order_${orderId}`,
+              });
               clearCart();
               navigate(`/order-success?orderId=${orderId}&reference=${response.trxref}`);
             } else {

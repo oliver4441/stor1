@@ -4,7 +4,7 @@ import { supabase } from '../utils/supabase';
 import { isAdmin } from '../utils/api';
 import {
   LayoutDashboard, Package, ShoppingBag, Users, BarChart3, Settings,
-  LogOut, Shield, Menu, X, ChevronRight, Tag, Bell, Link as LinkIcon
+  LogOut, Shield, Menu, X, ChevronRight, Tag, Bell, Link as LinkIcon, MessageSquare, Gift, Zap
 } from 'lucide-react';
 import { sounds } from '../utils/sounds';
 
@@ -18,6 +18,8 @@ const NAV_ITEMS = [
   { path: '/admin/analytics', label: 'Analytics', icon: BarChart3 },
   { path: '/admin/settings', label: 'Settings', icon: Settings },
   { path: '/admin/notifications', label: 'Notifications', icon: Bell },
+  { path: '/admin/inbox', label: 'Inbox', icon: MessageSquare },
+  { path: '/admin/deals', label: 'Flash Deals', icon: Gift },
 ];
 
 export default function AdminLayout() {

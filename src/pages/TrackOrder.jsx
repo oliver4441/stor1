@@ -1,15 +1,28 @@
-import { useState } from 'react';
-import { Search, Package, CheckCircle, Clock, Truck, MapPin, AlertTriangle } from 'lucide-react';
+import { useState, useEffect } from 'react';
+import { Search, Package, CheckCircle, Truck, Clock, XCircle, MapPin } from 'lucide-react';
 import { fetchOrder } from '../utils/api';
 import { formatKES } from '../utils/constants';
 import Breadcrumb from '../components/Breadcrumb';
 
-const STATUS_CONFIG = {
-  pending: { icon: Clock, color: 'text-amber-500', bg: 'bg-amber-900/20', label: 'Pending' },
-  processing: { icon: Package, color: 'text-blue-500', bg: 'bg-blue-900/20', label: 'Processing' },
-  shipped: { icon: Truck, color: 'text-purple-500', bg: 'bg-purple-900/20', label: 'Shipped' },
-  delivered: { icon: CheckCircle, color: 'text-emerald-500', bg: 'bg-emerald-900/20', label: 'Delivered' },
-  cancelled: { icon: AlertTriangle, color: 'text-red-500', bg: 'bg-red-900/20', label: 'Cancelled' },
+const API_BASE = import.meta.env.VITE_API_URL || 'https://stor1-api.onrender.com';
+
+const STATUS_LABELS = {
+  pending: 'Order Placed',
+  cod_pending: 'Cash on Delivery',
+  processing: 'Processing',
+  shipped: 'Shipped',
+  delivered: 'Delivered',
+  cancelled: 'Cancelled',
+};
+
+const STATUS_ORDER = ['pending', 'processing', 'shipped', 'delivered'];
+
+const STEP_ICONS = {
+  pending: Clock,
+  processing: Package,
+  shipped: Truck,
+  delivered: CheckCircle,
+  cancelled: XCircle,
 };
 
 export default function TrackOrder() {
@@ -18,7 +31,9 @@ export default function TrackOrder() {
 
   const [orderId, setOrderId] = useState(orderIdParam);
   const [order, setOrder] = useState(null);
+  const [trackingEvents, setTrackingEvents] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [eventsLoading, setEventsLoading] = useState(false);
   const [error, setError] = useState('');
   const [searched, setSearched] = useState(false);
 
@@ -34,12 +49,93 @@ export default function TrackOrder() {
     } else {
       setError('Order not found. Please check the order ID and try again.');
       setOrder(null);
+      setTrackingEvents([]);
     }
     setLoading(false);
   };
 
-  const statusConfig = order ? (STATUS_CONFIG[order.status] || STATUS_CONFIG.pending) : null;
-  const StatusIcon = statusConfig?.icon || Clock;
+  // Fetch tracking events when order is loaded
+  useEffect(() => {
+    if (!order) {
+      setTrackingEvents([]);
+      return;
+    }
+    const fetchTracking = async () => {
+      setEventsLoading(true);
+      try {
+        const res = await fetch(`${API_BASE}/api/orders/${order.id}/tracking`);
+        if (res.ok) {
+          const data = await res.json();
+          setTrackingEvents(Array.isArray(data) ? data : []);
+        }
+      } catch (err) {
+        console.error('Failed to fetch tracking events:', err);
+      } finally {
+        setEventsLoading(false);
+      }
+    };
+    fetchTracking();
+  }, [order]);
+
+  // Build timeline steps based on order status and tracking events
+  const getTimelineSteps = () => {
+    if (!order) return [];
+
+    const isCancelled = order.status === 'cancelled';
+    const steps = [];
+
+    // Build a map of status -> tracking event
+    const eventMap = {};
+    for (const event of trackingEvents) {
+      if (!eventMap[event.status]) {
+        eventMap[event.status] = event;
+      }
+    }
+
+    // Determine which statuses are "completed"
+    const currentStatusIndex = isCancelled
+      ? STATUS_ORDER.length // cancelled is outside normal flow
+      : STATUS_ORDER.indexOf(order.status);
+
+    for (let i = 0; i < STATUS_ORDER.length; i++) {
+      const status = STATUS_ORDER[i];
+      const event = eventMap[status];
+      const isCompleted = currentStatusIndex > i;
+      const isCurrent = !isCancelled && currentStatusIndex === i;
+      const isFuture = currentStatusIndex < i || isCancelled;
+
+      steps.push({
+        status,
+        label: STATUS_LABELS[status],
+        icon: STEP_ICONS[status],
+        isCompleted,
+        isCurrent,
+        isFuture,
+        timestamp: event?.created_at || null,
+        note: event?.note || null,
+      });
+    }
+
+    // Add cancelled step at the end if cancelled
+    if (isCancelled) {
+      const cancelEvent = eventMap['cancelled'];
+      steps.push({
+        status: 'cancelled',
+        label: 'Cancelled',
+        icon: XCircle,
+        isCompleted: true,
+        isCurrent: false,
+        isFuture: false,
+        isCancelled: true,
+        timestamp: cancelEvent?.created_at || null,
+        note: cancelEvent?.note || null,
+      });
+    }
+
+    return steps;
+  };
+
+  const timelineSteps = getTimelineSteps();
 
   return (
     <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-8" data-name="track-order-page">
@@ -54,8 +150,9 @@ export default function TrackOrder() {
             type="text"
             value={orderId}
             onChange={(e) => setOrderId(e.target.value)}
+            onKeyDown={(e) => e.key === 'Enter' && handleSearch()}
             placeholder="Enter order ID..."
-            className="w-full pl-12 pr-4 py-4 rounded-2xl bg-zinc-900 border border-zinc-800 focus:border-[var(--seasonal-primary,#1a5632)] focus:outline-none text-white"
+            className="w-full pl-12 pr-4 py-4 rounded-2xl bg-zinc-900 border border-zinc-800 focus:border-[var(--seasonal-primary,#1a5632)] focus:outline-none text-white placeholder-zinc-500"
           />
         </div>
         <button onClick={handleSearch} disabled={loading}
@@ -65,23 +162,16 @@ export default function TrackOrder() {
       </div>
 
       {error && (
-        <div className="bg-red-900/20 text-red-600 p-4 rounded-xl mb-6 text-sm font-medium border border-red-100 dark:border-red-900/50">
+        <div className="bg-red-900/20 text-red-600 p-4 rounded-xl mb-6 text-sm font-medium border border-red-900/50">
           {error}
         </div>
       )}
 
       {order && (
         <div className="space-y-6">
-          {/* Status Card */}
-          <div className={`p-6 rounded-3xl border ${statusConfig.bg} border-zinc-800`}>
-            <div className="flex items-center gap-4">
-              <StatusIcon className={`w-10 h-10 ${statusConfig.color}`} />
-              <div>
-                <p className="text-sm text-zinc-400">Order Status</p>
-                <p className={`text-2xl font-black ${statusConfig.color}`}>{statusConfig.label}</p>
-              </div>
-            </div>
-            <div className="mt-4 grid grid-cols-2 gap-4 text-sm">
+          {/* Order Details Card */}
+          <div className="bg-zinc-900 rounded-3xl border border-zinc-800 p-6">
+            <div className="grid grid-cols-2 gap-4 text-sm">
               <div>
                 <p className="text-zinc-400">Order ID</p>
                 <p className="font-mono font-bold text-white">{String(order.id).slice(0, 8).toUpperCase()}</p>
@@ -103,6 +193,110 @@ export default function TrackOrder() {
               <div className="mt-4 flex items-start gap-2 text-sm">
                 <MapPin className="w-4 h-4 text-zinc-400 mt-0.5 flex-shrink-0" />
                 <p className="text-zinc-400">{order.address}{order.city ? `, ${order.city}` : ''}</p>
+              </div>
+            )}
+          </div>
+
+          {/* Visual Timeline */}
+          <div className="bg-zinc-900 rounded-3xl border border-zinc-800 p-6">
+            {eventsLoading ? (
+              /* Skeleton loader */
+              <div className="space-y-6 animate-pulse">
+                {[1, 2, 3, 4].map((i) => (
+                  <div key={i} className="flex gap-4">
+                    <div className="w-8 h-8 rounded-full bg-zinc-800 flex-shrink-0" />
+                    <div className="flex-grow space-y-2">
+                      <div className="h-4 bg-zinc-800 rounded w-32" />
+                      <div className="h-3 bg-zinc-800/50 rounded w-48" />
+                    </div>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <div className="relative">
+                {/* Vertical line */}
+                <div className="absolute left-[15px] top-0 bottom-0 w-0.5 bg-zinc-800" />
+
+                <div className="space-y-0">
+                  {timelineSteps.map((step, index) => {
+                    const StepIcon = step.icon;
+                    const isLast = index === timelineSteps.length - 1;
+
+                    return (
+                      <div key={step.status} className="relative flex gap-4 pb-8 last:pb-0">
+                        {/* Dot + connecting line */}
+                        <div className="flex flex-col items-center flex-shrink-0">
+                          <div className={`relative z-10 w-8 h-8 rounded-full flex items-center justify-center transition-all duration-300 ${
+                            step.isCancelled
+                              ? 'bg-red-900/30 border-2 border-red-500'
+                              : step.isCompleted
+                                ? 'bg-emerald-900/30 border-2 border-emerald-500'
+                                : step.isCurrent
+                                  ? 'bg-blue-900/30 border-2 border-blue-500 animate-pulse'
+                                  : 'bg-zinc-800 border-2 border-zinc-700'
+                          }`}>
+                            <StepIcon className={`w-4 h-4 ${
+                              step.isCancelled
+                                ? 'text-red-400'
+                                : step.isCompleted
+                                  ? 'text-emerald-400'
+                                  : step.isCurrent
+                                    ? 'text-blue-400'
+                                    : 'text-zinc-500'
+                            }`} />
+                          </div>
+                          {!isLast && (
+                            <div className="w-0.5 h-full bg-zinc-800 mt-0" />
+                          )}
+                        </div>
+
+                        {/* Content */}
+                        <div className="flex-grow pb-0 min-w-0">
+                          <div className="flex items-center gap-2 flex-wrap">
+                            <span className={`text-sm font-bold ${
+                              step.isCancelled
+                                ? 'text-red-400'
+                                : step.isCompleted
+                                  ? 'text-emerald-400'
+                                  : step.isCurrent
+                                    ? 'text-blue-400'
+                                    : 'text-zinc-500'
+                            }`}>
+                              {step.label}
+                            </span>
+                            {step.isCurrent && !step.isCancelled && (
+                              <span className="text-[10px] font-medium text-blue-400 bg-blue-900/30 px-2 py-0.5 rounded-full">
+                                Current
+                              </span>
+                            )}
+                          </div>
+
+                          {step.timestamp && (
+                            <p className="text-xs text-zinc-500 mt-0.5">
+                              {new Date(step.timestamp).toLocaleDateString('en-KE', {
+                                year: 'numeric',
+                                month: 'short',
+                                day: 'numeric',
+                                hour: '2-digit',
+                                minute: '2-digit',
+                              })}
+                            </p>
+                          )}
+
+                          {step.note && (
+                            <p className="text-xs text-zinc-400 mt-1 bg-zinc-800/50 px-3 py-1.5 rounded-lg inline-block">
+                              {step.note}
+                            </p>
+                          )}
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+
+                {timelineSteps.length === 0 && (
+                  <p className="text-zinc-500 text-sm text-center py-4">No tracking information available yet.</p>
+                )}
               </div>
             )}
           </div>
