@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { User, Globe, Shield, Package, HelpCircle, Info, LogIn, UserPlus, Menu, X, Download, ShoppingCart, ChevronDown, LogOut, RefreshCw } from 'lucide-react';
 import { supabase } from '../utils/supabase';
 import { useLang } from '../utils/lang';
@@ -26,6 +26,7 @@ function Navbar() {
   const drawerRef = useRef(null);
   const { t } = useLang();
   const location = useLocation();
+  const navigate = useNavigate();
   const { getItemCount } = useCart();
   const cartCount = getItemCount();
   const theme = useActiveTheme();
@@ -102,6 +103,7 @@ function Navbar() {
     sounds.logout();
     await supabase.auth.signOut();
     setMenuOpen(false);
+    navigate('/login');
   };
 
   return (
