@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Image as ImageIcon, MapPin, Share2, Package, ShoppingCart, Eye, CheckSquare, Square, AlertTriangle, Heart } from 'lucide-react';
 import CountdownTimer from './CountdownTimer';
@@ -20,7 +20,6 @@ function getCompareIds() {
 
 function setCompareIds(ids) {
   localStorage.setItem(COMPARE_KEY, JSON.stringify(ids));
-  // Dispatch custom event so floating button can react
   window.dispatchEvent(new Event('omix-compare-changed'));
 }
 
@@ -31,6 +30,44 @@ function ProductCard({ listing, compareMode, onCompareChange }) {
   const [wishBusy, setWishBusy] = useState(false);
   const { user } = useAuth();
   const { addItem, cart } = useCart();
+
+  // ── Variant selection state ──
+  const [selectedColor, setSelectedColor] = useState(null);
+  const [selectedSize, setSelectedSize] = useState(null);
+
+  // Derive unique colors and sizes from listing variants
+  const hasVariants = listing?.has_variants && listing?.variants?.length > 0;
+  const uniqueColors = useMemo(() => {
+    if (!hasVariants) return [];
+    const seen = new Set();
+    return listing.variants
+      .filter(v => v.color && !seen.has(v.color) && seen.add(v.color))
+      .map(v => ({ hex: v.color, name: v.colorName || v.color }));
+  }, [listing?.variants, hasVariants]);
+  const uniqueSizes = useMemo(() => {
+    if (!hasVariants) return [];
+    return [...new Set(listing.variants.map(v => v.size).filter(Boolean))];
+  }, [listing?.variants, hasVariants]);
+
+  // Derive the selected variant object matching both color + size
+  const selectedVariantObj = useMemo(() => {
+    if (!hasVariants) return null;
+    return listing.variants.find(v =>
+      (!selectedColor || v.color === selectedColor) &&
+      (!selectedSize || v.size === selectedSize)
+    ) || null;
+  }, [hasVariants, listing?.variants, selectedColor, selectedSize]);
+
+  // Effective price reflects the selected variant's price adjustment
+  const effectivePrice = selectedVariantObj
+    ? (listing.price || 0) + (selectedVariantObj.priceAdjustment || 0)
+    : listing.price;
+
+  // Reset variant selection when listing changes
+  useEffect(() => {
+    setSelectedColor(null);
+    setSelectedSize(null);
+  }, [listing?.id]);
 
   // Check wishlist status on mount
   useEffect(() => {
@@ -90,9 +127,7 @@ function ProductCard({ listing, compareMode, onCompareChange }) {
     if (navigator.share) {
       navigator.share(shareData).catch(() => {});
     } else {
-      navigator.clipboard.writeText(shareData.url).then(() => {
-        // Brief visual feedback — could use a toast
-      }).catch(() => {});
+      navigator.clipboard.writeText(shareData.url).then(() => {}).catch(() => {});
     }
   };
 
@@ -107,12 +142,10 @@ function ProductCard({ listing, compareMode, onCompareChange }) {
     e.preventDefault();
     e.stopPropagation();
 
-    // Block during maintenance mode
     if (isMaintenanceCached()) {
-      // Brief shake animation on the button area
       const btn = e.currentTarget;
       btn.style.animation = 'none';
-      btn.offsetHeight; // reflow
+      btn.offsetHeight;
       btn.style.animation = 'shake 0.4s ease-in-out';
       return;
     }
@@ -122,12 +155,31 @@ function ProductCard({ listing, compareMode, onCompareChange }) {
       return;
     }
 
+    // If product has variants but none selected, pick first available
+    let variantToUse = selectedVariantObj;
+    if (hasVariants && !variantToUse) {
+      const inStock = listing.variants.find(v => (v.quantity || 0) > 0);
+      if (inStock) {
+        variantToUse = inStock;
+        // Also update local state so selection shows
+        setSelectedColor(inStock.color || null);
+        setSelectedSize(inStock.size || null);
+      }
+    }
+
     addItem({
       id: listing.id,
       name: listing.title,
-      price: listing.price,
+      price: variantToUse ? (listing.price || 0) + (variantToUse.priceAdjustment || 0) : listing.price,
       image_url: listing.images?.[0] || null,
       quantity: 1,
+      variant: variantToUse ? {
+        id: variantToUse.id,
+        size: variantToUse.size,
+        color: variantToUse.color,
+        colorName: variantToUse.colorName,
+        sku: variantToUse.sku,
+      } : null,
     });
 
     setJustAdded(true);
@@ -148,6 +200,16 @@ function ProductCard({ listing, compareMode, onCompareChange }) {
     if (onCompareChange) onCompareChange(ids);
   };
 
+  // Display price range for variant products
+  const displayPrice = listing.has_variants && listing.variants?.length > 0 ? (() => {
+    const prices = listing.variants.map(v => (listing.price || 0) + (v.priceAdjustment || 0));
+    if (prices.length === 0) return formatKES(listing.price || 0);
+    const min = Math.min(...prices);
+    const max = Math.max(...prices);
+    if (!isFinite(min) || !isFinite(max)) return formatKES(listing.price || 0);
+    return min === max ? formatKES(min) : `${formatKES(min)} - ${formatKES(max)}`;
+  })() : (listing.flash_sale_price ? formatKES(listing.flash_sale_price) : formatKES(listing.price));
+
   return (
     <Link to={`/listing/${listing.id}`} className="block group theme-card-shimmer theme-card-glow">
       <div className="bg-zinc-900 rounded-2xl overflow-hidden aspect-[4/5] mb-3 relative">
@@ -159,7 +221,6 @@ function ProductCard({ listing, compareMode, onCompareChange }) {
           </div>
         )}
 
-        {/* Seasonal theme sticker badge */}
         {sticker && socialBadge && (
           <div className="absolute bottom-2 left-2 bg-white/90 dark:bg-black/80 text-white px-2 py-1 rounded-lg text-[10px] font-bold shadow-sm flex items-center gap-1">
             <span>{sticker}</span>
@@ -167,47 +228,40 @@ function ProductCard({ listing, compareMode, onCompareChange }) {
           </div>
         )}
 
-        {/* Condition badge */}
         <div className="absolute top-2 left-2 bg-white/90 dark:bg-black/90 text-white px-2 py-1 rounded-lg text-[10px] font-bold shadow-sm capitalize">
           {listing.condition?.replace('_', ' ')}
         </div>
 
-        {/* Low stock badge */}
         {listing.status !== 'sold' && listing.stock_quantity !== undefined && listing.stock_quantity > 0 && listing.stock_quantity <= 2 && (
           <div className="absolute top-2 left-16 bg-orange-500 text-white px-2 py-1 rounded-lg text-[10px] font-bold shadow-sm">
             Only {listing.stock_quantity} left!
           </div>
         )}
 
-        {/* Sold out badge */}
         {listing.status === 'sold' && (
           <div className="absolute top-2 left-16 bg-red-600 text-white px-2 py-1 rounded-lg text-[10px] font-bold shadow-sm">
             Sold Out
           </div>
         )}
 
-        {/* Featured badge */}
         {listing.featured && (
           <div className="absolute top-2 right-2 bg-amber-500 text-white px-2 py-1 rounded-lg text-[10px] font-bold shadow-sm">
-            ★ Popular
+            Popular
           </div>
         )}
 
-        {/* Flash sale badge */}
         {listing.flash_sale_ends_at && (
           <div className="absolute top-2 right-12 bg-red-500 text-white px-2 py-1 rounded-lg text-[10px] font-bold shadow-sm flex items-center gap-1">
             <CountdownTimer targetDate={listing.flash_sale_ends_at} />
           </div>
         )}
 
-        {/* Discount badge on image */}
         {listing.compare_at_price && listing.compare_at_price > listing.price && (
           <div className="absolute top-2 right-12 bg-red-500 text-white px-2 py-1 rounded-lg text-[10px] font-bold shadow-sm">
             -{Math.round((1 - listing.price / listing.compare_at_price) * 100)}%
           </div>
         )}
 
-        {/* Compare checkbox (visible when comparison mode is active) */}
         {compareMode && (
           <button
             onClick={toggleCompare}
@@ -222,7 +276,6 @@ function ProductCard({ listing, compareMode, onCompareChange }) {
           </button>
         )}
 
-        {/* Wishlist Heart button — always visible on mobile, hover-reveal on desktop */}
         <button onClick={handleWishlist}
           className={`absolute top-2 left-2 p-1.5 rounded-full shadow-sm transition-all z-10 ${
             wishlisted
@@ -234,21 +287,18 @@ function ProductCard({ listing, compareMode, onCompareChange }) {
           <Heart className={`w-4 h-4 ${wishlisted ? 'fill-current' : ''}`} />
         </button>
 
-        {/* Web Share button */}
         <button onClick={handleWebShare}
           className="absolute top-2 right-12 bg-white/90 dark:bg-black/90 text-zinc-300 p-1.5 rounded-full shadow-sm hover:bg-[var(--seasonal-primary,#1a5632)] hover:text-white transition-all opacity-0 group-hover:opacity-100"
           aria-label="Share">
           <Share2 className="w-3 h-3" />
         </button>
 
-        {/* WhatsApp Share button */}
         <button onClick={handleWhatsAppShare}
           className="absolute top-2 right-2 bg-[#25D366] text-white p-1.5 rounded-full shadow-sm hover:bg-[#20BD5A] transition-all opacity-0 group-hover:opacity-100"
           aria-label="Share on WhatsApp">
           <Share2 className="w-3 h-3" />
         </button>
 
-        {/* Quick View button */}
         <button
           onClick={(e) => { e.preventDefault(); e.stopPropagation(); }}
           className="absolute top-10 right-2 bg-white/90 dark:bg-black/90 text-white p-1.5 rounded-full shadow-sm hover:bg-[var(--seasonal-primary,#1a5632)] hover:text-white transition-all opacity-0 group-hover:opacity-100"
@@ -285,66 +335,110 @@ function ProductCard({ listing, compareMode, onCompareChange }) {
         </div>
         <p className="text-zinc-400 text-xs">{listing.category}{listing.brand ? ` - ${listing.brand}` : ''}</p>
 
-        {/* Color swatches */}
-        {listing.has_variants && listing.variants?.length > 0 && (() => {
-          const uniqueColors = [];
-          const seen = new Set();
-          listing.variants.forEach(v => {
-            if (v.color && !seen.has(v.color)) {
-              seen.add(v.color);
-              uniqueColors.push({ hex: v.color, name: v.colorName || v.color });
-            }
-          });
-          if (uniqueColors.length <= 1) return null;
-          return (
-            <div className="flex items-center gap-1 mt-1.5">
-              {uniqueColors.slice(0, 5).map((c, i) => (
-                <div
+        {/* Interactive Color Selector */}
+        {uniqueColors.length > 1 && (
+          <div className="flex items-center gap-1.5 mt-1.5">
+            {uniqueColors.map((c, i) => {
+              const isSelected = selectedColor === c.hex;
+              const stock = listing.variants.filter(v => v.color === c.hex).reduce((s, v) => s + (v.quantity || 0), 0);
+              const disabled = stock <= 0;
+              return (
+                <button
                   key={i}
-                  className="w-3.5 h-3.5 rounded-full border border-zinc-300 dark:border-zinc-600 flex-shrink-0"
+                  type="button"
+                  disabled={disabled}
+                  onClick={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    setSelectedColor(isSelected ? null : c.hex);
+                  }}
+                  className={`w-4 h-4 rounded-full border-2 flex-shrink-0 transition-all ${
+                    isSelected
+                      ? 'border-[var(--seasonal-primary,#1a5632)] scale-125 shadow-sm shadow-[var(--seasonal-primary,#1a5632)]/30'
+                      : disabled
+                        ? 'border-zinc-700 opacity-25 cursor-not-allowed'
+                        : 'border-zinc-400 dark:border-zinc-600 hover:border-[var(--seasonal-primary,#1a5632)] hover:scale-110'
+                  }`}
                   style={{ backgroundColor: c.hex?.startsWith('#') ? c.hex : '#ccc' }}
-                  title={c.name}
+                  title={`${c.name}${disabled ? ' (out of stock)' : ''}`}
                 />
-              ))}
-              {uniqueColors.length > 5 && (
-                <span className="text-[9px] text-zinc-400 font-medium">+{uniqueColors.length - 5}</span>
-              )}
-            </div>
-          );
-        })()}
+              );
+            })}
+            {selectedColor && (
+              <button
+                type="button"
+                onClick={(e) => { e.preventDefault(); e.stopPropagation(); setSelectedColor(null); }}
+                className="text-[8px] text-zinc-500 hover:text-white ml-0.5 font-bold"
+                title="Clear color"
+              >
+                x
+              </button>
+            )}
+          </div>
+        )}
 
-        {/* Size chips (show first few) */}
-        {listing.has_variants && listing.variants?.length > 0 && (() => {
-          const uniqueSizes = [...new Set(listing.variants.map(v => v.size).filter(Boolean))];
-          if (uniqueSizes.length <= 1) return null;
-          return (
-            <div className="flex items-center gap-1 mt-1 flex-wrap">
-              {uniqueSizes.slice(0, 4).map((s, i) => (
-                <span key={i} className="text-[9px] font-bold text-zinc-400 bg-zinc-800 px-1.5 py-0.5 rounded">
+        {/* Interactive Size Selector */}
+        {uniqueSizes.length > 1 && (
+          <div className="flex items-center gap-1 mt-1.5 flex-wrap">
+            {uniqueSizes.map((s, i) => {
+              const isSelected = selectedSize === s;
+              const stock = listing.variants.filter(v =>
+                v.size === s && (!selectedColor || v.color === selectedColor)
+              ).reduce((total, v) => total + (v.quantity || 0), 0);
+              const disabled = stock <= 0;
+              return (
+                <button
+                  key={i}
+                  type="button"
+                  disabled={disabled}
+                  onClick={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    setSelectedSize(isSelected ? null : s);
+                  }}
+                  className={`text-[9px] font-bold px-1.5 py-0.5 rounded border transition-all ${
+                    isSelected
+                      ? 'bg-[var(--seasonal-primary,#1a5632)] text-white border-[var(--seasonal-primary,#1a5632)]'
+                      : disabled
+                        ? 'bg-zinc-900 text-zinc-600 border-zinc-800 line-through cursor-not-allowed'
+                        : 'bg-zinc-800 text-zinc-300 border-zinc-700 hover:border-[var(--seasonal-primary,#1a5632)]'
+                  }`}
+                  title={disabled ? 'Out of stock' : s}
+                >
                   {s}
-                </span>
-              ))}
-              {uniqueSizes.length > 4 && (
-                <span className="text-[9px] text-zinc-400">+{uniqueSizes.length - 4} more</span>
-              )}
-            </div>
-          );
-        })()}
+                </button>
+              );
+            })}
+          </div>
+        )}
+
+        {/* Selected variant indicator */}
+        {selectedVariantObj && (
+          <div className="flex items-center gap-1 mt-1">
+            <span className="text-[9px] text-[var(--seasonal-primary,#1a5632)] font-bold">
+              {selectedVariantObj.colorName || selectedColor ? `${uniqueColors.find(c => c.hex === selectedColor)?.name || ''}${selectedSize ? ` - ${selectedSize}` : ''}` : selectedSize}
+            </span>
+            {selectedVariantObj.quantity <= 0 && (
+              <span className="text-[9px] text-red-500 font-bold">Out of stock</span>
+            )}
+            {selectedVariantObj.quantity > 0 && selectedVariantObj.quantity <= 2 && (
+              <span className="text-[9px] text-orange-500 font-bold">Only {selectedVariantObj.quantity} left!</span>
+            )}
+          </div>
+        )}
 
         <div className="flex items-center justify-between mt-1">
           <div className="flex items-center gap-2">
             <p className="font-bold text-sm" style={{ color: priceColor }}>
-              {listing.has_variants && listing.variants?.length > 0 ? (() => {
-                const prices = listing.variants.map(v => (listing.price || 0) + (v.priceAdjustment || 0));
-                if (prices.length === 0) return formatKES(listing.price || 0);
-                const min = Math.min(...prices);
-                const max = Math.max(...prices);
-                if (!isFinite(min) || !isFinite(max)) return formatKES(listing.price || 0);
-                return min === max ? formatKES(min) : `${formatKES(min)} – ${formatKES(max)}`;
-              })() : (listing.flash_sale_price ? formatKES(listing.flash_sale_price) : formatKES(listing.price))}
+              {selectedVariantObj ? formatKES(effectivePrice) : displayPrice}
             </p>
             {(listing.compare_at_price && listing.compare_at_price > listing.price) || listing.flash_sale_price ? (
-              <p className="text-xs text-zinc-400 line-through">{formatKES(listing.compare_at_price || listing.price)}</p>
+              <p className="text-xs text-zinc-400 line-through">
+                {selectedVariantObj && selectedVariantObj.priceAdjustment !== 0
+                  ? formatKES(listing.price)
+                  : formatKES(listing.compare_at_price || listing.price)
+                }
+              </p>
             ) : null}
           </div>
           {listing.location && (
