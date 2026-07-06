@@ -3,6 +3,8 @@ import { Save, Store, Truck, Bell, Palette, Eye, Calendar, Wrench, Megaphone } f
 import themesConfig from '../config/seasonal-themes.json';
 import { supabase } from '../utils/supabase';
 
+const API_BASE = import.meta.env.VITE_API_URL || 'https://stor1-api.onrender.com';
+
 const THEME_STATES_KEY = 'omix_theme_states';
 
 export default function AdminSettings() {
@@ -153,7 +155,7 @@ export default function AdminSettings() {
           : { title: '✅ Site Back Online', body: 'Omix Store is fully operational again. You can now place orders as usual!', tag: 'maintenance-off', url: '/' };
         
         try {
-          await fetch('/api/push/broadcast', {
+          await fetch(`${API_BASE}/api/push/broadcast`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json', 'X-API-Key': import.meta.env.VITE_OPENCODE_API_KEY },
             body: JSON.stringify(pushPayload),
@@ -162,7 +164,7 @@ export default function AdminSettings() {
           console.warn('Push notification failed:', pushErr.message);
         }
       }
-
+    
       setSaved(true);
       setTimeout(() => setSaved(false), 3000);
     } catch (err) {
@@ -179,7 +181,7 @@ export default function AdminSettings() {
     if (!updateMsg.trim()) return;
     setSendingUpdate(true);
     try {
-      const res = await fetch('/api/push/broadcast', {
+      const res = await fetch(`${API_BASE}/api/push/broadcast`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', 'X-API-Key': import.meta.env.VITE_OPENCODE_API_KEY },
         body: JSON.stringify({ title: '📢 New Update', body: updateMsg.trim(), tag: 'store-update', url: '/' }),

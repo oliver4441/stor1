@@ -1105,7 +1105,7 @@ export async function updateListingPaymentStatus(paymentId, updates) {
 // ── Paystack ────────────────────────────────────────────────────────
 export async function paystackInitialize({ email, amount, reference, callbackUrl }) {
   try {
-    const res = await fetch('/api/paystack/initialize', {
+    const res = await fetch(`${API_BASE}/api/paystack/initialize`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ email, amount, reference, callback_url: callbackUrl }),

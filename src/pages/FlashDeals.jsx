@@ -4,6 +4,8 @@ import { Zap, Clock, ShoppingBag, Package, ChevronLeft } from 'lucide-react';
 import ProductCard from '../components/ProductCard';
 import { supabase } from '../utils/supabase';
 
+const API_BASE = import.meta.env.VITE_API_URL || 'https://stor1-api.onrender.com';
+
 function CountdownTimer({ endAt, label }) {
   const [timeLeft, setTimeLeft] = useState('');
 
@@ -40,7 +42,7 @@ export default function FlashDeals() {
   useEffect(() => {
     (async () => {
       try {
-        const res = await fetch('/api/flash-deals/active');
+        const res = await fetch(`${API_BASE}/api/flash-deals/active`);
         const json = await res.json();
         if (json.success) {
           setDeals(json.data || []);

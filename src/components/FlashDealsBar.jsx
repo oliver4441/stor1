@@ -2,6 +2,8 @@ import { useState, useEffect, useCallback } from 'react';
 import { Link } from 'react-router-dom';
 import { Clock, Tag, Zap, ChevronLeft, ChevronRight } from 'lucide-react';
 
+const API_BASE = import.meta.env.VITE_API_URL || 'https://stor1-api.onrender.com';
+
 function CountdownTimer({ endAt }) {
   const [timeLeft, setTimeLeft] = useState('');
 
@@ -34,7 +36,7 @@ export default function FlashDealsBar() {
   useEffect(() => {
     (async () => {
       try {
-        const res = await fetch('/api/flash-deals/active');
+        const res = await fetch(`${API_BASE}/api/flash-deals/active`);
         const json = await res.json();
         if (json.success) {
           setDeals(json.data || []);
