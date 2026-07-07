@@ -46,7 +46,7 @@ export default function AffiliatePage() {
                 to="/affiliate/apply"
                 className="inline-flex items-center justify-center gap-2 px-8 py-3.5 rounded-xl font-semibold text-white bg-gradient-to-r from-blue-600 to-blue-500 hover:from-blue-500 hover:to-blue-400 transition-all duration-200 shadow-lg shadow-blue-500/20"
               >
-                Apply Now
+                Join the Affiliates
                 <ChevronRight size={18} />
               </Link>
               <Link
@@ -230,7 +230,7 @@ export default function AffiliatePage() {
             to="/affiliate/apply"
             className="inline-flex items-center justify-center gap-2 px-8 py-3.5 rounded-xl font-semibold text-white bg-gradient-to-r from-blue-600 to-blue-500 hover:from-blue-500 hover:to-blue-400 transition-all duration-200 shadow-lg shadow-blue-500/20"
           >
-            Apply Now
+            Join the Affiliates
             <ChevronRight size={18} />
           </Link>
           <Link
