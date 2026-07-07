@@ -49,6 +49,7 @@ export default function AffiliateApply() {
     phone: '',
     alternative_phone: '',
     email: '',
+    password: '',
     physical_address: '',
     id_number: '',
     date_of_birth: '',
@@ -66,19 +67,15 @@ export default function AffiliateApply() {
   const [success, setSuccess] = useState(false);
   const [fieldErrors, setFieldErrors] = useState({});
 
+  // Track whether user was created during this submission
+  const [accountCreated, setAccountCreated] = useState(false);
+
   // Pre-fill email from user session
   useEffect(() => {
     if (user?.email) {
       setFormData(prev => ({ ...prev, email: user.email }));
     }
   }, [user]);
-
-  // Redirect if not logged in
-  if (!authLoading && !user) {
-    const returnUrl = encodeURIComponent('/affiliate/apply');
-    navigate(`/login?redirect=${returnUrl}`, { replace: true });
-    return null;
-  }
 
   if (authLoading) {
     return (
@@ -114,6 +111,7 @@ export default function AffiliateApply() {
     if (!formData.full_name?.trim()) errors.full_name = 'Full name is required';
     if (!formData.phone?.trim()) errors.phone = 'Phone number is required';
     if (!formData.email?.trim()) errors.email = 'Email is required';
+    if (!user && (!formData.password || formData.password.length < 6)) errors.password = 'Password must be at least 6 characters';
     if (!formData.mpesa_number?.trim()) errors.mpesa_number = 'M-Pesa payout number is required';
     if (!formData.agreed) errors.agreed = 'You must agree to the affiliate agreement';
     setFieldErrors(errors);
@@ -138,6 +136,7 @@ export default function AffiliateApply() {
         phone: formData.phone.trim(),
         alternative_phone: formData.alternative_phone.trim() || null,
         email: formData.email.trim(),
+        password: !user ? formData.password : undefined,
         physical_address: formData.physical_address.trim() || null,
         id_number: formData.id_number.trim() || null,
         date_of_birth: formData.date_of_birth || null,
@@ -164,6 +163,7 @@ export default function AffiliateApply() {
       }
 
       setSuccess(true);
+      if (!user) setAccountCreated(true);
     } catch (err) {
       setError(err.message || 'Network error. Please try again.');
     } finally {
@@ -180,24 +180,51 @@ export default function AffiliateApply() {
             <CheckCircle size={40} className="text-green-400" />
           </div>
           <h1 className="text-2xl font-bold text-white mb-4">Application Submitted</h1>
-          <p className="text-zinc-400 mb-8 leading-relaxed">
-            Application submitted successfully. We will review your application and get back to you.
-          </p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Link
-              to="/affiliate"
-              className="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-xl font-medium text-white bg-blue-600 hover:bg-blue-500 transition-colors"
-            >
-              <ArrowLeft size={16} />
-              Back to Affiliate Program
-            </Link>
-            <Link
-              to="/"
-              className="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-xl font-medium text-zinc-300 border border-zinc-700 hover:bg-zinc-800 transition-colors"
-            >
-              Browse Store
-            </Link>
-          </div>
+          {accountCreated ? (
+            <>
+              <p className="text-zinc-400 mb-2 leading-relaxed">
+                Your account and affiliate application have been created successfully.
+              </p>
+              <p className="text-zinc-400 mb-8 leading-relaxed">
+                You can now sign in with your email and password to track your application status.
+              </p>
+              <div className="flex flex-col sm:flex-row gap-4 justify-center">
+                <Link
+                  to="/login"
+                  className="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-xl font-medium text-white bg-blue-600 hover:bg-blue-500 transition-colors"
+                >
+                  Sign In to Your Account
+                </Link>
+                <Link
+                  to="/"
+                  className="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-xl font-medium text-zinc-300 border border-zinc-700 hover:bg-zinc-800 transition-colors"
+                >
+                  Browse Store
+                </Link>
+              </div>
+            </>
+          ) : (
+            <>
+              <p className="text-zinc-400 mb-8 leading-relaxed">
+                Application submitted successfully. We will review your application and get back to you.
+              </p>
+              <div className="flex flex-col sm:flex-row gap-4 justify-center">
+                <Link
+                  to="/affiliate"
+                  className="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-xl font-medium text-white bg-blue-600 hover:bg-blue-500 transition-colors"
+                >
+                  <ArrowLeft size={16} />
+                  Back to Affiliate Program
+                </Link>
+                <Link
+                  to="/"
+                  className="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-xl font-medium text-zinc-300 border border-zinc-700 hover:bg-zinc-800 transition-colors"
+                >
+                  Browse Store
+                </Link>
+              </div>
+            </>
+          )}
         </div>
       </div>
     );
@@ -222,7 +249,9 @@ export default function AffiliateApply() {
           </Link>
           <h1 className="text-3xl font-bold text-white mb-2">Affiliate Application</h1>
           <p className="text-zinc-400">
-            Complete the form below to apply for the Omix Store Affiliate Program. Fields marked with an asterisk are required.
+            {user
+              ? 'Complete the form below to apply for the Omix Store Affiliate Program. Fields marked with an asterisk are required.'
+              : 'Create your affiliate account by completing the form below. You will set a password to access your dashboard after submission.'}
           </p>
         </div>
 
@@ -349,6 +378,26 @@ export default function AffiliateApply() {
                 />
                 {fieldErrors.email && <p className="text-red-400 text-xs mt-1">{fieldErrors.email}</p>}
               </div>
+
+              {!user && (
+                <div>
+                  <label className="block text-sm font-medium text-zinc-300 mb-1.5">
+                    Create Password <span className="text-red-400">*</span>
+                  </label>
+                  <input
+                    type="password"
+                    name="password"
+                    value={formData.password}
+                    onChange={handleChange}
+                    placeholder="Min. 6 characters"
+                    className={inputClass('password')}
+                  />
+                  {fieldErrors.password && <p className="text-red-400 text-xs mt-1">{fieldErrors.password}</p>}
+                  <p className="text-zinc-500 text-xs mt-1.5">
+                    Set a password for your account. You will use this to sign in and access your affiliate dashboard.
+                  </p>
+                </div>
+              )}
 
               <div>
                 <label className="block text-sm font-medium text-zinc-300 mb-1.5">
