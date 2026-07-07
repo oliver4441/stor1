@@ -383,14 +383,17 @@ export default function AdminAffiliates() {
                           {a.status !== 'terminated' && (
                             <span className="text-xs text-zinc-500">{formatKES(a.total_earned || 0)} earned</span>
                           )}
-                          <button onClick={() => toggleStatus(a.id, a.status)}
-                            className={`px-3 py-1 rounded-full text-xs font-bold ${
-                              a.status === 'active' ? 'bg-green-900/30 text-green-400' :
-                              a.status === 'inactive' ? 'bg-zinc-800 text-zinc-400' :
-                              'bg-red-900/30 text-red-400'
-                            }`}>
-                            {a.status}
-                          </button>
+                          {a.status !== 'terminated' && (
+                            <button onClick={() => toggleStatus(a.id, a.status)}
+                              className={`px-3 py-1 rounded-full text-xs font-bold ${
+                                a.status === 'active' ? 'bg-green-900/30 text-green-400' : 'bg-zinc-800 text-zinc-400'
+                              }`}>
+                              {a.status}
+                            </button>
+                          )}
+                          {a.status === 'terminated' && (
+                            <span className="px-3 py-1 rounded-full text-xs font-bold bg-red-900/30 text-red-400">rejected</span>
+                          )}
                         </>
                       )}
                     </div>
