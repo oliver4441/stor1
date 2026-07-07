@@ -2,10 +2,8 @@ import { Link } from 'react-router-dom';
 import { DollarSign, Users, TrendingUp, Target, Gift, MousePointerClick, ChevronRight, Award, Shield, Clock, ExternalLink } from 'lucide-react';
 
 const TIERS = [
-  { name: 'Bronze', rate: '3%', orders: '0', sales: 'KES 0', color: 'text-amber-700', bar: 'bg-amber-700' },
-  { name: 'Silver', rate: '5%', orders: '5', sales: 'KES 50,000', color: 'text-zinc-300', bar: 'bg-zinc-400' },
-  { name: 'Gold', rate: '8%', orders: '20', sales: 'KES 250,000', color: 'text-amber-400', bar: 'bg-amber-400' },
-  { name: 'Platinum', rate: '12%', orders: '50', sales: 'KES 1,000,000', color: 'text-blue-400', bar: 'bg-blue-400' },
+  { name: 'Silver', rate: '5%', orders: '0', sales: 'KES 0', color: 'text-zinc-300', bar: 'bg-zinc-400' },
+  { name: 'Gold', rate: '10%', orders: '30', sales: 'KES 0', color: 'text-amber-400', bar: 'bg-amber-400' },
 ];
 
 const STEPS = [
@@ -13,7 +11,7 @@ const STEPS = [
   { icon: Users, title: 'Get Approved', desc: 'Our team reviews your application and activates your account.' },
   { icon: Gift, title: 'Receive Your Link', desc: 'Get your unique referral link to start sharing instantly.' },
   { icon: TrendingUp, title: 'Promote Products', desc: 'Share products from Omix Store across your channels.' },
-  { icon: Target, title: 'Earn Commissions', desc: 'Earn up to 12% on every qualifying sale you refer.' },
+  { icon: Target, title: 'Earn Commissions', desc: 'Earn up to 10% on every qualifying sale you refer.' },
   { icon: DollarSign, title: 'Get Paid', desc: 'Request payouts via M-Pesa once you reach KES 2,000.' },
 ];
 
@@ -104,7 +102,7 @@ export default function AffiliatePage() {
               The more you sell, the higher your commission rate. Tiers are calculated annually based on qualified orders and total sales volume.
             </p>
           </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-4 max-w-lg mx-auto">
             {TIERS.map((tier) => (
               <div
                 key={tier.name}
