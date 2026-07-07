@@ -233,7 +233,6 @@ export default function AdminAffiliates() {
     return true;
   });
 
-  const pendingAffiliates = affiliates.filter(a => a.status === 'pending' || a.status === 'terminated');
   const pendingAffiliateCount = affiliates.filter(a => a.status === 'pending').length;
 
   const pendingCommissions = commissions.filter(c =>
