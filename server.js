@@ -3,7 +3,9 @@ import express from 'express';
 import crypto from 'crypto';
 import helmet from 'helmet';
 import path from 'path';
+import fs from 'fs';
 import { fileURLToPath } from 'url';
+import { execSync } from 'child_process';
 import fetch from 'node-fetch';
 import webpush from 'web-push';
 
@@ -17,6 +19,20 @@ app.use(helmet({
 }));
 app.use(express.json({ limit: '1mb' }));
 const port = process.env.PORT || 3000;
+
+// ── Smart startup: ensure dist/index.html exists ─────────────────────
+const distIndex = path.join(__dirname, 'dist', 'index.html');
+if (!fs.existsSync(distIndex)) {
+  console.warn('[WARN] dist/index.html not found — attempting to build...');
+  try {
+    execSync('npm run build', { stdio: 'inherit', cwd: __dirname });
+    console.log('[OK] Build completed successfully');
+  } catch (buildErr) {
+    console.error('[FATAL] Build failed:', buildErr.message);
+  }
+}
+// Used by SPA fallback to redirect if build still missing
+const distMissing = () => !fs.existsSync(distIndex);
 
 // ── Paystack Configuration ──────────────────────────────────────────
 const PAYSTACK_SECRET_KEY = process.env.PAYSTACK_SECRET_KEY || '';
@@ -648,6 +664,9 @@ app.use(express.static(path.join(__dirname, 'dist'), {
 // SPA fallback — serve index.html for all non-API, non-file routes
 // NEVER cache HTML so Cloudflare always gets fresh index.html with correct bundle hash
 app.get('*', (req, res) => {
+  if (distMissing()) {
+    return res.redirect(301, 'https://market.omixsystems.store' + req.originalUrl);
+  }
   res.set('Cache-Control', 'no-cache, no-store, must-revalidate');
   res.set('Pragma', 'no-cache');
   res.set('Expires', '0');

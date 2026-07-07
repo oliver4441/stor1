@@ -156,7 +156,12 @@ export async function advancedSearch(filters = {}) {
   try {
     const res = await fetch(`${API_BASE_SEARCH}/api/search?${params.toString()}`);
     if (!res.ok) throw new Error('Search request failed');
-    return await res.json();
+    const data = await res.json();
+    // API returns category_id but not category string — map it for display
+    if (data.listings && Array.isArray(data.listings)) {
+      data.listings = data.listings.map(mapCategoryName);
+    }
+    return data;
   } catch (err) {
     console.error('[advancedSearch]', err);
     return { listings: [], total: 0, page: 1, limit: 20, total_pages: 0 };

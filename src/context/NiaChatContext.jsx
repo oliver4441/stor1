@@ -82,7 +82,7 @@ export function NiaChatProvider({ children }) {
       // Show push notification if chat is closed and Nia sends a message
       if (!isOpen && 'Notification' in window && Notification.permission === 'granted') {
         try {
-          const notification = new Notification('💬 Nia says', {
+          const notification = new Notification('Nia says', {
             body: text.length > 120 ? text.substring(0, 120) + '...' : text,
             icon: '/nia-avatar.jpg',
             badge: '/logo.jpg',

@@ -72,7 +72,7 @@ function fallbackResponse(text) {
   // Swahili greetings
   if (lower.match(/jambo|habari|habari ya|mambo|shikamoo|niko/i)) {
     return {
-      text: "Habari! Mimi ni Nia, msaidizi wako wa Omix Store. Naweza kukusaidia nini leo? 😊",
+      text: "Habari! Mimi ni Nia, msaidizi wako wa Omix Store. Naweza kukusaidia nini leo?",
       chips: ['Ona bidhaa', 'Fuatilia oda', 'Jinsi inavyofanya kazi', 'Wasiliana nasi'],
     };
   }
@@ -88,7 +88,7 @@ function fallbackResponse(text) {
   // Swahili product queries
   if (lower.match(/bei|ghama|nunua|leta|naomba|nataka.*bidhaa|bidhaa.*gani| Electronics|vatovu|simu|nguo/i)) {
     return {
-      text: "Unaweza kutafuta bidhaa kwenye ukurasa wa nyumbani! Tumia kijaribio au chagua kwa aghamu. Nikusaidie na bidhaa maalum? 😊",
+      text: "Unaweza kutafuta bidhaa kwenye ukurasa wa nyumbani! Tumia kijaribio au chagua kwa aghamu. Nikusaidie na bidhaa maalum?",
       chips: ['Browse products', 'Electronics', 'Clothing', 'Contact support'],
     };
   }
