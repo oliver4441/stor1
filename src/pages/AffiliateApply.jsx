@@ -226,6 +226,21 @@ export default function AffiliateApply() {
           </p>
         </div>
 
+        {/* Already an affiliate? */}
+        <div className="mb-6 p-4 rounded-lg bg-blue-500/5 border border-blue-500/20 flex items-center justify-between">
+          <div>
+            <p className="text-sm font-medium text-zinc-200">Already an affiliate?</p>
+            <p className="text-xs text-zinc-400">Sign in to access your dashboard, view commissions, and manage referrals.</p>
+          </div>
+          <Link
+            to="/login"
+            className="shrink-0 inline-flex items-center gap-1.5 px-4 py-2 rounded-lg font-medium text-sm text-white bg-blue-600 hover:bg-blue-500 transition-colors"
+          >
+            Sign In
+            <ArrowLeft size={14} className="rotate-180" />
+          </Link>
+        </div>
+
         {error && (
           <div className="mb-6 p-4 rounded-lg bg-red-500/10 border border-red-500/20 flex items-start gap-3">
             <AlertCircle size={18} className="text-red-400 shrink-0 mt-0.5" />

@@ -56,6 +56,14 @@ export default function AffiliatePage() {
                 View Full Agreement
               </Link>
             </div>
+            <div className="mt-6 pt-6 border-t border-zinc-800/50 text-center">
+              <p className="text-sm text-zinc-500">
+                Already an affiliate?{' '}
+                <Link to="/login" className="text-blue-400 hover:text-blue-300 font-medium transition-colors">
+                  Sign in to your dashboard
+                </Link>
+              </p>
+            </div>
           </div>
         </div>
       </section>

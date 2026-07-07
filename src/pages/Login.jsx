@@ -41,7 +41,7 @@ function Login() {
         try {
           const { data: profile } = await supabase
             .from('profiles').select('role').eq('id', result.user.id).single();
-          const ALLOWED_REDIRECTS = ['/account', '/admin', '/cart', '/checkout', '/listings', '/'];
+          const ALLOWED_REDIRECTS = ['/account', '/admin', '/cart', '/checkout', '/listings', '/affiliate-dashboard', '/'];
           const params = new URLSearchParams(window.location.search);
           const redirect = params.get('redirect');
           if (redirect && ALLOWED_REDIRECTS.includes(redirect)) navigate(redirect);
