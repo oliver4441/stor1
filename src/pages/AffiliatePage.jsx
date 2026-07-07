@@ -19,10 +19,12 @@ export default function AffiliatePage() {
   return (
     <div className="min-h-screen bg-zinc-950 text-zinc-100">
       {/* ── Hero Section ── */}
-      <section className="relative overflow-hidden border-b border-zinc-800">
-        <div className="absolute inset-0 bg-gradient-to-br from-blue-600/10 via-zinc-900 to-zinc-950" />
-        <div className="absolute top-20 right-20 w-96 h-96 bg-blue-500/5 rounded-full blur-3xl" />
-        <div className="relative max-w-6xl mx-auto px-4 py-24 md:py-32">
+      <section className="relative overflow-hidden border-b border-zinc-800 min-h-[75vh] flex items-center">
+        {/* Background Image */}
+        <div className="absolute inset-0 bg-[url('/affiliate-hero-bg.jpg')] bg-cover bg-center bg-no-repeat" />
+        {/* Dark Overlay */}
+        <div className="absolute inset-0 bg-gradient-to-r from-zinc-950/95 via-zinc-950/80 to-zinc-950/60" />
+        <div className="relative max-w-6xl mx-auto px-4 py-24 md:py-32 w-full">
           <div className="max-w-3xl">
             <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-blue-500/10 border border-blue-500/20 text-blue-400 text-sm font-medium mb-6">
               <Award size={16} />
