@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
 import { supabase } from '../utils/supabase';
-import { Users, Plus, Search, X, Loader2, Check, AlertTriangle, DollarSign, Activity, Link as LinkIcon, Filter, ChevronDown, ChevronUp, Award } from 'lucide-react';
+import { Users, Plus, Search, X, Loader2, Check, AlertTriangle, DollarSign, Activity, Link as LinkIcon, Filter, ChevronDown, ChevronUp, Award, UserCheck } from 'lucide-react';
 import { formatKES, AFFILIATE_CONFIG } from '../config/affiliate';
 
 const API_BASE = import.meta.env.VITE_API_URL || 'https://stor1-api.onrender.com';
@@ -87,6 +87,7 @@ export default function AdminAffiliates() {
   const [activeTab, setActiveTab] = useState('affiliates');
   const [searchQuery, setSearchQuery] = useState('');
   const [tierFilter, setTierFilter] = useState('all');
+  const [statusFilter, setStatusFilter] = useState('all');
   const [successMsg, setSuccessMsg] = useState('');
   const [errorMsg, setErrorMsg] = useState('');
 
@@ -194,14 +195,46 @@ export default function AdminAffiliates() {
     } catch (err) { showError(err.message); }
   };
 
+  const approveAffiliate = async (affiliateId, fullName) => {
+    try {
+      const headers = await getAuthHeaders();
+      const res = await fetch(`${API_BASE}/api/admin/affiliates/${affiliateId}/approve`, {
+        method: 'PATCH', headers,
+        body: JSON.stringify({ action: 'approve' }),
+      });
+      const data = await res.json();
+      if (!data.success) throw new Error(data.error || 'Approval failed');
+      showSuccess(`Approved: ${fullName}`);
+      await loadData();
+    } catch (err) { showError(err.message); }
+  };
+
+  const rejectAffiliate = async (affiliateId, fullName) => {
+    try {
+      const headers = await getAuthHeaders();
+      const res = await fetch(`${API_BASE}/api/admin/affiliates/${affiliateId}/approve`, {
+        method: 'PATCH', headers,
+        body: JSON.stringify({ action: 'reject' }),
+      });
+      const data = await res.json();
+      if (!data.success) throw new Error(data.error || 'Rejection failed');
+      showSuccess(`Rejected: ${fullName}`);
+      await loadData();
+    } catch (err) { showError(err.message); }
+  };
+
   // Filters
   const filteredAffiliates = affiliates.filter(a => {
     if (searchQuery && !a.full_name?.toLowerCase().includes(searchQuery.toLowerCase()) &&
         !a.email?.toLowerCase().includes(searchQuery.toLowerCase()) &&
         !a.referral_code?.toLowerCase().includes(searchQuery.toLowerCase())) return false;
     if (tierFilter !== 'all' && a.tier !== tierFilter) return false;
+    if (statusFilter !== 'all' && a.status !== statusFilter) return false;
     return true;
   });
+
+  const pendingAffiliates = affiliates.filter(a => a.status === 'pending' || a.status === 'terminated');
+  const pendingAffiliateCount = affiliates.filter(a => a.status === 'pending').length;
 
   const pendingCommissions = commissions.filter(c =>
     c.status === 'calculated' || c.status === 'pending'
@@ -212,7 +245,7 @@ export default function AdminAffiliates() {
   const pendingPayouts = payouts.filter(p => p.status === 'pending');
 
   const tabs = [
-    { id: 'affiliates', label: 'Affiliates', count: affiliates.length },
+    { id: 'affiliates', label: 'Affiliates', count: affiliates.length, pending: pendingAffiliateCount },
     { id: 'commissions', label: 'Commissions', count: pendingCommissions.length, badge: 'text-amber-400' },
     { id: 'payouts', label: 'Payouts', count: pendingPayouts.length, badge: 'text-green-400' },
     { id: 'logs', label: 'Audit Logs' },
@@ -253,6 +286,9 @@ export default function AdminAffiliates() {
             {tab.count !== undefined && (
               <span className={`text-xs ${tab.badge || 'text-zinc-500'}`}>({tab.count})</span>
             )}
+            {tab.pending !== undefined && tab.pending > 0 && (
+              <span className="text-[10px] px-1.5 py-0.5 rounded-full bg-amber-500/20 text-amber-400 font-bold">{tab.pending} pending</span>
+            )}
           </button>
         ))}
       </div>
@@ -273,6 +309,14 @@ export default function AdminAffiliates() {
               <option key={t.id} value={t.id}>{t.label}</option>
             ))}
           </select>
+          <select value={statusFilter} onChange={e => setStatusFilter(e.target.value)}
+            className="px-3 py-2.5 rounded-xl bg-zinc-900 border border-zinc-800 text-sm text-white">
+            <option value="all">All Status</option>
+            <option value="pending">Pending</option>
+            <option value="active">Active</option>
+            <option value="inactive">Inactive</option>
+            <option value="terminated">Rejected</option>
+          </select>
         </div>
       )}
 
@@ -290,31 +334,66 @@ export default function AdminAffiliates() {
           ) : (
             <div className="divide-y divide-zinc-800">
               {filteredAffiliates.map(a => (
-                <div key={a.id} className="flex items-center justify-between px-5 py-4 hover:bg-zinc-800/30">
-                  <div className="flex-1 min-w-0">
-                    <div className="flex items-center gap-2">
-                      <p className="font-bold text-white truncate">{a.full_name}</p>
-                      <span className={`text-[10px] px-1.5 py-0.5 rounded font-bold ${
-                        a.tier === 'gold' ? 'bg-amber-500/20 text-amber-400' :
-                        a.tier === 'silver' ? 'bg-zinc-600/20 text-zinc-300' :
-                        'bg-zinc-600/20 text-zinc-300'
-                      }`}>
-                        {a.tier || 'silver'}
-                      </span>
+                <div key={a.id} className={`px-5 py-4 ${a.status === 'pending' ? 'bg-amber-500/5 border-l-2 border-l-amber-500' : 'hover:bg-zinc-800/30'}`}>
+                  <div className="flex items-center justify-between">
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center gap-2">
+                        <p className="font-bold text-white truncate">{a.full_name}</p>
+                        {a.status === 'pending' && (
+                          <span className="text-[10px] px-1.5 py-0.5 rounded-full bg-amber-500/20 text-amber-400 font-bold animate-pulse">New</span>
+                        )}
+                        {a.status !== 'pending' && (
+                          <span className={`text-[10px] px-1.5 py-0.5 rounded font-bold ${
+                            a.tier === 'gold' ? 'bg-amber-500/20 text-amber-400' :
+                            a.tier === 'silver' ? 'bg-zinc-600/20 text-zinc-300' :
+                            'bg-zinc-600/20 text-zinc-300'
+                          }`}>
+                            {a.tier || 'silver'}
+                          </span>
+                        )}
+                      </div>
+                      <p className="text-xs text-zinc-400">
+                        {a.email} | {a.referral_code}
+                        {a.status === 'pending' && a.phone && ` | ${a.phone}`}
+                        {a.mpesa_number && ` | M-Pesa: ${a.mpesa_number}`}
+                      </p>
+                      {a.status === 'pending' && a.promotional_methods?.length > 0 && (
+                        <p className="text-xs text-zinc-500 mt-1">
+                          Promo: {Array.isArray(a.promotional_methods) ? a.promotional_methods.slice(0, 3).join(', ') : a.promotional_methods}
+                          {Array.isArray(a.promotional_methods) && a.promotional_methods.length > 3 ? ` +${a.promotional_methods.length - 3} more` : ''}
+                        </p>
+                      )}
                     </div>
-                    <p className="text-xs text-zinc-400">
-                      {a.email} | {a.referral_code}
-                      {a.mpesa_number && ` | M-Pesa: ${a.mpesa_number}`}
-                    </p>
-                  </div>
-                  <div className="flex items-center gap-3 ml-4">
-                    <span className="text-xs text-zinc-500">{formatKES(a.total_earned || 0)} earned</span>
-                    <button onClick={() => toggleStatus(a.id, a.status)}
-                      className={`px-3 py-1 rounded-full text-xs font-bold ${
-                        a.status === 'active' ? 'bg-green-900/30 text-green-400' : 'bg-zinc-800 text-zinc-400'
-                      }`}>
-                      {a.status}
-                    </button>
+                    <div className="flex items-center gap-2 ml-4 shrink-0">
+                      {a.status === 'pending' ? (
+                        <>
+                          <button onClick={() => approveAffiliate(a.id, a.full_name)}
+                            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-green-600 hover:bg-green-500 text-white text-xs font-bold transition-all">
+                            <UserCheck className="w-3.5 h-3.5" />
+                            Approve
+                          </button>
+                          <button onClick={() => rejectAffiliate(a.id, a.full_name)}
+                            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-red-600/80 hover:bg-red-600 text-white text-xs font-bold transition-all">
+                            <X className="w-3.5 h-3.5" />
+                            Reject
+                          </button>
+                        </>
+                      ) : (
+                        <>
+                          {a.status !== 'terminated' && (
+                            <span className="text-xs text-zinc-500">{formatKES(a.total_earned || 0)} earned</span>
+                          )}
+                          <button onClick={() => toggleStatus(a.id, a.status)}
+                            className={`px-3 py-1 rounded-full text-xs font-bold ${
+                              a.status === 'active' ? 'bg-green-900/30 text-green-400' :
+                              a.status === 'inactive' ? 'bg-zinc-800 text-zinc-400' :
+                              'bg-red-900/30 text-red-400'
+                            }`}>
+                            {a.status}
+                          </button>
+                        </>
+                      )}
+                    </div>
                   </div>
                 </div>
               ))}

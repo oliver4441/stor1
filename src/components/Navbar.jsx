@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { User, Globe, Shield, Package, HelpCircle, Info, LogIn, UserPlus, Menu, X, Download, ShoppingCart, ChevronDown, LogOut, RefreshCw } from 'lucide-react';
+import { User, Globe, Shield, Package, HelpCircle, Info, LogIn, UserPlus, Menu, X, Download, ShoppingCart, ChevronDown, LogOut, RefreshCw, DollarSign } from 'lucide-react';
 import { supabase } from '../utils/supabase';
 import { useLang } from '../utils/lang';
 import { isAdmin, isAffiliate } from '../utils/api';
@@ -16,6 +16,7 @@ const FEATURE_LINKS = [
   { to: '/help', label: 'Help', icon: Package, color: 'from-emerald-500 to-green-600', glow: 'shadow-emerald-500/40' },
   { to: '/about', label: 'About', icon: Info, color: 'from-cyan-500 to-teal-600', glow: 'shadow-cyan-500/40' },
   { to: '/install', label: 'Install App', icon: Download, color: 'from-[var(--seasonal-primary,#1a5632)] to-[var(--seasonal-secondary,#14472a)]', glow: 'shadow-[var(--seasonal-primary,#1a5632)]/40' },
+  { to: '/affiliate', label: 'Earn', icon: DollarSign, color: 'from-blue-500 to-cyan-600', glow: 'shadow-blue-500/40' },
 ];
 
 function Navbar() {
