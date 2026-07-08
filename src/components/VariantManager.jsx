@@ -1,353 +1,1080 @@
-import { useState, useMemo } from 'react';
-import { Palette, Plus, X, Trash2, Shirt, ChevronDown, ChevronUp, AlertCircle } from 'lucide-react';
-import { COLOR_PALETTE, SIZE_PRESETS, getPresetSizes, generateSKU, formatKES } from '../utils/constants';
+import { useState, useRef, useMemo, useCallback } from 'react';
+import {
+  Plus,
+  X,
+  Trash2,
+  AlertTriangle,
+  Tag,
+  Hash,
+  Settings2,
+  Info,
+  ChevronDown
+} from 'lucide-react';
 
-/**
- * VariantManager — allows admin to create size/color variants for a product.
- * Each variant has: id, size, color, colorName, sku, quantity, priceAdjustment, imageUrl
- */
-export default function VariantManager({ category, basePrice, baseSku, value = [], onChange, images = [] }) {
-  const [expanded, setExpanded] = useState(value.length > 0);
-  const [colors, setColors] = useState(() => {
-    // Extract unique colors from existing variants
-    const c = new Map();
-    value.forEach(v => {
-      if (v.color && !c.has(v.color)) c.set(v.color, v.colorName || v.color);
-    });
-    return Array.from(c.entries()).map(([hex, name]) => ({ hex, name }));
+// ──────────────────────────────────────────
+// Helpers
+// ──────────────────────────────────────────
+
+function generateId() {
+  if (typeof crypto !== 'undefined' && crypto.randomUUID) {
+    return crypto.randomUUID();
+  }
+  return Date.now() + '-' + Math.random().toString(36).substring(2, 11);
+}
+
+function getValueAbbreviation(value, label, style) {
+  const text =
+    style === 'color'
+      ? (label || value || '')
+      : (value || label || '');
+  return text
+    .toString()
+    .replace(/[^a-zA-Z0-9]/g, '')
+    .substring(0, 4)
+    .toUpperCase();
+}
+
+function generateSku(baseSku, attrs, types) {
+  const suffix = types
+    .filter((t) => t.values && t.values.length > 0)
+    .map((t) => {
+      const matched = t.values.find((v) => v.value === attrs[t.id]);
+      if (!matched) return '';
+      return getValueAbbreviation(matched.value, matched.label, t.style);
+    })
+    .filter(Boolean)
+    .join('-');
+  return suffix ? `${baseSku}-${suffix}` : baseSku;
+}
+
+function generateCombinations(types) {
+  const active = types.filter((t) => t.values && t.values.length > 0);
+  if (active.length === 0) return [];
+
+  if (active.length === 1) {
+    return active[0].values.map((v) => ({ [active[0].id]: v.value }));
+  }
+
+  const results = [];
+  function backtrack(idx, current) {
+    if (idx === active.length) {
+      results.push({ ...current });
+      return;
+    }
+    const t = active[idx];
+    for (const val of t.values) {
+      current[t.id] = val.value;
+      backtrack(idx + 1, current);
+    }
+  }
+  backtrack(0, {});
+  return results;
+}
+
+function attrsMatch(a, b) {
+  const ka = Object.keys(a);
+  const kb = Object.keys(b);
+  if (ka.length !== kb.length) return false;
+  return ka.every((k) => a[k] === b[k]);
+}
+
+function generateItemsFromTypes(types, existingItems, baseSku) {
+  const combos = generateCombinations(types);
+  return combos.map((combo) => {
+    const existing = existingItems.find((item) =>
+      attrsMatch(item.attrs, combo)
+    );
+    if (existing) {
+      return { ...existing, attrs: { ...combo } };
+    }
+    return {
+      id: generateId(),
+      attrs: { ...combo },
+      sku: generateSku(baseSku, combo, types),
+      quantity: 0,
+      priceAdjustment: 0,
+      imageUrl: ''
+    };
   });
-  const [sizes, setSizes] = useState(() => {
-    // Extract unique sizes from existing variants
-    const s = new Set();
-    value.forEach(v => { if (v.size) s.add(v.size); });
-    return Array.from(s);
-  });
-  const [variants, setVariants] = useState(() => {
-    if (value.length > 0) return value;
-    return [];
-  });
-  const [showColorPicker, setShowColorPicker] = useState(false);
-  const [customColorName, setCustomColorName] = useState('');
-  const [customColorHex, setCustomColorHex] = useState('#000000');
-  const [customSize, setCustomSize] = useState('');
+}
 
-  const presetSizes = useMemo(() => getPresetSizes(category), [category]);
-  const catLower = (category || '').toLowerCase();
-  const isClothing = presetSizes || category === 'Clothing' || category === 'T-Shirts' || catLower.includes('shoe') || catLower.includes('cloth');
+function getCombinationLabel(attrs, types) {
+  return types
+    .filter(
+      (t) => t.values && t.values.length > 0 && attrs[t.id] !== undefined
+    )
+    .map((t) => {
+      const matched = t.values.find((v) => v.value === attrs[t.id]);
+      return matched ? matched.label || matched.value : attrs[t.id];
+    })
+    .join(' / ');
+}
 
-  // Sync variants to parent
-  const updateVariants = (newVariants) => {
-    setVariants(newVariants);
-    onChange(newVariants);
-  };
+// ──────────────────────────────────────────
+// Backward compatibility
+// ──────────────────────────────────────────
 
-  // Generate all combinations of selected colors × sizes
-  const generateMatrix = () => {
-    if (colors.length === 0 || sizes.length === 0) return;
-    const newVariants = [];
-    sizes.forEach(size => {
-      colors.forEach(color => {
-        // Check if variant already exists
-        const existing = variants.find(v => v.size === size && v.color === color.hex);
-        if (existing) {
-          newVariants.push(existing);
-        } else {
-          newVariants.push({
-            id: `var_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`,
-            size,
-            color: color.hex,
-            colorName: color.name,
-            sku: baseSku ? `${baseSku}-${size}-${color.name.replace(/\s/g, '').toUpperCase()}` : generateSKU(category),
-            quantity: 0,
-            priceAdjustment: 0,
-            imageUrl: '',
+function convertOldToNew(value, baseSku) {
+  if (!value) return { types: [], items: [] };
+
+  // Already new format { types, items }
+  if (typeof value === 'object' && !Array.isArray(value) && value.types) {
+    return value;
+  }
+
+  // Array format
+  if (Array.isArray(value)) {
+    if (value.length === 0) return { types: [], items: [] };
+
+    // If items already have attrs, it's already new-format items
+    if (value[0].attrs) {
+      return { types: [], items: value };
+    }
+
+    // Old format: [{ id, size, color, colorName, sku, quantity, priceAdjustment, imageUrl }]
+    const colorMap = new Map();
+    const sizeSet = new Set();
+
+    value.forEach((v) => {
+      if (v.color) {
+        const key = v.color;
+        if (!colorMap.has(key)) {
+          colorMap.set(key, {
+            value: v.color,
+            label: v.colorName || v.color
           });
         }
-      });
-    });
-    updateVariants(newVariants);
-  };
-
-  const addColorFromPalette = (paletteColor) => {
-    if (!colors.find(c => c.hex === paletteColor.hex)) {
-      setColors(prev => [...prev, paletteColor]);
-    }
-    setShowColorPicker(false);
-  };
-
-  const addCustomColor = () => {
-    if (customColorName.trim() && customColorHex) {
-      if (!colors.find(c => c.hex === customColorHex)) {
-        setColors(prev => [...prev, { hex: customColorHex, name: customColorName.trim() }]);
       }
-      setCustomColorName('');
-      setCustomColorHex('#000000');
+      if (v.size) sizeSet.add(v.size);
+    });
+
+    const types = [];
+    if (colorMap.size > 0) {
+      types.push({
+        id: generateId(),
+        name: 'Color',
+        style: 'color',
+        values: Array.from(colorMap.values())
+      });
     }
-  };
-
-  const removeColor = (hex) => {
-    setColors(prev => prev.filter(c => c.hex !== hex));
-    // Remove variants using this color
-    updateVariants(variants.filter(v => v.color !== hex));
-  };
-
-  const addSize = (size) => {
-    if (size && !sizes.includes(size)) {
-      setSizes(prev => [...prev, size].sort((a, b) => {
-        // Try numeric sort first
-        const an = parseFloat(a), bn = parseFloat(b);
-        if (!isNaN(an) && !isNaN(bn)) return an - bn;
-        // Use preset order if available
-        if (presetSizes) {
-          const ai = presetSizes.indexOf(a), bi = presetSizes.indexOf(b);
-          if (ai !== -1 && bi !== -1) return ai - bi;
-          if (ai !== -1) return -1;
-          if (bi !== -1) return 1;
-        }
-        return a.localeCompare(b);
-      }));
+    if (sizeSet.size > 0) {
+      types.push({
+        id: generateId(),
+        name: 'Size',
+        style: 'button',
+        values: Array.from(sizeSet).map((s) => ({ value: s, label: s }))
+      });
     }
-    setCustomSize('');
-  };
 
-  const removeSize = (size) => {
-    setSizes(prev => prev.filter(s => s !== size));
-    // Remove variants using this size
-    updateVariants(variants.filter(v => v.size !== size));
-  };
+    const items = value.map((v) => ({
+      id: v.id || generateId(),
+      attrs: Object.fromEntries(
+        Object.entries({ color: v.color, size: v.size }).filter(
+          ([_, val]) => val
+        )
+      ),
+      sku: v.sku || '',
+      quantity: v.quantity || 0,
+      priceAdjustment: v.priceAdjustment || 0,
+      imageUrl: v.imageUrl || ''
+    }));
 
-  const updateVariant = (id, field, val) => {
-    updateVariants(variants.map(v => v.id === id ? { ...v, [field]: val } : v));
-  };
+    return { types, items };
+  }
 
-  const removeVariant = (id) => {
-    updateVariants(variants.filter(v => v.id !== id));
-  };
+  return { types: [], items: [] };
+}
 
-  const bulkSetQuantity = (qty) => {
-    updateVariants(variants.map(v => ({ ...v, quantity: parseInt(qty) || 0 })));
-  };
+// ──────────────────────────────────────────
+// Category presets
+// ──────────────────────────────────────────
 
-  const setAllPriceAdjustment = (adj) => {
-    updateVariants(variants.map(v => ({ ...v, priceAdjustment: parseFloat(adj) || 0 })));
-  };
+function getCategoryPresets(category) {
+  if (!category) return [];
+  const cat = category.toLowerCase();
 
-  const totalStock = variants.reduce((sum, v) => sum + (parseInt(v.quantity) || 0), 0);
+  if (
+    /clothing|t.?shirt|shirt|pants|jeans|jacket|coat|dress|skirt|shorts|hoodie|sweater|blouse|suit|uniform/i.test(
+      cat
+    )
+  ) {
+    return [
+      {
+        id: generateId(),
+        name: 'Size',
+        style: 'button',
+        values: [
+          { value: 'XS', label: 'XS' },
+          { value: 'S', label: 'S' },
+          { value: 'M', label: 'M' },
+          { value: 'L', label: 'L' },
+          { value: 'XL', label: 'XL' }
+        ]
+      },
+      { id: generateId(), name: 'Color', style: 'color', values: [] }
+    ];
+  }
+
+  if (/shoe|footwear|sneaker|boot|sandals?/i.test(cat)) {
+    return [
+      {
+        id: generateId(),
+        name: 'Size',
+        style: 'button',
+        values: [
+          { value: '38', label: '38' },
+          { value: '39', label: '39' },
+          { value: '40', label: '40' },
+          { value: '41', label: '41' },
+          { value: '42', label: '42' },
+          { value: '43', label: '43' },
+          { value: '44', label: '44' }
+        ]
+      },
+      { id: generateId(), name: 'Color', style: 'color', values: [] }
+    ];
+  }
+
+  if (
+    /electronic|phone|laptop|tablet|computer|gadget|tech|digital|storage/i.test(
+      cat
+    )
+  ) {
+    return [
+      {
+        id: generateId(),
+        name: 'Storage',
+        style: 'button',
+        values: [
+          { value: '64GB', label: '64GB' },
+          { value: '128GB', label: '128GB' },
+          { value: '256GB', label: '256GB' }
+        ]
+      },
+      { id: generateId(), name: 'Color', style: 'color', values: [] }
+    ];
+  }
+
+  if (
+    /perfume|fragrance|cosmetic|beauty|skincare|makeup|cologne|deodorant|body.?spray/i.test(
+      cat
+    )
+  ) {
+    return [
+      {
+        id: generateId(),
+        name: 'Size',
+        style: 'button',
+        values: [
+          { value: '30ml', label: '30ml' },
+          { value: '50ml', label: '50ml' },
+          { value: '100ml', label: '100ml' }
+        ]
+      }
+    ];
+  }
+
+  if (
+    /watch|timepiece|bracelet|necklace|jewelry|accessory|ring|earring/i.test(
+      cat
+    )
+  ) {
+    return [
+      { id: generateId(), name: 'Color', style: 'color', values: [] },
+      {
+        id: generateId(),
+        name: 'Material',
+        style: 'button',
+        values: [
+          { value: 'Gold', label: 'Gold' },
+          { value: 'Silver', label: 'Silver' },
+          { value: 'Rose Gold', label: 'Rose Gold' }
+        ]
+      }
+    ];
+  }
+
+  return [];
+}
+
+// ──────────────────────────────────────────
+// Style constants
+// ──────────────────────────────────────────
+
+const STYLE_OPTIONS = [
+  { value: 'button', label: 'Button' },
+  { value: 'color', label: 'Color Swatch' },
+  { value: 'text', label: 'Text Chip' }
+];
+
+const INPUT_CLASS =
+  'bg-zinc-800 border border-transparent focus:border-[var(--seasonal-primary,#1a5632)] text-white text-sm rounded-xl px-4 py-2.5 w-full outline-none transition-colors placeholder:text-zinc-600';
+const SELECT_CLASS =
+  'bg-zinc-800 border border-transparent focus:border-[var(--seasonal-primary,#1a5632)] text-white text-sm rounded-xl px-4 py-2.5 outline-none transition-colors appearance-none cursor-pointer';
+const LABEL_CLASS =
+  'text-zinc-400 text-xs font-medium tracking-wider uppercase mb-1.5 block';
+const BTN_PRIMARY =
+  'inline-flex items-center gap-2 bg-[var(--seasonal-primary,#1a5632)] hover:brightness-110 text-white text-sm font-bold rounded-xl px-5 py-2.5 transition-all';
+const BTN_SECONDARY =
+  'inline-flex items-center gap-2 bg-zinc-800 hover:bg-zinc-700 text-zinc-300 text-sm font-medium rounded-xl px-4 py-2.5 transition-colors';
+
+// ──────────────────────────────────────────
+// Sub-components
+// ──────────────────────────────────────────
+
+function ColorSwatch({ color, size: swatchSize = 24, className = '' }) {
+  return (
+    <div
+      className={`inline-block rounded-full border border-zinc-700 flex-shrink-0 ${className}`}
+      style={{
+        width: swatchSize,
+        height: swatchSize,
+        backgroundColor: color || '#000000'
+      }}
+      title={color}
+    />
+  );
+}
+
+function ColorValueRow({ value, label, onChange, onRemove, pickerId }) {
+  const handleSwatchClick = () => {
+    const input = document.getElementById(pickerId);
+    if (input) input.click();
+  };
 
   return (
-    <div className="border border-zinc-700 rounded-2xl overflow-hidden">
-      {/* Header Toggle */}
+    <div className="flex items-center gap-2 group">
+      <div className="relative">
+        <div
+          className="w-8 h-8 rounded-lg border border-zinc-700 cursor-pointer"
+          style={{ backgroundColor: value || '#000000' }}
+          onClick={handleSwatchClick}
+        />
+        <input
+          id={pickerId}
+          type="color"
+          value={value || '#000000'}
+          onChange={(e) => onChange('value', e.target.value)}
+          className="absolute inset-0 opacity-0 cursor-pointer w-full h-full"
+        />
+      </div>
+      <input
+        type="text"
+        value={label}
+        onChange={(e) => onChange('label', e.target.value)}
+        placeholder="Label (e.g. Red)"
+        className={`${INPUT_CLASS} flex-1`}
+      />
       <button
         type="button"
-        onClick={() => setExpanded(!expanded)}
-        className="w-full flex items-center justify-between px-4 py-3 bg-zinc-800/50 hover:bg-zinc-800 transition-colors"
+        onClick={onRemove}
+        className="text-zinc-600 hover:text-red-400 transition-colors p-1 opacity-0 group-hover:opacity-100 flex-shrink-0"
+        title="Remove this value"
       >
-        <div className="flex items-center gap-2.5">
-          <Shirt className="w-4 h-4 text-[var(--seasonal-primary,#1a5632)]" />
-          <span className="text-sm font-bold text-zinc-300">Product Variants</span>
-          {variants.length > 0 && (
-            <span className="text-[10px] font-bold bg-[var(--seasonal-primary,#1a5632)] text-white px-1.5 py-0.5 rounded-full">
-              {variants.length} variants
-            </span>
-          )}
-          {totalStock > 0 && (
-            <span className="text-[10px] font-bold bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400 px-1.5 py-0.5 rounded-full">
-              {totalStock} total stock
-            </span>
+        <X size={14} />
+      </button>
+    </div>
+  );
+}
+
+function TextValueRow({ value, label, onChange, onRemove }) {
+  return (
+    <div className="flex items-center gap-2 group">
+      <input
+        type="text"
+        value={value}
+        onChange={(e) => onChange('value', e.target.value)}
+        placeholder="Value"
+        className={`${INPUT_CLASS} flex-1`}
+      />
+      <input
+        type="text"
+        value={label}
+        onChange={(e) => onChange('label', e.target.value)}
+        placeholder="Label"
+        className={`${INPUT_CLASS} flex-1`}
+      />
+      <button
+        type="button"
+        onClick={onRemove}
+        className="text-zinc-600 hover:text-red-400 transition-colors p-1 opacity-0 group-hover:opacity-100 flex-shrink-0"
+        title="Remove this value"
+      >
+        <X size={14} />
+      </button>
+    </div>
+  );
+}
+
+// ──────────────────────────────────────────
+// Main component
+// ──────────────────────────────────────────
+
+export default function VariantManager({
+  category,
+  basePrice,
+  baseSku,
+  value,
+  onChange,
+  images = []
+}) {
+  // Only compute initial data on first mount
+  const initialData = useMemo(
+    () => convertOldToNew(value, baseSku),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    []
+  );
+
+  const [state, setState] = useState({
+    types: initialData.types || [],
+    items: initialData.items || []
+  });
+  const [showSuggestions, setShowSuggestions] = useState(
+    !initialData.types || initialData.types.length === 0
+  );
+  const initRef = useRef(true);
+  const baseSkuRef = useRef(baseSku);
+  baseSkuRef.current = baseSku;
+
+  const { types, items } = state;
+
+  // ── Consolidated state updater ────────────
+  // Always call this when you change types (may regenerate items).
+  // For item-only changes (qty, sku, price, image, delete), call directly.
+  const updateState = useCallback(
+    (newTypes) => {
+      setState((prev) => {
+        const nextTypes =
+          typeof newTypes === 'function' ? newTypes(prev.types) : newTypes;
+        const nextItems = generateItemsFromTypes(
+          nextTypes,
+          prev.items,
+          baseSkuRef.current
+        );
+        return { types: nextTypes, items: nextItems };
+      });
+    },
+    []
+  );
+
+  // ── Notify parent after state commits ─────
+  const stateRef = useRef(state);
+  stateRef.current = state;
+
+  const notifyParent = useCallback(() => {
+    if (onChange) {
+      onChange(stateRef.current);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [onChange]);
+
+  // Call notifyParent on state changes (skip initial mount)
+  const prevStateRef = useRef(null);
+  if (!initRef.current) {
+    // Compare with previous to avoid infinite loops
+    if (prevStateRef.current !== state) {
+      prevStateRef.current = state;
+      // Defer notification to avoid setState during render
+      setTimeout(() => notifyParent(), 0);
+    }
+  }
+
+  // ── Handler: update a single type field ───
+  const updateTypeField = useCallback(
+    (typeId, field, fieldValue) => {
+      updateState((prev) =>
+        prev.map((t) =>
+          t.id === typeId ? { ...t, [field]: fieldValue } : t
+        )
+      );
+    },
+    [updateState]
+  );
+
+  // ── Handler: update a single value within a type ──
+  const updateTypeValue = useCallback(
+    (typeId, valueIndex, field, fieldValue) => {
+      updateState((prev) =>
+        prev.map((t) => {
+          if (t.id !== typeId) return t;
+          const newValues = t.values.map((v, i) =>
+            i === valueIndex ? { ...v, [field]: fieldValue } : v
+          );
+          return { ...t, values: newValues };
+        })
+      );
+    },
+    [updateState]
+  );
+
+  // ── Handler: add a value to a type ────────
+  const addTypeValue = useCallback(
+    (typeId) => {
+      updateState((prev) =>
+        prev.map((t) => {
+          if (t.id !== typeId) return t;
+          if (t.style === 'color') {
+            return {
+              ...t,
+              values: [...t.values, { value: '#ff0000', label: '' }]
+            };
+          }
+          return {
+            ...t,
+            values: [...t.values, { value: '', label: '' }]
+          };
+        })
+      );
+    },
+    [updateState]
+  );
+
+  // ── Handler: remove a value from a type ───
+  const removeTypeValue = useCallback(
+    (typeId, valueIndex) => {
+      updateState((prev) =>
+        prev.map((t) => {
+          if (t.id !== typeId) return t;
+          return {
+            ...t,
+            values: t.values.filter((_, i) => i !== valueIndex)
+          };
+        })
+      );
+    },
+    [updateState]
+  );
+
+  // ── Handler: add a new type ───────────────
+  const addType = useCallback(() => {
+    updateState((prev) => [
+      ...prev,
+      {
+        id: generateId(),
+        name: '',
+        style: 'button',
+        values: []
+      }
+    ]);
+    setShowSuggestions(false);
+  }, [updateState]);
+
+  // ── Handler: remove a type ────────────────
+  const removeType = useCallback(
+    (typeId) => {
+      updateState((prev) => prev.filter((t) => t.id !== typeId));
+    },
+    [updateState]
+  );
+
+  // ── Handler: apply category presets ───────
+  const applyPresets = useCallback(() => {
+    const presets = getCategoryPresets(category);
+    if (presets.length > 0) {
+      updateState(presets);
+      setShowSuggestions(false);
+    }
+  }, [category, updateState]);
+
+  // ── Handler: update a single item field ───
+  const updateItemField = useCallback(
+    (itemId, field, fieldValue) => {
+      setState((prev) => ({
+        ...prev,
+        items: prev.items.map((item) =>
+          item.id === itemId ? { ...item, [field]: fieldValue } : item
+        )
+      }));
+      // Mark init as done so notification fires
+      initRef.current = false;
+    },
+    []
+  );
+
+  // ── Handler: delete a single item ─────────
+  const deleteItem = useCallback((itemId) => {
+    setState((prev) => ({
+      ...prev,
+      items: prev.items.filter((item) => item.id !== itemId)
+    }));
+    initRef.current = false;
+  }, []);
+
+  // ── Mark init as done after first render ──
+  if (initRef.current) {
+    // First render: mark init done after a microtask so we don't fire onChange
+    // We just render with initial data; no notification
+    setTimeout(() => {
+      initRef.current = false;
+    }, 0);
+  }
+
+  // ── Derived values ────────────────────────
+  const hasTypesWithValues = types.some(
+    (t) => t.values && t.values.length > 0
+  );
+
+  const totalStock = items.reduce(
+    (sum, item) => sum + (parseInt(item.quantity, 10) || 0),
+    0
+  );
+  const outOfStockCount = items.filter(
+    (item) => !item.quantity || parseInt(item.quantity, 10) <= 0
+  ).length;
+
+  // ── Render ────────────────────────────────
+  return (
+    <div className="space-y-6">
+      {/* ── Section 1: Variant Types Definition ── */}
+      <div className="bg-zinc-900/50 border border-zinc-800 rounded-3xl p-6 space-y-5">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-2.5">
+            <Settings2 size={18} className="text-zinc-400" />
+            <h3 className="text-white font-bold text-base">
+              Variant Types
+            </h3>
+          </div>
+          {types.length > 0 && (
+            <button
+              type="button"
+              onClick={() => setShowSuggestions((s) => !s)}
+              className="text-zinc-500 hover:text-zinc-300 text-xs underline underline-offset-2 transition-colors"
+            >
+              {showSuggestions ? 'Hide suggestions' : 'Suggestions'}
+            </button>
           )}
         </div>
-        {expanded ? <ChevronUp className="w-4 h-4 text-zinc-400" /> : <ChevronDown className="w-4 h-4 text-zinc-400" />}
-      </button>
 
-      {expanded && (
-        <div className="p-4 space-y-5">
-          {/* Universal info about variants */}
-          <div className="flex items-start gap-2 p-3 bg-blue-900/20 border border-blue-800 rounded-xl">
-            <AlertCircle className="w-4 h-4 text-blue-500 mt-0.5 flex-shrink-0" />
-            <p className="text-xs text-blue-700 dark:text-blue-400">
-              Add size options so customers can pick the right variant (e.g. S/M/L/XL, 30ml/50ml/100ml, Small/Medium/Large). Click preset sizes below or type custom ones.
-            </p>
-          </div>
-
-          {/* Step 1: Select Colors */}
-          <div>
-            <label className="block text-xs font-bold text-zinc-400 uppercase tracking-wider mb-2">Colors</label>
-            <div className="flex flex-wrap gap-2 mb-2">
-              {colors.map(color => (
-                <div key={color.hex} className="flex items-center gap-1.5 bg-zinc-800 border border-zinc-700 rounded-lg pl-1 pr-2 py-1">
-                  <div className="w-5 h-5 rounded border border-zinc-300 dark:border-zinc-600 flex-shrink-0" style={{ backgroundColor: color.hex }} />
-                  <span className="text-xs font-medium text-zinc-300">{color.name}</span>
-                  <button type="button" onClick={() => removeColor(color.hex)} className="text-zinc-400 hover:text-red-500">
-                    <X className="w-3 h-3" />
-                  </button>
-                </div>
-              ))}
-              <button
-                type="button"
-                onClick={() => setShowColorPicker(!showColorPicker)}
-                className="flex items-center gap-1 px-2 py-1 border border-dashed border-zinc-300 dark:border-zinc-600 rounded-lg text-xs text-zinc-400 hover:text-[var(--seasonal-primary,#1a5632)] hover:border-[var(--seasonal-primary,#1a5632)] transition-colors"
-              >
-                <Plus className="w-3 h-3" /> Add Color
-              </button>
+        {/* Empty state / Suggestions */}
+        {types.length === 0 && (
+          <div className="bg-zinc-800/40 border border-zinc-700/50 rounded-2xl p-5 space-y-4">
+            <div className="flex items-start gap-3">
+              <Info size={18} className="text-zinc-500 mt-0.5 flex-shrink-0" />
+              <div>
+                <p className="text-zinc-300 text-sm font-medium mb-1">
+                  Adding variants helps customers pick exactly what they need.
+                </p>
+                <p className="text-zinc-500 text-xs">
+                  Define variant types to get started. You can add up to 3
+                  different types like Size, Color, Storage, or Material.
+                </p>
+              </div>
             </div>
 
-            {/* Color Picker */}
-            {showColorPicker && (
-              <div className="p-3 bg-zinc-800/50 rounded-xl border border-zinc-700">
-                <p className="text-[10px] font-bold text-zinc-400 uppercase tracking-wider mb-2">Preset Colors</p>
-                <div className="flex flex-wrap gap-1.5 mb-3">
-                  {COLOR_PALETTE.map(c => (
+            {/* Category-based presets */}
+            {category && (
+              <div className="border-t border-zinc-700/40 pt-3">
+                <p className="text-zinc-500 text-xs font-medium mb-2.5 uppercase tracking-wider">
+                  Suggested for{' '}
+                  <span className="text-zinc-300 normal-case">
+                    {category}
+                  </span>
+                </p>
+                <div className="flex flex-wrap gap-2">
+                  {getCategoryPresets(category).length > 0 ? (
                     <button
-                      key={c.hex}
                       type="button"
-                      onClick={() => addColorFromPalette(c)}
-                      className="group relative w-7 h-7 rounded-lg border-2 border-zinc-600 hover:border-[var(--seasonal-primary,#1a5632)] transition-colors hover:scale-110"
-                      style={{ backgroundColor: c.hex.includes('linear') ? undefined : c.hex, background: c.hex.includes('linear') ? c.hex : undefined }}
-                      title={c.name}
+                      onClick={applyPresets}
+                      className={BTN_PRIMARY}
                     >
-                      {colors.find(ec => ec.hex === c.hex) && (
-                        <div className="absolute inset-0 flex items-center justify-center bg-white/60 dark:bg-black/40 rounded-md">
-                          <span className="text-green-600 text-xs">✓</span>
-                        </div>
-                      )}
+                      <Plus size={15} />
+                      Apply Suggestions
                     </button>
-                  ))}
-                </div>
-                <div className="flex items-center gap-2 pt-2 border-t border-zinc-700">
-                  <input type="color" value={customColorHex} onChange={e => setCustomColorHex(e.target.value)} className="w-8 h-8 rounded cursor-pointer" />
-                  <input type="text" value={customColorName} onChange={e => setCustomColorName(e.target.value)} placeholder="Color name (e.g. Sky Blue)" className="flex-1 px-2 py-1 rounded-lg bg-zinc-800 border border-zinc-700 text-xs text-white" />
-                  <button type="button" onClick={addCustomColor} disabled={!customColorName.trim()} className="px-3 py-1 bg-[var(--seasonal-primary,#1a5632)] text-white text-xs font-bold rounded-lg disabled:opacity-50">Add</button>
-                  <button type="button" onClick={() => setShowColorPicker(false)} className="text-xs text-zinc-400 hover:text-zinc-700">Cancel</button>
+                  ) : (
+                    <p className="text-zinc-600 text-xs italic">
+                      No presets available. Add types manually.
+                    </p>
+                  )}
                 </div>
               </div>
             )}
-          </div>
 
-          {/* Step 2: Select Sizes */}
-          <div>
-            <label className="block text-xs font-bold text-zinc-400 uppercase tracking-wider mb-2">Sizes</label>
-            {presetSizes && (
-              <div className="flex flex-wrap gap-1.5 mb-2">
-                {presetSizes.map(size => {
-                  const active = sizes.includes(size);
-                  return (
-                    <button
-                      key={size}
-                      type="button"
-                      onClick={() => active ? removeSize(size) : addSize(size)}
-                      className={`px-2.5 py-1 rounded-lg text-xs font-bold border transition-all ${
-                        active
-                          ? 'bg-[var(--seasonal-primary,#1a5632)] text-white border-[var(--seasonal-primary,#1a5632)]'
-                          : 'bg-zinc-800 text-zinc-400 border-zinc-700 hover:border-[var(--seasonal-primary,#1a5632)]'
-                      }`}
-                    >
-                      {size}
-                    </button>
-                  );
-                })}
-              </div>
-            )}
-            <div className="flex items-center gap-2">
-              <input
-                type="text"
-                value={customSize}
-                onChange={e => setCustomSize(e.target.value)}
-                onKeyDown={e => { if (e.key === 'Enter') { e.preventDefault(); addSize(customSize); } }}
-                placeholder={presetSizes ? "Or type custom size..." : "Type a size and press Enter"}
-                className="px-2 py-1 rounded-lg bg-zinc-800 border border-zinc-700 text-xs text-white w-36"
-              />
-              <button type="button" onClick={() => addSize(customSize)} disabled={!customSize.trim()} className="px-3 py-1 bg-zinc-800 text-zinc-400 text-xs font-bold rounded-lg disabled:opacity-50">Add</button>
-            </div>
-          </div>
-
-          {/* Step 3: Generate Matrix */}
-          {colors.length > 0 && sizes.length > 0 && (
-            <div>
-              <div className="flex items-center justify-between mb-2">
-                <label className="text-xs font-bold text-zinc-400 uppercase tracking-wider">Variant Matrix</label>
+            {/* Manual add button in empty state */}
+            {!category && (
+              <div className="border-t border-zinc-700/40 pt-3">
                 <button
                   type="button"
-                  onClick={generateMatrix}
-                  className="text-xs text-[var(--seasonal-primary,#1a5632)] font-bold hover:underline"
+                  onClick={addType}
+                  className={BTN_PRIMARY}
                 >
-                  {variants.length > 0 ? 'Regenerate Matrix' : 'Generate All Combinations'}
+                  <Plus size={15} />
+                  Add First Variant Type
                 </button>
               </div>
+            )}
+          </div>
+        )}
 
-              {variants.length > 0 && (
-                <>
-                  {/* Bulk actions */}
-                  <div className="flex items-center gap-3 mb-3 p-2 bg-zinc-800/30 rounded-lg">
-                    <span className="text-[10px] text-zinc-400 font-bold uppercase">Bulk:</span>
-                    <div className="flex items-center gap-1">
-                      <span className="text-[10px] text-zinc-400">Qty:</span>
-                      <input type="number" min="0" placeholder="0" className="w-14 px-1.5 py-0.5 rounded border border-zinc-700 bg-zinc-800 text-[11px] text-white"
-                        onKeyDown={e => { if (e.key === 'Enter') { e.preventDefault(); bulkSetQuantity(e.target.value); } }} />
-                    </div>
-                    <div className="flex items-center gap-1">
-                      <span className="text-[10px] text-zinc-400">Price ±:</span>
-                      <input type="number" step="50" placeholder="0" className="w-16 px-1.5 py-0.5 rounded border border-zinc-700 bg-zinc-800 text-[11px] text-white"
-                        onKeyDown={e => { if (e.key === 'Enter') { e.preventDefault(); setAllPriceAdjustment(e.target.value); } }} />
-                    </div>
+        {/* Type list */}
+        {types.length > 0 && (
+          <div className="space-y-4">
+            {types.map((type, typeIndex) => (
+              <div
+                key={type.id}
+                className="bg-zinc-800/30 border border-zinc-700/50 rounded-2xl p-5 space-y-4"
+              >
+                {/* Type header row */}
+                <div className="flex items-start gap-3 flex-wrap sm:flex-nowrap">
+                  {/* Type name */}
+                  <div className="flex-1 min-w-[140px]">
+                    <label className={LABEL_CLASS}>Type Name</label>
+                    <input
+                      type="text"
+                      value={type.name}
+                      onChange={(e) =>
+                        updateTypeField(type.id, 'name', e.target.value)
+                      }
+                      placeholder={
+                        typeIndex === 0
+                          ? 'e.g. Color'
+                          : typeIndex === 1
+                          ? 'e.g. Size'
+                          : 'e.g. Material'
+                      }
+                      className={INPUT_CLASS}
+                    />
                   </div>
 
-                  {/* Variant table */}
-                  <div className="overflow-x-auto">
-                    <table className="w-full text-xs">
-                      <thead>
-                        <tr className="border-b border-zinc-700">
-                          <th className="text-left py-1.5 px-2 text-zinc-400 font-bold">Size</th>
-                          <th className="text-left py-1.5 px-2 text-zinc-400 font-bold">Color</th>
-                          <th className="text-left py-1.5 px-2 text-zinc-400 font-bold w-16">Stock</th>
-                          <th className="text-left py-1.5 px-2 text-zinc-400 font-bold w-20">Price ±</th>
-                          <th className="text-left py-1.5 px-2 text-zinc-400 font-bold w-28">SKU</th>
-                          <th className="w-8"></th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {variants.map(v => (
-                          <tr key={v.id} className="border-b border-zinc-100 dark:border-zinc-800/50 hover:bg-zinc-50 dark:hover:bg-zinc-800/30">
-                            <td className="py-1.5 px-2 font-bold text-white">{v.size}</td>
-                            <td className="py-1.5 px-2">
-                              <div className="flex items-center gap-1.5">
-                                <div className="w-4 h-4 rounded border border-zinc-600 flex-shrink-0" style={{ backgroundColor: v.color?.startsWith('#') ? v.color : '#ccc' }} />
-                                <span className="text-zinc-400">{v.colorName}</span>
-                              </div>
-                            </td>
-                            <td className="py-1.5 px-2">
-                              <input type="number" min="0" value={v.quantity || 0} onChange={e => updateVariant(v.id, 'quantity', parseInt(e.target.value) || 0)}
-                                className="w-14 px-1.5 py-0.5 rounded border border-zinc-700 bg-zinc-800 text-white text-center" />
-                            </td>
-                            <td className="py-1.5 px-2">
-                              <input type="number" step="50" value={v.priceAdjustment || 0} onChange={e => updateVariant(v.id, 'priceAdjustment', parseFloat(e.target.value) || 0)}
-                                className="w-16 px-1.5 py-0.5 rounded border border-zinc-700 bg-zinc-800 text-white" placeholder="0" />
-                            </td>
-                            <td className="py-1.5 px-2">
-                              <input type="text" value={v.sku || ''} onChange={e => updateVariant(v.id, 'sku', e.target.value)}
-                                className="w-full px-1.5 py-0.5 rounded border border-zinc-700 bg-zinc-800 text-white font-mono text-[10px]" />
-                            </td>
-                            <td className="py-1.5 px-1">
-                              <button type="button" onClick={() => removeVariant(v.id)} className="text-zinc-400 hover:text-red-500">
-                                <Trash2 className="w-3 h-3" />
-                              </button>
-                            </td>
-                          </tr>
+                  {/* Style select */}
+                  <div className="w-full sm:w-36">
+                    <label className={LABEL_CLASS}>Style</label>
+                    <div className="relative">
+                      <select
+                        value={type.style}
+                        onChange={(e) =>
+                          updateTypeField(type.id, 'style', e.target.value)
+                        }
+                        className={`${SELECT_CLASS} w-full pr-8`}
+                      >
+                        {STYLE_OPTIONS.map((opt) => (
+                          <option key={opt.value} value={opt.value}>
+                            {opt.label}
+                          </option>
                         ))}
-                      </tbody>
-                    </table>
+                      </select>
+                      <div className="pointer-events-none absolute inset-y-0 right-3 flex items-center">
+                        <ChevronDown size={14} className="text-zinc-500" />
+                      </div>
+                    </div>
                   </div>
-                  <p className="text-[10px] text-zinc-400 mt-2">
-                    Final price = base price + price adjustment. Leave adjustment at 0 for base price ({formatKES(parseInt(basePrice) || 0)}).
-                  </p>
-                </>
-              )}
-            </div>
-          )}
 
-          {colors.length === 0 && sizes.length === 0 && (
-            <div className="text-center py-6 text-zinc-400">
-              <Palette className="w-8 h-8 mx-auto mb-2 opacity-40" />
-              <p className="text-xs">Select colors and sizes above to generate variants</p>
+                  {/* Remove type */}
+                  <button
+                    type="button"
+                    onClick={() => removeType(type.id)}
+                    className="text-zinc-600 hover:text-red-400 transition-colors p-2 mt-5 flex-shrink-0"
+                    title="Remove this type"
+                  >
+                    <Trash2 size={16} />
+                  </button>
+                </div>
+
+                {/* Values list */}
+                {type.values && type.values.length > 0 && (
+                  <div className="space-y-2 pl-1">
+                    {type.values.map((val, vi) => {
+                      if (type.style === 'color') {
+                        return (
+                          <ColorValueRow
+                            key={vi}
+                            value={val.value}
+                            label={val.label}
+                            pickerId={`color-picker-${type.id}-${vi}`}
+                            onChange={(field, fv) =>
+                              updateTypeValue(type.id, vi, field, fv)
+                            }
+                            onRemove={() => removeTypeValue(type.id, vi)}
+                          />
+                        );
+                      }
+                      return (
+                        <TextValueRow
+                          key={vi}
+                          value={val.value}
+                          label={val.label}
+                          onChange={(field, fv) =>
+                            updateTypeValue(type.id, vi, field, fv)
+                          }
+                          onRemove={() => removeTypeValue(type.id, vi)}
+                        />
+                      );
+                    })}
+                  </div>
+                )}
+
+                {/* No values placeholder */}
+                {(!type.values || type.values.length === 0) && (
+                  <p className="text-zinc-600 text-xs italic pl-1">
+                    No values added yet. Click below to add one.
+                  </p>
+                )}
+
+                {/* Add value button */}
+                <button
+                  type="button"
+                  onClick={() => addTypeValue(type.id)}
+                  className={`${BTN_SECONDARY} text-xs !py-2 !px-3`}
+                >
+                  <Plus size={13} />
+                  Add{' '}
+                  {type.style === 'color'
+                    ? 'Color'
+                    : type.style === 'button'
+                    ? 'Option'
+                    : 'Value'}
+                </button>
+              </div>
+            ))}
+
+            {/* Add type button */}
+            {types.length < 3 && (
+              <button
+                type="button"
+                onClick={addType}
+                className={`${BTN_SECONDARY} w-full justify-center`}
+              >
+                <Plus size={16} />
+                Add Variant Type
+              </button>
+            )}
+
+            {types.length >= 3 && (
+              <p className="text-zinc-600 text-xs text-center">
+                Maximum of 3 variant types reached.
+              </p>
+            )}
+          </div>
+        )}
+      </div>
+
+      {/* ── Section 2: Generated Matrix ────────── */}
+      {hasTypesWithValues && (
+        <div className="bg-zinc-900/50 border border-zinc-800 rounded-3xl p-6 space-y-4">
+          <div className="flex items-center justify-between flex-wrap gap-2">
+            <div className="flex items-center gap-2.5">
+              <Tag size={18} className="text-zinc-400" />
+              <h3 className="text-white font-bold text-base">
+                Variant Matrix
+              </h3>
+              <span className="text-zinc-600 text-xs bg-zinc-800/60 rounded-lg px-2.5 py-1">
+                {items.length} variant{items.length !== 1 ? 's' : ''}
+              </span>
+            </div>
+
+            {/* Stock summary */}
+            {items.length > 0 && (
+              <div className="flex items-center gap-3 text-xs">
+                <span className="text-zinc-500">
+                  Total Stock:{' '}
+                  <strong className="text-zinc-200">{totalStock}</strong>
+                </span>
+                <span
+                  className={`flex items-center gap-1 ${
+                    outOfStockCount > 0 ? 'text-amber-400' : 'text-zinc-500'
+                  }`}
+                >
+                  {outOfStockCount > 0 && <AlertTriangle size={12} />}
+                  Out of Stock:{' '}
+                  <strong
+                    className={
+                      outOfStockCount > 0
+                        ? 'text-amber-300'
+                        : 'text-zinc-200'
+                    }
+                  >
+                    {outOfStockCount}
+                  </strong>
+                </span>
+              </div>
+            )}
+          </div>
+
+          {items.length > 0 ? (
+            <div className="overflow-x-auto -mx-2">
+              <table className="w-full text-sm">
+                <thead>
+                  <tr className="border-b border-zinc-800">
+                    <th className="text-left text-zinc-500 text-xs font-medium uppercase tracking-wider py-3 px-3 min-w-[160px]">
+                      Combination
+                    </th>
+                    <th className="text-left text-zinc-500 text-xs font-medium uppercase tracking-wider py-3 px-3 min-w-[80px]">
+                      Qty
+                    </th>
+                    <th className="text-left text-zinc-500 text-xs font-medium uppercase tracking-wider py-3 px-3 min-w-[130px]">
+                      Price Adj.
+                    </th>
+                    <th className="text-left text-zinc-500 text-xs font-medium uppercase tracking-wider py-3 px-3 min-w-[140px]">
+                      SKU
+                    </th>
+                    <th className="text-left text-zinc-500 text-xs font-medium uppercase tracking-wider py-3 px-3 min-w-[130px]">
+                      Image
+                    </th>
+                    <th className="w-10 py-3 px-3" />
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-zinc-800/50">
+                  {items.map((item) => {
+                    // Find color-type value in this item for the swatch
+                    const colorType = types.find(
+                      (t) =>
+                        t.style === 'color' &&
+                        item.attrs[t.id] !== undefined
+                    );
+                    const colorValue = colorType
+                      ? item.attrs[colorType.id]
+                      : null;
+                    const comboLabel = getCombinationLabel(item.attrs, types);
+                    const numericBase = parseFloat(basePrice) || 0;
+                    const numericAdj = parseFloat(item.priceAdjustment) || 0;
+                    const adjustedPrice = numericBase + numericAdj;
+
+                    return (
+                      <tr
+                        key={item.id}
+                        className="hover:bg-zinc-800/20 transition-colors group"
+                      >
+                        {/* Combination preview */}
+                        <td className="py-3 px-3">
+                          <div className="flex items-center gap-2.5">
+                            {colorValue && (
+                              <ColorSwatch color={colorValue} size={20} />
+                            )}
+                            <span className="text-white text-sm font-medium">
+                              {comboLabel || (
+                                <span className="text-zinc-500 italic">
+                                  No label
+                                </span>
+                              )}
+                            </span>
+                          </div>
+                        </td>
+
+                        {/* Quantity */}
+                        <td className="py-3 px-3">
+                          <input
+                            type="number"
+                            min="0"
+                            value={item.quantity ?? 0}
+                            onChange={(e) => {
+                              const val = parseInt(e.target.value, 10);
+                              updateItemField(
+                                item.id,
+                                'quantity',
+                                isNaN(val) ? 0 : Math.max(0, val)
+                              );
+                            }}
+                            className={`${INPUT_CLASS} w-20 text-center [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none`}
+                          />
+                        </td>
+
+                        {/* Price adjustment */}
+                        <td className="py-3 px-3">
+                          <div>
+                            <div className="flex items-center gap-1">
+                              <span className="text-zinc-600 text-xs whitespace-nowrap">
+                                {numericBase > 0 &&
+                                  formatCurrency(numericBase)}
+                              </span>
+                              <div className="relative flex-1 min-w-[80px]">
+                                <span className="absolute left-2 top-1/2 -translate-y-1/2 text-zinc-500 text-xs pointer-events-none">
+                                  {numericAdj >= 0 ? '+' : ''}
+                                </span>
+                                <input
+                                  type="number"
+                                  value={numericAdj}
+                                  onChange={(e) => {
+                                    const val = parseFloat(e.target.value);
+                                    updateItemField(
+                                      item.id,
+                                      'priceAdjustment',
+                                      isNaN(val) ? 0 : val
+                                    );
+                                  }}
+                                  className={`${INPUT_CLASS} w-full pl-6 text-center [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none`}
+                                />
+                              </div>
+                            </div>
+                            {numericBase > 0 && (
+                              <p className="text-zinc-600 text-[10px] mt-0.5 text-right">
+                                = {formatCurrency(adjustedPrice)}
+                              </p>
+                            )}
+                          </div>
+                        </td>
+
+                        {/* SKU */}
+                        <td className="py-3 px-3">
+                          <input
+                            type="text"
+                            value={item.sku}
+                            onChange={(e) =>
+                              updateItemField(item.id, 'sku', e.target.value)
+                            }
+                            className={`${INPUT_CLASS} font-mono text-xs`}
+                            placeholder="SKU"
+                          />
+                        </td>
+
+                        {/* Image selector */}
+                        <td className="py-3 px-3">
+                          {images.length > 0 ? (
+                            <div className="relative">
+                              <select
+                                value={item.imageUrl || ''}
+                                onChange={(e) =>
+                                  updateItemField(
+                                    item.id,
+                                    'imageUrl',
+                                    e.target.value
+                                  )
+                                }
+                                className={`${SELECT_CLASS} w-full text-xs pr-8`}
+                              >
+                                <option value="">No image</option>
+                                {images.map((img, i) => (
+                                  <option key={i} value={img}>
+                                    Image {i + 1}
+                                  </option>
+                                ))}
+                              </select>
+                              <div className="pointer-events-none absolute inset-y-0 right-2 flex items-center">
+                                <ChevronDown
+                                  size={12}
+                                  className="text-zinc-500"
+                                />
+                              </div>
+                            </div>
+                          ) : (
+                            <span className="text-zinc-600 text-xs italic">
+                              No images
+                            </span>
+                          )}
+                        </td>
+
+                        {/* Delete */}
+                        <td className="py-3 px-3">
+                          <button
+                            type="button"
+                            onClick={() => deleteItem(item.id)}
+                            className="text-zinc-600 hover:text-red-400 transition-colors p-1 opacity-0 group-hover:opacity-100"
+                            title="Delete this variant"
+                          >
+                            <X size={15} />
+                          </button>
+                        </td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
+            </div>
+          ) : (
+            /* Empty matrix (types exist but no items generated) */
+            <div className="bg-zinc-800/20 border border-zinc-700/30 rounded-2xl p-8 text-center">
+              <Hash size={28} className="text-zinc-600 mx-auto mb-2" />
+              <p className="text-zinc-500 text-sm">
+                Add values to your variant types to generate the matrix.
+              </p>
             </div>
           )}
         </div>
@@ -356,3 +1083,17 @@ export default function VariantManager({ category, basePrice, baseSku, value = [
   );
 }
 
+// ──────────────────────────────────────────
+// Currency formatting
+// ──────────────────────────────────────────
+
+function formatCurrency(value) {
+  const num = parseFloat(value);
+  if (isNaN(num)) return '';
+  return new Intl.NumberFormat('en-KE', {
+    style: 'currency',
+    currency: 'KES',
+    minimumFractionDigits: 0,
+    maximumFractionDigits: 0
+  }).format(num);
+}

@@ -23,6 +23,35 @@ function setCompareIds(ids) {
   window.dispatchEvent(new Event('omix-compare-changed'));
 }
 
+// ── Normalize old and new variant formats into a standard shape ──
+function normalizeVariants(variants) {
+  if (!variants) return null;
+  if (variants && typeof variants === 'object' && !Array.isArray(variants) && variants.types && variants.items) return variants;
+  if (Array.isArray(variants)) {
+    const colorSet = new Map();
+    const sizeSet = new Set();
+    variants.forEach(v => {
+      if (v.color) colorSet.set(v.color, v.colorName || v.color);
+      if (v.size) sizeSet.add(v.size);
+    });
+    const types = [];
+    if (colorSet.size > 0) types.push({id: 'color', name: 'Color', style: 'color', values: Array.from(colorSet.entries()).map(([value, label]) => ({value, label}))});
+    if (sizeSet.size > 0) types.push({id: 'size', name: 'Size', style: 'button', values: Array.from(sizeSet).map(s => ({value: s, label: s}))});
+    return {
+      types,
+      items: variants.map(v => ({
+        id: v.id,
+        attrs: {...(v.color ? {color: v.color} : {}), ...(v.size ? {size: v.size} : {})},
+        sku: v.sku,
+        quantity: v.quantity,
+        priceAdjustment: v.priceAdjustment,
+        imageUrl: v.imageUrl
+      }))
+    };
+  }
+  return null;
+}
+
 function ProductCard({ listing, compareMode, onCompareChange }) {
   const [imgError, setImgError] = useState(false);
   const [justAdded, setJustAdded] = useState(false);
@@ -31,42 +60,48 @@ function ProductCard({ listing, compareMode, onCompareChange }) {
   const { user } = useAuth();
   const { addItem, cart } = useCart();
 
-  // ── Variant selection state ──
-  const [selectedColor, setSelectedColor] = useState(null);
-  const [selectedSize, setSelectedSize] = useState(null);
+  // ── Normalized variant data (supports old array & new object format) ──
+  const variantData = useMemo(() => normalizeVariants(listing.variants), [listing?.variants]);
+  const hasVariants = variantData && variantData.types.length > 0;
 
-  // Derive unique colors and sizes from listing variants
-  const hasVariants = listing?.has_variants && listing?.variants?.length > 0;
-  const uniqueColors = useMemo(() => {
-    if (!hasVariants) return [];
-    const seen = new Set();
-    return listing.variants
-      .filter(v => v.color && !seen.has(v.color) && seen.add(v.color))
-      .map(v => ({ hex: v.color, name: v.colorName || v.color }));
-  }, [listing?.variants, hasVariants]);
-  const uniqueSizes = useMemo(() => {
-    if (!hasVariants) return [];
-    return [...new Set(listing.variants.map(v => v.size).filter(Boolean))];
-  }, [listing?.variants, hasVariants]);
+  // ── Variant selections (dynamic, keyed by type id) ──
+  const [selections, setSelections] = useState({});
 
-  // Derive the selected variant object matching both color + size
+  // Find the matching variant item from current selections
   const selectedVariantObj = useMemo(() => {
     if (!hasVariants) return null;
-    return listing.variants.find(v =>
-      (!selectedColor || v.color === selectedColor) &&
-      (!selectedSize || v.size === selectedSize)
+    const selKeys = Object.keys(selections).filter(k => selections[k] != null);
+    if (selKeys.length === 0) return null;
+    return variantData.items.find(item =>
+      selKeys.every(key => item.attrs[key] === selections[key])
     ) || null;
-  }, [hasVariants, listing?.variants, selectedColor, selectedSize]);
+  }, [hasVariants, variantData, selections]);
 
   // Effective price reflects the selected variant's price adjustment
   const effectivePrice = selectedVariantObj
     ? (listing.price || 0) + (selectedVariantObj.priceAdjustment || 0)
     : listing.price;
 
-  // Reset variant selection when listing changes
+  // All required types have been selected?
+  const allSelected = hasVariants && variantData.types.every(t => selections[t.id] != null);
+
+  // Check if a specific value option is disabled (out of stock for this combination)
+  const isOptionDisabled = (typeId, value) => {
+    if (!hasVariants) return true;
+    return !variantData.items.some(item => {
+      if (item.attrs[typeId] !== value) return false;
+      for (const [key, selVal] of Object.entries(selections)) {
+        if (key !== typeId && selVal != null) {
+          if (item.attrs[key] !== selVal) return false;
+        }
+      }
+      return (item.quantity || 0) > 0;
+    });
+  };
+
+  // Reset selections when listing changes
   useEffect(() => {
-    setSelectedColor(null);
-    setSelectedSize(null);
+    setSelections({});
   }, [listing?.id]);
 
   // Check wishlist status on mount
@@ -95,7 +130,14 @@ function ProductCard({ listing, compareMode, onCompareChange }) {
     setWishBusy(false);
   };
   const navigate = useNavigate();
-  const hasImage = listing.images && listing.images.length > 0 && !imgError;
+  // Variant-aware main image — use selected variant's imageUrl if available
+  const mainImage = selectedVariantObj?.imageUrl || listing.images?.[0] || null;
+  const hasImage = mainImage && !imgError;
+
+  // Reset image error when the active image source changes
+  useEffect(() => {
+    setImgError(false);
+  }, [mainImage]);
 
   const inCart = cart.find(item => item.id === listing.id);
   const theme = useActiveTheme();
@@ -137,7 +179,8 @@ function ProductCard({ listing, compareMode, onCompareChange }) {
     const displayPrice = listing.flash_sale_price
       ? formatKES(listing.flash_sale_price)
       : formatKES(selectedVariantObj ? effectivePrice : listing.price);
-    const message = `Check out this ${listing.title} on Omix!\n${displayPrice} - Kericho\n${window.location.origin}/listing/${listing.id}`;
+    const variantImage = selectedVariantObj?.imageUrl || listing.images?.[0] || '';
+    const message = `Check out this ${listing.title} on Omix!\n${displayPrice} - Kericho\n${variantImage ? `${variantImage}\n` : ''}${window.location.origin}/listing/${listing.id}`;
     window.open(`https://wa.me/?text=${encodeURIComponent(message)}`, '_blank');
   };
 
@@ -158,30 +201,24 @@ function ProductCard({ listing, compareMode, onCompareChange }) {
       return;
     }
 
-    // If product has variants but none selected, pick first available
-    let variantToUse = selectedVariantObj;
-    if (hasVariants && !variantToUse) {
-      const inStock = listing.variants.find(v => (v.quantity || 0) > 0);
-      if (inStock) {
-        variantToUse = inStock;
-        // Also update local state so selection shows
-        setSelectedColor(inStock.color || null);
-        setSelectedSize(inStock.size || null);
-      }
+    // Find variant matching current selections (button is disabled if not all selected)
+    let variantToUse = null;
+    if (hasVariants && allSelected) {
+      variantToUse = variantData.items.find(item =>
+        variantData.types.every(t => item.attrs[t.id] === selections[t.id])
+      ) || null;
     }
 
     addItem({
       id: listing.id,
       name: listing.title,
       price: variantToUse ? (listing.price || 0) + (variantToUse.priceAdjustment || 0) : listing.price,
-      image_url: listing.images?.[0] || null,
+      image_url: selectedVariantObj?.imageUrl || listing.images?.[0] || null,
       quantity: 1,
       variant: variantToUse ? {
         id: variantToUse.id,
-        size: variantToUse.size,
-        color: variantToUse.color,
-        colorName: variantToUse.colorName,
         sku: variantToUse.sku,
+        ...(variantToUse.attrs || {}),
       } : null,
     });
 
@@ -204,8 +241,8 @@ function ProductCard({ listing, compareMode, onCompareChange }) {
   };
 
   // Display price range for variant products
-  const displayPrice = listing.has_variants && listing.variants?.length > 0 ? (() => {
-    const prices = listing.variants.map(v => (listing.price || 0) + (v.priceAdjustment || 0));
+  const displayPrice = hasVariants ? (() => {
+    const prices = variantData.items.map(v => (listing.price || 0) + (v.priceAdjustment || 0));
     if (prices.length === 0) return formatKES(listing.price || 0);
     const min = Math.min(...prices);
     const max = Math.max(...prices);
@@ -217,7 +254,7 @@ function ProductCard({ listing, compareMode, onCompareChange }) {
     <Link to={`/listing/${listing.id}`} className="block group theme-card-shimmer theme-card-glow">
       <div className="bg-zinc-900 rounded-2xl overflow-hidden aspect-[4/5] mb-3 relative">
         {hasImage ? (
-          <img src={listing.images[0]} alt={listing.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" loading="lazy" onError={() => setImgError(true)} />
+          <img key={mainImage} src={mainImage} alt={listing.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" loading="lazy" onError={() => setImgError(true)} />
         ) : (
           <div className="w-full h-full flex items-center justify-center text-zinc-400">
             <ImageIcon className="w-10 h-10" />
@@ -315,26 +352,39 @@ function ProductCard({ listing, compareMode, onCompareChange }) {
         >
           <Eye className="w-3 h-3" />
         </button>
+
+        {/* Add to Cart button — disabled until all variant types selected */}
         <button
-            onClick={handleAddToCart}
-            className={`absolute bottom-2 right-2 flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-[10px] font-bold shadow-sm transition-all opacity-0 group-hover:opacity-100 ${
-              isMaintenanceCached()
-                ? 'bg-amber-500 text-white'
-                : justAdded
-                  ? 'bg-green-500 text-white'
-                  : inCart
-                    ? 'bg-[var(--seasonal-primary,#1a5632)]/90 text-white'
+          onClick={handleAddToCart}
+          disabled={hasVariants && !allSelected}
+          className={`absolute bottom-2 right-2 flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-[10px] font-bold shadow-sm transition-all opacity-0 group-hover:opacity-100 ${
+            isMaintenanceCached()
+              ? 'bg-amber-500 text-white'
+              : justAdded
+                ? 'bg-green-500 text-white'
+                : inCart
+                  ? 'bg-[var(--seasonal-primary,#1a5632)]/90 text-white'
+                  : hasVariants && !allSelected
+                    ? 'bg-zinc-700 text-zinc-400 cursor-not-allowed'
                     : 'bg-white/90 dark:bg-black/90 text-white hover:bg-[var(--seasonal-primary,#1a5632)] hover:text-white'
-            }`}
-            aria-label={isMaintenanceCached() ? 'Under maintenance' : 'Add to cart'}
-          >
-            {isMaintenanceCached() ? (
-              <><AlertTriangle className="w-3 h-3" /> Unavailable</>
-            ) : (
-              <><ShoppingCart className="w-3 h-3" />
-              {justAdded ? 'Added!' : inCart ? `In Cart (${inCart.quantity})` : 'Add to Cart'}</>
-            )}
-          </button>
+          }`}
+          aria-label={
+            isMaintenanceCached()
+              ? 'Under maintenance'
+              : hasVariants && !allSelected
+                ? 'Select variants'
+                : 'Add to cart'
+          }
+        >
+          {isMaintenanceCached() ? (
+            <><AlertTriangle className="w-3 h-3" /> Unavailable</>
+          ) : hasVariants && !allSelected ? (
+            <><ShoppingCart className="w-3 h-3" /> Select variants</>
+          ) : (
+            <><ShoppingCart className="w-3 h-3" />
+            {justAdded ? 'Added!' : inCart ? `In Cart (${inCart.quantity})` : 'Add to Cart'}</>
+          )}
+        </button>
       </div>
 
       <div>
@@ -365,93 +415,162 @@ function ProductCard({ listing, compareMode, onCompareChange }) {
           </div>
         )}
 
-        {/* Interactive Color Selector */}
-        {uniqueColors.length > 1 && (
-          <div className="flex items-center gap-1.5 mt-1.5">
-            {uniqueColors.map((c, i) => {
-              const isSelected = selectedColor === c.hex;
-              const stock = listing.variants.filter(v => v.color === c.hex).reduce((s, v) => s + (v.quantity || 0), 0);
-              const disabled = stock <= 0;
-              return (
-                <button
-                  key={i}
-                  type="button"
-                  disabled={disabled}
-                  onClick={(e) => {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    setSelectedColor(isSelected ? null : c.hex);
-                  }}
-                  className={`w-4 h-4 rounded-full border-2 flex-shrink-0 transition-all ${
-                    isSelected
-                      ? 'border-[var(--seasonal-primary,#1a5632)] scale-125 shadow-sm shadow-[var(--seasonal-primary,#1a5632)]/30'
-                      : disabled
-                        ? 'border-zinc-700 opacity-25 cursor-not-allowed'
-                        : 'border-zinc-400 dark:border-zinc-600 hover:border-[var(--seasonal-primary,#1a5632)] hover:scale-110'
-                  }`}
-                  style={{ backgroundColor: c.hex?.startsWith('#') ? c.hex : '#ccc' }}
-                  title={`${c.name}${disabled ? ' (out of stock)' : ''}`}
-                />
-              );
-            })}
-            {selectedColor && (
-              <button
-                type="button"
-                onClick={(e) => { e.preventDefault(); e.stopPropagation(); setSelectedColor(null); }}
-                className="text-[8px] text-zinc-500 hover:text-white ml-0.5 font-bold"
-                title="Clear color"
-              >
-                x
-              </button>
+        {/* Dynamic variant selectors based on normalized types */}
+        {hasVariants && variantData.types.map((type) => (
+          <div key={type.id} className="mt-1.5">
+            <span className="text-[8px] text-zinc-500 uppercase tracking-wider font-bold">{type.name}</span>
+            {type.style === 'button' ? (
+              <>
+                <div className="mt-0.5 grid grid-cols-2 gap-1">
+                  {type.values.map((val, i) => {
+                    const value = val.value;
+                    const label = val.label || value;
+                    const isSelected = selections[type.id] === value;
+                    const disabled = isOptionDisabled(type.id, value);
+                    return (
+                      <button
+                        key={i}
+                        type="button"
+                        disabled={disabled}
+                        onClick={(e) => {
+                          e.preventDefault();
+                          e.stopPropagation();
+                          setSelections(prev => ({
+                            ...prev,
+                            [type.id]: isSelected ? null : value,
+                          }));
+                        }}
+                        className={`text-xs font-bold px-3 py-1.5 rounded-lg border transition-all w-full ${
+                          isSelected
+                            ? 'bg-[var(--seasonal-primary,#1a5632)] text-white border-[var(--seasonal-primary,#1a5632)]'
+                            : disabled
+                              ? 'bg-zinc-900 text-zinc-600 border-zinc-800 line-through cursor-not-allowed'
+                              : 'bg-zinc-800 text-zinc-300 border-zinc-700 hover:border-[var(--seasonal-primary,#1a5632)]'
+                        }`}
+                        title={disabled ? 'Out of stock' : label}
+                      >
+                        {label}
+                      </button>
+                    );
+                  })}
+                </div>
+                {selections[type.id] != null && (
+                  <div className="mt-0.5">
+                    <button
+                      type="button"
+                      onClick={(e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        setSelections(prev => ({...prev, [type.id]: null}));
+                      }}
+                      className="text-[8px] text-zinc-500 hover:text-white font-bold"
+                      title={`Clear ${type.name}`}
+                    >
+                      x
+                    </button>
+                  </div>
+                )}
+              </>
+            ) : (
+              <div className={`mt-0.5 flex items-center gap-1 ${type.style === 'text' ? 'flex-wrap' : ''}`}>
+                {type.values.map((val, i) => {
+                  const value = val.value;
+                  const label = val.label || value;
+                  const isSelected = selections[type.id] === value;
+                  const disabled = isOptionDisabled(type.id, value);
+
+                  if (type.style === 'color') {
+                    return (
+                      <div key={i} className="flex flex-col items-center gap-0.5">
+                        <button
+                          type="button"
+                          disabled={disabled}
+                          onClick={(e) => {
+                            e.preventDefault();
+                            e.stopPropagation();
+                            setSelections(prev => ({
+                              ...prev,
+                              [type.id]: isSelected ? null : value,
+                            }));
+                          }}
+                          className={`w-6 h-6 rounded-full border-2 flex-shrink-0 transition-all ${
+                            isSelected
+                              ? 'border-[var(--seasonal-primary,#1a5632)] scale-125 shadow-sm shadow-[var(--seasonal-primary,#1a5632)]/30'
+                              : disabled
+                                ? 'border-zinc-700 opacity-25 cursor-not-allowed'
+                                : 'border-zinc-400 dark:border-zinc-600 hover:border-[var(--seasonal-primary,#1a5632)] hover:scale-110'
+                          }`}
+                          style={{ backgroundColor: value?.startsWith('#') ? value : '#ccc' }}
+                          title={`${label}${disabled ? ' (out of stock)' : ''}`}
+                        />
+                        <span className={`text-[7px] leading-tight ${isSelected ? 'text-zinc-300 font-medium' : 'text-zinc-500'}`}>{label}</span>
+                      </div>
+                    );
+                  } else {
+                    // text style (chips/pills)
+                    return (
+                      <button
+                        key={i}
+                        type="button"
+                        disabled={disabled}
+                        onClick={(e) => {
+                          e.preventDefault();
+                          e.stopPropagation();
+                          setSelections(prev => ({
+                            ...prev,
+                            [type.id]: isSelected ? null : value,
+                          }));
+                        }}
+                        className={`text-[9px] font-bold px-2 py-0.5 rounded-full border transition-all ${
+                          isSelected
+                            ? 'bg-[var(--seasonal-primary,#1a5632)] text-white border-[var(--seasonal-primary,#1a5632)]'
+                            : disabled
+                              ? 'bg-zinc-900 text-zinc-600 border-zinc-800 line-through cursor-not-allowed'
+                              : 'bg-zinc-800 text-zinc-300 border-zinc-700 hover:border-[var(--seasonal-primary,#1a5632)]'
+                        }`}
+                        title={disabled ? 'Out of stock' : label}
+                      >
+                        {label}
+                      </button>
+                    );
+                  }
+                })}
+                {/* Clear button inline for non-grid types */}
+                {selections[type.id] != null && (
+                  <button
+                    type="button"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      e.stopPropagation();
+                      setSelections(prev => ({...prev, [type.id]: null}));
+                    }}
+                    className="text-[8px] text-zinc-500 hover:text-white ml-0.5 font-bold"
+                    title={`Clear ${type.name}`}
+                  >
+                    x
+                  </button>
+                )}
+              </div>
             )}
           </div>
-        )}
+        ))}
 
-        {/* Interactive Size Selector */}
-        {uniqueSizes.length > 1 && (
-          <div className="flex items-center gap-1 mt-1.5 flex-wrap">
-            {uniqueSizes.map((s, i) => {
-              const isSelected = selectedSize === s;
-              const stock = listing.variants.filter(v =>
-                v.size === s && (!selectedColor || v.color === selectedColor)
-              ).reduce((total, v) => total + (v.quantity || 0), 0);
-              const disabled = stock <= 0;
-              return (
-                <button
-                  key={i}
-                  type="button"
-                  disabled={disabled}
-                  onClick={(e) => {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    setSelectedSize(isSelected ? null : s);
-                  }}
-                  className={`text-[9px] font-bold px-1.5 py-0.5 rounded border transition-all ${
-                    isSelected
-                      ? 'bg-[var(--seasonal-primary,#1a5632)] text-white border-[var(--seasonal-primary,#1a5632)]'
-                      : disabled
-                        ? 'bg-zinc-900 text-zinc-600 border-zinc-800 line-through cursor-not-allowed'
-                        : 'bg-zinc-800 text-zinc-300 border-zinc-700 hover:border-[var(--seasonal-primary,#1a5632)]'
-                  }`}
-                  title={disabled ? 'Out of stock' : s}
-                >
-                  {s}
-                </button>
-              );
-            })}
-          </div>
-        )}
-
-        {/* Selected variant indicator */}
-        {selectedVariantObj && (
-          <div className="flex items-center gap-1 mt-1">
-            <span className="text-[9px] text-[var(--seasonal-primary,#1a5632)] font-bold">
-              {selectedVariantObj.colorName || selectedColor ? `${uniqueColors.find(c => c.hex === selectedColor)?.name || ''}${selectedSize ? ` - ${selectedSize}` : ''}` : selectedSize}
-            </span>
-            {selectedVariantObj.quantity <= 0 && (
+        {/* Active variants chip */}
+        {hasVariants && Object.values(selections).some(v => v != null) && (
+          <div className="flex items-center gap-1.5 mt-2">
+            <div className="bg-zinc-800 text-[10px] text-zinc-300 font-medium px-2 py-0.5 rounded-full border border-zinc-700">
+              {variantData.types
+                .filter(t => selections[t.id] != null)
+                .map(t => {
+                  const val = t.values.find(v => v.value === selections[t.id]);
+                  return val?.label || selections[t.id];
+                })
+                .join(' / ')}
+            </div>
+            {allSelected && selectedVariantObj && selectedVariantObj.quantity <= 0 && (
               <span className="text-[9px] text-red-500 font-bold">Out of stock</span>
             )}
-            {selectedVariantObj.quantity > 0 && selectedVariantObj.quantity <= 2 && (
+            {allSelected && selectedVariantObj && selectedVariantObj.quantity > 0 && selectedVariantObj.quantity <= 2 && (
               <span className="text-[9px] text-orange-500 font-bold">Only {selectedVariantObj.quantity} left!</span>
             )}
           </div>

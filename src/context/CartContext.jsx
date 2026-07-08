@@ -81,15 +81,21 @@ function cartReducer(state, action) {
 
     case 'ADD_ITEM': {
       const payload = action.payload;
-      // Deduplicate by product ID + variant (size+color) so same product in different sizes is separate
-      const variantKey = payload.variant ? `${payload.variant.size || ''}_${payload.variant.color || ''}` : '';
+      // Deduplicate by product ID + variant (support both old and new format)
+      function getVariantKey(v) {
+        if (!v) return '';
+        if (v.size || v.color) return `${v.size || ''}_${v.color || ''}`;
+        if (v.attrs) return Object.entries(v.attrs).sort(([a],[b]) => a.localeCompare(b)).map(([,val]) => val).join('_');
+        return '';
+      }
+      const variantKey = getVariantKey(payload.variant);
       const existing = state.find(item => {
-        const itemVariantKey = item.variant ? `${item.variant.size || ''}_${item.variant.color || ''}` : '';
+        const itemVariantKey = getVariantKey(item.variant);
         return item.id === payload.id && itemVariantKey === variantKey;
       });
       if (existing) {
         return state.map(item =>
-          (item.id === payload.id && (item.variant ? `${item.variant.size || ''}_${item.variant.color || ''}` : '') === variantKey)
+          (item.id === payload.id && getVariantKey(item.variant) === variantKey)
             ? { ...item, quantity: item.quantity + (payload.quantity || 1) }
             : item
         );

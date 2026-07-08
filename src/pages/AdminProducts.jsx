@@ -40,6 +40,7 @@ export default function AdminProducts() {
   const [submitting, setSubmitting] = useState(false);
   const [successMsg, setSuccessMsg] = useState('');
   const [errorMsg, setErrorMsg] = useState('');
+  const [variantError, setVariantError] = useState('');
   const [deleteTarget, setDeleteTarget] = useState(null);
   const [deleteAllModal, setDeleteAllModal] = useState(false);
   const [deleteAllBusy, setDeleteAllBusy] = useState(false);
@@ -145,7 +146,7 @@ export default function AdminProducts() {
       title: '', price: '', description: '', category: cat, condition: 'new', location: 'CBD',
       images: [], brand: '', model: '', color: '', weight: '',
       sku: generateSKU(cat), status: 'active', tags: '',
-      has_variants: false, variants: [], size_guide: '', product_type: 'new',
+      has_variants: true, variants: [], size_guide: '', product_type: 'new',
       wholesale_enabled: false, wholesale_min_qty: '', wholesale_tiers: [],
     });
     setModalOpen(true);
@@ -161,7 +162,7 @@ export default function AdminProducts() {
       color: listing.color || '', weight: listing.weight || '', sku: listing.sku || '',
       status: listing.status || 'active', tags: listing.tags || '',
       has_variants: listing.has_variants || false,
-      variants: Array.isArray(listing.variants) ? listing.variants : [],
+      variants: listing.variants || [],
       size_guide: listing.size_guide || '',
       product_type: listing.product_type || 'new',
       wholesale_enabled: listing.wholesale_enabled || false,
@@ -217,6 +218,22 @@ export default function AdminProducts() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setSubmitting(true);
+    setVariantError('');
+
+    // Validate variants — require at least one type with at least one value
+    if (form.has_variants) {
+      const hasValidVariants = form.variants && typeof form.variants === 'object' && !Array.isArray(form.variants)
+        ? (form.variants.types?.length > 0 && form.variants.types.some(t => t.values?.length > 0))
+        : Array.isArray(form.variants) && form.variants.length > 0;
+      if (!hasValidVariants) {
+        const msg = 'Please add at least one variant type with values (e.g. Size or Color) before saving.';
+        setErrorMsg(msg);
+        setVariantError(msg);
+        setSubmitting(false);
+        return;
+      }
+    }
+
     const payload = {
       title: form.title, description: form.description, price: parseFloat(form.price) || 0,
       category: form.category, condition: form.condition, location: form.location,
@@ -468,50 +485,75 @@ export default function AdminProducts() {
                       <span className="text-xs font-medium text-zinc-400 bg-zinc-800 px-2 py-1 rounded-lg">{listing.category}</span>
                     </td>
                     <td className="px-4 py-3 hidden lg:table-cell">
-                      {listing.has_variants && listing.variants?.length > 0 ? (
-                        <div className="flex flex-col gap-1.5">
-                          <span className="text-[10px] font-bold text-[var(--seasonal-primary,#1a5632)] bg-[var(--seasonal-primary,#1a5632)]/10 px-2 py-0.5 rounded-lg inline-block w-fit">
-                            {listing.variants.length} variant{listing.variants.length !== 1 ? 's' : ''}
-                          </span>
-                          {/* Color swatches */}
-                          {(function() {
-                            const seen = new Set();
-                            const colors = listing.variants.filter(v => v.color && !seen.has(v.color) && seen.add(v.color));
-                            if (colors.length <= 1) return null;
-                            return (
-                              <div className="flex items-center gap-1">
-                                {colors.slice(0, 5).map((v, i) => (
-                                  <div key={i} className="w-3 h-3 rounded-full border border-zinc-600"
-                                    style={{ backgroundColor: v.color?.startsWith('#') ? v.color : '#ccc' }}
-                                    title={v.colorName || v.color} />
-                                ))}
-                                {colors.length > 5 && <span className="text-[9px] text-zinc-400">+{colors.length - 5}</span>}
-                              </div>
-                            );
-                          })()}
-                          {/* Size chips */}
-                          {(function() {
-                            const sizes = [...new Set(listing.variants.map(v => v.size).filter(Boolean))];
-                            if (sizes.length <= 1) return null;
-                            return (
-                              <div className="flex items-center gap-0.5 flex-wrap">
-                                {sizes.slice(0, 4).map((s, i) => (
-                                  <span key={i} className="text-[8px] font-bold text-zinc-400 bg-zinc-800 px-1 py-0.5 rounded">{s}</span>
-                                ))}
-                                {sizes.length > 4 && <span className="text-[8px] text-zinc-400">+{sizes.length - 4}</span>}
-                              </div>
-                            );
-                          })()}
-                          {/* Stock summary */}
-                          {(() => {
-                            const totalStock = listing.variants.reduce((s, v) => s + (v.quantity || 0), 0);
-                            return (
-                              <span className={`text-[9px] font-bold ${totalStock > 0 ? 'text-green-500' : 'text-red-500'}`}>
-                                {totalStock > 0 ? `${totalStock} in stock` : 'Out of stock'}
+                      {listing.has_variants && listing.variants ? (
+                        (function() {
+                          // Support both old (array) and new ({types, items}) format
+                          const types = listing.variants.types || [];
+                          const items = listing.variants.items || (Array.isArray(listing.variants) ? listing.variants : []);
+                          const hasItems = items.length > 0;
+                          if (!hasItems) return <span className="text-[10px] text-zinc-500">No variants</span>;
+                          return (
+                            <div className="flex flex-col gap-1.5">
+                              <span className="text-[10px] font-bold text-[var(--seasonal-primary,#1a5632)] bg-[var(--seasonal-primary,#1a5632)]/10 px-2 py-0.5 rounded-lg inline-block w-fit">
+                                {items.length} variant{items.length !== 1 ? 's' : ''}
                               </span>
-                            );
-                          })()}
-                        </div>
+                              {types.length === 0 ? (
+                                /* Old format: show color swatches + size chips */
+                                <>
+                                  {(function() {
+                                    const seen = new Set();
+                                    const colors = items.filter(v => v.color && !seen.has(v.color) && seen.add(v.color));
+                                    if (colors.length <= 1) return null;
+                                    return (
+                                      <div className="flex items-center gap-1">
+                                        {colors.slice(0, 5).map((v, i) => (
+                                          <div key={i} className="w-3 h-3 rounded-full border border-zinc-600"
+                                            style={{ backgroundColor: v.color?.startsWith('#') ? v.color : '#ccc' }}
+                                            title={v.colorName || v.color} />
+                                        ))}
+                                        {colors.length > 5 && <span className="text-[9px] text-zinc-400">+{colors.length - 5}</span>}
+                                      </div>
+                                    );
+                                  })()}
+                                  {(function() {
+                                    const sizes = [...new Set(items.map(v => v.size).filter(Boolean))];
+                                    if (sizes.length <= 1) return null;
+                                    return (
+                                      <div className="flex items-center gap-0.5 flex-wrap">
+                                        {sizes.slice(0, 4).map((s, i) => (
+                                          <span key={i} className="text-[8px] font-bold text-zinc-400 bg-zinc-800 px-1 py-0.5 rounded">{s}</span>
+                                        ))}
+                                        {sizes.length > 4 && <span className="text-[9px] text-zinc-400">+{sizes.length - 4}</span>}
+                                      </div>
+                                    );
+                                  })()}
+                                </>
+                              ) : (
+                                /* New format: show type badges */
+                                <>
+                                  {types.slice(0, 3).map(t => (
+                                    <div key={t.id} className="flex items-center gap-1">
+                                      <span className="text-[8px] font-bold text-zinc-500 uppercase">{t.name}:</span>
+                                      <span className="text-[9px] text-zinc-300 truncate max-w-[120px]">
+                                        {t.values.slice(0, 3).map(v => v.label || v.value).join(', ')}
+                                        {t.values.length > 3 ? ` +${t.values.length - 3}` : ''}
+                                      </span>
+                                    </div>
+                                  ))}
+                                </>
+                              )}
+                              {/* Stock summary */}
+                              {(() => {
+                                const totalStock = items.reduce((s, v) => s + (v.quantity || 0), 0);
+                                return (
+                                  <span className={`text-[9px] font-bold ${totalStock > 0 ? 'text-green-500' : 'text-red-500'}`}>
+                                    {totalStock > 0 ? `${totalStock} in stock` : 'Out of stock'}
+                                  </span>
+                                );
+                              })()}
+                            </div>
+                          );
+                        })()
                       ) : (
                         <span className="text-[10px] text-zinc-500">No variants</span>
                       )}
@@ -636,7 +678,7 @@ export default function AdminProducts() {
                   <label className="block text-sm font-bold mb-1.5 text-zinc-300">Category</label>
                   <select value={form.category} onChange={e => {
                     const newCat = e.target.value;
-                    const needsVariants = ['Clothing', 'T-Shirts', 'Shoes (Men)', 'Shoes (Women)', 'Shoes (Kids)', 'Pants', 'Belts', 'Hats'].includes(newCat);
+                    const needsVariants = ['Clothing', 'T-Shirts', 'Shoes (Men)', 'Shoes (Women)', 'Shoes (Kids)', 'Pants', 'Belts', 'Hats', 'Jackets', 'Sweaters', 'Suits', 'Uniforms', 'Sportswear', 'Swimwear', 'Underwear', 'Socks', 'Scarves', 'Watches', 'Jewelry', 'Bags', 'Backpacks', 'Luggage', 'Perfumes', 'Beauty', 'Cosmetics', 'Skin Care', 'Hair Care'].includes(newCat);
                     setForm(prev => ({
                       ...prev,
                       category: newCat,
@@ -732,9 +774,21 @@ export default function AdminProducts() {
                 basePrice={form.price}
                 baseSku={form.sku}
                 value={form.variants}
-                onChange={(variants) => setForm(prev => ({ ...prev, has_variants: variants.length > 0, variants }))}
+                onChange={(variants) => {
+                  const hasAny = variants && typeof variants === 'object' && !Array.isArray(variants)
+                    ? variants.types?.length > 0 || variants.items?.length > 0
+                    : Array.isArray(variants) && variants.length > 0;
+                  setForm(prev => ({ ...prev, has_variants: hasAny, variants }));
+                  setVariantError('');
+                }}
                 images={form.images}
               />
+              {variantError && (
+                <div className="flex items-center gap-2 p-3 bg-red-900/20 border border-red-800 rounded-xl mt-3">
+                  <AlertTriangle className="w-4 h-4 text-red-500 flex-shrink-0" />
+                  <p className="text-xs text-red-400">{variantError}</p>
+                </div>
+              )}
 
               {/* ── Wholesale Pricing ── */}
               <div className="border-t border-zinc-800 pt-4 mt-2">

@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import { MapPin, CheckCircle, ShoppingCart, Minus, Plus, Package, Truck, Shield, Tag, Cpu, HardDrive, Monitor, Battery, Camera, Wifi, Bell, Heart, Percent, MessageCircle, Store } from 'lucide-react';
 import ProductCard from '../components/ProductCard';
@@ -19,6 +19,34 @@ import { useLang } from '../utils/lang';
 import MessageSellerButton from '../components/MessageSellerButton';
 import ProductRecommendations from '../components/ProductRecommendations';
 
+function normalizeVariants(variants) {
+  if (!variants) return null;
+  if (variants && typeof variants === 'object' && !Array.isArray(variants) && variants.types && variants.items) return variants;
+  if (Array.isArray(variants)) {
+    const colorSet = new Map();
+    const sizeSet = new Set();
+    variants.forEach(v => {
+      if (v.color) colorSet.set(v.color, v.colorName || v.color);
+      if (v.size) sizeSet.add(v.size);
+    });
+    const types = [];
+    if (colorSet.size > 0) types.push({id: 'color', name: 'Color', style: 'color', values: Array.from(colorSet.entries()).map(([value, label]) => ({value, label}))});
+    if (sizeSet.size > 0) types.push({id: 'size', name: 'Size', style: 'button', values: Array.from(sizeSet).map(s => ({value: s, label: s}))});
+    return {
+      types,
+      items: variants.map(v => ({
+        id: v.id,
+        attrs: {...(v.color ? {color: v.color} : {}), ...(v.size ? {size: v.size} : {})},
+        sku: v.sku,
+        quantity: v.quantity,
+        priceAdjustment: v.priceAdjustment,
+        imageUrl: v.imageUrl
+      }))
+    };
+  }
+  return null;
+}
+
 function ListingDetails() {
   const { t } = useLang();
   const { id } = useParams();
@@ -29,8 +57,7 @@ function ListingDetails() {
   const [error, setError] = useState(null);
   const [quantity, setQuantity] = useState(1);
   const [selectedVariant, setSelectedVariant] = useState(null);
-  const [selectedColor, setSelectedColor] = useState(null);
-  const [selectedSize, setSelectedSize] = useState(null);
+  const [selections, setSelections] = useState({});
   const [user, setUser] = useState(null);
   const { addItem, cart } = useCart();
   const [notifyMsg, setNotifyMsg] = useState('');
@@ -212,25 +239,103 @@ function ListingDetails() {
     ...(listing.model ? [{ icon: Cpu, label: 'Model', value: listing.model }] : []),
   ].slice(0, 6);
 
-  // Variant helpers
-  const hasVariants = listing.has_variants && listing.variants?.length > 0;
-  const variantColors = hasVariants ? (() => {
-    const seen = new Set();
-    return listing.variants
-      .filter(v => v.color && !seen.has(v.color) && seen.add(v.color))
-      .map(v => ({ hex: v.color, name: v.colorName || v.color }));
-  })() : [];
-  const variantSizes = hasVariants ? [...new Set(listing.variants.map(v => v.size).filter(Boolean))] : [];
-  const selectedVariantObj = hasVariants
-    ? listing.variants.find(v =>
-        (!variantColors.length || !selectedColor || v.color === selectedColor) &&
-        (!variantSizes.length || !selectedSize || v.size === selectedSize)
-      ) : null;
-  const effectivePrice = selectedVariantObj
-    ? (listing.price || 0) + (selectedVariantObj.priceAdjustment || 0)
-    : listing.price;
+  // NEW VARIANT SYSTEM //
+
+  // Normalize variant data (handles old array format and new object format)
+  const variantData = useMemo(() => normalizeVariants(listing.variants), [listing.variants]);
+  const hasVariants = variantData && variantData.types.length > 0;
+
+  // Create a function to check if selecting a specific value for a type would still produce an in-stock variant
+  const isOptionDisabled = (typeId, value) => {
+    if (!variantData) return false;
+    // Build a candidate selections map: existing selections + the candidate value for this type
+    const candidate = { ...selections, [typeId]: value };
+    // For each item in variantData.items, check if it matches ALL candidate selections
+    const matchingItem = variantData.items.find(item => {
+      return variantData.types.every(t => {
+        const selectedVal = candidate[t.id];
+        if (!selectedVal) return true; // if this type isn't selected yet, don't filter
+        return item.attrs[t.id] === selectedVal;
+      });
+    });
+    // If no matching item found, or the matching item has zero stock, it's disabled
+    return !matchingItem || (matchingItem.quantity || 0) <= 0;
+  };
+
+  // Find the fully matched variant object
+  const selectedVariantObj = useMemo(() => {
+    if (!hasVariants || !variantData) return null;
+    // Count how many types have a selection
+    const selectedCount = variantData.types.filter(t => selections[t.id] != null).length;
+    if (selectedCount === 0) return null;
+    // Only find a match if ALL types are selected
+    if (selectedCount < variantData.types.length) return null;
+    return variantData.items.find(item => {
+      return variantData.types.every(t => {
+        return item.attrs[t.id] === selections[t.id];
+      });
+    }) || null;
+  }, [hasVariants, variantData, selections]);
+
+  const effectivePrice = (listing.price || 0) + (selectedVariantObj?.priceAdjustment || 0);
   const effectiveStock = selectedVariantObj?.quantity || listing.quantity;
   const isOutOfStock = hasVariants && selectedVariantObj && selectedVariantObj.quantity <= 0;
+
+  // Check if all variant types have been selected
+  const allSelected = hasVariants && variantData.types.every(t => selections[t.id] != null);
+
+  // Find the first unselected type name for the button prompt
+  const firstUnselectedType = hasVariants
+    ? variantData.types.find(t => selections[t.id] == null)
+    : null;
+
+  // Build the variant label for cart display
+  const buildVariantLabel = () => {
+    if (!hasVariants || !variantData || !allSelected) return '';
+    return Object.entries(selections).map(([typeId, val]) => {
+      const type = variantData.types.find(t => t.id === typeId);
+      if (!type) return val;
+      if (type.style === 'color') {
+        const match = type.values.find(v => v.value === val);
+        return match ? match.label : val;
+      }
+      return val;
+    }).join(' / ');
+  };
+
+  // Build the cart variant object with backward compat fields
+  const cartVariant = selectedVariantObj && variantData ? {
+    ...selectedVariantObj,
+    label: buildVariantLabel(),
+    size: selectedVariantObj.attrs?.size || null,
+    color: selectedVariantObj.attrs?.color || null,
+    colorName: selectedVariantObj.attrs?.color
+      ? (variantData.types.find(t => t.id === 'color')?.values.find(v => v.value === selectedVariantObj.attrs.color)?.label || null)
+      : null,
+  } : null;
+
+  const handleAddToCart = () => {
+    addItem({
+      id: listing.id,
+      name: listing.title,
+      price: effectivePrice,
+      image_url: listing.images?.[0] || null,
+      quantity,
+      variant: cartVariant,
+    });
+  };
+
+  const handleBuyNow = () => {
+    addItem({
+      id: listing.id,
+      name: listing.title,
+      price: effectivePrice,
+      image_url: listing.images?.[0] || null,
+      quantity,
+      variant: cartVariant,
+    });
+    navigate('/checkout');
+  };
 
   return (
     <div className="max-w-7xl mx-auto px-4 py-8 w-full" data-name="listing-details">
@@ -422,82 +527,104 @@ function ListingDetails() {
             <NiaContextualTrigger page="listing" />
           </div>
 
-          {/* Variant Selectors (Color + Size) */}
-          {hasVariants && (
+          {/* Variant Selectors (Dynamic) */}
+          {hasVariants && variantData && (
             <div className="mb-6 space-y-4">
-              {/* Color Selector */}
-              {variantColors.length > 0 && (
-                <div id="variant-color-section">
-                  <label className="text-xs font-bold text-zinc-400 uppercase tracking-wider mb-2 block">
-                    Color {selectedColor && <span className="text-zinc-300 normal-case">— {variantColors.find(c => c.hex === selectedColor)?.name}</span>}
-                  </label>
-                  <div className="flex flex-wrap gap-2">
-                    {variantColors.map(c => {
-                      const isSelected = selectedColor === c.hex;
-                      const colorStock = listing.variants.filter(v => v.color === c.hex).reduce((s, v) => s + (v.quantity || 0), 0);
-                      const disabled = colorStock <= 0;
-                      return (
-                        <button
-                          key={c.hex}
-                          type="button"
-                          disabled={disabled}
-                          onClick={() => { setSelectedColor(c.hex); setSelectedVariant(null); }}
-                          className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl border-2 text-xs font-bold transition-all ${
-                            isSelected
-                              ? 'border-[var(--seasonal-primary,#1a5632)] bg-[var(--seasonal-primary,#1a5632)]/5'
-                              : disabled
-                                ? 'border-zinc-700 opacity-40 cursor-not-allowed'
-                                : 'border-zinc-700 hover:border-[var(--seasonal-primary,#1a5632)]'
-                          }`}
-                        >
-                          <div className="w-4 h-4 rounded-full border border-zinc-300 dark:border-zinc-600 flex-shrink-0" style={{ backgroundColor: c.hex?.startsWith('#') ? c.hex : '#ccc' }} />
-                          <span className="text-zinc-300">{c.name}</span>
+              {variantData.types.map(type => {
+                const selectedVal = selections[type.id];
+                const selectedLabel = type.style === 'color'
+                  ? (type.values.find(v => v.value === selectedVal)?.label || selectedVal)
+                  : selectedVal;
+                return (
+                  <div key={type.id} id={`variant-${type.id}-section`}>
+                    <div className="flex items-center justify-between mb-2">
+                      <label className="text-xs font-bold text-zinc-400 uppercase tracking-wider">
+                        {type.name} {selectedVal && <span className="text-zinc-300 normal-case">— {selectedLabel}</span>}
+                      </label>
+                      {type.id === 'size' && listing.size_guide && (
+                        <button type="button" className="text-[10px] text-[var(--seasonal-primary,#1a5632)] font-bold hover:underline">
+                          Size Guide
                         </button>
-                      );
-                    })}
+                      )}
+                    </div>
+                    <div className="flex flex-wrap gap-2">
+                      {type.style === 'color' && type.values.map(v => {
+                        const isSelected = selectedVal === v.value;
+                        const disabled = isOptionDisabled(type.id, v.value);
+                        return (
+                          <button
+                            key={v.value}
+                            type="button"
+                            disabled={disabled}
+                            onClick={() => {
+                              setSelections(prev => ({ ...prev, [type.id]: v.value }));
+                              setSelectedVariant(null);
+                            }}
+                            className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl border-2 text-xs font-bold transition-all ${
+                              isSelected
+                                ? 'border-[var(--seasonal-primary,#1a5632)] bg-[var(--seasonal-primary,#1a5632)]/5'
+                                : disabled
+                                  ? 'border-zinc-700 opacity-40 cursor-not-allowed'
+                                  : 'border-zinc-700 hover:border-[var(--seasonal-primary,#1a5632)]'
+                            }`}
+                          >
+                            <div className="w-4 h-4 rounded-full border border-zinc-300 dark:border-zinc-600 flex-shrink-0" style={{ backgroundColor: v.value?.startsWith('#') ? v.value : '#ccc' }} />
+                            <span className="text-zinc-300">{v.label}</span>
+                          </button>
+                        );
+                      })}
+                      {type.style === 'button' && type.values.map(v => {
+                        const isSelected = selectedVal === v.value;
+                        const disabled = isOptionDisabled(type.id, v.value);
+                        return (
+                          <button
+                            key={v.value}
+                            type="button"
+                            disabled={disabled}
+                            onClick={() => {
+                              setSelections(prev => ({ ...prev, [type.id]: v.value }));
+                              setSelectedVariant(null);
+                            }}
+                            className={`min-w-[36px] px-2.5 py-1.5 rounded-xl border-2 text-xs font-bold text-center transition-all ${
+                              isSelected
+                                ? 'border-[var(--seasonal-primary,#1a5632)] bg-[var(--seasonal-primary,#1a5632)] text-white'
+                                : disabled
+                                  ? 'border-zinc-700 opacity-40 cursor-not-allowed line-through'
+                                  : 'border-zinc-700 text-zinc-300 hover:border-[var(--seasonal-primary,#1a5632)]'
+                            }`}
+                          >
+                            {v.label}
+                          </button>
+                        );
+                      })}
+                      {type.style === 'text' && type.values.map(v => {
+                        const isSelected = selectedVal === v.value;
+                        const disabled = isOptionDisabled(type.id, v.value);
+                        return (
+                          <button
+                            key={v.value}
+                            type="button"
+                            disabled={disabled}
+                            onClick={() => {
+                              setSelections(prev => ({ ...prev, [type.id]: v.value }));
+                              setSelectedVariant(null);
+                            }}
+                            className={`px-3 py-1.5 rounded-xl border-2 text-xs font-bold transition-all ${
+                              isSelected
+                                ? 'border-[var(--seasonal-primary,#1a5632)] bg-[var(--seasonal-primary,#1a5632)]/10 text-[var(--seasonal-primary,#1a5632)]'
+                                : disabled
+                                  ? 'border-zinc-700 opacity-40 cursor-not-allowed'
+                                  : 'border-zinc-700 text-zinc-300 hover:border-[var(--seasonal-primary,#1a5632)]'
+                            }`}
+                          >
+                            {v.label}
+                          </button>
+                        );
+                      })}
+                    </div>
                   </div>
-                </div>
-              )}
-
-              {/* Size Selector */}
-              {variantSizes.length > 0 && (
-                <div id="variant-size-section">
-                  <div className="flex items-center justify-between mb-2">
-                    <label className="text-xs font-bold text-zinc-400 uppercase tracking-wider">
-                      Size {selectedSize && <span className="text-zinc-300 normal-case">— {selectedSize}</span>}
-                    </label>
-                    {listing.size_guide && (
-                      <button type="button" className="text-[10px] text-[var(--seasonal-primary,#1a5632)] font-bold hover:underline">
-                        Size Guide
-                      </button>
-                    )}
-                  </div>
-                  <div className="flex flex-wrap gap-1.5">
-                    {variantSizes.map(size => {
-                      const isSelected = selectedSize === size;
-                      const sizeStock = listing.variants.filter(v => v.size === size && (!selectedColor || !v.color || v.color === selectedColor)).reduce((s, v) => s + (v.quantity || 0), 0);
-                      const disabled = sizeStock <= 0;
-                      return (
-                        <button
-                          key={size}
-                          type="button"
-                          disabled={disabled}
-                          onClick={() => { setSelectedSize(size); setSelectedVariant(null); }}
-                          className={`min-w-[36px] px-2.5 py-1.5 rounded-xl border-2 text-xs font-bold text-center transition-all ${
-                            isSelected
-                              ? 'border-[var(--seasonal-primary,#1a5632)] bg-[var(--seasonal-primary,#1a5632)] text-white'
-                              : disabled
-                                ? 'border-zinc-700 opacity-40 cursor-not-allowed line-through'
-                                : 'border-zinc-700 text-zinc-300 hover:border-[var(--seasonal-primary,#1a5632)]'
-                          }`}
-                        >
-                          {size}
-                        </button>
-                      );
-                    })}
-                  </div>
-                </div>
-              )}
+                );
+              })}
 
               {/* Selected variant info */}
               {selectedVariantObj && (
@@ -556,55 +683,37 @@ function ListingDetails() {
             </div>
             {user ? (
               <>
-                <button
-                  onClick={() => {
-                    if (hasVariants && variantColors.length > 0 && !selectedColor) {
-                      document.getElementById('variant-color-section')?.scrollIntoView({ behavior: 'smooth' });
-                      return;
-                    }
-                    if (hasVariants && variantSizes.length > 0 && !selectedSize) {
-                      document.getElementById('variant-size-section')?.scrollIntoView({ behavior: 'smooth' });
-                      return;
-                    }
-                    addItem({
-                      id: listing.id,
-                      name: listing.title,
-                      price: effectivePrice,
-                      image_url: listing.images?.[0] || null,
-                      quantity,
-                      variant: selectedVariantObj ? {
-                        id: selectedVariantObj.id,
-                        size: selectedVariantObj.size,
-                        color: selectedVariantObj.color,
-                        colorName: selectedVariantObj.colorName,
-                        sku: selectedVariantObj.sku,
-                      } : null,
-                    });
-                  }}
-                  className="w-full flex items-center justify-center gap-2 bg-[var(--seasonal-primary,#1a5632)] text-white font-black py-4 rounded-2xl hover:bg-[var(--seasonal-secondary,#14472a)] transition-all shadow-lg shadow-[var(--seasonal-primary,#1a5632)]/20 text-lg"
-                >
-                  <ShoppingCart className="w-5 h-5" /> {inCart ? t('cart.title') : t('productCard.addToCart')} — {formatKES(effectivePrice * quantity)}
-                </button>
-                <button onClick={() => {
-                  addItem({
-                    id: listing.id,
-                    name: listing.title,
-                    price: effectivePrice,
-                    image_url: listing.images?.[0] || null,
-                    quantity,
-                    variant: selectedVariantObj ? {
-                      id: selectedVariantObj.id,
-                      size: selectedVariantObj.size,
-                      color: selectedVariantObj.color,
-                      colorName: selectedVariantObj.colorName,
-                      sku: selectedVariantObj.sku,
-                    } : null,
-                  });
-                  navigate('/checkout');
-                }}
-                  className="w-full flex items-center justify-center gap-2 bg-zinc-900 dark:bg-white text-white dark:text-zinc-900 font-bold py-4 rounded-2xl hover:opacity-90 transition-all">
-                  {t('listing.buyNow')} &mdash; {formatKES(effectivePrice * quantity)}
-                </button>
+                {hasVariants && !allSelected ? (
+                  <>
+                    <button
+                      disabled
+                      className="w-full flex items-center justify-center gap-2 bg-zinc-700 text-zinc-400 font-black py-4 rounded-2xl cursor-not-allowed opacity-50 text-lg"
+                    >
+                      <ShoppingCart className="w-5 h-5" /> Select {firstUnselectedType?.name || 'options'} — {formatKES(effectivePrice * quantity)}
+                    </button>
+                    <button
+                      disabled
+                      className="w-full flex items-center justify-center gap-2 bg-zinc-800 text-zinc-500 font-bold py-4 rounded-2xl cursor-not-allowed opacity-50"
+                    >
+                      Select {firstUnselectedType?.name || 'options'} &mdash; {formatKES(effectivePrice * quantity)}
+                    </button>
+                  </>
+                ) : (
+                  <>
+                    <button
+                      onClick={handleAddToCart}
+                      className="w-full flex items-center justify-center gap-2 bg-[var(--seasonal-primary,#1a5632)] text-white font-black py-4 rounded-2xl hover:bg-[var(--seasonal-secondary,#14472a)] transition-all shadow-lg shadow-[var(--seasonal-primary,#1a5632)]/20 text-lg"
+                    >
+                      <ShoppingCart className="w-5 h-5" /> {inCart ? t('cart.title') : t('productCard.addToCart')} — {formatKES(effectivePrice * quantity)}
+                    </button>
+                    <button
+                      onClick={handleBuyNow}
+                      className="w-full flex items-center justify-center gap-2 bg-zinc-900 dark:bg-white text-white dark:text-zinc-900 font-bold py-4 rounded-2xl hover:opacity-90 transition-all"
+                    >
+                      {t('listing.buyNow')} &mdash; {formatKES(effectivePrice * quantity)}
+                    </button>
+                  </>
+                )}
               </>
             ) : (
               <>
@@ -774,9 +883,9 @@ function ListingDetails() {
         listing={listing}
         quantity={quantity}
         effectivePrice={effectivePrice}
-        selectedVariant={selectedVariantObj}
-        onAddToCart={() => addItem({ id: listing.id, name: listing.title, price: effectivePrice, image_url: listing.images?.[0] || null, quantity, variant: selectedVariantObj || null })}
-        onBuyNow={() => { addItem({ id: listing.id, name: listing.title, price: effectivePrice, image_url: listing.images?.[0] || null, quantity, variant: selectedVariantObj || null }); navigate('/checkout'); }}
+        selectedVariant={cartVariant}
+        onAddToCart={handleAddToCart}
+        onBuyNow={handleBuyNow}
         inCart={inCart}
         user={user}
       />

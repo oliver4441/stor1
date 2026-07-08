@@ -453,7 +453,7 @@ export default function CheckoutPage() {
 
       const message = `Hello Omix Store!\n\nI have placed a Cash on Delivery order.\n\nOrder ID: #${orderId.toString().slice(0,8).toUpperCase()}\n\nItems:\n${itemList}\n\nTotal: KES ${currentDiscounted.toLocaleString()}\nPayment: Cash on Delivery\n\n${deliveryInfo}\nPhone: ${form.phone}\nName: ${form.fullName}\n\nPlease confirm my order. Asante!`;
 
-      const whatsappUrl = `https://wa.me/254746674392?text=${encodeURIComponent(message)}`;
+      const whatsappUrl = `https://wa.me/254768213649?text=${encodeURIComponent(message)}`;
       window.open(whatsappUrl, '_blank');
 
       clearCart();
@@ -750,14 +750,20 @@ export default function CheckoutPage() {
                     <h4 className="font-bold text-sm truncate" style={{ color: C.text }}>{item.name}</h4>
                     {item.variant && (
                       <div className="flex items-center gap-1.5 mt-0.5">
-                        {item.variant.size && (
-                          <span className="text-[9px] font-bold px-1.5 py-0.5 rounded" style={{ backgroundColor: C.bgGray, color: C.textMuted }}>Size: {item.variant.size}</span>
-                        )}
-                        {item.variant.color && item.variant.colorName && (
-                          <span className="flex items-center gap-0.5 text-[9px] font-bold px-1.5 py-0.5 rounded" style={{ backgroundColor: C.bgGray, color: C.textMuted }}>
-                            <span className="w-2 h-2 rounded-full inline-block" style={{ backgroundColor: item.variant.color?.startsWith('#') ? item.variant.color : '#ccc', border: '1px solid #d4d4d8' }} />
-                            {item.variant.colorName}
-                          </span>
+                        {item.variant.label ? (
+                          <span className="text-[9px] font-bold px-1.5 py-0.5 rounded" style={{ backgroundColor: C.bgGray, color: C.textMuted }}>{item.variant.label}</span>
+                        ) : (
+                          <>
+                            {item.variant.size && (
+                              <span className="text-[9px] font-bold px-1.5 py-0.5 rounded" style={{ backgroundColor: C.bgGray, color: C.textMuted }}>Size: {item.variant.size}</span>
+                            )}
+                            {item.variant.color && item.variant.colorName && (
+                              <span className="flex items-center gap-0.5 text-[9px] font-bold px-1.5 py-0.5 rounded" style={{ backgroundColor: C.bgGray, color: C.textMuted }}>
+                                <span className="w-2 h-2 rounded-full inline-block" style={{ backgroundColor: item.variant.color?.startsWith('#') ? item.variant.color : '#ccc', border: '1px solid #d4d4d8' }} />
+                                {item.variant.colorName}
+                              </span>
+                            )}
+                          </>
                         )}
                       </div>
                     )}
