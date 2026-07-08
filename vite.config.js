@@ -32,10 +32,29 @@ function copyPublicAssets() {
   }
 }
 
+// HTML env var replacement for GA
+function htmlGAInject() {
+  return {
+    name: 'html-ga-inject',
+    transformIndexHtml(html) {
+      const gaId = process.env.VITE_GA_MEASUREMENT_ID;
+      if (!gaId) {
+        // Remove GA snippet entirely if no ID configured
+        return html.replace(
+          /<!-- Google Analytics \(gtag\.js\) -->[\s\S]*?<\/script>\s*<script>[\s\S]*?<\/script>\n?/,
+          ''
+        );
+      }
+      return html.replace(/%VITE_GA_MEASUREMENT_ID%/g, gaId);
+    },
+  };
+}
+
 export default defineConfig({
   base: '/',
   plugins: [
     react(),
+    htmlGAInject(),
     copyPublicAssets()
   ],
   resolve: {
