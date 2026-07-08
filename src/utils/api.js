@@ -380,6 +380,8 @@ export async function createListing(formData) {
       variants: Array.isArray(formData.variants) ? formData.variants : [],
       size_guide: formData.size_guide || null,
       product_type: formData.product_type || 'new',  // Refurbished support
+      wholesale_enabled: formData.wholesale_enabled || false,
+      wholesale_min_qty: formData.wholesale_min_qty || null,
     })
     .select('id')
     .single()
@@ -430,6 +432,8 @@ export async function updateListing(id, formData) {
       variants: Array.isArray(formData.variants) ? formData.variants : [],
       size_guide: formData.size_guide || null,
       product_type: formData.product_type || 'new',  // Refurbished support
+      wholesale_enabled: formData.wholesale_enabled || false,
+      wholesale_min_qty: formData.wholesale_min_qty || null,
     })
     .eq('id', id)
     .select('id')
@@ -1612,6 +1616,20 @@ export async function getWholesalePrices(listingId) {
   }
 }
 
+export async function saveWholesalePrices(listingId, tiers) {
+  try {
+    const resp = await fetch(`${API_URL}/api/admin/products/${listingId}/wholesale`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ tiers }),
+    });
+    const data = await resp.json();
+    return data;
+  } catch (err) {
+    return { success: false, error: err.message };
+  }
+}
+
 // ── Seller Registration & Profile ─────────────────────────────────
 export async function getSellerProfile(userId) {
   try {
@@ -1650,6 +1668,53 @@ export async function registerSeller({ userId, shopName, shopSlug, description, 
 export async function getSellerAnalytics(sellerId) {
   try {
     const resp = await fetch(`${API_URL}/api/seller/${sellerId}/analytics`);
+    const data = await resp.json();
+    return data;
+  } catch (err) {
+    return { success: false, error: err.message };
+  }
+}
+
+// ── Admin: Seller Management ──────────────────────────────────────
+export async function getAdminSellers({ status, search, page, limit } = {}) {
+  try {
+    const params = new URLSearchParams();
+    if (status) params.set('status', status);
+    if (search) params.set('search', search);
+    if (page) params.set('page', page);
+    if (limit) params.set('limit', limit);
+    const resp = await fetch(`${API_URL}/api/admin/sellers?${params.toString()}`, {
+      credentials: 'include',
+    });
+    const data = await resp.json();
+    return data;
+  } catch (err) {
+    return { success: false, error: err.message, sellers: [], total: 0 };
+  }
+}
+
+export async function approveSeller(sellerId) {
+  try {
+    const resp = await fetch(`${API_URL}/api/admin/sellers/${sellerId}/approve`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      credentials: 'include',
+    });
+    const data = await resp.json();
+    return data;
+  } catch (err) {
+    return { success: false, error: err.message };
+  }
+}
+
+export async function rejectSeller(sellerId, reason) {
+  try {
+    const resp = await fetch(`${API_URL}/api/admin/sellers/${sellerId}/reject`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      credentials: 'include',
+      body: JSON.stringify({ reason }),
+    });
     const data = await resp.json();
     return data;
   } catch (err) {

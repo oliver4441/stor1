@@ -2,7 +2,7 @@ import { useState, useEffect, useCallback } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { getSellerProfile, registerSeller } from '../utils/api';
-import { Store, Loader2, CheckCircle2, ArrowRight, AlertTriangle } from 'lucide-react';
+import { Store, Loader2, CheckCircle2, ArrowRight, AlertTriangle, Clock } from 'lucide-react';
 
 function slugify(text) {
   return text
@@ -41,6 +41,8 @@ export default function SellerRegistration() {
   }, [user, authLoading, navigate]);
 
   // Check if user is already a seller
+  const [existingSeller, setExistingSeller] = useState(null);
+
   useEffect(() => {
     if (!user) return;
     let cancelled = false;
@@ -50,7 +52,14 @@ export default function SellerRegistration() {
         const result = await getSellerProfile(user.id);
         if (cancelled) return;
         if (result?.seller) {
-          navigate('/seller/dashboard', { replace: true });
+          const s = result.seller;
+          if (s.status === 'approved' && s.is_active) {
+            navigate('/seller/dashboard', { replace: true });
+            return;
+          }
+          // Pending or rejected — show status page instead of redirecting
+          setExistingSeller(s);
+          setCheckingSeller(false);
           return;
         }
       } catch {
@@ -136,21 +145,95 @@ export default function SellerRegistration() {
     );
   }
 
-  // Success state
+  // Success state — show pending approval
   if (success) {
     return (
       <div className="min-h-screen bg-zinc-950 flex items-center justify-center px-4">
         <div className="max-w-md w-full bg-zinc-900/60 border border-zinc-800 rounded-3xl p-8 text-center">
-          <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-emerald-500/20 mb-5">
-            <CheckCircle2 className="w-8 h-8 text-emerald-400" />
+          <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-amber-500/20 mb-5">
+            <Clock className="w-8 h-8 text-amber-400" />
           </div>
-          <h1 className="text-2xl font-bold text-white mb-2">Registration Submitted</h1>
+          <h1 className="text-2xl font-bold text-white mb-2">Pending Approval</h1>
           <p className="text-zinc-400 text-sm mb-6">
-            Your seller account has been created. You can now manage your shop from the seller dashboard.
+            Your seller account is under review. You will be notified once approved.
           </p>
           <Link
             to="/seller/dashboard"
-            className="inline-flex items-center gap-2 bg-emerald-600 hover:bg-emerald-500 text-white px-6 py-3 rounded-xl font-bold transition-colors"
+            className="inline-flex items-center gap-2 bg-zinc-800 hover:bg-zinc-700 text-zinc-300 px-6 py-3 rounded-xl font-bold transition-colors"
+          >
+            Go to Seller Dashboard
+            <ArrowRight className="w-4 h-4" />
+          </Link>
+        </div>
+      </div>
+    );
+  }
+
+  // Existing non-approved seller state
+  if (existingSeller) {
+    const s = existingSeller;
+    if (s.status === 'pending') {
+      return (
+        <div className="min-h-screen bg-zinc-950 flex items-center justify-center px-4">
+          <div className="max-w-md w-full bg-zinc-900/60 border border-zinc-800 rounded-3xl p-8 text-center">
+            <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-amber-500/20 mb-5">
+              <Clock className="w-8 h-8 text-amber-400" />
+            </div>
+            <h1 className="text-2xl font-bold text-white mb-2">Application Pending</h1>
+            <p className="text-zinc-400 text-sm mb-6">
+              Your seller account is under review. You will be notified once approved.
+            </p>
+            <Link
+              to="/seller/dashboard"
+              className="inline-flex items-center gap-2 bg-zinc-800 hover:bg-zinc-700 text-zinc-300 px-6 py-3 rounded-xl font-bold transition-colors"
+            >
+              Go to Seller Dashboard
+              <ArrowRight className="w-4 h-4" />
+            </Link>
+          </div>
+        </div>
+      );
+    }
+    if (s.status === 'rejected') {
+      return (
+        <div className="min-h-screen bg-zinc-950 flex items-center justify-center px-4">
+          <div className="max-w-md w-full bg-zinc-900/60 border border-zinc-800 rounded-3xl p-8 text-center">
+            <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-red-500/20 mb-5">
+              <AlertTriangle className="w-8 h-8 text-red-400" />
+            </div>
+            <h1 className="text-2xl font-bold text-white mb-2">Application Not Approved</h1>
+            <p className="text-zinc-400 text-sm mb-4">
+              Your application was not approved.
+            </p>
+            {s.rejection_reason && (
+              <div className="bg-red-900/10 border border-red-800/30 rounded-xl px-4 py-3 mb-6 text-left">
+                <p className="text-xs font-semibold text-red-400 mb-1">Reason:</p>
+                <p className="text-sm text-zinc-300">{s.rejection_reason}</p>
+              </div>
+            )}
+            <Link
+              to="/seller/dashboard"
+              className="inline-flex items-center gap-2 bg-zinc-800 hover:bg-zinc-700 text-zinc-300 px-6 py-3 rounded-xl font-bold transition-colors"
+            >
+              Go to Seller Dashboard
+              <ArrowRight className="w-4 h-4" />
+            </Link>
+          </div>
+        </div>
+      );
+    }
+    // Fallback — show generic
+    return (
+      <div className="min-h-screen bg-zinc-950 flex items-center justify-center px-4">
+        <div className="max-w-md w-full bg-zinc-900/60 border border-zinc-800 rounded-3xl p-8 text-center">
+          <Store className="w-12 h-12 text-zinc-600 mx-auto mb-4" />
+          <h1 className="text-xl font-bold text-white mb-2">Seller Account</h1>
+          <p className="text-zinc-400 text-sm mb-6">
+            Your account status: {s.status || 'unknown'}
+          </p>
+          <Link
+            to="/seller/dashboard"
+            className="inline-flex items-center gap-2 bg-zinc-800 hover:bg-zinc-700 text-zinc-300 px-6 py-3 rounded-xl font-bold transition-colors"
           >
             Go to Seller Dashboard
             <ArrowRight className="w-4 h-4" />

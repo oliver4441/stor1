@@ -21,6 +21,7 @@ import {
   Clock,
   ArrowRight,
   ChevronRight,
+  Ban,
 } from 'lucide-react';
 
 // ── Helpers ──
@@ -287,6 +288,44 @@ export default function SellerDashboard() {
           <div className="flex items-start gap-2 bg-red-900/20 border border-red-800/40 rounded-xl px-4 py-3 mb-6">
             <AlertTriangle className="w-4 h-4 text-red-400 mt-0.5 shrink-0" />
             <p className="text-sm text-red-300">{error}</p>
+          </div>
+        )}
+
+        {/* ── Status Banners ── */}
+        {seller.status === 'pending' && (
+          <div className="flex items-start gap-3 bg-amber-900/15 border border-amber-800/30 rounded-2xl px-5 py-4 mb-6">
+            <Clock className="w-5 h-5 text-amber-400 mt-0.5 shrink-0" />
+            <div>
+              <p className="font-bold text-amber-300 text-sm">Shop Pending Approval</p>
+              <p className="text-xs text-zinc-400 mt-0.5">
+                Your shop is under review by the admin. You will be able to manage listings once approved.
+              </p>
+            </div>
+          </div>
+        )}
+
+        {seller.status === 'rejected' && (
+          <div className="flex items-start gap-3 bg-red-900/15 border border-red-800/30 rounded-2xl px-5 py-4 mb-6">
+            <AlertTriangle className="w-5 h-5 text-red-400 mt-0.5 shrink-0" />
+            <div>
+              <p className="font-bold text-red-300 text-sm">Application Not Approved</p>
+              <p className="text-xs text-zinc-400 mt-0.5">
+                Your seller application was not approved.
+                {seller.rejection_reason && <> Reason: {seller.rejection_reason}</>}
+              </p>
+            </div>
+          </div>
+        )}
+
+        {seller.status === 'suspended' && (
+          <div className="flex items-start gap-3 bg-zinc-800/60 border border-zinc-700 rounded-2xl px-5 py-4 mb-6">
+            <Ban className="w-5 h-5 text-zinc-400 mt-0.5 shrink-0" />
+            <div>
+              <p className="font-bold text-zinc-300 text-sm">Shop Suspended</p>
+              <p className="text-xs text-zinc-500 mt-0.5">
+                Your shop has been suspended. Contact support for more information.
+              </p>
+            </div>
           </div>
         )}
 

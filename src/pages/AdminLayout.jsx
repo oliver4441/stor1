@@ -4,7 +4,7 @@ import { supabase } from '../utils/supabase';
 import { isAdmin } from '../utils/api';
 import {
   LayoutDashboard, Package, ShoppingBag, Users, BarChart3, Settings,
-  LogOut, Shield, Menu, X, ChevronRight, Tag, Bell, Link as LinkIcon, MessageSquare, Gift, Zap
+  LogOut, Shield, Menu, X, ChevronRight, Tag, Bell, Link as LinkIcon, MessageSquare, Gift, Zap, Store
 } from 'lucide-react';
 import { sounds } from '../utils/sounds';
 
@@ -14,6 +14,7 @@ const NAV_ITEMS = [
   { path: '/admin/orders', label: 'Orders', icon: ShoppingBag },
   { path: '/admin/promo-codes', label: 'Promo Codes', icon: Tag },
   { path: '/admin/customers', label: 'Customers', icon: Users },
+  { path: '/admin/sellers', label: 'Sellers', icon: Store },
   { path: '/admin/affiliates', label: 'Affiliates', icon: LinkIcon },
   { path: '/admin/analytics', label: 'Analytics', icon: BarChart3 },
   { path: '/admin/settings', label: 'Settings', icon: Settings },

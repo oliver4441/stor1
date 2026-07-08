@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { STORE_WHATSAPP } from '../utils/storeConfig';
 
 /**
  * WhatsApp Share Button
@@ -65,7 +66,7 @@ export function WhatsAppChatButton({ phone, message, className = '' }) {
  * Fixed-position pill that floats at the bottom-right corner
  * Shares the current product with name, price, and link
  */
-export function FloatingWhatsAppButton({ title, price, url, listingId }) {
+export function FloatingWhatsAppButton({ title, price, url, listingId, phone = STORE_WHATSAPP }) {
   const [visible, setVisible] = useState(false);
 
   useEffect(() => {
@@ -82,7 +83,7 @@ export function FloatingWhatsAppButton({ title, price, url, listingId }) {
 
   const productUrl = url || (listingId ? `${window.location.origin}/listing/${listingId}` : window.location.href);
   const message = `Check out this ${title} on Omix!\n${price ? `KES ${price.toLocaleString()} - ` : ''}Kericho\n${productUrl}`;
-  const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(message)}`;
+  const whatsappUrl = `https://wa.me/${phone}?text=${encodeURIComponent(message)}`;
 
   return (
     <a
@@ -109,7 +110,7 @@ export function FloatingWhatsAppButton({ title, price, url, listingId }) {
  */
 export function WhatsAppNavButton({ phone, className = '' }) {
   // Default to Omix store number if none provided
-  const storePhone = phone || '254700000000';
+  const storePhone = phone || STORE_WHATSAPP;
   const message = 'Hi! I have a question about Omix Store.';
   const whatsappUrl = `https://wa.me/${storePhone}?text=${encodeURIComponent(message)}`;
 

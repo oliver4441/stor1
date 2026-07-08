@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
-import { Plus, Pencil, Trash2, X, AlertTriangle, Loader2, Upload, Image as ImageIcon, Search, Eye, CheckSquare, Square, Tag, GripVertical, Star } from 'lucide-react';
+import { Plus, Pencil, Trash2, X, AlertTriangle, Loader2, Upload, Image as ImageIcon, Search, Eye, CheckSquare, Square, Tag, GripVertical, Star, Percent, Package } from 'lucide-react';
 import { supabase } from '../utils/supabase';
-import { fetchAllListings, createListing, updateListing, deleteListing, adminDeleteListing, bulkUpdateListingStatus, bulkDeleteListings } from '../utils/api';
+import { fetchAllListings, createListing, updateListing, deleteListing, adminDeleteListing, bulkUpdateListingStatus, bulkDeleteListings, saveWholesalePrices } from '../utils/api';
 import { formatKES, CATEGORIES, generateSKU, COLOR_PALETTE, SIZE_PRESETS, getPresetSizes } from '../utils/constants';
 import { uploadImage } from '../utils/api';
 import VariantManager from '../components/VariantManager';
@@ -35,6 +35,7 @@ export default function AdminProducts() {
     title: '', price: '', description: '', category: 'Electronics', condition: 'new', location: 'CBD',
     images: [], brand: '', model: '', color: '', weight: '', sku: '', status: 'active', tags: '',
     has_variants: false, variants: [], size_guide: '', product_type: 'new',
+    wholesale_enabled: false, wholesale_min_qty: '', wholesale_tiers: [],
   });
   const [submitting, setSubmitting] = useState(false);
   const [successMsg, setSuccessMsg] = useState('');
@@ -145,6 +146,7 @@ export default function AdminProducts() {
       images: [], brand: '', model: '', color: '', weight: '',
       sku: generateSKU(cat), status: 'active', tags: '',
       has_variants: false, variants: [], size_guide: '', product_type: 'new',
+      wholesale_enabled: false, wholesale_min_qty: '', wholesale_tiers: [],
     });
     setModalOpen(true);
   };
@@ -162,6 +164,9 @@ export default function AdminProducts() {
       variants: Array.isArray(listing.variants) ? listing.variants : [],
       size_guide: listing.size_guide || '',
       product_type: listing.product_type || 'new',
+      wholesale_enabled: listing.wholesale_enabled || false,
+      wholesale_min_qty: listing.wholesale_min_qty || '',
+      wholesale_tiers: Array.isArray(listing.wholesale_tiers) ? listing.wholesale_tiers : [],
     });
     setModalOpen(true);
   };
@@ -222,9 +227,16 @@ export default function AdminProducts() {
       variants: form.variants,
       size_guide: form.size_guide,
       product_type: form.product_type,
+      wholesale_enabled: form.wholesale_enabled,
+      wholesale_min_qty: form.wholesale_enabled ? (parseInt(form.wholesale_min_qty) || null) : null,
     };
     const result = editingId ? await updateListing(editingId, payload) : await createListing(payload);
     if (result.success) {
+      // Save wholesale tiers if enabled
+      if (form.wholesale_enabled && form.wholesale_tiers.length > 0) {
+        const listingId = editingId || result.id;
+        await saveWholesalePrices(listingId, form.wholesale_tiers);
+      }
       setSuccessMsg(editingId ? 'Product updated!' : 'Product added!');
       setModalOpen(false);
       await loadData();
@@ -723,6 +735,107 @@ export default function AdminProducts() {
                 onChange={(variants) => setForm(prev => ({ ...prev, has_variants: variants.length > 0, variants }))}
                 images={form.images}
               />
+
+              {/* ── Wholesale Pricing ── */}
+              <div className="border-t border-zinc-800 pt-4 mt-2">
+                <div className="flex items-center justify-between mb-3">
+                  <div className="flex items-center gap-2">
+                    <Package className="w-4 h-4 text-emerald-500" />
+                    <label className="text-sm font-bold text-zinc-300">Wholesale Pricing</label>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => setForm(prev => ({ ...prev, wholesale_enabled: !prev.wholesale_enabled }))}
+                    className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
+                      form.wholesale_enabled ? 'bg-emerald-600' : 'bg-zinc-700'
+                    }`}
+                  >
+                    <span className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
+                      form.wholesale_enabled ? 'translate-x-6' : 'translate-x-1'
+                    }`} />
+                  </button>
+                </div>
+
+                {form.wholesale_enabled && (
+                  <div className="space-y-4 pl-0">
+                    <div>
+                      <label className="block text-sm font-bold mb-1.5 text-zinc-300">Minimum Order Quantity</label>
+                      <input
+                        type="number" min="1"
+                        value={form.wholesale_min_qty}
+                        onChange={e => setForm({...form, wholesale_min_qty: e.target.value})}
+                        placeholder="e.g. 10"
+                        className="w-full px-4 py-2.5 rounded-xl bg-zinc-800 border border-transparent focus:border-primary focus:outline-none text-white text-sm"
+                      />
+                      <p className="text-xs text-zinc-500 mt-1">Minimum quantity customers must order to qualify for wholesale pricing.</p>
+                    </div>
+
+                    <div>
+                      <div className="flex items-center justify-between mb-2">
+                        <label className="block text-sm font-bold text-zinc-300">Wholesale Tiers <span className="font-normal text-zinc-400">(max 5)</span></label>
+                        {form.wholesale_tiers.length < 5 && (
+                          <button
+                            type="button"
+                            onClick={() => setForm(prev => ({
+                              ...prev,
+                              wholesale_tiers: [...prev.wholesale_tiers, { min_qty: '', price: '' }],
+                            }))}
+                            className="flex items-center gap-1 text-xs font-bold text-emerald-500 hover:text-emerald-400"
+                          >
+                            <Plus className="w-3 h-3" /> Add Tier
+                          </button>
+                        )}
+                      </div>
+                      {form.wholesale_tiers.length === 0 && (
+                        <p className="text-xs text-zinc-500 italic">No wholesale tiers added. Add at least one tier to offer bulk pricing.</p>
+                      )}
+                      {form.wholesale_tiers.map((tier, i) => (
+                        <div key={i} className="flex items-center gap-3 mb-2 p-3 rounded-xl bg-zinc-800/50 border border-zinc-800">
+                          <div className="flex-1">
+                            <label className="text-[10px] font-bold text-zinc-400 uppercase mb-1 block">Min Qty</label>
+                            <input
+                              type="number" min="1"
+                              value={tier.min_qty}
+                              onChange={e => {
+                                const newTiers = [...form.wholesale_tiers];
+                                newTiers[i] = { ...newTiers[i], min_qty: e.target.value };
+                                setForm(prev => ({ ...prev, wholesale_tiers: newTiers }));
+                              }}
+                              placeholder="10"
+                              className="w-full px-3 py-2 rounded-lg bg-zinc-900 border border-transparent focus:border-primary focus:outline-none text-white text-sm"
+                            />
+                          </div>
+                          <div className="flex-1">
+                            <label className="text-[10px] font-bold text-zinc-400 uppercase mb-1 block">Price (KES)</label>
+                            <input
+                              type="number" min="0" step="0.01"
+                              value={tier.price}
+                              onChange={e => {
+                                const newTiers = [...form.wholesale_tiers];
+                                newTiers[i] = { ...newTiers[i], price: e.target.value };
+                                setForm(prev => ({ ...prev, wholesale_tiers: newTiers }));
+                              }}
+                              placeholder="75000"
+                              className="w-full px-3 py-2 rounded-lg bg-zinc-900 border border-transparent focus:border-primary focus:outline-none text-white text-sm"
+                            />
+                          </div>
+                          <button
+                            type="button"
+                            onClick={() => {
+                              const newTiers = form.wholesale_tiers.filter((_, idx) => idx !== i);
+                              setForm(prev => ({ ...prev, wholesale_tiers: newTiers }));
+                            }}
+                            className="p-2 rounded-lg hover:bg-red-900/20 text-zinc-400 hover:text-red-500 mt-5"
+                            title="Remove tier"
+                          >
+                            <Trash2 className="w-4 h-4" />
+                          </button>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+              </div>
 
               {/* Size Guide */}
               <div>

@@ -1,0 +1,2 @@
+export const STORE_WHATSAPP = '254768213649';
+export const STORE_PHONE = '+254 768 213 649';
