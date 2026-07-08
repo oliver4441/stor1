@@ -127,14 +127,78 @@ export function trackAddToCart(itemId, itemName, price, quantity = 1) {
   trackCartAdd(itemId);
 }
 
-// ── Track Purchase ─────────────────────────────────────────
-export function trackPurchase(productIds) {
+// ── Generic GA4 Event Sender ──────────────────────────────
+export function trackGA4Event(eventName, params = {}) {
+  if (typeof window !== 'undefined' && window.gtag) {
+    try {
+      window.gtag('event', eventName, params);
+    } catch (e) {}
+  }
+}
+
+// ── Track Add to Wishlist (GA4) ───────────────────────────
+export function trackAddToWishlistGA(itemId, itemName, price) {
+  if (typeof window !== 'undefined' && window.gtag) {
+    try {
+      window.gtag('event', 'add_to_wishlist', {
+        currency: 'KES',
+        value: price || 0,
+        items: [{
+          item_id: itemId,
+          item_name: itemName,
+          price: price || 0,
+          quantity: 1,
+        }],
+      });
+    } catch (e) {}
+  }
+}
+
+// ── Track Share (GA4) ─────────────────────────────────────
+export function trackShareGA(contentType, itemId) {
+  if (typeof window !== 'undefined' && window.gtag) {
+    try {
+      window.gtag('event', 'share', {
+        content_type: contentType || '',
+        item_id: itemId || '',
+      });
+    } catch (e) {}
+  }
+}
+
+// ── Track Purchase (GA4 enhanced) ─────────────────────────
+export function trackPurchase(productIds, orderData = null) {
+  // Local storage tracking (backwards compatible)
   try {
     const purchases = JSON.parse(localStorage.getItem('omix_purchases') || '[]');
     const newPurchases = Array.isArray(productIds) ? productIds : [productIds];
     purchases.push(...newPurchases);
     localStorage.setItem('omix_purchases', JSON.stringify(purchases));
   } catch (e) {}
+
+  // GA4 purchase event if order data is provided
+  if (orderData && typeof window !== 'undefined' && window.gtag) {
+    try {
+      const items = (orderData.items || []).map(item => ({
+        item_id: item.id || item.item_id || '',
+        item_name: item.name || item.item_name || '',
+        item_category: item.category || item.item_category || '',
+        price: item.price || 0,
+        quantity: item.quantity || 1,
+        item_brand: item.brand || item.item_brand || '',
+      }));
+
+      window.gtag('event', 'purchase', {
+        transaction_id: orderData.transaction_id || orderData.id || '',
+        value: orderData.total || orderData.value || 0,
+        tax: orderData.tax || 0,
+        shipping: orderData.shipping || 0,
+        currency: 'KES',
+        coupon: orderData.coupon || '',
+        items,
+      });
+    } catch (e) {}
+  }
 }
 
 // ── Get all tracking data (for analytics API) ──────────────
@@ -154,6 +218,17 @@ export function initTracking() {
   getVisitorId();
   getSessionId();
   trackPageView();
+
+  // Send GA4 page_view if gtag is available
+  if (typeof window !== 'undefined' && window.gtag) {
+    try {
+      window.gtag('event', 'page_view', {
+        page_title: document?.title || '',
+        page_location: window?.location?.href || '',
+        page_path: window?.location?.pathname || '/',
+      });
+    } catch (e) {}
+  }
 }
 
 // ── User auth tracking events ─────────────────────────────
