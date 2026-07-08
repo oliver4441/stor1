@@ -1,9 +1,9 @@
 import { useState, useEffect } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
-import { MapPin, CheckCircle, ShoppingCart, Minus, Plus, Package, Truck, Shield, Tag, Cpu, HardDrive, Monitor, Battery, Camera, Wifi, Bell, Heart } from 'lucide-react';
+import { MapPin, CheckCircle, ShoppingCart, Minus, Plus, Package, Truck, Shield, Tag, Cpu, HardDrive, Monitor, Battery, Camera, Wifi, Bell, Heart, Percent, MessageCircle, Store } from 'lucide-react';
 import ProductCard from '../components/ProductCard';
-import { WhatsAppShareButton } from '../components/WhatsAppButtons';
-import { fetchListing, fetchListings, watchPriceDrop, watchBackInStock, addToWishlist, removeFromWishlist, isInWishlist } from '../utils/api';
+import { WhatsAppShareButton, FloatingWhatsAppButton } from '../components/WhatsAppButtons';
+import { fetchListing, fetchListings, watchPriceDrop, watchBackInStock, addToWishlist, removeFromWishlist, isInWishlist, getDeliveryZones, getProductQuestions, postProductQuestion, getWholesalePrices, getSellerProfile } from '../utils/api';
 import { formatKES } from '../utils/constants';
 import { useCart } from '../context/CartContext';
 import { supabase } from '../utils/supabase';
@@ -36,6 +36,12 @@ function ListingDetails() {
   const [notifyMsg, setNotifyMsg] = useState('');
   const [wishlisted, setWishlisted] = useState(false);
   const [wishBusy, setWishBusy] = useState(false);
+  const [deliveryZones, setDeliveryZones] = useState([]);
+  const [questions, setQuestions] = useState([]);
+  const [newQuestion, setNewQuestion] = useState('');
+  const [submittingQuestion, setSubmittingQuestion] = useState(false);
+  const [wholesalePrices, setWholesalePrices] = useState([]);
+  const [sellerProfile, setSellerProfile] = useState(null);
 
   const listingId = id;
   const inCart = cart.find(item => item.id === listingId);
@@ -85,6 +91,31 @@ function ListingDetails() {
       });
     });
   }, [id]);
+
+  // Fetch delivery zones
+  useEffect(() => {
+    getDeliveryZones().then(res => {
+      if (res.success) setDeliveryZones(res.zones);
+    });
+  }, []);
+
+  // Fetch Q&A, wholesale prices, seller profile when listing loads
+  useEffect(() => {
+    if (!listing || !listingId) return;
+    getProductQuestions(listingId).then(res => {
+      if (res.success) setQuestions(res.questions);
+    });
+    if (listing.wholesale_enabled) {
+      getWholesalePrices(listingId).then(res => {
+        if (res.success) setWholesalePrices(res.prices);
+      });
+    }
+    if (listing.seller_id) {
+      getSellerProfile(listing.seller_id).then(res => {
+        if (res?.seller) setSellerProfile(res.seller);
+      });
+    }
+  }, [listing, listingId]);
 
   if (loading) {
     return (
@@ -206,7 +237,15 @@ function ListingDetails() {
       <Breadcrumb customLabel={listing.title} />
       <div className="flex flex-col lg:flex-row gap-8 lg:gap-12 mt-6">
         {/* Images */}
-        <ImageGallery images={listing.images} title={listing.title} condition={listing.condition} />
+        <div className="relative w-full lg:w-1/2">
+          {listing.compare_at_price && listing.compare_at_price > listing.price && (
+            <div className="absolute top-4 left-4 z-20 bg-red-600 text-white px-3 py-1.5 rounded-full text-sm font-bold shadow-lg flex items-center gap-1.5">
+              <Percent className="w-3.5 h-3.5" />
+              -{Math.round((1 - listing.price / listing.compare_at_price) * 100)}%
+            </div>
+          )}
+          <ImageGallery images={listing.images} title={listing.title} condition={listing.condition} />
+        </div>
 
         {/* Details */}
         <div className="w-full lg:w-1/2 flex flex-col">
@@ -232,14 +271,27 @@ function ListingDetails() {
             </div>
           </div>
 
-          {/* Delivery Info */}
+          {/* Delivery Info - dynamic from getDeliveryZones() */}
           <div className="flex flex-wrap gap-2 mb-6">
-            <span className="flex items-center gap-1.5 bg-blue-900/20 text-blue-700 dark:text-blue-400 px-3 py-1.5 rounded-xl text-xs font-bold border border-blue-800">
-              <Truck className="w-3.5 h-3.5" /> {t('listing.freeDeliveryInKericho')}
-            </span>
-            <span className="flex items-center gap-1.5 bg-purple-900/20 text-purple-700 dark:text-purple-400 px-3 py-1.5 rounded-xl text-xs font-bold border border-purple-200 dark:border-purple-800">
-              <Package className="w-3.5 h-3.5" /> {t('listing.deliveryByTomorrow')}
-            </span>
+            {deliveryZones.length > 0 ? (
+              <>
+                <span className="flex items-center gap-1.5 bg-blue-900/20 text-blue-700 dark:text-blue-400 px-3 py-1.5 rounded-xl text-xs font-bold border border-blue-800">
+                  <Truck className="w-3.5 h-3.5" /> Free delivery in {deliveryZones[0].name || 'Kericho'}
+                </span>
+                <span className="flex items-center gap-1.5 bg-purple-900/20 text-purple-700 dark:text-purple-400 px-3 py-1.5 rounded-xl text-xs font-bold border border-purple-200 dark:border-purple-800">
+                  <Package className="w-3.5 h-3.5" /> Delivered in {deliveryZones[0].delivery_days || '1-2'} days
+                </span>
+              </>
+            ) : (
+              <>
+                <span className="flex items-center gap-1.5 bg-blue-900/20 text-blue-700 dark:text-blue-400 px-3 py-1.5 rounded-xl text-xs font-bold border border-blue-800">
+                  <Truck className="w-3.5 h-3.5" /> Free delivery in Kericho
+                </span>
+                <span className="flex items-center gap-1.5 bg-purple-900/20 text-purple-700 dark:text-purple-400 px-3 py-1.5 rounded-xl text-xs font-bold border border-purple-200 dark:border-purple-800">
+                  <Package className="w-3.5 h-3.5" /> Delivered in 1-2 days
+                </span>
+              </>
+            )}
           </div>
 
           {/* Social Proof */}
@@ -307,30 +359,63 @@ function ListingDetails() {
           </div>
 
           {/* Seller / About the Store */}
-          <div className="bg-zinc-900/50 rounded-2xl p-4 mb-4 border border-zinc-800">
-            <div className="flex items-center gap-3 mb-3">
-              <div className="w-11 h-11 bg-gradient-to-br from-[var(--seasonal-primary,#1a5632)] to-[#ff6b8a] rounded-full flex items-center justify-center font-black text-lg text-white shadow-md shadow-[var(--seasonal-primary,#1a5632)]/20">O</div>
-              <div className="flex-1">
-                <p className="font-bold text-sm text-white">{t('listing.omixStore')}</p>
-                <p className="text-xs text-zinc-400">{t('listing.kerichoKenya')} &bull; {t('listing.officialStore')}</p>
+          {sellerProfile ? (
+            <Link to={`/seller/${sellerProfile.slug || sellerProfile.id}`} className="block bg-zinc-900/50 rounded-2xl p-4 mb-4 border border-zinc-800 hover:bg-zinc-800/50 transition-colors">
+              <div className="flex items-center gap-3 mb-3">
+                <div className="w-11 h-11 bg-gradient-to-br from-[var(--seasonal-primary,#1a5632)] to-[#ff6b8a] rounded-full flex items-center justify-center font-black text-lg text-white shadow-md shadow-[var(--seasonal-primary,#1a5632)]/20 flex-shrink-0">
+                  <Store className="w-5 h-5" />
+                </div>
+                <div className="flex-1 min-w-0">
+                  <p className="font-bold text-sm text-white truncate">{sellerProfile.shop_name || 'Shop'}</p>
+                  <p className="text-xs text-zinc-400 truncate">{sellerProfile.location || 'Kericho, Kenya'}</p>
+                </div>
+                {sellerProfile.rating > 0 && (
+                  <div className="flex items-center gap-1 bg-yellow-900/30 text-yellow-400 text-[10px] font-bold px-2 py-1 rounded-full">
+                    {sellerProfile.rating.toFixed(1)}
+                  </div>
+                )}
               </div>
-              <span className="bg-green-900/30 text-green-400 text-[10px] font-bold px-2 py-1 rounded-full">{t('listing.verified')}</span>
+              <div className="grid grid-cols-3 gap-2">
+                <div className="text-center bg-zinc-800 rounded-xl py-2 px-1">
+                  <p className="text-sm font-black text-[var(--seasonal-primary,#1a5632)]">{sellerProfile.rating > 0 ? sellerProfile.rating.toFixed(1) : 'N/A'}</p>
+                  <p className="text-[9px] text-zinc-400 uppercase tracking-wider">Rating</p>
+                </div>
+                <div className="text-center bg-zinc-800 rounded-xl py-2 px-1">
+                  <p className="text-sm font-black text-[var(--seasonal-primary,#1a5632)]">{sellerProfile.sales_count || 0}</p>
+                  <p className="text-[9px] text-zinc-400 uppercase tracking-wider">Sales</p>
+                </div>
+                <div className="text-center bg-zinc-800 rounded-xl py-2 px-1">
+                  <p className="text-sm font-black text-[var(--seasonal-primary,#1a5632)]">{sellerProfile.score || 'N/A'}</p>
+                  <p className="text-[9px] text-zinc-400 uppercase tracking-wider">Score</p>
+                </div>
+              </div>
+            </Link>
+          ) : (
+            <div className="bg-zinc-900/50 rounded-2xl p-4 mb-4 border border-zinc-800">
+              <div className="flex items-center gap-3 mb-3">
+                <div className="w-11 h-11 bg-gradient-to-br from-[var(--seasonal-primary,#1a5632)] to-[#ff6b8a] rounded-full flex items-center justify-center font-black text-lg text-white shadow-md shadow-[var(--seasonal-primary,#1a5632)]/20">O</div>
+                <div className="flex-1">
+                  <p className="font-bold text-sm text-white">{t('listing.omixStore')}</p>
+                  <p className="text-xs text-zinc-400">{t('listing.kerichoKenya')} &bull; {t('listing.officialStore')}</p>
+                </div>
+                <span className="bg-green-900/30 text-green-400 text-[10px] font-bold px-2 py-1 rounded-full">{t('listing.verified')}</span>
+              </div>
+              <div className="grid grid-cols-3 gap-2">
+                <div className="text-center bg-zinc-800 rounded-xl py-2 px-1">
+                  <p className="text-sm font-black text-[var(--seasonal-primary,#1a5632)]">100%</p>
+                  <p className="text-[9px] text-zinc-400 uppercase tracking-wider">{t('listing.quality')}</p>
+                </div>
+                <div className="text-center bg-zinc-800 rounded-xl py-2 px-1">
+                  <p className="text-sm font-black text-[var(--seasonal-primary,#1a5632)]">{t('listing.fast')}</p>
+                  <p className="text-[9px] text-zinc-400 uppercase tracking-wider">{t('listing.shipping')}</p>
+                </div>
+                <div className="text-center bg-zinc-800 rounded-xl py-2 px-1">
+                  <p className="text-sm font-black text-[var(--seasonal-primary,#1a5632)]">24/7</p>
+                  <p className="text-[9px] text-zinc-400 uppercase tracking-wider">{t('listing.support')}</p>
+                </div>
+              </div>
             </div>
-            <div className="grid grid-cols-3 gap-2">
-              <div className="text-center bg-zinc-800 rounded-xl py-2 px-1">
-                <p className="text-sm font-black text-[var(--seasonal-primary,#1a5632)]">100%</p>
-                <p className="text-[9px] text-zinc-400 uppercase tracking-wider">{t('listing.quality')}</p>
-              </div>
-              <div className="text-center bg-zinc-800 rounded-xl py-2 px-1">
-                <p className="text-sm font-black text-[var(--seasonal-primary,#1a5632)]">{t('listing.fast')}</p>
-                <p className="text-[9px] text-zinc-400 uppercase tracking-wider">{t('listing.shipping')}</p>
-              </div>
-              <div className="text-center bg-zinc-800 rounded-xl py-2 px-1">
-                <p className="text-sm font-black text-[var(--seasonal-primary,#1a5632)]">24/7</p>
-                <p className="text-[9px] text-zinc-400 uppercase tracking-wider">{t('listing.support')}</p>
-              </div>
-            </div>
-          </div>
+          )}
 
           {/* Nia contextual help */}
           <div className="mb-4">
@@ -533,6 +618,24 @@ function ListingDetails() {
             )}
           </div>
 
+          {/* Wholesale / Bulk Purchase */}
+          {listing.wholesale_enabled && wholesalePrices.length > 0 && (
+            <div className="mt-6 bg-zinc-900/50 rounded-2xl p-4 border border-zinc-800">
+              <div className="flex items-center gap-2 mb-3">
+                <Package className="w-4 h-4 text-[var(--seasonal-primary,#1a5632)]" />
+                <span className="font-bold text-sm text-white">Wholesale / Bulk Purchase Available</span>
+              </div>
+              <div className="space-y-2">
+                {wholesalePrices.map((tier, i) => (
+                  <div key={i} className="flex items-center justify-between bg-zinc-800/60 rounded-xl px-3 py-2.5">
+                    <span className="text-xs font-bold text-zinc-300">{tier.min_qty}+ units</span>
+                    <span className="text-sm font-black text-[var(--seasonal-primary,#1a5632)]">{formatKES(tier.price_per_unit)} / unit</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
           {/* Share */}
           <div className="mt-4 space-y-3">
             <WhatsAppShareButton title={listing.title} price={listing.price} url={`${window.location.origin}/listing/${listing.id}`} type="listing" className="flex-1 justify-center" />
@@ -578,6 +681,74 @@ function ListingDetails() {
         <ReviewForm listingId={listingId} onSubmitted={() => {}} />
       </div>
 
+      {/* Product Q&A */}
+      <div className="mt-16 pt-8 border-t border-zinc-800">
+        <h3 className="text-2xl font-bold mb-6 flex items-center gap-2">
+          <MessageCircle className="w-5 h-5" />
+          Questions &amp; Answers
+        </h3>
+        {questions.length > 0 ? (
+          <div className="space-y-4 mb-6">
+            {questions.map((q) => (
+              <div key={q.id} className="bg-zinc-900/50 rounded-2xl p-4 border border-zinc-800">
+                <div className="flex items-start gap-3">
+                  <div className="w-8 h-8 rounded-full bg-zinc-800 flex items-center justify-center flex-shrink-0 mt-0.5">
+                    <MessageCircle className="w-4 h-4 text-zinc-400" />
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <p className="text-sm font-bold text-white">{q.question}</p>
+                    <p className="text-[10px] text-zinc-500 mt-1">
+                      {q.user_name || 'Anonymous'} — {new Date(q.created_at).toLocaleDateString()}
+                    </p>
+                    {q.answer && (
+                      <div className="mt-3 bg-zinc-800/60 rounded-xl p-3 border-l-2 border-[var(--seasonal-primary,#1a5632)]">
+                        <p className="text-xs font-bold text-[var(--seasonal-primary,#1a5632)] mb-1">Seller Response</p>
+                        <p className="text-xs text-zinc-300">{q.answer}</p>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        ) : (
+          <p className="text-zinc-500 text-sm mb-6">No questions yet. Be the first to ask!</p>
+        )}
+        {user ? (
+          <div className="flex gap-3">
+            <input
+              type="text"
+              value={newQuestion}
+              onChange={(e) => setNewQuestion(e.target.value)}
+              placeholder="Ask a question about this product..."
+              className="flex-1 bg-zinc-900 border border-zinc-700 rounded-xl px-4 py-3 text-sm text-white placeholder-zinc-500 focus:outline-none focus:border-[var(--seasonal-primary,#1a5632)]"
+              disabled={submittingQuestion}
+            />
+            <button
+              onClick={async () => {
+                if (!newQuestion.trim()) return;
+                setSubmittingQuestion(true);
+                const res = await postProductQuestion(listingId, newQuestion.trim(), user.id, user.user_metadata?.full_name || 'You');
+                if (res.success) {
+                  setQuestions(prev => [...prev, { id: Date.now(), question: newQuestion.trim(), user_name: 'You', created_at: new Date().toISOString(), answer: null }]);
+                  setNewQuestion('');
+                }
+                setSubmittingQuestion(false);
+              }}
+              disabled={submittingQuestion || !newQuestion.trim()}
+              className="bg-[var(--seasonal-primary,#1a5632)] text-white font-bold px-5 py-3 rounded-xl text-sm hover:bg-[var(--seasonal-secondary,#14472a)] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              {submittingQuestion ? 'Submitting...' : 'Ask'}
+            </button>
+          </div>
+        ) : (
+          <Link to={`/login?redirect=/listing/${listingId}`} className="inline-flex items-center gap-2 text-sm text-[var(--seasonal-primary,#1a5632)] font-bold hover:underline">
+            <MessageCircle className="w-4 h-4" />
+            Log in to ask a question
+          </Link>
+        )}
+      </div>
+
       {/* Product Recommendations */}
       {listing?.id && (
         <ProductRecommendations title="You May Also Like" listingId={listing.id} />
@@ -608,6 +779,12 @@ function ListingDetails() {
         onBuyNow={() => { addItem({ id: listing.id, name: listing.title, price: effectivePrice, image_url: listing.images?.[0] || null, quantity, variant: selectedVariantObj || null }); navigate('/checkout'); }}
         inCart={inCart}
         user={user}
+      />
+      {/* Floating WhatsApp Share Button */}
+      <FloatingWhatsAppButton
+        title={listing.title}
+        price={effectivePrice || listing.price}
+        listingId={listing.id}
       />
     </div>
   );

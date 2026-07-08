@@ -2,7 +2,7 @@ import { useState, useEffect, useRef } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { ShoppingCart, ArrowRight, Loader2, Package, CreditCard, Trash2, Plus, Minus, CheckCircle, MapPin, Phone, User, Mail, Wrench, AlertTriangle } from 'lucide-react';
 import { useCart } from '../context/CartContext';
-import { createOrder } from '../utils/api';
+import { createOrder, getDeliveryZones, getPickupStations } from '../utils/api';
 import { formatKES } from '../utils/constants';
 import { supabase } from '../utils/supabase';
 import { useMaintenanceMode } from '../hooks/useMaintenanceMode';
@@ -200,7 +200,15 @@ export default function CheckoutPage() {
   const [promoApplied, setPromoApplied] = useState(null);
   const [promoError, setPromoError] = useState('');
   const [promoLoading, setPromoLoading] = useState(false);
-  const [deliveryFee, setDeliveryFee] = useState(0); // base delivery fee
+  const [deliveryMethod, setDeliveryMethod] = useState('delivery'); // 'delivery' or 'pickup'
+  const [deliveryZones, setDeliveryZones] = useState([]);
+  const [pickupStations, setPickupStations] = useState([]);
+  const [selectedZone, setSelectedZone] = useState(null);
+  const [selectedPickupStation, setSelectedPickupStation] = useState(null);
+  const [deliveryEstimateMin, setDeliveryEstimateMin] = useState(null);
+  const [deliveryEstimateMax, setDeliveryEstimateMax] = useState(null);
+  const [deliveryFeeAmount, setDeliveryFeeAmount] = useState(null);
+  const [freeDeliveryThreshold, setFreeDeliveryThreshold] = useState(null);
   const [userPoints, setUserPoints] = useState(0);
   const [redeemPoints, setRedeemPoints] = useState(false);
   const [pointsDiscount, setPointsDiscount] = useState(0);
@@ -296,6 +304,16 @@ export default function CheckoutPage() {
     }).catch(() => {});
   }, []);
 
+  // Fetch delivery zones and pickup stations
+  useEffect(() => {
+    getDeliveryZones().then(res => {
+      if (res.success) setDeliveryZones(res.zones);
+    });
+    getPickupStations().then(res => {
+      if (res.success) setPickupStations(res.stations);
+    });
+  }, []);
+
   // Generate or retrieve guest ID for guest checkout
   const guestId = useRef(generateGuestId());
 
@@ -325,6 +343,11 @@ export default function CheckoutPage() {
     }
     if (!form.area) errs.area = 'Please select your area';
     if (!form.landmark) errs.landmark = 'Please select a landmark';
+    // For pickup, area and landmark are not required
+    if (deliveryMethod === 'pickup') {
+      delete errs.area;
+      delete errs.landmark;
+    }
     setFieldErrors(errs);
     return Object.keys(errs).length === 0;
   };
@@ -390,6 +413,12 @@ export default function CheckoutPage() {
         referralCode: form.referralCode || null,
         paymentMethod: 'cod',
         guestId: guestId.current,
+        delivery_zone_id: selectedZone?.id || null,
+        delivery_type: deliveryMethod,
+        pickup_station_id: selectedPickupStation?.id || null,
+        delivery_estimate_min: deliveryEstimateMin,
+        delivery_estimate_max: deliveryEstimateMax,
+        delivery_fee: deliveryFeeAmount,
       });
 
       if (!orderResult.success) {
@@ -418,7 +447,11 @@ export default function CheckoutPage() {
         `• ${item.name} x${item.quantity} — KES ${(item.price * item.quantity).toLocaleString()}`
       ).join('\n');
 
-      const message = `Hello Omix Store!\n\nI have placed a Cash on Delivery order.\n\nOrder ID: #${orderId.toString().slice(0,8).toUpperCase()}\n\nItems:\n${itemList}\n\nTotal: KES ${currentDiscounted.toLocaleString()}\nPayment: Cash on Delivery\n\nDelivery Address: ${form.landmark}, ${form.area}, Kericho\nPhone: ${form.phone}\nName: ${form.fullName}\n\nPlease confirm my order. Asante!`;
+      const deliveryInfo = deliveryMethod === 'pickup' && selectedPickupStation
+        ? `Pick-Up: ${selectedPickupStation.name}, ${selectedPickupStation.area}${selectedPickupStation.landmark ? ` (Near: ${selectedPickupStation.landmark})` : ''}`
+        : `Delivery Address: ${form.landmark}, ${form.area}, Kericho${selectedZone ? ` (Zone: ${selectedZone.display_name || selectedZone.zone_name})` : ''}`;
+
+      const message = `Hello Omix Store!\n\nI have placed a Cash on Delivery order.\n\nOrder ID: #${orderId.toString().slice(0,8).toUpperCase()}\n\nItems:\n${itemList}\n\nTotal: KES ${currentDiscounted.toLocaleString()}\nPayment: Cash on Delivery\n\n${deliveryInfo}\nPhone: ${form.phone}\nName: ${form.fullName}\n\nPlease confirm my order. Asante!`;
 
       const whatsappUrl = `https://wa.me/254746674392?text=${encodeURIComponent(message)}`;
       window.open(whatsappUrl, '_blank');
@@ -537,6 +570,12 @@ export default function CheckoutPage() {
         referralCode: form.referralCode || null,
         paymentMethod: 'online',
         guestId: guestId.current,
+        delivery_zone_id: selectedZone?.id || null,
+        delivery_type: deliveryMethod,
+        pickup_station_id: selectedPickupStation?.id || null,
+        delivery_estimate_min: deliveryEstimateMin,
+        delivery_estimate_max: deliveryEstimateMax,
+        delivery_fee: deliveryFeeAmount,
       });
 
       if (!orderResult.success) {
@@ -819,10 +858,14 @@ export default function CheckoutPage() {
               </div>
               <div className="flex justify-between items-center mb-2">
                 <span className="text-sm" style={{ color: C.textMuted }}>Delivery</span>
-                {isFreeDelivery ? (
+                {isFreeDelivery || (selectedZone && discountedTotal >= freeDeliveryThreshold) ? (
                   <span className="text-sm font-semibold" style={{ color: C.success }}>FREE</span>
+                ) : selectedZone && deliveryFeeAmount !== null ? (
+                  <span className="text-sm font-semibold" style={{ color: C.text }}>{formatKES(deliveryFeeAmount)}</span>
+                ) : deliveryMethod === 'delivery' ? (
+                  <span className="text-sm font-semibold" style={{ color: C.textMuted }}>Select zone</span>
                 ) : (
-                  <span className="text-sm font-semibold" style={{ color: C.success }}>Calculated at delivery</span>
+                  <span className="text-sm font-semibold" style={{ color: C.textMuted }}>N/A (Pick-Up)</span>
                 )}
               </div>
               {promoApplied && (
@@ -856,10 +899,10 @@ export default function CheckoutPage() {
             {/* Header */}
             <div className="px-5 py-4 border-b" style={{ borderColor: C.border, background: `linear-gradient(135deg, ${C.accent}, ${C.accentDark})` }}>
               <h2 className="text-base font-bold text-white flex items-center gap-2">
-                <MapPin className="w-4 h-4" />
-                Delivery Details
+                {deliveryMethod === 'pickup' ? <Package className="w-4 h-4" /> : <MapPin className="w-4 h-4" />}
+                {deliveryMethod === 'pickup' ? 'Pick-Up Details' : 'Delivery Details'}
               </h2>
-              <p className="text-xs text-white/70 mt-0.5">Where should we deliver your order?</p>
+              <p className="text-xs text-white/70 mt-0.5">{deliveryMethod === 'pickup' ? 'Choose a pickup station near you' : 'Where should we deliver your order?'}</p>
             </div>
 
             {/* Error */}
@@ -906,7 +949,7 @@ export default function CheckoutPage() {
               />
 
               {/* ── Kericho Location Selector ── */}
-              <div>
+              {deliveryMethod === 'delivery' && <div>
                 <label className="block text-xs font-bold mb-1.5 uppercase tracking-wider" style={{ color: C.textMuted }}>
                   Location <span style={{ color: '#ef4444' }}>*</span>
                 </label>
@@ -989,6 +1032,165 @@ export default function CheckoutPage() {
                   )}
                 </div>
               </div>
+              }
+
+              {/* ── Delivery Method Toggle ── */}
+              <div>
+                <label className="block text-xs font-bold mb-1.5 uppercase tracking-wider" style={{ color: C.textMuted }}>
+                  Delivery Method <span style={{ color: '#ef4444' }}>*</span>
+                </label>
+                <div className="flex gap-2">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setDeliveryMethod('delivery');
+                      setSelectedPickupStation(null);
+                    }}
+                    className={`flex-1 flex items-center justify-center gap-2 p-3 rounded-xl text-sm font-bold transition-all ${
+                      deliveryMethod === 'delivery' ? 'ring-2' : ''
+                    }`}
+                    style={{
+                      border: `2px solid ${deliveryMethod === 'delivery' ? C.accent : C.border}`,
+                      backgroundColor: deliveryMethod === 'delivery' ? `${C.accent}10` : C.bgGray,
+                      color: deliveryMethod === 'delivery' ? C.accent : C.text,
+                    }}
+                  >
+                    <MapPin className="w-4 h-4" />
+                    Delivery
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setDeliveryMethod('pickup');
+                      setSelectedZone(null);
+                      setDeliveryEstimateMin(null);
+                      setDeliveryEstimateMax(null);
+                      setDeliveryFeeAmount(null);
+                      setFreeDeliveryThreshold(null);
+                    }}
+                    className={`flex-1 flex items-center justify-center gap-2 p-3 rounded-xl text-sm font-bold transition-all ${
+                      deliveryMethod === 'pickup' ? 'ring-2' : ''
+                    }`}
+                    style={{
+                      border: `2px solid ${deliveryMethod === 'pickup' ? C.accent : C.border}`,
+                      backgroundColor: deliveryMethod === 'pickup' ? `${C.accent}10` : C.bgGray,
+                      color: deliveryMethod === 'pickup' ? C.accent : C.text,
+                    }}
+                  >
+                    <Package className="w-4 h-4" />
+                    Pick-Up
+                  </button>
+                </div>
+              </div>
+
+              {/* ── Delivery Zone Selector ── */}
+              {deliveryMethod === 'delivery' && (
+                <div>
+                  <label className="block text-xs font-bold mb-1.5 uppercase tracking-wider" style={{ color: C.textMuted }}>
+                    Delivery Zone <span style={{ color: '#ef4444' }}>*</span>
+                  </label>
+                  <div className="relative">
+                    <select
+                      value={selectedZone?.id || ''}
+                      onChange={(e) => {
+                        const zoneId = e.target.value;
+                        if (!zoneId) {
+                          setSelectedZone(null);
+                          setDeliveryEstimateMin(null);
+                          setDeliveryEstimateMax(null);
+                          setDeliveryFeeAmount(null);
+                          setFreeDeliveryThreshold(null);
+                          return;
+                        }
+                        const zone = deliveryZones.find(z => z.id === zoneId);
+                        setSelectedZone(zone);
+                        setDeliveryEstimateMin(zone?.estimated_days_min || null);
+                        setDeliveryEstimateMax(zone?.estimated_days_max || null);
+                        setDeliveryFeeAmount(zone?.delivery_fee ?? null);
+                        setFreeDeliveryThreshold(zone?.free_delivery_threshold || null);
+                      }}
+                      className="w-full text-sm rounded-xl px-3.5 py-3 appearance-none cursor-pointer focus:outline-none transition-all"
+                      style={{
+                        backgroundColor: C.bgGray,
+                        color: selectedZone ? C.text : C.textMuted,
+                        border: `1.5px solid ${C.border}`,
+                      }}
+                    >
+                      <option value="">Select delivery zone...</option>
+                      {deliveryZones.map((zone) => (
+                        <option key={zone.id} value={zone.id}>
+                          {zone.display_name || zone.zone_name}
+                        </option>
+                      ))}
+                    </select>
+                    <div className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none" style={{ color: C.textMuted }}>
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                        <path d="m6 9 6 6 6-6"/>
+                      </svg>
+                    </div>
+                  </div>
+                  {selectedZone && (
+                    <div className="mt-2 space-y-1">
+                      <div className="flex items-center gap-2 text-xs font-medium" style={{ color: C.textMuted }}>
+                        <span>Estimated delivery: {deliveryEstimateMin}-{deliveryEstimateMax} days</span>
+                      </div>
+                      <div className="flex items-center gap-2 text-xs font-semibold" style={{ color: C.text }}>
+                        {deliveryFeeAmount !== null && discountedTotal >= freeDeliveryThreshold ? (
+                          <span style={{ color: C.success }}>Free delivery</span>
+                        ) : deliveryFeeAmount !== null ? (
+                          <span>Delivery fee: {formatKES(deliveryFeeAmount)}</span>
+                        ) : null}
+                      </div>
+                    </div>
+                  )}
+                </div>
+              )}
+
+              {/* ── Pick-Up Station Selector ── */}
+              {deliveryMethod === 'pickup' && (
+                <div>
+                  <label className="block text-xs font-bold mb-1.5 uppercase tracking-wider" style={{ color: C.textMuted }}>
+                    Pick-Up Station <span style={{ color: '#ef4444' }}>*</span>
+                  </label>
+                  {pickupStations.length === 0 ? (
+                    <div className="p-4 rounded-xl text-sm" style={{ backgroundColor: C.bgGray, color: C.textMuted }}>
+                      Loading pickup stations...
+                    </div>
+                  ) : (
+                    <div className="space-y-2">
+                      {pickupStations.map((station) => (
+                        <button
+                          key={station.id}
+                          type="button"
+                          onClick={() => setSelectedPickupStation(station)}
+                          className="w-full flex items-start gap-3 p-3 rounded-xl text-left transition-all"
+                          style={{
+                            border: `2px solid ${selectedPickupStation?.id === station.id ? C.accent : C.border}`,
+                            backgroundColor: selectedPickupStation?.id === station.id ? `${C.accent}10` : C.bgGray,
+                          }}
+                        >
+                          <div className="w-5 h-5 rounded-full border-2 flex items-center justify-center flex-shrink-0 mt-0.5" style={{ borderColor: selectedPickupStation?.id === station.id ? C.accent : C.border }}>
+                            {selectedPickupStation?.id === station.id && <div className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: C.accent }} />}
+                          </div>
+                          <div className="flex-1 min-w-0">
+                            <p className="text-sm font-semibold" style={{ color: C.text }}>{station.name}</p>
+                            <p className="text-xs mt-0.5" style={{ color: C.textMuted }}>{station.area}</p>
+                            {station.address && (
+                              <p className="text-xs" style={{ color: C.textMuted }}>{station.address}</p>
+                            )}
+                            {station.landmark && (
+                              <p className="text-xs" style={{ color: C.textMuted }}>Near: {station.landmark}</p>
+                            )}
+                            {station.operating_hours && (
+                              <p className="text-xs mt-1 font-medium" style={{ color: C.accent }}>Hours: {station.operating_hours}</p>
+                            )}
+                          </div>
+                        </button>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              )}
 
               {/* ── Payment Method Selector ── */}
               <div>
@@ -996,6 +1198,25 @@ export default function CheckoutPage() {
                   Payment Method <span style={{ color: '#ef4444' }}>*</span>
                 </label>
                 <div className="space-y-2">
+                  <button
+                    type="button"
+                    onClick={() => setPaymentMethod('cod')}
+                    className="w-full flex items-center gap-3 p-3 rounded-xl text-left transition-all"
+                    style={{
+                      border: `2px solid ${paymentMethod === 'cod' ? C.accent : C.border}`,
+                      backgroundColor: paymentMethod === 'cod' ? `${C.accent}10` : C.bgGray,
+                    }}
+                  >
+                    <div className="w-5 h-5 rounded-full border-2 flex items-center justify-center" style={{ borderColor: paymentMethod === 'cod' ? C.accent : C.border }}>
+                      {paymentMethod === 'cod' && <div className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: C.accent }} />}
+                    </div>
+                    <div className="flex-1">
+                      <p className="text-sm font-bold" style={{ color: C.text }}>Cash on Delivery</p>
+                      <p className="text-xs" style={{ color: C.textMuted }}>Pay when you receive -- inspect item before paying</p>
+                    </div>
+                    <Package className="w-5 h-5" style={{ color: C.accent }} />
+                  </button>
+
                   <button
                     type="button"
                     onClick={() => setPaymentMethod('online')}
@@ -1013,25 +1234,6 @@ export default function CheckoutPage() {
                       <p className="text-xs" style={{ color: C.textMuted }}>Secure STK Push payment</p>
                     </div>
                     <CreditCard className="w-5 h-5" style={{ color: C.accent }} />
-                  </button>
-
-                  <button
-                    type="button"
-                    onClick={() => setPaymentMethod('cod')}
-                    className="w-full flex items-center gap-3 p-3 rounded-xl text-left transition-all"
-                    style={{
-                      border: `2px solid ${paymentMethod === 'cod' ? C.accent : C.border}`,
-                      backgroundColor: paymentMethod === 'cod' ? `${C.accent}10` : C.bgGray,
-                    }}
-                  >
-                    <div className="w-5 h-5 rounded-full border-2 flex items-center justify-center" style={{ borderColor: paymentMethod === 'cod' ? C.accent : C.border }}>
-                      {paymentMethod === 'cod' && <div className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: C.accent }} />}
-                    </div>
-                    <div className="flex-1">
-                      <p className="text-sm font-semibold" style={{ color: C.text }}>Cash on Delivery</p>
-                      <p className="text-xs" style={{ color: C.textMuted }}>We deliver first, you pay on delivery</p>
-                    </div>
-                    <Package className="w-5 h-5" style={{ color: C.accent }} />
                   </button>
                 </div>
               </div>

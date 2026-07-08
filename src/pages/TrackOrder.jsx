@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Search, Package, CheckCircle, Truck, Clock, XCircle, MapPin } from 'lucide-react';
-import { fetchOrder } from '../utils/api';
+import { fetchOrder, cancelOrderWithReason, submitReturnRequest } from '../utils/api';
 import { formatKES } from '../utils/constants';
 import Breadcrumb from '../components/Breadcrumb';
 
@@ -36,6 +36,15 @@ export default function TrackOrder() {
   const [eventsLoading, setEventsLoading] = useState(false);
   const [error, setError] = useState('');
   const [searched, setSearched] = useState(false);
+  const [showReturnForm, setShowReturnForm] = useState(false);
+  const [returnReason, setReturnReason] = useState('');
+  const [returnSubmitting, setReturnSubmitting] = useState(false);
+  const [returnError, setReturnError] = useState('');
+  const [returnSuccess, setReturnSuccess] = useState('');
+  const [showCancelForm, setShowCancelForm] = useState(false);
+  const [cancelReason, setCancelReason] = useState('');
+  const [cancelSubmitting, setCancelSubmitting] = useState(false);
+  const [cancelError, setCancelError] = useState('');
 
   const handleSearch = async () => {
     if (!orderId.trim()) return;
@@ -52,6 +61,44 @@ export default function TrackOrder() {
       setTrackingEvents([]);
     }
     setLoading(false);
+  };
+
+  const handleReturnRequest = async () => {
+    if (!returnReason.trim()) return;
+    setReturnSubmitting(true);
+    setReturnError('');
+    setReturnSuccess('');
+    try {
+      const result = await submitReturnRequest(order.id, returnReason.trim());
+      if (result.success) {
+        setReturnSuccess('Return request submitted successfully.');
+        setReturnReason('');
+        setShowReturnForm(false);
+      } else {
+        setReturnError(result.error || 'Failed to submit return request.');
+      }
+    } catch (err) {
+      setReturnError('Failed to submit return request. Please try again.');
+    }
+    setReturnSubmitting(false);
+  };
+
+  const handleCancelOrder = async () => {
+    setCancelSubmitting(true);
+    setCancelError('');
+    try {
+      const result = await cancelOrderWithReason(order.id, cancelReason.trim() || null);
+      if (result.success) {
+        setOrder(prev => ({ ...prev, status: 'cancelled' }));
+        setShowCancelForm(false);
+        setCancelReason('');
+      } else {
+        setCancelError(result.error || 'Failed to cancel order.');
+      }
+    } catch (err) {
+      setCancelError('Failed to cancel order. Please try again.');
+    }
+    setCancelSubmitting(false);
   };
 
   // Fetch tracking events when order is loaded
@@ -195,7 +242,65 @@ export default function TrackOrder() {
                 <p className="text-zinc-400">{order.address}{order.city ? `, ${order.city}` : ''}</p>
               </div>
             )}
+
+            {/* Cancel Order */}
+            {['pending', 'processing'].includes(order.status) && !showCancelForm && (
+              <div className="mt-4 pt-4 border-t border-zinc-800">
+                <button onClick={() => setShowCancelForm(true)}
+                  className="text-red-400 hover:text-red-300 text-sm font-bold transition-colors">
+                  Cancel Order
+                </button>
+              </div>
+            )}
+
+            {['pending', 'processing'].includes(order.status) && showCancelForm && (
+              <div className="mt-4 pt-4 border-t border-zinc-800">
+                <h3 className="text-sm font-bold text-white mb-2">Cancel Order</h3>
+                {cancelError && (
+                  <div className="bg-red-900/20 text-red-600 p-3 rounded-xl mb-3 text-xs font-medium border border-red-900/50">
+                    {cancelError}
+                  </div>
+                )}
+                <textarea
+                  value={cancelReason}
+                  onChange={(e) => setCancelReason(e.target.value)}
+                  placeholder="Reason for cancellation (optional)..."
+                  rows={3}
+                  className="w-full px-4 py-3 rounded-2xl bg-zinc-800 border border-zinc-700 focus:border-red-500 focus:outline-none text-white placeholder-zinc-500 text-sm resize-none mb-3"
+                />
+                <div className="flex gap-3">
+                  <button onClick={() => { setShowCancelForm(false); setCancelError(''); }}
+                    className="flex-1 bg-zinc-800 text-zinc-300 font-bold px-4 py-2.5 rounded-xl hover:bg-zinc-700 transition-colors text-xs">
+                    Keep Order
+                  </button>
+                  <button onClick={handleCancelOrder} disabled={cancelSubmitting}
+                    className="flex-1 bg-red-600 text-white font-bold px-4 py-2.5 rounded-xl hover:bg-red-700 transition-colors disabled:opacity-50 text-xs">
+                    {cancelSubmitting ? 'Cancelling...' : 'Confirm Cancellation'}
+                  </button>
+                </div>
+              </div>
+            )}
           </div>
+
+          {/* Pay on Delivery Info */}
+          {order.payment_method === 'cod' && (
+            <div className="bg-amber-900/10 border border-amber-800/30 rounded-3xl p-6">
+              <h2 className="text-lg font-bold text-white mb-3">Pay on Delivery</h2>
+              <div className="space-y-3 text-sm text-zinc-300">
+                <p>
+                  This order is set to <strong>Cash on Delivery (COD)</strong>.
+                  Please inspect the items thoroughly before making payment to the delivery agent.
+                </p>
+                <p>
+                  If you are not satisfied with the condition of any item, you may refuse
+                  delivery or request a return at the point of delivery.
+                </p>
+                <p className="text-amber-400 font-medium">
+                  Do not pay for items that are damaged or not as described.
+                </p>
+              </div>
+            </div>
+          )}
 
           {/* Visual Timeline */}
           <div className="bg-zinc-900 rounded-3xl border border-zinc-800 p-6">
@@ -325,6 +430,67 @@ export default function TrackOrder() {
               ))}
             </div>
           </div>
+
+          {/* Return Request */}
+          {order.status === 'delivered' && !showReturnForm && (
+            <div className="bg-zinc-900 rounded-3xl border border-zinc-800 p-6">
+              <div className="flex items-center justify-between">
+                <div>
+                  <h2 className="text-lg font-bold text-white">Need to return an item?</h2>
+                  <p className="text-sm text-zinc-400 mt-1">
+                    You can request a return within 7 days of delivery.
+                  </p>
+                </div>
+                <button onClick={() => setShowReturnForm(true)}
+                  className="bg-[var(--seasonal-primary,#1a5632)] text-white font-bold px-6 py-3 rounded-2xl hover:bg-[var(--seasonal-secondary,#14472a)] transition-colors text-sm">
+                  Request Return
+                </button>
+              </div>
+            </div>
+          )}
+
+          {order.status === 'delivered' && showReturnForm && (
+            <div className="bg-zinc-900 rounded-3xl border border-zinc-800 p-6">
+              <h2 className="text-lg font-bold text-white mb-3">Submit Return Request</h2>
+              {returnSuccess ? (
+                <div className="bg-emerald-900/20 text-emerald-400 p-4 rounded-xl text-sm font-medium border border-emerald-900/50">
+                  {returnSuccess}
+                </div>
+              ) : (
+                <>
+                  {returnError && (
+                    <div className="bg-red-900/20 text-red-600 p-4 rounded-xl mb-4 text-sm font-medium border border-red-900/50">
+                      {returnError}
+                    </div>
+                  )}
+                  <div className="mb-4">
+                    <p className="text-xs text-zinc-400 mb-2">Order ID</p>
+                    <p className="font-mono font-bold text-white text-sm">{String(order.id).slice(0, 8).toUpperCase()}</p>
+                  </div>
+                  <div className="mb-4">
+                    <label className="block text-xs text-zinc-400 mb-2">Reason for Return</label>
+                    <textarea
+                      value={returnReason}
+                      onChange={(e) => setReturnReason(e.target.value)}
+                      placeholder="Tell us why you want to return this item..."
+                      rows={4}
+                      className="w-full px-4 py-3 rounded-2xl bg-zinc-800 border border-zinc-700 focus:border-[var(--seasonal-primary,#1a5632)] focus:outline-none text-white placeholder-zinc-500 text-sm resize-none"
+                    />
+                  </div>
+                  <div className="flex gap-3">
+                    <button onClick={() => { setShowReturnForm(false); setReturnError(''); }}
+                      className="flex-1 bg-zinc-800 text-zinc-300 font-bold px-6 py-3 rounded-2xl hover:bg-zinc-700 transition-colors text-sm">
+                      Cancel
+                    </button>
+                    <button onClick={handleReturnRequest} disabled={returnSubmitting || !returnReason.trim()}
+                      className="flex-1 bg-[var(--seasonal-primary,#1a5632)] text-white font-bold px-6 py-3 rounded-2xl hover:bg-[var(--seasonal-secondary,#14472a)] transition-colors disabled:opacity-50 text-sm">
+                      {returnSubmitting ? 'Submitting...' : 'Submit Return Request'}
+                    </button>
+                  </div>
+                </>
+              )}
+            </div>
+          )}
         </div>
       )}
 

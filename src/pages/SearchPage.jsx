@@ -12,11 +12,12 @@ import {
   Package,
   Tag,
   Layers,
+  Star,
 } from 'lucide-react';
 import ProductCard from '../components/ProductCard';
 import { ProductCardSkeleton } from '../components/Skeleton';
 import { advancedSearch } from '../utils/api';
-import { CATEGORIES } from '../utils/constants';
+import { CATEGORIES, getPresetSizes } from '../utils/constants';
 
 const CONDITIONS = ['New', 'Used', 'Refurbished'];
 const AVAILABILITY_OPTIONS = [
@@ -39,6 +40,9 @@ function SearchPage() {
     location: searchParams.get('location') || '',
     brand: searchParams.get('brand') || '',
     availability: searchParams.get('availability') || '',
+    min_rating: searchParams.get('min_rating') || '',
+    has_discount: searchParams.get('has_discount') || '',
+    size: searchParams.get('size') || '',
     page: parseInt(searchParams.get('page')) || 1,
   }), [searchParams]);
 
@@ -115,6 +119,9 @@ function SearchPage() {
       location: '',
       brand: '',
       availability: '',
+      min_rating: '',
+      has_discount: '',
+      size: '',
       page: 1,
     };
     setFilters(cleared);
@@ -130,7 +137,10 @@ function SearchPage() {
     filters.condition ||
     filters.location ||
     filters.brand ||
-    filters.availability;
+    filters.availability ||
+    filters.min_rating ||
+    filters.has_discount ||
+    filters.size;
 
   const selectedCondition = filters.condition
     ? filters.condition.split(',')
@@ -280,6 +290,102 @@ function SearchPage() {
             </option>
           ))}
         </select>
+      </div>
+
+      {/* Minimum Rating */}
+      <div>
+        <label className="flex items-center gap-1.5 text-xs font-bold text-zinc-400 uppercase tracking-wider mb-2">
+          <Star className="w-3.5 h-3.5" />
+          Minimum Rating
+        </label>
+        <div className="flex items-center gap-1">
+          {[1, 2, 3, 4, 5].map((star) => (
+            <button
+              key={star}
+              onClick={() => handleFilterChange('min_rating', filters.min_rating === String(star) ? '' : String(star))}
+              className="p-0.5 transition-colors hover:scale-110"
+              aria-label={`${star} star${star > 1 ? 's' : ''} and up`}
+            >
+              <svg
+                width="22"
+                height="22"
+                viewBox="0 0 24 24"
+                fill={parseInt(filters.min_rating) >= star ? '#facc15' : 'none'}
+                stroke={parseInt(filters.min_rating) >= star ? '#facc15' : '#52525b'}
+                strokeWidth="1.5"
+                className="transition-colors"
+              >
+                <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
+              </svg>
+            </button>
+          ))}
+          {filters.min_rating && (
+            <button
+              onClick={() => handleFilterChange('min_rating', '')}
+              className="text-xs text-zinc-500 hover:text-white ml-1 p-1"
+              aria-label="Clear rating filter"
+            >
+              <X className="w-3 h-3" />
+            </button>
+          )}
+        </div>
+      </div>
+
+      {/* Discount */}
+      <div>
+        <label className="flex items-center gap-1.5 text-xs font-bold text-zinc-400 uppercase tracking-wider mb-2">
+          <Tag className="w-3.5 h-3.5" />
+          Discount
+        </label>
+        <label className="flex items-center gap-2.5 cursor-pointer group">
+          <input
+            type="checkbox"
+            checked={filters.has_discount === 'true'}
+            onChange={(e) => handleFilterChange('has_discount', e.target.checked ? 'true' : '')}
+            className="w-4 h-4 rounded border-zinc-700 bg-zinc-900 text-[var(--seasonal-primary,#1a5632)] focus:ring-[var(--seasonal-primary,#1a5632)] focus:ring-offset-0"
+          />
+          <span className="text-sm text-zinc-300 group-hover:text-white transition-colors">
+            Discounted items only
+          </span>
+        </label>
+      </div>
+
+      {/* Size */}
+      <div>
+        <label className="flex items-center gap-1.5 text-xs font-bold text-zinc-400 uppercase tracking-wider mb-2">
+          <Layers className="w-3.5 h-3.5" />
+          Size
+        </label>
+        {(() => {
+          const presets = getPresetSizes(filters.category);
+          if (presets.length > 0) {
+            return (
+              <div className="flex flex-wrap gap-1.5 mb-2">
+                {presets.slice(0, 8).map((s) => (
+                  <button
+                    key={s}
+                    onClick={() => handleFilterChange('size', filters.size === s ? '' : s)}
+                    className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-colors ${
+                      filters.size === s
+                        ? 'bg-[var(--seasonal-primary,#1a5632)] text-white'
+                        : 'bg-zinc-800 text-zinc-300 hover:bg-zinc-700'
+                    }`}
+                  >
+                    {s}
+                  </button>
+                ))}
+              </div>
+            );
+          }
+          return null;
+        })()}
+        <input
+          type="text"
+          placeholder="Size (e.g. M, 42, Large)..."
+          value={filters.size}
+          onChange={(e) => handleFilterChange('size', e.target.value)}
+          className="w-full bg-zinc-900 border border-zinc-800 rounded-xl px-3 py-2.5 text-sm text-white placeholder-zinc-500 focus:border-[var(--seasonal-primary,#1a5632)] focus:outline-none"
+        />
       </div>
     </div>
   );
@@ -592,6 +698,40 @@ function SearchPage() {
                     {AVAILABILITY_OPTIONS.find((o) => o.value === filters.availability)?.label}
                     <button
                       onClick={() => handleFilterChange('availability', '')}
+                      className="text-zinc-500 hover:text-white ml-0.5"
+                    >
+                      <X className="w-3 h-3" />
+                    </button>
+                  </span>
+                )}
+                {filters.min_rating && (
+                  <span className="inline-flex items-center gap-1 px-3 py-1 rounded-lg bg-zinc-900 border border-zinc-800 text-xs text-zinc-300">
+                    <Star className="w-3 h-3" fill="#facc15" stroke="#facc15" />
+                    {filters.min_rating} stars & up
+                    <button
+                      onClick={() => handleFilterChange('min_rating', '')}
+                      className="text-zinc-500 hover:text-white ml-0.5"
+                    >
+                      <X className="w-3 h-3" />
+                    </button>
+                  </span>
+                )}
+                {filters.has_discount && (
+                  <span className="inline-flex items-center gap-1 px-3 py-1 rounded-lg bg-zinc-900 border border-zinc-800 text-xs text-zinc-300">
+                    Discounted
+                    <button
+                      onClick={() => handleFilterChange('has_discount', '')}
+                      className="text-zinc-500 hover:text-white ml-0.5"
+                    >
+                      <X className="w-3 h-3" />
+                    </button>
+                  </span>
+                )}
+                {filters.size && (
+                  <span className="inline-flex items-center gap-1 px-3 py-1 rounded-lg bg-zinc-900 border border-zinc-800 text-xs text-zinc-300">
+                    Size: {filters.size}
+                    <button
+                      onClick={() => handleFilterChange('size', '')}
                       className="text-zinc-500 hover:text-white ml-0.5"
                     >
                       <X className="w-3 h-3" />

@@ -1,16 +1,18 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { User, Globe, Shield, Package, HelpCircle, Info, LogIn, UserPlus, Menu, X, Download, ShoppingCart, ChevronDown, LogOut, RefreshCw, DollarSign } from 'lucide-react';
+import { User, Globe, Shield, Package, HelpCircle, Info, LogIn, UserPlus, Menu, X, Download, ShoppingCart, ChevronDown, LogOut, RefreshCw, DollarSign, Store } from 'lucide-react';
 import { supabase } from '../utils/supabase';
 import { useLang } from '../utils/lang';
-import { isAdmin, isAffiliate } from '../utils/api';
+import { isAdmin, isAffiliate, getSellerProfile } from '../utils/api';
 import { useCart } from '../context/CartContext';
 import { useActiveTheme } from '../context/SeasonalContext';
 import { sounds } from '../utils/sounds';
 import NotificationBell from './NotificationBell';
+import { WhatsAppNavButton } from './WhatsAppButtons';
 
 const FEATURE_LINKS = [
   { to: '/refurbished', label: 'Refurbished', icon: RefreshCw, color: 'from-orange-500 to-amber-600', glow: 'shadow-orange-500/40' },
+  { to: '/wholesale', label: 'Wholesale', icon: Package, color: 'from-blue-500 to-indigo-600', glow: 'shadow-blue-500/40' },
   { to: 'https://blog.omixsystems.store', label: 'Blog', icon: Globe, color: 'from-violet-500 to-purple-600', glow: 'shadow-violet-500/40', external: true },
   { to: '/how-it-works', label: 'How It Works', icon: HelpCircle, color: 'from-amber-500 to-orange-600', glow: 'shadow-amber-500/40' },
   { to: '/help', label: 'Help', icon: Package, color: 'from-emerald-500 to-green-600', glow: 'shadow-emerald-500/40' },
@@ -23,6 +25,7 @@ function Navbar() {
   const [user, setUser] = useState(null);
   const [isUserAdmin, setIsUserAdmin] = useState(false);
   const [isUserAffiliate, setIsUserAffiliate] = useState(false);
+  const [isUserSeller, setIsUserSeller] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   const drawerRef = useRef(null);
   const { t } = useLang();
@@ -46,9 +49,11 @@ function Navbar() {
       if (session?.user) {
         isAdmin().then(admin => setIsUserAdmin(admin));
         isAffiliate().then(aff => setIsUserAffiliate(aff));
+        getSellerProfile(session.user.id).then(res => setIsUserSeller(!!res?.seller)).catch(() => setIsUserSeller(false));
       } else {
         setIsUserAdmin(false);
         setIsUserAffiliate(false);
+        setIsUserSeller(false);
       }
     });
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
@@ -56,9 +61,11 @@ function Navbar() {
       if (session?.user) {
         isAdmin().then(admin => setIsUserAdmin(admin));
         isAffiliate().then(aff => setIsUserAffiliate(aff));
+        getSellerProfile(session.user.id).then(res => setIsUserSeller(!!res?.seller)).catch(() => setIsUserSeller(false));
       } else {
         setIsUserAdmin(false);
         setIsUserAffiliate(false);
+        setIsUserSeller(false);
       }
     });
     return () => subscription.unsubscribe();
@@ -157,6 +164,7 @@ function Navbar() {
 
           {/* Desktop (lg+): Right side */}
           <div className="hidden lg:flex items-center gap-2">
+            <WhatsAppNavButton />
             <NotificationBell />
             <Link to="/cart" className="relative p-2 rounded-full hover:bg-zinc-800 text-zinc-300 transition-colors" aria-label={`Shopping cart, ${cartCount} items`}>
               <ShoppingCart className="w-5 h-5" />
@@ -189,6 +197,17 @@ function Navbar() {
                     <span className="text-sm font-medium">Affiliate Dashboard</span>
                   </Link>
                 )}
+                {isUserSeller ? (
+                  <Link to="/seller/dashboard" className="flex items-center gap-2 p-2 rounded-full bg-gradient-to-r from-emerald-600/20 to-green-600/20 text-emerald-400 hover:from-emerald-600/30 hover:to-green-600/30 transition-all">
+                    <Store className="w-4 h-4" />
+                    <span className="text-sm font-medium">Dashboard</span>
+                  </Link>
+                ) : (
+                  <Link to="/seller/register" className="flex items-center gap-2 p-2 rounded-full hover:bg-zinc-800 text-zinc-300 transition-colors">
+                    <Store className="w-4 h-4" />
+                    <span className="text-sm font-medium">Become a Seller</span>
+                  </Link>
+                )}
               </>
             ) : (
               <>
@@ -213,6 +232,7 @@ function Navbar() {
 
           {/* Below lg: Compact controls + Hamburger */}
           <div className="flex lg:hidden items-center gap-1">
+            <WhatsAppNavButton />
             {/* Notification bell always visible on mobile */}
             <NotificationBell />
 
@@ -313,6 +333,17 @@ function Navbar() {
                 <Link to="/affiliate-dashboard" className="flex items-center gap-3 px-4 py-3 rounded-2xl text-sm font-bold text-zinc-300 hover:bg-zinc-800" onClick={() => setMenuOpen(false)}>
                   <User className="w-5 h-5" />
                   Affiliate Dashboard
+                </Link>
+              )}
+              {isUserSeller ? (
+                <Link to="/seller/dashboard" className="flex items-center gap-3 px-4 py-3 rounded-2xl text-sm font-bold bg-gradient-to-r from-emerald-600/20 to-green-600/20 text-emerald-400 hover:from-emerald-600/30 hover:to-green-600/30" onClick={() => setMenuOpen(false)}>
+                  <Store className="w-5 h-5" />
+                  Dashboard
+                </Link>
+              ) : (
+                <Link to="/seller/register" className="flex items-center gap-3 px-4 py-3 rounded-2xl text-sm font-bold text-zinc-300 hover:bg-zinc-800" onClick={() => setMenuOpen(false)}>
+                  <Store className="w-5 h-5" />
+                  Become a Seller
                 </Link>
               )}
               {isUserAdmin && (

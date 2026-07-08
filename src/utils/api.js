@@ -1539,3 +1539,146 @@ export async function removeSavedSearch(searchId) {
     return { success: false, error: err.message };
   }
 }
+
+// ── Delivery Zones ─────────────────────────────────────────────────
+export async function getDeliveryZones() {
+  try {
+    const resp = await fetch(`${API_URL}/api/delivery-zones`);
+    const data = await resp.json();
+    return { success: true, zones: data.zones || [] };
+  } catch (err) {
+    return { success: false, error: err.message, zones: [] };
+  }
+}
+
+// ── Pick-Up Stations ──────────────────────────────────────────────
+export async function getPickupStations() {
+  try {
+    const resp = await fetch(`${API_URL}/api/pickup-stations`);
+    const data = await resp.json();
+    return { success: true, stations: data.stations || [] };
+  } catch (err) {
+    return { success: false, error: err.message, stations: [] };
+  }
+}
+
+// ── Product Questions ─────────────────────────────────────────────
+export async function getProductQuestions(listingId) {
+  try {
+    const resp = await fetch(`${API_URL}/api/products/${listingId}/questions`);
+    const data = await resp.json();
+    return { success: true, questions: data.questions || [] };
+  } catch (err) {
+    return { success: false, error: err.message, questions: [] };
+  }
+}
+
+export async function postProductQuestion(listingId, question, userId, userName) {
+  try {
+    const resp = await fetch(`${API_URL}/api/products/${listingId}/questions`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ question, userId, userName }),
+    });
+    const data = await resp.json();
+    return data;
+  } catch (err) {
+    return { success: false, error: err.message };
+  }
+}
+
+export async function answerProductQuestion(questionId, answer, userId) {
+  try {
+    const resp = await fetch(`${API_URL}/api/questions/${questionId}/answer`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ answer, userId }),
+    });
+    const data = await resp.json();
+    return data;
+  } catch (err) {
+    return { success: false, error: err.message };
+  }
+}
+
+// ── Wholesale Pricing ─────────────────────────────────────────────
+export async function getWholesalePrices(listingId) {
+  try {
+    const resp = await fetch(`${API_URL}/api/products/${listingId}/wholesale`);
+    const data = await resp.json();
+    return { success: true, prices: data.prices || [] };
+  } catch (err) {
+    return { success: false, error: err.message, prices: [] };
+  }
+}
+
+// ── Seller Registration & Profile ─────────────────────────────────
+export async function getSellerProfile(userId) {
+  try {
+    const resp = await fetch(`${API_URL}/api/seller/profile?user_id=${userId}`);
+    const data = await resp.json();
+    return data;
+  } catch (err) {
+    return { success: false, error: err.message, seller: null };
+  }
+}
+
+export async function getSellerBySlug(slug) {
+  try {
+    const resp = await fetch(`${API_URL}/api/seller/${slug}`);
+    const data = await resp.json();
+    return data;
+  } catch (err) {
+    return { success: false, error: err.message };
+  }
+}
+
+export async function registerSeller({ userId, shopName, shopSlug, description, phone, email, address }) {
+  try {
+    const resp = await fetch(`${API_URL}/api/seller/register`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ userId, shopName, shopSlug, description, phone, email, address }),
+    });
+    const data = await resp.json();
+    return data;
+  } catch (err) {
+    return { success: false, error: err.message };
+  }
+}
+
+export async function getSellerAnalytics(sellerId) {
+  try {
+    const resp = await fetch(`${API_URL}/api/seller/${sellerId}/analytics`);
+    const data = await resp.json();
+    return data;
+  } catch (err) {
+    return { success: false, error: err.message };
+  }
+}
+
+// ── Return Requests ───────────────────────────────────────────────
+export async function submitReturnRequest(orderId, reason, userId, orderItemId) {
+  try {
+    const resp = await fetch(`${API_URL}/api/returns`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ orderId, reason, userId, orderItemId }),
+    });
+    const data = await resp.json();
+    return data;
+  } catch (err) {
+    return { success: false, error: err.message };
+  }
+}
+
+// ── Full Order Tracking ───────────────────────────────────────────
+export async function getOrderTrackingFull(orderId) {
+  try {
+    const resp = await fetch(`${API_URL}/api/orders/${orderId}/tracking-full`);
+    const data = await resp.json();
+    return data;
+  } catch (err) {
+    return { success: false, error: err.message };
+  }
+}
