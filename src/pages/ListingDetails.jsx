@@ -553,7 +553,7 @@ function ListingDetails() {
                         const disabled = isOptionDisabled(type.id, v.value);
                         return (
                           <button
-                            key={v.value}
+                            key={type.id + '-' + v.value}
                             type="button"
                             disabled={disabled}
                             onClick={() => {
@@ -578,7 +578,7 @@ function ListingDetails() {
                         const disabled = isOptionDisabled(type.id, v.value);
                         return (
                           <button
-                            key={v.value}
+                            key={type.id + '-' + v.value}
                             type="button"
                             disabled={disabled}
                             onClick={() => {
@@ -602,7 +602,7 @@ function ListingDetails() {
                         const disabled = isOptionDisabled(type.id, v.value);
                         return (
                           <button
-                            key={v.value}
+                            key={type.id + '-' + v.value}
                             type="button"
                             disabled={disabled}
                             onClick={() => {

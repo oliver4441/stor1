@@ -1,5 +1,5 @@
 import React, { Suspense, useEffect } from 'react';
-import { Routes, Route } from 'react-router-dom';
+import { Routes, Route, Navigate } from 'react-router-dom';
 import ErrorBoundary from './components/ErrorBoundary';
 import { SeasonalProvider } from './context/SeasonalContext';
 import { LanguageProvider } from './utils/lang';
@@ -74,6 +74,7 @@ const AffiliateDashboard = React.lazy(() => import('./pages/AffiliateDashboard')
 const AffiliatePage = React.lazy(() => import('./pages/AffiliatePage'));
 const AffiliateApply = React.lazy(() => import('./pages/AffiliateApply'));
 const AffiliateAgreement = React.lazy(() => import('./pages/AffiliateAgreement'));
+const NotFound = React.lazy(() => import('./pages/NotFound'));
 
 // Help Center pages — co-split as a help chunk
 const HelpCenter = React.lazy(() => import('./pages/help/HelpCenter'));
@@ -166,6 +167,9 @@ function App() {
                 <Route path="sellers" element={<AdminSellers />} />
               <Route path="deals" element={<AdminDeals />} />
               </Route>
+              <Route path="/listings" element={<Navigate to="/search" replace />} />
+              <Route path="/earn" element={<Navigate to="/affiliate" replace />} />
+              <Route path="*" element={<NotFound />} />
             </Routes>
           </Suspense>
         </main>
