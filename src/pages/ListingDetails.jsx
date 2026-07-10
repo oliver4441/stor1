@@ -530,13 +530,13 @@ function ListingDetails() {
           {/* Variant Selectors (Dynamic) */}
           {hasVariants && variantData && (
             <div className="mb-6 space-y-4">
-              {variantData.types.map(type => {
+              {variantData.types.map((type, idx) => {
                 const selectedVal = selections[type.id];
                 const selectedLabel = type.style === 'color'
                   ? (type.values.find(v => v.value === selectedVal)?.label || selectedVal)
                   : selectedVal;
                 return (
-                  <div key={type.id} id={`variant-${type.id}-section`}>
+                  <div key={type.id + '-' + idx} id={`variant-${type.id}-section`}>
                     <div className="flex items-center justify-between mb-2">
                       <label className="text-xs font-bold text-zinc-400 uppercase tracking-wider">
                         {type.name} {selectedVal && <span className="text-zinc-300 normal-case">— {selectedLabel}</span>}
@@ -553,7 +553,7 @@ function ListingDetails() {
                         const disabled = isOptionDisabled(type.id, v.value);
                         return (
                           <button
-                            key={v.value}
+                            key={type.id + '-' + v.value}
                             type="button"
                             disabled={disabled}
                             onClick={() => {
@@ -578,7 +578,7 @@ function ListingDetails() {
                         const disabled = isOptionDisabled(type.id, v.value);
                         return (
                           <button
-                            key={v.value}
+                            key={type.id + '-' + v.value}
                             type="button"
                             disabled={disabled}
                             onClick={() => {
@@ -602,7 +602,7 @@ function ListingDetails() {
                         const disabled = isOptionDisabled(type.id, v.value);
                         return (
                           <button
-                            key={v.value}
+                            key={type.id + '-' + v.value}
                             type="button"
                             disabled={disabled}
                             onClick={() => {
