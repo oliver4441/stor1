@@ -144,6 +144,27 @@ function ListingDetails() {
     }
   }, [listing, listingId]);
 
+  // --- HOOKS MUST be before any early return ---
+
+  // Normalize variant data (handles old array format and new object format)
+  const variantData = useMemo(() => normalizeVariants(listing?.variants), [listing?.variants]);
+  const hasVariants = variantData && variantData.types.length > 0;
+
+  // Find the fully matched variant object
+  const selectedVariantObj = useMemo(() => {
+    if (!hasVariants || !variantData) return null;
+    const selectedCount = variantData.types.filter(t => selections[t.id] != null).length;
+    if (selectedCount === 0) return null;
+    if (selectedCount < variantData.types.length) return null;
+    return variantData.items.find(item => {
+      return variantData.types.every(t => {
+        return item.attrs[t.id] === selections[t.id];
+      });
+    }) || null;
+  }, [hasVariants, variantData, selections]);
+
+  // --- End of mandatory hooks ---
+
   if (loading) {
     return (
       <div className="max-w-7xl mx-auto px-4 py-8 animate-pulse">
@@ -239,12 +260,6 @@ function ListingDetails() {
     ...(listing.model ? [{ icon: Cpu, label: 'Model', value: listing.model }] : []),
   ].slice(0, 6);
 
-  // NEW VARIANT SYSTEM //
-
-  // Normalize variant data (handles old array format and new object format)
-  const variantData = useMemo(() => normalizeVariants(listing.variants), [listing.variants]);
-  const hasVariants = variantData && variantData.types.length > 0;
-
   // Create a function to check if selecting a specific value for a type would still produce an in-stock variant
   const isOptionDisabled = (typeId, value) => {
     if (!variantData) return false;
@@ -261,21 +276,6 @@ function ListingDetails() {
     // If no matching item found, or the matching item has zero stock, it's disabled
     return !matchingItem || (matchingItem.quantity || 0) <= 0;
   };
-
-  // Find the fully matched variant object
-  const selectedVariantObj = useMemo(() => {
-    if (!hasVariants || !variantData) return null;
-    // Count how many types have a selection
-    const selectedCount = variantData.types.filter(t => selections[t.id] != null).length;
-    if (selectedCount === 0) return null;
-    // Only find a match if ALL types are selected
-    if (selectedCount < variantData.types.length) return null;
-    return variantData.items.find(item => {
-      return variantData.types.every(t => {
-        return item.attrs[t.id] === selections[t.id];
-      });
-    }) || null;
-  }, [hasVariants, variantData, selections]);
 
   const effectivePrice = (listing.price || 0) + (selectedVariantObj?.priceAdjustment || 0);
   const effectiveStock = selectedVariantObj?.quantity || listing.quantity;
