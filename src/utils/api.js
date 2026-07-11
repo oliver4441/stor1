@@ -56,9 +56,31 @@ export async function signUp({ email, password, fullName, phone, refCode }) {
 
 export async function signIn({ email, password }) {
   try {
+    // First try: normal Supabase auth sign-in
     const { data, error } = await supabase.auth.signInWithPassword({ email, password })
-    if (error) return { success: false, error: error.message }
-    return { success: true, user: data.user, session: data.session }
+    if (!error) return { success: true, user: data.user, session: data.session }
+
+    // If login fails with credential error, try backend admin-login endpoint
+    // (handles admin users whose password may not be set in auth yet)
+    if (error.message?.toLowerCase().includes('invalid login credentials')) {
+      try {
+        const resp = await fetch(`${API_BASE}/api/auth/admin-login`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email, password }),
+        });
+        const adminResult = await resp.json();
+        if (adminResult.success) {
+          // Admin password was set — retry normal sign-in
+          const { data: retryData, error: retryError } = await supabase.auth.signInWithPassword({ email, password });
+          if (!retryError) return { success: true, user: retryData.user, session: retryData.session };
+        }
+      } catch (_) {
+        // Admin login fallback failed silently — fall through to original error
+      }
+    }
+
+    return { success: false, error: error.message }
   } catch (err) {
     return { success: false, error: err.message || 'Login failed. Please try again.' }
   }
