@@ -1,11 +1,13 @@
 // ── ChatList ──────────────────────────────────────────────
 // Displays a list of conversations for the current user.
-// Fetches from supabase, shows subject, last message preview,
+// Fetches from backend API, shows subject, last message preview,
 // relative date, unread indicator, and other participant avatar.
 
 import { useState, useEffect, useCallback } from 'react';
 import { MessageSquare, ChevronRight, Loader2 } from 'lucide-react';
 import { supabase } from '../utils/supabase';
+
+const API_BASE = import.meta.env.VITE_API_URL || 'https://stor1-api.onrender.com';
 
 // ── Helpers ──────────────────────────────────────────────
 
@@ -85,7 +87,7 @@ export default function ChatList({ activeConversationId, onSelect }) {
     setError(null);
 
     try {
-      // Get current user
+      // Get current user session
       const {
         data: { session },
         error: sessionError,
@@ -98,8 +100,60 @@ export default function ChatList({ activeConversationId, onSelect }) {
       }
 
       const currentUserId = session.user.id;
+      const token = session.access_token;
 
-      // Fetch conversation_participants for current user, joined with conversations
+      // Try backend API first (handles admin see-all logic)
+      try {
+        const res = await fetch(`${API_BASE}/api/conversations`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            'Content-Type': 'application/json',
+          },
+        });
+
+        if (res.ok) {
+          const json = await res.json();
+          if (json.success && Array.isArray(json.data)) {
+            // Enrich conversation objects with participant info
+            const enriched = json.data.map((conv) => {
+              const participants = conv.participants || [];
+              const other = getOtherParticipant(participants, currentUserId);
+
+              // Check for unread: if last_read_at is before last_message_at
+              const myParticipation = participants.find(
+                (p) => p.user_id === currentUserId
+              );
+              // We don't have last_read_at from this endpoint, so rely on a simple heuristic
+              const hasUnread = !!conv.last_message_at;
+
+              return {
+                id: conv.id,
+                subject: conv.subject || 'No subject',
+                otherParticipantName: other?.full_name || 'Unknown User',
+                otherAvatarUrl: other?.avatar_url || null,
+                lastMessagePreview: conv.last_message_preview || '',
+                lastMessageAt: conv.last_message_at || conv.created_at,
+                hasUnread,
+              };
+            });
+
+            // Sort by last_message_at DESC
+            enriched.sort((a, b) => {
+              const aTime = a.lastMessageAt ? new Date(a.lastMessageAt).getTime() : 0;
+              const bTime = b.lastMessageAt ? new Date(b.lastMessageAt).getTime() : 0;
+              return bTime - aTime;
+            });
+
+            setConversations(enriched);
+            setLoading(false);
+            return;
+          }
+        }
+      } catch (apiErr) {
+        console.warn('ChatList API fetch failed, falling back to direct query:', apiErr);
+      }
+
+      // Fallback: direct Supabase query
       const { data: myParticipations, error: participationsError } = await supabase
         .from('conversation_participants')
         .select(
