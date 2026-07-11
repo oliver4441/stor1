@@ -3,7 +3,7 @@ import { supabase } from './supabase'
 import { CATEGORY_TO_ID, ID_TO_CATEGORY } from './constants'
 import { sounds } from './sounds'
 import { lookupAffiliateByCode } from './affiliate_api'
-import { processSignupReferral, processReferralPending } from './affiliate_logic'
+import { processReferralPending } from './affiliate_logic'
 
 const API_BASE = import.meta.env.VITE_API_URL || 'https://stor1-api.onrender.com'
 
@@ -31,41 +31,27 @@ export function mapListingCategories(listings) {
 
 // Auth
 export async function signUp({ email, password, fullName, phone, refCode }) {
-  const { data, error: authError } = await supabase.auth.signUp({
-    email,
-    password,
-    options: { data: { full_name: fullName, phone } }
-  });
-  if (authError) return { success: false, error: authError.message };
-  if (data.user) {
-    const genRefCode = (data.user.id || '').replace(/-/g, '').slice(0, 8).toUpperCase();
+  // Use backend API signup (bypasses client-side anon key limitations)
+  try {
+    const resp = await fetch(`${API_URL}/api/auth/signup`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email, password, fullName, refCode }),
+    });
+    const data = await resp.json();
 
-    // Upsert the profile with minimal fields — backend handles referral attribution
-    const { error: profileError } = await supabase.from('profiles').upsert({
-      id: data.user.id,
-      full_name: fullName,
-      email,
-      phone: phone || null,
-      role: 'customer',
-      loyalty_points: 0,
-      referral_code: genRefCode,
-    }, { onConflict: 'id' });
-    if (profileError) {
-      console.error('Profile insert failed:', profileError.message);
-      return { success: false, error: 'Account creation failed. Please try again.' };
+    if (!resp.ok || !data.success) {
+      return { success: false, error: data.error || 'Signup failed. Please try again.' };
     }
 
-    // Process referral attribution via backend API (first-touch — never overwrites)
-    // Reads referral cookie, looks up affiliate, links user, awards reward
-    if (refCode || document.cookie.includes('omix_ref=')) {
-      try {
-        await processSignupReferral(data.user.id);
-      } catch (refErr) {
-        console.warn('Referral processing skipped:', refErr);
-      }
-    }
+    // Auto-sign-in after successful signup
+    const signInResult = await signIn({ email, password });
+    return signInResult;
+
+    // Note: referral processing is handled server-side
+  } catch (err) {
+    return { success: false, error: err.message || 'Something went wrong. Please try again.' };
   }
-  return { success: true, user: data.user, session: data.session };
 }
 
 export async function signIn({ email, password }) {
