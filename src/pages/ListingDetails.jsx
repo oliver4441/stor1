@@ -19,6 +19,14 @@ import { useLang } from '../utils/lang';
 import MessageSellerButton from '../components/MessageSellerButton';
 import ProductRecommendations from '../components/ProductRecommendations';
 
+function formatDimensions(dim) {
+  if (!dim) return '';
+  if (typeof dim === 'string') return dim;
+  const { length, width, height, unit } = dim;
+  if (length && width && height) return `${length} x ${width} x ${height} ${unit || 'cm'}`;
+  return JSON.stringify(dim);
+}
+
 function normalizeVariants(variants) {
   if (!variants) return null;
   if (variants && typeof variants === 'object' && !Array.isArray(variants) && variants.types && variants.items) return variants;
@@ -199,6 +207,9 @@ function ListingDetails() {
         ...(listing.color ? [{ label: 'Color', value: listing.color }] : []),
         ...(listing.weight ? [{ label: 'Weight', value: listing.weight }] : []),
         ...(listing.sku ? [{ label: 'SKU', value: listing.sku }] : []),
+        ...(listing.warranty_period ? [{ label: 'Warranty', value: listing.warranty_period }] : []),
+        ...(listing.shipping_dimensions ? [{ label: 'Shipping Dimensions', value: formatDimensions(listing.shipping_dimensions) }] : []),
+        ...(listing.tags?.length ? [{ label: 'Tags', value: listing.tags.join(', ') }] : []),
         { label: 'Condition', value: listing.condition },
         { label: 'Category', value: listing.category },
       ],
@@ -450,6 +461,14 @@ function ListingDetails() {
             <div className="mb-6">
               <h3 className="font-bold mb-2 text-lg">{t('listing.description')}</h3>
               <p className="text-zinc-300 whitespace-pre-line leading-relaxed text-sm">{listing.description}</p>
+            </div>
+          )}
+
+          {/* Return Policy */}
+          {listing.return_policy && (
+            <div className="mb-6 p-4 bg-zinc-900/50 rounded-2xl border border-zinc-800">
+              <h3 className="font-bold mb-2 text-sm text-zinc-400 uppercase tracking-wider">Return Policy</h3>
+              <p className="text-zinc-300 text-sm whitespace-pre-line">{listing.return_policy}</p>
             </div>
           )}
 

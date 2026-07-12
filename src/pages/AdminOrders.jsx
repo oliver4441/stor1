@@ -358,10 +358,52 @@ export default function AdminOrders() {
                     {selectedOrder.phone}
                   </div>
                 )}
+                {selectedOrder.alternate_phone && (
+                  <div className="flex items-center gap-2 text-sm text-zinc-400">
+                    <Phone className="w-4 h-4 text-zinc-400 flex-shrink-0" />
+                    <span className="text-zinc-500">Alt:</span> {selectedOrder.alternate_phone}
+                  </div>
+                )}
+                {selectedOrder.id_number && (
+                  <div className="flex items-center gap-2 text-sm text-zinc-400">
+                    <User className="w-4 h-4 text-zinc-400 flex-shrink-0" />
+                    <span className="text-zinc-500">ID:</span> {selectedOrder.id_number}
+                  </div>
+                )}
                 {selectedOrder.address && (
                   <div className="flex items-center gap-2 text-sm text-zinc-400">
                     <MapPin className="w-4 h-4 text-zinc-400 flex-shrink-0" />
                     {selectedOrder.address}{selectedOrder.city ? `, ${selectedOrder.city}` : ''}
+                  </div>
+                )}
+                {selectedOrder.street && (
+                  <div className="flex items-center gap-2 text-sm text-zinc-400">
+                    <MapPin className="w-4 h-4 text-zinc-400 flex-shrink-0" />
+                    <span className="text-zinc-500">Street/Plot:</span> {selectedOrder.street}
+                  </div>
+                )}
+                {selectedOrder.delivery_instructions && (
+                  <div className="flex items-start gap-2 text-sm text-zinc-400">
+                    <MessageSquare className="w-4 h-4 text-zinc-400 flex-shrink-0 mt-0.5" />
+                    <div>
+                      <span className="text-zinc-500 block text-xs">Delivery Instructions</span>
+                      <span>{selectedOrder.delivery_instructions}</span>
+                    </div>
+                  </div>
+                )}
+                {selectedOrder.order_notes && (
+                  <div className="flex items-start gap-2 text-sm text-zinc-400">
+                    <MessageSquare className="w-4 h-4 text-zinc-400 flex-shrink-0 mt-0.5" />
+                    <div>
+                      <span className="text-zinc-500 block text-xs">Order Notes</span>
+                      <span>{selectedOrder.order_notes}</span>
+                    </div>
+                  </div>
+                )}
+                {selectedOrder.delivery_type === 'delivery' && selectedOrder.scheduled_date && (
+                  <div className="flex items-center gap-2 text-sm text-zinc-400">
+                    <Calendar className="w-4 h-4 text-zinc-400 flex-shrink-0" />
+                    <span className="text-zinc-500">Scheduled:</span> {new Date(selectedOrder.scheduled_date).toLocaleDateString('en-KE')}
                   </div>
                 )}
                 <div className="flex items-center gap-2 text-sm text-zinc-400">
@@ -385,6 +427,9 @@ export default function AdminOrders() {
                         <div>
                           <p className="text-sm font-semibold text-white">{item.product_name}</p>
                           <p className="text-xs text-zinc-400">Qty: {item.quantity} x {formatKES(item.price)}</p>
+                          {item.variant_size && <p className="text-xs text-zinc-400">Size: {item.variant_size}</p>}
+                          {item.variant_color && <p className="text-xs text-zinc-400">Color: {item.variant_color}</p>}
+                          {item.variant_label && <p className="text-xs text-zinc-400">{item.variant_label}</p>}
                         </div>
                       </div>
                       <p className="text-sm font-bold text-white">{formatKES(item.price * item.quantity)}</p>

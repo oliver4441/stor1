@@ -36,6 +36,9 @@ export default function AdminProducts() {
     images: [], brand: '', model: '', color: '', weight: '', sku: '', status: 'active', tags: '',
     has_variants: false, variants: [], size_guide: '', product_type: 'new',
     wholesale_enabled: false, wholesale_min_qty: '', wholesale_tiers: [],
+    warranty_period: '', warranty_type: 'seller',
+    shipping_length: '', shipping_width: '', shipping_height: '',
+    return_policy: '', stock_status_label: '', seller_response_time: '',
   });
   const [submitting, setSubmitting] = useState(false);
   const [successMsg, setSuccessMsg] = useState('');
@@ -148,6 +151,9 @@ export default function AdminProducts() {
       sku: generateSKU(cat), status: 'active', tags: '',
       has_variants: true, variants: [], size_guide: '', product_type: 'new',
       wholesale_enabled: false, wholesale_min_qty: '', wholesale_tiers: [],
+      warranty_period: '', warranty_type: 'seller',
+      shipping_length: '', shipping_width: '', shipping_height: '',
+      return_policy: '', stock_status_label: '', seller_response_time: '',
     });
     setModalOpen(true);
   };
@@ -168,6 +174,14 @@ export default function AdminProducts() {
       wholesale_enabled: listing.wholesale_enabled || false,
       wholesale_min_qty: listing.wholesale_min_qty || '',
       wholesale_tiers: Array.isArray(listing.wholesale_tiers) ? listing.wholesale_tiers : [],
+      warranty_period: listing.warranty_period || '',
+      warranty_type: listing.warranty_type || 'seller',
+      shipping_length: listing.shipping_length || '',
+      shipping_width: listing.shipping_width || '',
+      shipping_height: listing.shipping_height || '',
+      return_policy: listing.return_policy || '',
+      stock_status_label: listing.stock_status_label || '',
+      seller_response_time: listing.seller_response_time || '',
     });
     setModalOpen(true);
   };
@@ -246,6 +260,14 @@ export default function AdminProducts() {
       product_type: form.product_type,
       wholesale_enabled: form.wholesale_enabled,
       wholesale_min_qty: form.wholesale_enabled ? (parseInt(form.wholesale_min_qty) || null) : null,
+      warranty_period: form.warranty_period || null,
+      warranty_type: form.warranty_type || 'seller',
+      shipping_length: form.shipping_length ? parseFloat(form.shipping_length) || null : null,
+      shipping_width: form.shipping_width ? parseFloat(form.shipping_width) || null : null,
+      shipping_height: form.shipping_height ? parseFloat(form.shipping_height) || null : null,
+      return_policy: form.return_policy || null,
+      stock_status_label: form.stock_status_label || null,
+      seller_response_time: form.seller_response_time || null,
     };
     const result = editingId ? await updateListing(editingId, payload) : await createListing(payload);
     if (result.success) {
@@ -759,6 +781,67 @@ export default function AdminProducts() {
                 <div>
                   <label className="block text-sm font-bold mb-1.5 text-zinc-300">Tags</label>
                   <input value={form.tags} onChange={e => setForm({...form, tags: e.target.value})} placeholder="e.g. iphone, apple, phone" className="w-full px-4 py-2.5 rounded-xl bg-zinc-800 border border-transparent focus:border-primary focus:outline-none text-white text-sm" />
+                </div>
+              </div>
+
+              {/* ── Warranty & Returns ── */}
+              <div className="border-t border-zinc-800 pt-4">
+                <h4 className="text-sm font-bold text-zinc-300 mb-3 flex items-center gap-2">
+                  <Tag className="w-4 h-4 text-emerald-500" /> Warranty & Returns
+                </h4>
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-sm font-bold mb-1.5 text-zinc-300">Warranty Period</label>
+                    <input value={form.warranty_period} onChange={e => setForm({...form, warranty_period: e.target.value})} placeholder="e.g. 1 year, 6 months" className="w-full px-4 py-2.5 rounded-xl bg-zinc-800 border border-transparent focus:border-primary focus:outline-none text-white text-sm" />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-bold mb-1.5 text-zinc-300">Warranty Type</label>
+                    <select value={form.warranty_type} onChange={e => setForm({...form, warranty_type: e.target.value})} className="w-full px-4 py-2.5 rounded-xl bg-zinc-800 border border-transparent focus:border-primary focus:outline-none text-white text-sm appearance-none">
+                      <option value="seller">Seller Warranty</option>
+                      <option value="manufacturer">Manufacturer Warranty</option>
+                      <option value="no_warranty">No Warranty</option>
+                    </select>
+                  </div>
+                </div>
+                <div className="mt-3">
+                  <label className="block text-sm font-bold mb-1.5 text-zinc-300">Return Policy</label>
+                  <textarea rows="2" value={form.return_policy} onChange={e => setForm({...form, return_policy: e.target.value})} placeholder="e.g. 7-day return window for defective items. Item must be unused with original packaging." className="w-full px-4 py-2.5 rounded-xl bg-zinc-800 border border-transparent focus:border-primary focus:outline-none text-white text-sm resize-none" />
+                </div>
+              </div>
+
+              {/* ── Shipping Dimensions ── */}
+              <div className="border-t border-zinc-800 pt-4">
+                <h4 className="text-sm font-bold text-zinc-300 mb-3 flex items-center gap-2">
+                  <Package className="w-4 h-4 text-blue-500" /> Shipping Dimensions (cm)
+                </h4>
+                <div className="grid grid-cols-3 gap-4">
+                  <div>
+                    <label className="block text-sm font-bold mb-1.5 text-zinc-300">Length</label>
+                    <input type="number" min="0" step="0.1" value={form.shipping_length} onChange={e => setForm({...form, shipping_length: e.target.value})} placeholder="cm" className="w-full px-4 py-2.5 rounded-xl bg-zinc-800 border border-transparent focus:border-primary focus:outline-none text-white text-sm" />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-bold mb-1.5 text-zinc-300">Width</label>
+                    <input type="number" min="0" step="0.1" value={form.shipping_width} onChange={e => setForm({...form, shipping_width: e.target.value})} placeholder="cm" className="w-full px-4 py-2.5 rounded-xl bg-zinc-800 border border-transparent focus:border-primary focus:outline-none text-white text-sm" />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-bold mb-1.5 text-zinc-300">Height</label>
+                    <input type="number" min="0" step="0.1" value={form.shipping_height} onChange={e => setForm({...form, shipping_height: e.target.value})} placeholder="cm" className="w-full px-4 py-2.5 rounded-xl bg-zinc-800 border border-transparent focus:border-primary focus:outline-none text-white text-sm" />
+                  </div>
+                </div>
+              </div>
+
+              {/* ── Additional Info ── */}
+              <div className="border-t border-zinc-800 pt-4">
+                <h4 className="text-sm font-bold text-zinc-300 mb-3">Additional Info</h4>
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-sm font-bold mb-1.5 text-zinc-300">Stock Status Label</label>
+                    <input value={form.stock_status_label} onChange={e => setForm({...form, stock_status_label: e.target.value})} placeholder="e.g. Low stock, Pre-order" className="w-full px-4 py-2.5 rounded-xl bg-zinc-800 border border-transparent focus:border-primary focus:outline-none text-white text-sm" />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-bold mb-1.5 text-zinc-300">Seller Response Time</label>
+                    <input value={form.seller_response_time} onChange={e => setForm({...form, seller_response_time: e.target.value})} placeholder="e.g. Within 1 hour" className="w-full px-4 py-2.5 rounded-xl bg-zinc-800 border border-transparent focus:border-primary focus:outline-none text-white text-sm" />
+                  </div>
                 </div>
               </div>
 

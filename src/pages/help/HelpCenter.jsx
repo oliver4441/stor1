@@ -81,7 +81,7 @@ export default function HelpCenter() {
           </p>
           <div className="flex flex-wrap justify-center gap-3">
             <a
-              href="https://wa.me/254768213649"
+              href="https://wa.me/254746674392"
               target="_blank"
               rel="noopener noreferrer"
               className="inline-flex items-center gap-2 px-4 py-2 bg-green-500 text-white text-sm font-bold rounded-lg hover:bg-green-600 transition-colors"

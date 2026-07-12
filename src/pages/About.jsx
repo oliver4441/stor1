@@ -60,7 +60,7 @@ function About() {
               </div>
               <div className="flex items-center gap-3">
                 <Phone className="w-5 h-5 text-[var(--seasonal-primary,#1a5632)]" />
-                <a href="tel:+254768213649" className="font-bold hover:underline">+254 768 213 649</a>
+                <a href="tel:+254746674392" className="font-bold hover:underline">+254 746 674 392</a>
               </div>
             </div>
           </div>

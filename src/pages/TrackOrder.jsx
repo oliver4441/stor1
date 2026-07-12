@@ -235,11 +235,53 @@ export default function TrackOrder() {
                 <p className="text-zinc-400">Total</p>
                 <p className="font-bold text-[var(--seasonal-primary,#1a5632)]">{formatKES(order.total_amount)}</p>
               </div>
+              {order.phone && (
+                <div>
+                  <p className="text-zinc-400">Phone</p>
+                  <p className="font-bold text-white">{order.phone}</p>
+                </div>
+              )}
+              {order.alternate_phone && (
+                <div>
+                  <p className="text-zinc-400">Alt. Phone</p>
+                  <p className="font-bold text-white">{order.alternate_phone}</p>
+                </div>
+              )}
+              {order.id_number && (
+                <div>
+                  <p className="text-zinc-400">ID Number</p>
+                  <p className="font-bold text-white">{order.id_number}</p>
+                </div>
+              )}
+              {order.delivery_type === 'delivery' && order.scheduled_date && (
+                <div>
+                  <p className="text-zinc-400">Scheduled Date</p>
+                  <p className="font-bold text-white">{new Date(order.scheduled_date).toLocaleDateString('en-KE')}</p>
+                </div>
+              )}
             </div>
             {order.address && (
               <div className="mt-4 flex items-start gap-2 text-sm">
                 <MapPin className="w-4 h-4 text-zinc-400 mt-0.5 flex-shrink-0" />
                 <p className="text-zinc-400">{order.address}{order.city ? `, ${order.city}` : ''}</p>
+              </div>
+            )}
+            {order.street && (
+              <div className="mt-1 flex items-start gap-2 text-sm">
+                <MapPin className="w-4 h-4 text-zinc-400 mt-0.5 flex-shrink-0" />
+                <p className="text-zinc-400">Street/Plot: {order.street}</p>
+              </div>
+            )}
+            {order.delivery_instructions && (
+              <div className="mt-2 p-3 rounded-xl bg-zinc-800/50 text-sm">
+                <p className="text-xs text-zinc-500 mb-1 font-semibold">Delivery Instructions</p>
+                <p className="text-zinc-400">{order.delivery_instructions}</p>
+              </div>
+            )}
+            {order.order_notes && (
+              <div className="mt-2 p-3 rounded-xl bg-zinc-800/50 text-sm">
+                <p className="text-xs text-zinc-500 mb-1 font-semibold">Order Notes</p>
+                <p className="text-zinc-400">{order.order_notes}</p>
               </div>
             )}
 
@@ -424,6 +466,9 @@ export default function TrackOrder() {
                   <div className="flex-grow">
                     <p className="font-bold text-white text-sm">{item.product_name}</p>
                     <p className="text-xs text-zinc-400">Qty: {item.quantity}</p>
+                    {item.variant_size && <p className="text-xs text-zinc-400">Size: {item.variant_size}</p>}
+                    {item.variant_color && <p className="text-xs text-zinc-400">Color: {item.variant_color}</p>}
+                    {item.variant_label && <p className="text-xs text-zinc-400">{item.variant_label}</p>}
                   </div>
                   <p className="font-bold text-white text-sm">{formatKES(item.price * item.quantity)}</p>
                 </div>

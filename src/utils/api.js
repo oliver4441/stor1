@@ -628,7 +628,7 @@ export async function adminDeleteListing(id) {
 
 // ── Orders (Online Store) ────────────────────────────────
 
-export async function createOrder({ items, total, customerName, phone, email, address, city, area, landmark, promoCode, promoCodeId, isFreeDelivery, loyaltyPointsUsed, referralCode, paymentMethod = 'online', guestId }) {
+export async function createOrder({ items, total, customerName, phone, email, address, city, area, landmark, promoCode, promoCodeId, isFreeDelivery, loyaltyPointsUsed, referralCode, paymentMethod = 'online', guestId, delivery_zone_id, delivery_type, pickup_station_id, delivery_estimate_min, delivery_estimate_max, delivery_fee, street, delivery_instructions, alternate_phone, order_notes, scheduled_date, id_number }) {
   const { data: { user }, error: userError } = await supabase.auth.getUser()
 
   if (userError) {
@@ -663,6 +663,18 @@ export async function createOrder({ items, total, customerName, phone, email, ad
         referral_code: referralCode || null,
         payment_method: paymentMethod,
         status: paymentMethod === 'cod' ? 'cod_pending' : 'pending',
+        delivery_zone_id: delivery_zone_id || null,
+        delivery_type: delivery_type || 'delivery',
+        pickup_station_id: pickup_station_id || null,
+        delivery_estimate_min: delivery_estimate_min || null,
+        delivery_estimate_max: delivery_estimate_max || null,
+        delivery_fee: delivery_fee || 0,
+        street: street || null,
+        delivery_instructions: delivery_instructions || null,
+        alternate_phone: alternate_phone || null,
+        order_notes: order_notes || null,
+        scheduled_date: scheduled_date || null,
+        id_number: id_number || null,
       })
       .select('*')
       .single()
@@ -689,6 +701,11 @@ export async function createOrder({ items, total, customerName, phone, email, ad
       quantity: item.quantity,
       subtotal: item.subtotal || (item.price * item.quantity),
       variant: item.variant || null,
+      variant_size: item.variant_size || item.variant?.size || null,
+      variant_color: item.variant_color || item.variant?.colorName || null,
+      variant_label: item.variant_label || item.variant?.label || null,
+      seller_id: item.seller_id || null,
+      listing_snapshot: item.listing_snapshot || null,
     }))
 
     if (orderItems.length > 0) {
@@ -767,6 +784,18 @@ export async function createOrder({ items, total, customerName, phone, email, ad
       referral_code: referralCode || null,
       payment_method: paymentMethod,
       status: paymentMethod === 'cod' ? 'cod_pending' : 'pending',
+      delivery_zone_id: delivery_zone_id || null,
+      delivery_type: delivery_type || 'delivery',
+      pickup_station_id: pickup_station_id || null,
+      delivery_estimate_min: delivery_estimate_min || null,
+      delivery_estimate_max: delivery_estimate_max || null,
+      delivery_fee: delivery_fee || 0,
+      street: street || null,
+      delivery_instructions: delivery_instructions || null,
+      alternate_phone: alternate_phone || null,
+      order_notes: order_notes || null,
+      scheduled_date: scheduled_date || null,
+      id_number: id_number || null,
     })
     .select('*')
     .single()
@@ -791,6 +820,18 @@ export async function createOrder({ items, total, customerName, phone, email, ad
         delivery_discount: isFreeDelivery ? 1 : 0,
         loyalty_points_used: loyaltyPointsUsed || 0,
         referral_code: referralCode || null,
+        delivery_zone_id: delivery_zone_id || null,
+        delivery_type: delivery_type || 'delivery',
+        pickup_station_id: pickup_station_id || null,
+        delivery_estimate_min: delivery_estimate_min || null,
+        delivery_estimate_max: delivery_estimate_max || null,
+        delivery_fee: delivery_fee || 0,
+        street: street || null,
+        delivery_instructions: delivery_instructions || null,
+        alternate_phone: alternate_phone || null,
+        order_notes: order_notes || null,
+        scheduled_date: scheduled_date || null,
+        id_number: id_number || null,
       }
       const { data: retryOrder, error: retryError } = await supabase
         .from('omix_orders')
@@ -832,6 +873,11 @@ export async function createOrder({ items, total, customerName, phone, email, ad
     quantity: item.quantity,
     subtotal: item.subtotal || (item.price * item.quantity),
     variant: item.variant || null,
+    variant_size: item.variant_size || item.variant?.size || null,
+    variant_color: item.variant_color || item.variant?.colorName || null,
+    variant_label: item.variant_label || item.variant?.label || null,
+    seller_id: item.seller_id || null,
+    listing_snapshot: item.listing_snapshot || null,
   }))
 
   if (orderItems.length > 0) {

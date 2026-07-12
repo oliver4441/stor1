@@ -192,6 +192,12 @@ export default function CheckoutPage() {
     email: '',
     area: '',
     landmark: '',
+    street: '',
+    deliveryInstructions: '',
+    alternatePhone: '',
+    orderNotes: '',
+    scheduledDate: '',
+    idNumber: '',
     referralCode: '',
   });
 
@@ -396,7 +402,10 @@ export default function CheckoutPage() {
           quantity: item.quantity,
           subtotal: item.price * item.quantity,
           variant: item.variant || null,
+          variant_size: item.variant?.size || null,
+          variant_color: item.variant?.colorName || null,
           variant_sku: item.variant?.sku || null,
+          variant_label: item.variant?.label || null,
         })),
         total: currentDiscounted,
         customerName: form.fullName.trim(),
@@ -419,6 +428,12 @@ export default function CheckoutPage() {
         delivery_estimate_min: deliveryEstimateMin,
         delivery_estimate_max: deliveryEstimateMax,
         delivery_fee: deliveryFeeAmount,
+        street: form.street.trim() || null,
+        delivery_instructions: form.deliveryInstructions.trim() || null,
+        alternate_phone: form.alternatePhone.trim() || null,
+        order_notes: form.orderNotes.trim() || null,
+        scheduled_date: form.scheduledDate || null,
+        id_number: form.idNumber.trim() || null,
       });
 
       if (!orderResult.success) {
@@ -453,7 +468,7 @@ export default function CheckoutPage() {
 
       const message = `Hello Omix Store!\n\nI have placed a Cash on Delivery order.\n\nOrder ID: #${orderId.toString().slice(0,8).toUpperCase()}\n\nItems:\n${itemList}\n\nTotal: KES ${currentDiscounted.toLocaleString()}\nPayment: Cash on Delivery\n\n${deliveryInfo}\nPhone: ${form.phone}\nName: ${form.fullName}\n\nPlease confirm my order. Asante!`;
 
-      const whatsappUrl = `https://wa.me/254768213649?text=${encodeURIComponent(message)}`;
+      const whatsappUrl = `https://wa.me/254746674392?text=${encodeURIComponent(message)}`;
       window.open(whatsappUrl, '_blank');
 
       clearCart();
@@ -576,6 +591,12 @@ export default function CheckoutPage() {
         delivery_estimate_min: deliveryEstimateMin,
         delivery_estimate_max: deliveryEstimateMax,
         delivery_fee: deliveryFeeAmount,
+        street: form.street.trim() || null,
+        delivery_instructions: form.deliveryInstructions.trim() || null,
+        alternate_phone: form.alternatePhone.trim() || null,
+        order_notes: form.orderNotes.trim() || null,
+        scheduled_date: form.scheduledDate || null,
+        id_number: form.idNumber.trim() || null,
       });
 
       if (!orderResult.success) {
@@ -1036,6 +1057,108 @@ export default function CheckoutPage() {
                       <span>{form.landmark}, {form.area}, Kericho</span>
                     </div>
                   )}
+
+                  {/* Street / Plot Number */}
+                  <input
+                    type="text"
+                    value={form.street}
+                    onChange={handleChange}
+                    name="street"
+                    placeholder="Street / Plot / Building Number (optional)"
+                    className="w-full text-sm rounded-xl px-3.5 py-3 focus:outline-none transition-all"
+                    style={{
+                      backgroundColor: C.bgGray,
+                      color: C.text,
+                      border: `1px solid ${C.border}`,
+                    }}
+                  />
+                </div>
+              </div>
+              }
+
+              {/* ── Delivery Instructions & Additional Info ── */}
+              {deliveryMethod === 'delivery' && <div>
+                <label className="block text-xs font-bold mb-1.5 uppercase tracking-wider" style={{ color: C.textMuted }}>
+                  Delivery Instructions & Additional Info
+                </label>
+                <div className="space-y-2">
+                  {/* Delivery Instructions */}
+                  <textarea
+                    value={form.deliveryInstructions}
+                    onChange={(e) => setForm({ ...form, deliveryInstructions: e.target.value })}
+                    name="deliveryInstructions"
+                    placeholder="Delivery instructions (e.g. leave at gate, call on arrival)"
+                    rows={2}
+                    className="w-full text-sm rounded-xl px-3.5 py-3 focus:outline-none transition-all resize-none"
+                    style={{
+                      backgroundColor: C.bgGray,
+                      color: C.text,
+                      border: `1px solid ${C.border}`,
+                    }}
+                  />
+
+                  {/* Alternate Phone */}
+                  <input
+                    type="tel"
+                    value={form.alternatePhone}
+                    onChange={(e) => setForm({ ...form, alternatePhone: e.target.value })}
+                    name="alternatePhone"
+                    placeholder="Alternate phone number (optional)"
+                    className="w-full text-sm rounded-xl px-3.5 py-3 focus:outline-none transition-all"
+                    style={{
+                      backgroundColor: C.bgGray,
+                      color: C.text,
+                      border: `1px solid ${C.border}`,
+                    }}
+                  />
+
+                  {/* Order Notes */}
+                  <textarea
+                    value={form.orderNotes}
+                    onChange={(e) => setForm({ ...form, orderNotes: e.target.value })}
+                    name="orderNotes"
+                    placeholder="Order notes / special requests (optional)"
+                    rows={2}
+                    className="w-full text-sm rounded-xl px-3.5 py-3 focus:outline-none transition-all resize-none"
+                    style={{
+                      backgroundColor: C.bgGray,
+                      color: C.text,
+                      border: `1px solid ${C.border}`,
+                    }}
+                  />
+
+                  {/* ID Number */}
+                  <input
+                    type="text"
+                    value={form.idNumber}
+                    onChange={(e) => setForm({ ...form, idNumber: e.target.value })}
+                    name="idNumber"
+                    placeholder="ID / ID Number (optional, for delivery verification)"
+                    className="w-full text-sm rounded-xl px-3.5 py-3 focus:outline-none transition-all"
+                    style={{
+                      backgroundColor: C.bgGray,
+                      color: C.text,
+                      border: `1px solid ${C.border}`,
+                    }}
+                  />
+
+                  {/* Scheduled Date */}
+                  <div>
+                    <p className="text-[11px] font-semibold mb-1" style={{ color: C.textMuted }}>Preferred delivery date (optional)</p>
+                    <input
+                      type="date"
+                      value={form.scheduledDate}
+                      onChange={(e) => setForm({ ...form, scheduledDate: e.target.value })}
+                      name="scheduledDate"
+                      className="w-full text-sm rounded-xl px-3.5 py-3 focus:outline-none transition-all"
+                      min={new Date(Date.now() + 86400000).toISOString().split('T')[0]}
+                      style={{
+                        backgroundColor: C.bgGray,
+                        color: C.text,
+                        border: `1px solid ${C.border}`,
+                      }}
+                    />
+                  </div>
                 </div>
               </div>
               }
