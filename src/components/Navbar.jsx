@@ -92,6 +92,11 @@ function Navbar() {
   // Close menu on route change
   useEffect(() => { setMenuOpen(false); }, [location.pathname]);
 
+  // Filter out how-it-works for logged-in users
+  const visibleLinks = FEATURE_LINKS.filter(
+    link => !(link.to === '/how-it-works' && user)
+  );
+
   // Close menu on Escape key
   const handleKeyDown = useCallback((e) => {
     if (e.key === 'Escape') setMenuOpen(false);
@@ -154,7 +159,7 @@ function Navbar() {
 
           {/* Desktop (lg+): Feature Links */}
           <div className="hidden lg:flex items-center gap-1.5">
-            {FEATURE_LINKS.map(link => {
+            {visibleLinks.map(link => {
               const Icon = link.icon;
               const isActive = !link.external && location.pathname === link.to;
               const linkClass = `relative flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-sm font-bold transition-all duration-300 group ${
@@ -346,7 +351,7 @@ function Navbar() {
 
         {/* Navigation Links */}
         <div className="flex-1 overflow-y-auto px-4 py-4 space-y-1">
-          {FEATURE_LINKS.map(link => {
+          {visibleLinks.map(link => {
             const Icon = link.icon;
             const isActive = !link.external && location.pathname === link.to;
             const linkClass = `flex items-center gap-3 px-4 py-3 rounded-2xl text-sm font-bold transition-all ${

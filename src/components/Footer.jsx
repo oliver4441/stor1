@@ -1,8 +1,10 @@
 import { Link } from 'react-router-dom'
+import { useAuth } from '../context/AuthContext'
 import { useLang } from '../utils/lang'
 import { useActiveTheme } from '../context/SeasonalContext'
 
 function Footer() {
+  const { user } = useAuth();
   const { t } = useLang()
   const theme = useActiveTheme()
   const footerBg = theme?.colors?.footerBg
@@ -34,7 +36,7 @@ function Footer() {
         </p>
         <div className="flex gap-4 flex-wrap justify-center">
           <Link to="/affiliate" className="text-sm transition-colors" style={{ color: footerLink || undefined }}>Affiliate Program</Link>
-          <Link to="/how-it-works" className="text-sm transition-colors" style={{ color: footerLink || undefined }}>{t('footer.howItWorks')}</Link>
+          {!user && <Link to="/how-it-works" className="text-sm transition-colors" style={{ color: footerLink || undefined }}>{t('footer.howItWorks')}</Link>}
           <Link to="/about" className="text-sm transition-colors" style={{ color: footerLink || undefined }}>{t('footer.about')}</Link>
           <Link to="/help" className="text-sm transition-colors" style={{ color: footerLink || undefined }}>{t('footer.helpCenter')}</Link>
           <Link to="/install" className="text-sm transition-colors" style={{ color: footerLink || undefined }}>{t('footer.install')}</Link>

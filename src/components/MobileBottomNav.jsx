@@ -93,7 +93,9 @@ export default function MobileBottomNav() {
     return location.pathname === path;
   };
 
-  const cascadeItems = user ? CASCADE_ITEMS : [...AUTH_ITEMS, ...CASCADE_ITEMS];
+  const cascadeItems = user
+    ? CASCADE_ITEMS.filter(item => item.to !== '/how-it-works')
+    : [...AUTH_ITEMS, ...CASCADE_ITEMS];
 
   return (
     <>

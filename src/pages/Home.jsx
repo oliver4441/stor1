@@ -278,7 +278,7 @@ function Home() {
           </video>
         </div>
         <p className="text-center text-sm text-zinc-400 mt-3">
-          <Link to="/how-it-works" className="text-[var(--seasonal-primary,#1a5632)] font-bold hover:underline">{t('home.howItWorks')}</Link>
+          {!user && <Link to="/how-it-works" className="text-[var(--seasonal-primary,#1a5632)] font-bold hover:underline">{t('home.howItWorks')}</Link>}
         </p>
       </div>
 
