@@ -742,7 +742,8 @@ export default function AdminProducts() {
                 </div>
               </div>
 
-              <div className="grid grid-cols-3 gap-4">
+              {/* ── Brand / Model / Color ── */}
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                 <div>
                   <label className="block text-sm font-bold mb-1.5 text-zinc-300">Brand</label>
                   <input value={form.brand} onChange={e => setForm({...form, brand: e.target.value})} placeholder="e.g. Apple" className="w-full px-4 py-2.5 rounded-xl bg-zinc-800 border border-transparent focus:border-primary focus:outline-none text-white text-sm" />
@@ -757,14 +758,14 @@ export default function AdminProducts() {
                 </div>
               </div>
 
-              <div className="grid grid-cols-3 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                 <div>
                   <label className="block text-sm font-bold mb-1.5 text-zinc-300">Weight</label>
                   <input value={form.weight} onChange={e => setForm({...form, weight: e.target.value})} placeholder="e.g. 0.5kg" className="w-full px-4 py-2.5 rounded-xl bg-zinc-800 border border-transparent focus:border-primary focus:outline-none text-white text-sm" />
                 </div>
                 <div>
                   <label className="block text-sm font-bold mb-1.5 text-zinc-300">SKU <span className="font-normal text-zinc-400">(auto-generated)</span></label>
-                  <div className="flex gap-2">
+                  <div className="flex flex-col sm:flex-row gap-2">
                     <input
                       value={form.sku}
                       onChange={e => setForm({...form, sku: e.target.value})}
@@ -817,7 +818,7 @@ export default function AdminProducts() {
                 <h4 className="text-sm font-bold text-zinc-300 mb-3 flex items-center gap-2">
                   <Package className="w-4 h-4 text-blue-500" /> Shipping Dimensions (cm)
                 </h4>
-                <div className="grid grid-cols-3 gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                   <div>
                     <label className="block text-sm font-bold mb-1.5 text-zinc-300">Length</label>
                     <input type="number" min="0" step="0.1" value={form.shipping_length} onChange={e => setForm({...form, shipping_length: e.target.value})} placeholder="cm" className="w-full px-4 py-2.5 rounded-xl bg-zinc-800 border border-transparent focus:border-primary focus:outline-none text-white text-sm" />
@@ -850,7 +851,7 @@ export default function AdminProducts() {
 
               {/* Variant Manager — size/color variants for ALL products */}
               {form.variants.length === 0 && (
-                <div className={`flex items-center gap-2 p-3 border rounded-xl ${
+                <div className={`flex flex-col sm:flex-row items-start sm:items-center gap-2 p-3 border rounded-xl ${
                   VARIANT_REQUIRED_CATEGORIES.includes(form.category)
                     ? 'bg-red-900/30 border-red-700'
                     : 'bg-amber-900/20 border-amber-800'
