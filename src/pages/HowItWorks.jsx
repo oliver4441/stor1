@@ -1,11 +1,15 @@
 import { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, Navigate } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext';
 import {
   Search, ShoppingCart, CreditCard, Truck, Shield, MessageCircle,
   ChevronDown, ChevronUp, Star, ArrowRight, HelpCircle, Smartphone
 } from 'lucide-react';
 
 function HowItWorks() {
+  const { user } = useAuth();
+  if (user) return <Navigate to="/" replace />;
+
   const [openFaq, setOpenFaq] = useState(null);
 
   const toggleFaq = (index) => {
