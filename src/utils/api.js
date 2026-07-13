@@ -159,6 +159,9 @@ export async function advancedSearch(filters = {}) {
   if (filters.location) params.set('location', filters.location);
   if (filters.brand) params.set('brand', filters.brand);
   if (filters.availability) params.set('availability', filters.availability);
+  if (filters.min_rating) params.set('min_rating', filters.min_rating);
+  if (filters.has_discount) params.set('has_discount', filters.has_discount);
+  if (filters.size) params.set('size', filters.size);
   if (filters.page) params.set('page', filters.page);
   if (filters.limit) params.set('limit', filters.limit);
   if (filters.sort) params.set('sort', filters.sort);
@@ -399,6 +402,14 @@ export async function createListing(formData) {
     console.error('createListing error:', error)
     return { success: false, error: error.message }
   }
+
+  // Sync to Meilisearch (fire-and-forget — don't block the response)
+  if (data?.id) {
+    meiliSyncProduct(data.id).catch(err =>
+      console.warn('[MeiliSync] createListing background sync:', err)
+    );
+  }
+
   return { success: true, id: data?.id }
 }
 
@@ -452,6 +463,12 @@ export async function updateListing(id, formData) {
     console.error('updateListing error:', error)
     return { success: false, error: error.message }
   }
+
+  // Sync to Meilisearch (fire-and-forget)
+  meiliSyncProduct(id).catch(err =>
+    console.warn('[MeiliSync] updateListing background sync:', err)
+  );
+
   return { success: true, id: data?.id }
 }
 
@@ -585,7 +602,45 @@ export async function deleteListing(id) {
     console.error('deleteListing error:', error)
     return { success: false, error: error.message }
   }
+
+  // Remove from Meilisearch (fire-and-forget)
+  meiliRemoveProduct(id).catch(err =>
+    console.warn('[MeiliSync] deleteListing background removal:', err)
+  );
+
   return { success: true }
+}
+
+// ── Meilisearch sync helpers ──────────────────────────────────────
+
+async function meiliSyncProduct(id) {
+  try {
+    // Fetch the full product with category name from DB
+    const { data: product, error } = await supabase
+      .from('listings')
+      .select('*')
+      .eq('id', id)
+      .maybeSingle();
+    if (error || !product) {
+      console.warn('[MeiliSync] Could not fetch product', id, error?.message);
+      return;
+    }
+    await fetch(`${API_BASE}/api/search/sync`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ product }),
+    });
+  } catch (err) {
+    console.warn('[MeiliSync] syncProduct error:', err.message);
+  }
+}
+
+async function meiliRemoveProduct(id) {
+  try {
+    await fetch(`${API_BASE}/api/search/sync/${id}`, { method: 'DELETE' });
+  } catch (err) {
+    console.warn('[MeiliSync] removeProduct error:', err.message);
+  }
 }
 
 // Admin: fetch all listings

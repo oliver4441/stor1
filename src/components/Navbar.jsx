@@ -279,7 +279,7 @@ function Navbar() {
       </nav>
 
       {/* ── Category Bar (Jumia-style mega menu) ── */}
-      <div className="border-b border-zinc-800/50 bg-zinc-950/60 backdrop-blur-sm sticky z-40 transition-transform duration-200 ease-out" style={{ top: '56px' }}>
+      <div className={`border-b border-zinc-800/50 bg-zinc-950/60 backdrop-blur-sm sticky z-40 transition-all duration-200 ease-out ${navVisible ? 'top-[56px]' : 'top-0'}`}>
         <div className="max-w-7xl mx-auto px-4">
           <div className="flex items-center overflow-x-auto scrollbar-hide gap-0.5 py-1.5 -mx-2 px-2">
             {CATEGORIES.filter(c => c !== 'All').slice(0, 12).map(cat => {
