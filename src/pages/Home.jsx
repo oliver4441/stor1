@@ -223,7 +223,7 @@ function Home() {
         </div>
       </div>
 
-      </> {/* end hero section conditional */}
+      </>
       )}
 
       {/* Trust Strip */}
