@@ -38,6 +38,23 @@
     <meta name="geo.placename" content="Kericho" />
     <!-- Canonical -->
     <link rel="canonical" href="https://www.omixstore.co.ke" />
+    <!-- Tidio Live Chat -->
+    <script src="//code.tidio.co/loth2aq1yxllnphoutbd0thpkfryp3hx.js" async></script>
+    <style>
+      /* Move Tidio to the left so it doesn't overlap Nia (right side) and cart */
+      #tidio-chat, #tidio-chat-iframe, [id^="tidio-chat"] {
+        right: auto !important;
+        left: 16px !important;
+      }
+      #tidio-chat-iframe {
+        bottom: 100px !important;
+      }
+      @media (min-width: 640px) {
+        #tidio-chat, #tidio-chat-iframe, [id^="tidio-chat"] {
+          left: 24px !important;
+        }
+      }
+    </style>
     <!-- Google Analytics (gtag.js) -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=%VITE_GA_MEASUREMENT_ID%"></script>
     <script>
