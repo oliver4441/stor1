@@ -115,6 +115,8 @@ function Home() {
       {/* Flash Deals Bar */}
       <FlashDealsBar />
 
+      {!user && (
+        <>
       {/* Hero Section */}
       <div className="relative overflow-hidden mb-8">
         {/* Gradient Background — theme-aware */}
@@ -220,6 +222,9 @@ function Home() {
           </div>
         </div>
       </div>
+
+      </> {/* end hero section conditional */}
+      )}
 
       {/* Trust Strip */}
       <div className="max-w-7xl mx-auto px-4 mb-8">

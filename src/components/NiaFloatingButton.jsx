@@ -6,14 +6,14 @@ export default function NiaFloatingButton() {
   const { isOpen, openChat, closeChat, COLORS } = useNiaChat();
 
   return (
-    <div className="fixed bottom-24 right-4 sm:bottom-24 sm:right-6 z-[55] flex flex-col items-center gap-1.5">
+    <div className="fixed bottom-28 right-4 sm:bottom-28 sm:right-6 z-[55] flex flex-col items-center gap-1.5">
       {/* "Ask Nia" tag above the button */}
       {!isOpen && (
         <span
           className="text-[10px] font-black text-white px-2.5 py-0.5 rounded-full shadow-md whitespace-nowrap"
           style={{ backgroundColor: COLORS.accent }}
         >
-          Ask Nia
+          Live Chat
         </span>
       )}
       {/* Button */}
