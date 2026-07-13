@@ -13,11 +13,25 @@ import {
   Tag,
   Layers,
   Star,
+  Smartphone,
+  Monitor,
+  Sofa,
+  Shirt,
+  Wrench,
+  Car,
+  Home,
+  BookOpen,
+  Dumbbell,
+  Heart,
+  Coffee,
+  Cookie,
+  UtensilsCrossed,
+  MoreHorizontal,
 } from 'lucide-react';
 import ProductCard from '../components/ProductCard';
 import { ProductCardSkeleton } from '../components/Skeleton';
 import { advancedSearch } from '../utils/api';
-import { CATEGORIES, getPresetSizes } from '../utils/constants';
+import { CATEGORY_INFO, getPresetSizes } from '../utils/constants';
 
 const CONDITIONS = ['New', 'Used', 'Refurbished'];
 const AVAILABILITY_OPTIONS = [
@@ -26,6 +40,32 @@ const AVAILABILITY_OPTIONS = [
   { value: 'out_of_stock', label: 'Out of Stock' },
 ];
 const ITEMS_PER_PAGE = 20;
+
+// Icon mapping for visual category grid
+const CATEGORY_ICONS = {
+  'Electronics': Smartphone,
+  'Furniture': Sofa,
+  'Clothing': Shirt,
+  'Services': Wrench,
+  'Vehicles': Car,
+  'Home & Garden': Home,
+  'Books': BookOpen,
+  'Sports': Dumbbell,
+  'Health & Beauty': Heart,
+  'Food': UtensilsCrossed,
+  'Drinks': Coffee,
+  'Snacks': Cookie,
+  'Bakery': MoreHorizontal,
+  'Others': Monitor,
+};
+
+// Sort options for the dropdown
+const SORT_OPTIONS = [
+  { value: '', label: 'Newest First' },
+  { value: 'price_asc', label: 'Price: Low to High' },
+  { value: 'price_desc', label: 'Price: High to Low' },
+  { value: 'rating_desc', label: 'Best Rated' },
+];
 
 function SearchPage() {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -43,6 +83,7 @@ function SearchPage() {
     min_rating: searchParams.get('min_rating') || '',
     has_discount: searchParams.get('has_discount') || '',
     size: searchParams.get('size') || '',
+    sort: searchParams.get('sort') || '',
     page: parseInt(searchParams.get('page')) || 1,
   }), [searchParams]);
 
@@ -122,6 +163,7 @@ function SearchPage() {
       min_rating: '',
       has_discount: '',
       size: '',
+      sort: '',
       page: 1,
     };
     setFilters(cleared);
@@ -172,22 +214,30 @@ function SearchPage() {
 
       {/* Category */}
       <div>
-        <label className="flex items-center gap-1.5 text-xs font-bold text-zinc-400 uppercase tracking-wider mb-2">
+        <label className="flex items-center gap-1.5 text-xs font-bold text-zinc-400 uppercase tracking-wider mb-3">
           <Layers className="w-3.5 h-3.5" />
           Category
         </label>
-        <select
-          value={filters.category}
-          onChange={(e) => handleFilterChange('category', e.target.value)}
-          className="w-full bg-zinc-900 border border-zinc-800 rounded-xl px-3 py-2.5 text-sm text-white focus:border-[var(--seasonal-primary,#1a5632)] focus:outline-none"
-        >
-          <option value="">All Categories</option>
-          {CATEGORIES.filter((c) => c !== 'All').map((cat) => (
-            <option key={cat} value={cat}>
-              {cat}
-            </option>
-          ))}
-        </select>
+        <div className="grid grid-cols-2 gap-1.5">
+          {Object.entries(CATEGORY_INFO).map(([cat, info]) => {
+            const Icon = CATEGORY_ICONS[cat];
+            const isSelected = filters.category === cat;
+            return (
+              <button
+                key={cat}
+                onClick={() => handleFilterChange('category', isSelected ? '' : cat)}
+                className={`flex items-center gap-2 px-2.5 py-2 rounded-xl text-xs font-semibold transition-all ${
+                  isSelected
+                    ? 'bg-[var(--seasonal-primary,#1a5632)] text-white shadow-md'
+                    : 'bg-zinc-800/60 text-zinc-300 hover:bg-zinc-700 hover:text-white'
+                }`}
+              >
+                {Icon && <Icon className="w-4 h-4 shrink-0" />}
+                <span className="truncate">{cat}</span>
+              </button>
+            );
+          })}
+        </div>
       </div>
 
       {/* Price Range */}
@@ -543,7 +593,7 @@ function SearchPage() {
         </div>
 
         {/* ── Mobile Filter Toggle ── */}
-        <div className="flex items-center justify-between mb-4 lg:hidden">
+        <div className="flex items-center justify-between mb-2 lg:hidden">
           <p className="text-sm text-zinc-400">
             {loading ? 'Searching...' : `${total} result${total !== 1 ? 's' : ''}`}
           </p>
@@ -558,12 +608,39 @@ function SearchPage() {
             )}
           </button>
         </div>
+        {/* Mobile sort */}
+        <div className="lg:hidden mb-4">
+          <select
+            value={filters.sort}
+            onChange={(e) => handleFilterChange('sort', e.target.value)}
+            className="w-full bg-zinc-900 border border-zinc-800 rounded-xl px-3 py-2.5 text-sm text-white focus:border-[var(--seasonal-primary,#1a5632)] focus:outline-none"
+          >
+            {SORT_OPTIONS.map((opt) => (
+              <option key={opt.value} value={opt.value}>
+                {opt.label}
+              </option>
+            ))}
+          </select>
+        </div>
 
         {/* ── Desktop results count ── */}
         <div className="hidden lg:flex items-center justify-between mb-4">
-          <p className="text-sm text-zinc-400">
-            {loading ? 'Searching...' : `${total} result${total !== 1 ? 's' : ''}`}
-          </p>
+          <div className="flex items-center gap-4">
+            <p className="text-sm text-zinc-400">
+              {loading ? 'Searching...' : `${total} result${total !== 1 ? 's' : ''}`}
+            </p>
+            <select
+              value={filters.sort}
+              onChange={(e) => handleFilterChange('sort', e.target.value)}
+              className="bg-zinc-900 border border-zinc-800 rounded-xl px-3 py-1.5 text-xs text-white focus:border-[var(--seasonal-primary,#1a5632)] focus:outline-none"
+            >
+              {SORT_OPTIONS.map((opt) => (
+                <option key={opt.value} value={opt.value}>
+                  {opt.label}
+                </option>
+              ))}
+            </select>
+          </div>
           {hasActiveFilters && (
             <button
               onClick={clearAllFilters}

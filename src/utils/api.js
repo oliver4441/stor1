@@ -161,6 +161,7 @@ export async function advancedSearch(filters = {}) {
   if (filters.availability) params.set('availability', filters.availability);
   if (filters.page) params.set('page', filters.page);
   if (filters.limit) params.set('limit', filters.limit);
+  if (filters.sort) params.set('sort', filters.sort);
   try {
     const res = await fetch(`${API_BASE_SEARCH}/api/search?${params.toString()}`);
     if (!res.ok) throw new Error('Search request failed');

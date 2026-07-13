@@ -9,7 +9,7 @@ export default function FloatingCartButton() {
   const [bump, setBump] = useState(false);
   
   // Draggable state
-  const [position, setPosition] = useState({ x: 16, y: 160 }); // Default to match bottom-40 right-4
+  const [position, setPosition] = useState({ x: 16, y: 192 }); // Default to match bottom-48 right-4
   const [isDragging, setIsDragging] = useState(false);
   const dragStartPos = useRef({ x: 0, y: 0 });
 
@@ -71,7 +71,7 @@ export default function FloatingCartButton() {
       {/* Floating Cart Button */}
       <button
         onClick={() => setCartOpen(!cartOpen)}
-        className={`fixed bottom-40 right-4 sm:bottom-44 sm:right-6 z-50 w-14 h-14 rounded-full flex items-center justify-center shadow-2xl hover:scale-110 transition-all duration-300 bg-zinc-900 dark:bg-white ${bump ? 'animate-bounce-once' : ''}`}
+        className={`fixed bottom-48 right-4 sm:bottom-52 sm:right-6 z-50 w-14 h-14 rounded-full flex items-center justify-center shadow-2xl hover:scale-110 transition-all duration-300 bg-zinc-900 dark:bg-white ${bump ? 'animate-bounce-once' : ''}`}
         style={{ 
           bottom: position.y, 
           right: position.x, 
@@ -92,7 +92,7 @@ export default function FloatingCartButton() {
       {cartOpen && (
         <>
           <div className="fixed inset-0 z-40" onClick={() => setCartOpen(false)} />
-          <div className="fixed bottom-44 right-4 sm:bottom-48 sm:right-6 w-[calc(100%-2rem)] sm:w-[380px] bg-zinc-900 rounded-2xl shadow-2xl border border-zinc-800 z-50 overflow-hidden">
+          <div className="fixed bottom-52 right-4 sm:bottom-56 sm:right-6 w-[calc(100%-2rem)] sm:w-[380px] bg-zinc-900 rounded-2xl shadow-2xl border border-zinc-800 z-50 overflow-hidden">
             <div className="flex items-center justify-between px-5 py-4 border-b border-zinc-100 dark:border-zinc-800">
               <h3 className="font-black text-lg text-white">Cart ({cartCount})</h3>
               <button onClick={() => setCartOpen(false)} className="p-1.5 rounded-lg hover:bg-zinc-800 text-zinc-400" aria-label="Close cart popup">

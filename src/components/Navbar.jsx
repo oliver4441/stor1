@@ -1,6 +1,12 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { User, Globe, Shield, Package, HelpCircle, Info, LogIn, UserPlus, Menu, X, Download, ShoppingCart, ChevronDown, LogOut, RefreshCw, DollarSign, Store } from 'lucide-react';
+import {
+  User, Globe, Shield, Package, HelpCircle, Info, LogIn, UserPlus, Menu, X, Download,
+  ShoppingCart, ChevronDown, LogOut, RefreshCw, DollarSign, Store,
+  Smartphone, Sofa, Shirt, Wrench, Car, Home, BookOpen, Dumbbell, Heart,
+  UtensilsCrossed, Coffee, Cookie, ChefHat, Grid, Tag, ChevronRight,
+  Layers
+} from 'lucide-react';
 import { supabase } from '../utils/supabase';
 import { useLang } from '../utils/lang';
 import { isAdmin, isAffiliate, getSellerProfile } from '../utils/api';
@@ -9,6 +15,18 @@ import { useActiveTheme } from '../context/SeasonalContext';
 import { sounds } from '../utils/sounds';
 import NotificationBell from './NotificationBell';
 import { WhatsAppNavButton } from './WhatsAppButtons';
+import { CATEGORIES, CATEGORY_INFO } from '../utils/constants';
+
+// Icon resolver: maps CATEGORY_INFO.icon string names to Lucide components
+const CATEGORY_ICON_MAP = {
+  Smartphone, Sofa, Shirt, Wrench, Car, Home, BookOpen, Dumbbell, Heart,
+  UtensilsCrossed, Coffee, Cookie, ChefHat, Grid, Tag, Layers,
+};
+
+function CategoryIcon({ iconName, className }) {
+  const Icon = CATEGORY_ICON_MAP[iconName] || Tag;
+  return <Icon className={className} />;
+}
 
 const FEATURE_LINKS = [
   { to: '/refurbished', label: 'Refurbished', icon: RefreshCw, color: 'from-orange-500 to-amber-600', glow: 'shadow-orange-500/40' },
@@ -260,6 +278,39 @@ function Navbar() {
         </div>
       </nav>
 
+      {/* ── Category Bar (Jumia-style mega menu) ── */}
+      <div className="border-b border-zinc-800/50 bg-zinc-950/60 backdrop-blur-sm sticky z-40 transition-transform duration-200 ease-out" style={{ top: '56px' }}>
+        <div className="max-w-7xl mx-auto px-4">
+          <div className="flex items-center overflow-x-auto scrollbar-hide gap-0.5 py-1.5 -mx-2 px-2">
+            {CATEGORIES.filter(c => c !== 'All').slice(0, 12).map(cat => {
+              const info = CATEGORY_INFO[cat] || { icon: 'Tag', color: 'from-zinc-500 to-zinc-600', glow: 'shadow-zinc-500/40' };
+              const isActive = location.pathname === '/search' && new URLSearchParams(location.search).get('category') === cat;
+              return (
+                <Link
+                  key={cat}
+                  to={`/search?category=${encodeURIComponent(cat)}`}
+                  className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-[11px] font-bold whitespace-nowrap transition-all flex-shrink-0 ${
+                    isActive
+                      ? `bg-gradient-to-r ${info.color} text-white shadow-sm ${info.glow}`
+                      : 'text-zinc-300 hover:text-white hover:bg-zinc-800 border border-transparent hover:border-zinc-700'
+                  }`}
+                >
+                  <CategoryIcon iconName={info.icon} className="w-3.5 h-3.5" />
+                  {cat}
+                </Link>
+              );
+            })}
+            <Link
+              to="/search"
+              className="flex items-center gap-1 px-3 py-1.5 rounded-xl text-[11px] font-bold whitespace-nowrap text-zinc-500 hover:text-zinc-300 hover:bg-zinc-800 transition-all flex-shrink-0"
+            >
+              <ChevronRight className="w-3 h-3" />
+              All
+            </Link>
+          </div>
+        </div>
+      </div>
+
       {/* Mobile Sidebar — rendered OUTSIDE nav to avoid CSS transform containing block bug */}
       {/* Backdrop overlay */}
       <div
@@ -319,7 +370,34 @@ function Navbar() {
             );
           })}
 
-          {/* Divider */}
+          {/* ── Shop by Category (Mobile) ── */}
+          <div className="border-t border-zinc-800 my-1" />
+          <div className="px-1 py-2">
+            <div className="flex items-center gap-2 px-3 mb-2">
+              <Layers className="w-4 h-4 text-zinc-500" />
+              <span className="text-[11px] font-bold text-zinc-500 uppercase tracking-wider">Shop by Category</span>
+            </div>
+            <div className="grid grid-cols-2 gap-1">
+              {CATEGORIES.filter(c => c !== 'All').map(cat => {
+                const info = CATEGORY_INFO[cat] || { icon: 'Tag', color: 'from-zinc-500 to-zinc-600' };
+                return (
+                  <Link
+                    key={cat}
+                    to={`/search?category=${encodeURIComponent(cat)}`}
+                    className="flex items-center gap-2.5 px-3 py-2.5 rounded-xl text-sm font-medium text-zinc-300 hover:bg-zinc-800 transition-colors"
+                    onClick={() => setMenuOpen(false)}
+                  >
+                    <span className={`w-7 h-7 rounded-lg bg-gradient-to-br ${info.color} flex items-center justify-center flex-shrink-0`}>
+                      <CategoryIcon iconName={info.icon} className="w-3.5 h-3.5 text-white" />
+                    </span>
+                    {cat}
+                  </Link>
+                );
+              })}
+            </div>
+          </div>
+
+          {/* Divider — account section */}
           <div className="border-t border-zinc-800 my-1" />
 
           {/* Account section */}

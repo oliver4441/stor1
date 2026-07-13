@@ -54,6 +54,29 @@ export const VARIANT_REQUIRED_CATEGORIES = [
   'Health & Beauty',
 ];
 
+// Category display info: icons (lucide names) and gradient colors for nav/filter
+export const CATEGORY_INFO = {
+  'Electronics':      { icon: 'Smartphone',    color: 'from-cyan-500 to-blue-600',     glow: 'shadow-cyan-500/40' },
+  'Furniture':        { icon: 'Sofa',           color: 'from-amber-600 to-orange-600',  glow: 'shadow-amber-600/40' },
+  'Clothing':         { icon: 'Shirt',          color: 'from-pink-500 to-rose-600',     glow: 'shadow-pink-500/40' },
+  'Services':         { icon: 'Wrench',         color: 'from-slate-500 to-zinc-600',    glow: 'shadow-slate-500/40' },
+  'Vehicles':         { icon: 'Car',            color: 'from-sky-500 to-indigo-600',     glow: 'shadow-sky-500/40' },
+  'Home & Garden':    { icon: 'Home',           color: 'from-emerald-500 to-green-600',  glow: 'shadow-emerald-500/40' },
+  'Books':            { icon: 'BookOpen',       color: 'from-violet-500 to-purple-600',  glow: 'shadow-violet-500/40' },
+  'Sports':           { icon: 'Dumbbell',       color: 'from-lime-500 to-green-600',    glow: 'shadow-lime-500/40' },
+  'Health & Beauty':  { icon: 'Heart',          color: 'from-red-500 to-rose-600',      glow: 'shadow-red-500/40' },
+  'Food':             { icon: 'UtensilsCrossed', color: 'from-orange-500 to-amber-600',  glow: 'shadow-orange-500/40' },
+  'Drinks':           { icon: 'Coffee',         color: 'from-teal-500 to-cyan-600',     glow: 'shadow-teal-500/40' },
+  'Snacks':           { icon: 'Cookie',         color: 'from-yellow-500 to-amber-600',  glow: 'shadow-yellow-500/40' },
+  'Bakery':           { icon: 'ChefHat',        color: 'from-stone-500 to-amber-600',   glow: 'shadow-stone-500/40' },
+  'Others':           { icon: 'Grid',           color: 'from-zinc-500 to-zinc-600',     glow: 'shadow-zinc-500/40' },
+};
+
+// Get category info with safe fallback
+export function getCategoryInfo(category) {
+  return CATEGORY_INFO[category] || { icon: 'Tag', color: 'from-zinc-500 to-zinc-600', glow: 'shadow-zinc-500/40' };
+}
+
 // Category name → category_id mapping (from Supabase categories table)
 export const CATEGORY_TO_ID = {
   'Electronics': 1,

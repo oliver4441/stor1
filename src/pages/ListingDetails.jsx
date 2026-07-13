@@ -1,7 +1,24 @@
 import { useState, useEffect, useMemo } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
-import { MapPin, CheckCircle, ShoppingCart, Minus, Plus, Package, Truck, Shield, Tag, Cpu, HardDrive, Monitor, Battery, Camera, Wifi, Bell, Heart, Percent, MessageCircle, Store } from 'lucide-react';
+import { MapPin, CheckCircle, ShoppingCart, Minus, Plus, Package, Truck, Shield, Tag, Cpu, HardDrive, Monitor, Battery, Camera, Wifi, Bell, Heart, Percent, MessageCircle, Store, RefreshCw, ChevronRight, ChevronDown, ChevronUp, Star } from 'lucide-react';
 import ProductCard from '../components/ProductCard';
+
+// Accordion section for below-the-fold content
+function AccordionSection({ title, children, defaultOpen, icon: Icon }) {
+  const [open, setOpen] = useState(defaultOpen || false);
+  return (
+    <div>
+      <button
+        onClick={() => setOpen(!open)}
+        className="w-full flex items-center justify-between px-6 py-4 text-sm font-bold text-zinc-300 hover:text-white hover:bg-zinc-800/30 transition-colors text-left"
+      >
+        <span>{title}</span>
+        {open ? <ChevronUp className="w-4 h-4 text-zinc-500" /> : <ChevronDown className="w-4 h-4 text-zinc-500" />}
+      </button>
+      {open && children}
+    </div>
+  );
+}
 import { WhatsAppShareButton, FloatingWhatsAppButton } from '../components/WhatsAppButtons';
 import { fetchListing, fetchListings, watchPriceDrop, watchBackInStock, addToWishlist, removeFromWishlist, isInWishlist, getDeliveryZones, getProductQuestions, postProductQuestion, getWholesalePrices, getSellerProfile } from '../utils/api';
 import { formatKES, VARIANT_REQUIRED_CATEGORIES } from '../utils/constants';
@@ -437,113 +454,40 @@ function ListingDetails() {
             </div>
           )}
 
-          {/* Specs Categories */}
-          {specCategories.length > 0 && (
-            <div className="mb-6 space-y-3">
-              <h3 className="font-bold text-sm text-zinc-400 uppercase tracking-wider">{t('listing.specifications')}</h3>
-              {specCategories.map((cat, ci) => (
-                <div key={ci} className="bg-zinc-900/50 rounded-2xl border border-zinc-800 overflow-hidden">
-                  <div className="px-4 py-3 bg-zinc-800/50">
-                    <h4 className="font-bold text-xs text-zinc-300 uppercase tracking-wider">{cat.title}</h4>
-                  </div>
-                  <div className="divide-y divide-zinc-800">
-                    {cat.specs.map((spec, si) => (
-                      <div key={si} className="flex items-center gap-3 px-4 py-2.5">
-                        <Tag className="w-3 h-3 text-zinc-400 flex-shrink-0" />
-                        <span className="text-xs text-zinc-400 w-28 flex-shrink-0">{spec.label}</span>
-                        <span className="text-xs font-bold text-white">{spec.value}</span>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              ))}
+          {/* Trust badges — Jumia-style "Why Buy" row */}
+          <div className="flex flex-wrap gap-2 mb-4">
+            <div className="flex items-center gap-1.5 bg-zinc-900/60 border border-zinc-800 rounded-xl px-3 py-2 text-xs text-zinc-300 font-medium">
+              <Truck className="w-3.5 h-3.5 text-emerald-400" /> Free Delivery
             </div>
-          )}
-
-          {/* Description */}
-          {listing.description && (
-            <div className="mb-6">
-              <h3 className="font-bold mb-2 text-lg">{t('listing.description')}</h3>
-              <p className="text-zinc-300 whitespace-pre-line leading-relaxed text-sm">{listing.description}</p>
+            <div className="flex items-center gap-1.5 bg-zinc-900/60 border border-zinc-800 rounded-xl px-3 py-2 text-xs text-zinc-300 font-medium">
+              <Shield className="w-3.5 h-3.5 text-emerald-400" /> Secure Payment
             </div>
-          )}
-
-          {/* Return Policy */}
-          {listing.return_policy && (
-            <div className="mb-6 p-4 bg-zinc-900/50 rounded-2xl border border-zinc-800">
-              <h3 className="font-bold mb-2 text-sm text-zinc-400 uppercase tracking-wider">Return Policy</h3>
-              <p className="text-zinc-300 text-sm whitespace-pre-line">{listing.return_policy}</p>
-            </div>
-          )}
-
-          {/* Trust badges */}
-          <div className="flex flex-wrap gap-3 mb-6">
-            <div className="flex items-center gap-1.5 text-xs text-zinc-400">
-              <Truck className="w-3.5 h-3.5" /> {t('listing.delivery')}
-            </div>
-            <div className="flex items-center gap-1.5 text-xs text-zinc-400">
-              <Shield className="w-3.5 h-3.5" /> {t('checkout.securePayment')}
+            <div className="flex items-center gap-1.5 bg-zinc-900/60 border border-zinc-800 rounded-xl px-3 py-2 text-xs text-zinc-300 font-medium">
+              <RefreshCw className="w-3.5 h-3.5 text-emerald-400" /> Easy Returns
             </div>
           </div>
 
-          {/* Seller / About the Store */}
-          {sellerProfile ? (
-            <Link to={`/seller/${sellerProfile.slug || sellerProfile.id}`} className="block bg-zinc-900/50 rounded-2xl p-4 mb-4 border border-zinc-800 hover:bg-zinc-800/50 transition-colors">
-              <div className="flex items-center gap-3 mb-3">
-                <div className="w-11 h-11 bg-gradient-to-br from-[var(--seasonal-primary,#1a5632)] to-[#ff6b8a] rounded-full flex items-center justify-center font-black text-lg text-white shadow-md shadow-[var(--seasonal-primary,#1a5632)]/20 flex-shrink-0">
-                  <Store className="w-5 h-5" />
-                </div>
-                <div className="flex-1 min-w-0">
-                  <p className="font-bold text-sm text-white truncate">{sellerProfile.shop_name || 'Shop'}</p>
-                  <p className="text-xs text-zinc-400 truncate">{sellerProfile.location || 'Kericho, Kenya'}</p>
-                </div>
-                {sellerProfile.rating > 0 && (
-                  <div className="flex items-center gap-1 bg-yellow-900/30 text-yellow-400 text-[10px] font-bold px-2 py-1 rounded-full">
-                    {sellerProfile.rating.toFixed(1)}
-                  </div>
-                )}
+          {/* Seller info — compact inline */}
+          <div className="mb-4">
+            {sellerProfile ? (
+              <Link to={`/seller/${sellerProfile.slug || sellerProfile.id}`} className="inline-flex items-center gap-2 text-xs text-zinc-400 hover:text-zinc-200 transition-colors bg-zinc-900/40 border border-zinc-800 rounded-xl px-3 py-2">
+                <Store className="w-3.5 h-3.5" />
+                <span className="font-medium">Sold by:</span>
+                <span className="font-bold text-white">{sellerProfile.shop_name || 'Shop'}</span>
+                <span className="w-1 h-1 rounded-full bg-zinc-600" />
+                <span className="text-emerald-400 font-semibold">{sellerProfile.rating > 0 ? `★ ${sellerProfile.rating.toFixed(1)}` : 'New'}</span>
+                <ChevronRight className="w-3 h-3" />
+              </Link>
+            ) : (
+              <div className="inline-flex items-center gap-2 text-xs text-zinc-400 bg-zinc-900/40 border border-zinc-800 rounded-xl px-3 py-2">
+                <Store className="w-3.5 h-3.5" />
+                <span className="font-medium">Sold by:</span>
+                <span className="font-bold text-white">{t('listing.omixStore')}</span>
+                <span className="w-1 h-1 rounded-full bg-zinc-600" />
+                <span className="text-emerald-400 font-semibold">Official Store</span>
               </div>
-              <div className="grid grid-cols-3 gap-2">
-                <div className="text-center bg-zinc-800 rounded-xl py-2 px-1">
-                  <p className="text-sm font-black text-[var(--seasonal-primary,#1a5632)]">{sellerProfile.rating > 0 ? sellerProfile.rating.toFixed(1) : 'N/A'}</p>
-                  <p className="text-[9px] text-zinc-400 uppercase tracking-wider">Rating</p>
-                </div>
-                <div className="text-center bg-zinc-800 rounded-xl py-2 px-1">
-                  <p className="text-sm font-black text-[var(--seasonal-primary,#1a5632)]">{sellerProfile.sales_count || 0}</p>
-                  <p className="text-[9px] text-zinc-400 uppercase tracking-wider">Sales</p>
-                </div>
-                <div className="text-center bg-zinc-800 rounded-xl py-2 px-1">
-                  <p className="text-sm font-black text-[var(--seasonal-primary,#1a5632)]">{sellerProfile.score || 'N/A'}</p>
-                  <p className="text-[9px] text-zinc-400 uppercase tracking-wider">Score</p>
-                </div>
-              </div>
-            </Link>
-          ) : (
-            <div className="bg-zinc-900/50 rounded-2xl p-4 mb-4 border border-zinc-800">
-              <div className="flex items-center gap-3 mb-3">
-                <div className="w-11 h-11 bg-gradient-to-br from-[var(--seasonal-primary,#1a5632)] to-[#ff6b8a] rounded-full flex items-center justify-center font-black text-lg text-white shadow-md shadow-[var(--seasonal-primary,#1a5632)]/20">O</div>
-                <div className="flex-1">
-                  <p className="font-bold text-sm text-white">{t('listing.omixStore')}</p>
-                  <p className="text-xs text-zinc-400">{t('listing.kerichoKenya')} &bull; {t('listing.officialStore')}</p>
-                </div>
-                <span className="bg-green-900/30 text-green-400 text-[10px] font-bold px-2 py-1 rounded-full">{t('listing.verified')}</span>
-              </div>
-              <div className="grid grid-cols-3 gap-2">
-                <div className="text-center bg-zinc-800 rounded-xl py-2 px-1">
-                  <p className="text-sm font-black text-[var(--seasonal-primary,#1a5632)]">100%</p>
-                  <p className="text-[9px] text-zinc-400 uppercase tracking-wider">{t('listing.quality')}</p>
-                </div>
-                <div className="text-center bg-zinc-800 rounded-xl py-2 px-1">
-                  <p className="text-sm font-black text-[var(--seasonal-primary,#1a5632)]">{t('listing.fast')}</p>
-                  <p className="text-[9px] text-zinc-400 uppercase tracking-wider">{t('listing.shipping')}</p>
-                </div>
-                <div className="text-center bg-zinc-800 rounded-xl py-2 px-1">
-                  <p className="text-sm font-black text-[var(--seasonal-primary,#1a5632)]">24/7</p>
-                  <p className="text-[9px] text-zinc-400 uppercase tracking-wider">{t('listing.support')}</p>
-                </div>
-              </div>
-            </div>
-          )}
+            )}
+          </div>
 
           {/* Nia contextual help */}
           <div className="mb-4">
@@ -816,6 +760,108 @@ function ListingDetails() {
               )}
             </div>
           )}
+        </div>
+      </div>
+
+      {/* ── Product Details Accordion (Jumia-style) ── */}
+      <div className="mt-12 max-w-5xl mx-auto">
+        <div className="bg-zinc-900/30 rounded-3xl border border-zinc-800 overflow-hidden divide-y divide-zinc-800">
+          {/* Description */}
+          {listing.description && (
+            <AccordionSection title="Description" icon={ChevronDown} defaultOpen>
+              <div className="px-6 pb-6">
+                <p className="text-zinc-300 whitespace-pre-line leading-relaxed text-sm">{listing.description}</p>
+              </div>
+            </AccordionSection>
+          )}
+
+          {/* Specifications */}
+          {specCategories.length > 0 && (
+            <AccordionSection title="Specifications" icon={ChevronDown}>
+              <div className="px-6 pb-6 space-y-4">
+                {specCategories.map((cat, ci) => (
+                  <div key={ci}>
+                    <h4 className="font-bold text-xs text-zinc-400 uppercase tracking-wider mb-2">{cat.title}</h4>
+                    <div className="bg-zinc-900/50 rounded-2xl border border-zinc-800 divide-y divide-zinc-800">
+                      {cat.specs.map((spec, si) => (
+                        <div key={si} className="flex items-center gap-3 px-4 py-2.5">
+                          <span className="text-xs text-zinc-500 w-32 flex-shrink-0 font-medium">{spec.label}</span>
+                          <span className="text-xs font-bold text-white">{spec.value}</span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </AccordionSection>
+          )}
+
+          {/* Return & Warranty */}
+          {(listing.return_policy || listing.warranty_period) && (
+            <AccordionSection title="Return & Warranty" icon={ChevronDown}>
+              <div className="px-6 pb-6 space-y-4">
+                {listing.return_policy && (
+                  <div>
+                    <h4 className="font-bold text-xs text-zinc-400 uppercase tracking-wider mb-2">Return Policy</h4>
+                    <p className="text-zinc-300 text-sm whitespace-pre-line bg-zinc-900/50 rounded-xl p-4 border border-zinc-800">{listing.return_policy}</p>
+                  </div>
+                )}
+                {listing.warranty_period && (
+                  <div>
+                    <h4 className="font-bold text-xs text-zinc-400 uppercase tracking-wider mb-2">Warranty</h4>
+                    <div className="bg-zinc-900/50 rounded-2xl border border-zinc-800 divide-y divide-zinc-800">
+                      {listing.warranty_period && (
+                        <div className="flex items-center gap-3 px-4 py-2.5">
+                          <Shield className="w-4 h-4 text-zinc-400" />
+                          <span className="text-xs text-zinc-500 w-32 flex-shrink-0 font-medium">Warranty Period</span>
+                          <span className="text-xs font-bold text-white">{listing.warranty_period}</span>
+                        </div>
+                      )}
+                      {listing.warranty_type && (
+                        <div className="flex items-center gap-3 px-4 py-2.5">
+                          <Tag className="w-4 h-4 text-zinc-400" />
+                          <span className="text-xs text-zinc-500 w-32 flex-shrink-0 font-medium">Warranty Type</span>
+                          <span className="text-xs font-bold text-white">{listing.warranty_type}</span>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                )}
+              </div>
+            </AccordionSection>
+          )}
+
+          {/* Shipping Info */}
+          <AccordionSection title="Delivery & Shipping" icon={ChevronDown}>
+            <div className="px-6 pb-6">
+              <div className="bg-zinc-900/50 rounded-2xl border border-zinc-800 divide-y divide-zinc-800">
+                {deliveryZones.length > 0 && (
+                  <div className="px-4 py-3 flex items-center gap-3">
+                    <Truck className="w-4 h-4 text-emerald-400" />
+                    <span className="text-xs text-zinc-500 w-32 flex-shrink-0 font-medium">Delivery</span>
+                    <div>
+                      <p className="text-xs font-bold text-white">Free delivery in {deliveryZones[0].name || 'Kericho'}</p>
+                      <p className="text-[10px] text-zinc-400">Delivered in {deliveryZones[0].delivery_days || '1-2'} days</p>
+                    </div>
+                  </div>
+                )}
+                {listing.shipping_dimensions && (
+                  <div className="px-4 py-3 flex items-center gap-3">
+                    <Package className="w-4 h-4 text-zinc-400" />
+                    <span className="text-xs text-zinc-500 w-32 flex-shrink-0 font-medium">Package Size</span>
+                    <span className="text-xs font-bold text-white">{formatDimensions(listing.shipping_dimensions)}</span>
+                  </div>
+                )}
+                {listing.shipping_weight && (
+                  <div className="px-4 py-3 flex items-center gap-3">
+                    <Package className="w-4 h-4 text-zinc-400" />
+                    <span className="text-xs text-zinc-500 w-32 flex-shrink-0 font-medium">Weight</span>
+                    <span className="text-xs font-bold text-white">{listing.shipping_weight}</span>
+                  </div>
+                )}
+              </div>
+            </div>
+          </AccordionSection>
         </div>
       </div>
 
