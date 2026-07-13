@@ -4,8 +4,6 @@ import {
   Search,
   SlidersHorizontal,
   X,
-  ChevronLeft,
-  ChevronRight,
   SearchX,
   MapPin,
   DollarSign,
@@ -32,6 +30,7 @@ import ProductCard from '../components/ProductCard';
 import { ProductCardSkeleton } from '../components/Skeleton';
 import { advancedSearch } from '../utils/api';
 import { CATEGORY_INFO, getPresetSizes } from '../utils/constants';
+import Pagination from '../components/Pagination';
 
 const CONDITIONS = ['New', 'Used', 'Refurbished'];
 const AVAILABILITY_OPTIONS = [
@@ -464,71 +463,6 @@ function SearchPage() {
     </div>
   );
 
-  // ── Pagination ──
-  const renderPagination = () => {
-    if (totalPages <= 1) return null;
-
-    const currentPage = filters.page || 1;
-    const pages = [];
-
-    // Always show first, last, and neighbors around current
-    const range = 2;
-    const start = Math.max(1, currentPage - range);
-    const end = Math.min(totalPages, currentPage + range);
-
-    if (start > 1) {
-      pages.push(1);
-      if (start > 2) pages.push('...');
-    }
-    for (let i = start; i <= end; i++) {
-      pages.push(i);
-    }
-    if (end < totalPages) {
-      if (end < totalPages - 1) pages.push('...');
-      pages.push(totalPages);
-    }
-
-    return (
-      <div className="flex items-center justify-center gap-1.5 mt-8">
-        <button
-          onClick={() => handlePageChange(currentPage - 1)}
-          disabled={currentPage <= 1}
-          className="p-2 rounded-xl bg-zinc-900 border border-zinc-800 text-zinc-400 hover:text-white hover:bg-zinc-800 transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
-          aria-label="Previous page"
-        >
-          <ChevronLeft className="w-4 h-4" />
-        </button>
-        {pages.map((p, i) =>
-          p === '...' ? (
-            <span key={`ellipsis-${i}`} className="px-2 text-zinc-500 text-sm">
-              ...
-            </span>
-          ) : (
-            <button
-              key={p}
-              onClick={() => handlePageChange(p)}
-              className={`min-w-[36px] h-9 rounded-xl text-sm font-bold transition-colors ${
-                p === currentPage
-                  ? 'bg-[var(--seasonal-primary,#1a5632)] text-white shadow-lg'
-                  : 'bg-zinc-900 border border-zinc-800 text-zinc-400 hover:text-white hover:bg-zinc-800'
-              }`}
-            >
-              {p}
-            </button>
-          )
-        )}
-        <button
-          onClick={() => handlePageChange(currentPage + 1)}
-          disabled={currentPage >= totalPages}
-          className="p-2 rounded-xl bg-zinc-900 border border-zinc-800 text-zinc-400 hover:text-white hover:bg-zinc-800 transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
-          aria-label="Next page"
-        >
-          <ChevronRight className="w-4 h-4" />
-        </button>
-      </div>
-    );
-  };
-
   // ── Results Grid ──
   const renderResults = () => {
     if (loading) {
@@ -575,7 +509,7 @@ function SearchPage() {
             <ProductCard key={listing.id} listing={listing} />
           ))}
         </div>
-        {renderPagination()}
+        <Pagination currentPage={filters.page} totalPages={totalPages} onPageChange={handlePageChange} />
       </>
     );
   };
