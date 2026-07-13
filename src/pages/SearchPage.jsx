@@ -96,9 +96,27 @@ function SearchPage() {
   const [localQ, setLocalQ] = useState(filters.q);
 
   // Lock body scroll when mobile filter sidebar is open
+  // Uses position:fixed to prevent Android viewport jump (overflow:hidden alone causes scroll reset)
   useEffect(() => {
-    document.body.style.overflow = sidebarOpen ? 'hidden' : '';
-    return () => { document.body.style.overflow = ''; };
+    if (sidebarOpen) {
+      const scrollY = window.scrollY;
+      document.body.style.position = 'fixed';
+      document.body.style.top = `-${scrollY}px`;
+      document.body.style.width = '100%';
+      document.body.style.left = '0';
+      return () => {
+        document.body.style.position = '';
+        document.body.style.top = '';
+        document.body.style.width = '';
+        document.body.style.left = '';
+        window.scrollTo(0, scrollY);
+      };
+    } else {
+      document.body.style.position = '';
+      document.body.style.top = '';
+      document.body.style.width = '';
+      document.body.style.left = '';
+    }
   }, [sidebarOpen]);
 
   // Sync localQ when URL q changes
@@ -599,15 +617,15 @@ function SearchPage() {
         </div>
 
         {/* ── Mobile Filter Toggle + Sort ── */}
-        <div className="flex items-center justify-between mb-4 lg:hidden">
-          <p className="text-sm text-zinc-400">
+        <div className="flex items-center justify-between mb-3 lg:hidden">
+          <p className="text-xs text-zinc-400">
             {loading ? 'Searching...' : `${total} result${total !== 1 ? 's' : ''}`}
           </p>
           <div className="flex items-center gap-2">
             <select
               value={filters.sort}
               onChange={(e) => handleFilterChange('sort', e.target.value)}
-              className="bg-zinc-900 border border-zinc-800 rounded-xl px-3 py-2.5 text-xs text-white focus:border-[var(--seasonal-primary,#1a5632)] focus:outline-none appearance-none cursor-pointer"
+              className="bg-zinc-900 border border-zinc-800 rounded-lg px-3 py-2 text-xs text-white focus:border-[var(--seasonal-primary,#1a5632)] focus:outline-none appearance-none cursor-pointer"
             >
               {SORT_OPTIONS.map((opt) => (
                 <option key={opt.value} value={opt.value}>
@@ -617,16 +635,16 @@ function SearchPage() {
             </select>
             <button
               onClick={() => setSidebarOpen(!sidebarOpen)}
-              className={`flex items-center gap-2 px-4 py-2.5 rounded-xl border transition-all text-sm font-bold active:scale-95 ${
+              className={`flex items-center gap-1.5 px-3 py-2 rounded-lg border transition-all text-xs font-semibold active:scale-95 ${
                 sidebarOpen
-                  ? 'bg-[var(--seasonal-primary,#1a5632)] border-[var(--seasonal-primary,#1a5632)] text-white shadow-lg shadow-[var(--seasonal-primary,#1a5632)]/20'
-                  : 'bg-zinc-900 border-zinc-700 text-zinc-300 hover:bg-zinc-800 hover:border-zinc-600'
+                  ? 'bg-[var(--seasonal-primary,#1a5632)] border-[var(--seasonal-primary,#1a5632)] text-white'
+                  : 'bg-zinc-900 border-zinc-700 text-zinc-300 hover:bg-zinc-800'
               }`}
             >
-              <SlidersHorizontal className="w-4 h-4" />
+              <SlidersHorizontal className="w-3.5 h-3.5" />
               Filters
               {hasActiveFilters && (
-                <span className="w-2 h-2 rounded-full bg-emerald-400" />
+                <span className="w-1.5 h-1.5 rounded-full bg-emerald-400" />
               )}
             </button>
           </div>
