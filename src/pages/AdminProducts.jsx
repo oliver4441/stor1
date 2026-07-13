@@ -2,7 +2,7 @@ import { useState, useEffect, useCallback, useRef } from 'react';
 import { Plus, Pencil, Trash2, X, AlertTriangle, Loader2, Upload, Image as ImageIcon, Search, Eye, CheckSquare, Square, Tag, GripVertical, Star, Percent, Package } from 'lucide-react';
 import { supabase } from '../utils/supabase';
 import { fetchAllListings, createListing, updateListing, deleteListing, adminDeleteListing, bulkUpdateListingStatus, bulkDeleteListings, saveWholesalePrices } from '../utils/api';
-import { formatKES, CATEGORIES, generateSKU, COLOR_PALETTE, SIZE_PRESETS, getPresetSizes } from '../utils/constants';
+import { formatKES, CATEGORIES, generateSKU, COLOR_PALETTE, SIZE_PRESETS, getPresetSizes, VARIANT_REQUIRED_CATEGORIES } from '../utils/constants';
 import { uploadImage } from '../utils/api';
 import VariantManager from '../components/VariantManager';
 
@@ -235,12 +235,15 @@ export default function AdminProducts() {
     setVariantError('');
 
     // Validate variants — require at least one type with at least one value
-    if (form.has_variants) {
+    const variantRequiredCategory = VARIANT_REQUIRED_CATEGORIES.includes(form.category);
+    if (form.has_variants || variantRequiredCategory) {
       const hasValidVariants = form.variants && typeof form.variants === 'object' && !Array.isArray(form.variants)
         ? (form.variants.types?.length > 0 && form.variants.types.some(t => t.values?.length > 0))
         : Array.isArray(form.variants) && form.variants.length > 0;
       if (!hasValidVariants) {
-        const msg = 'Please add at least one variant type with values (e.g. Size or Color) before saving.';
+        const msg = variantRequiredCategory
+          ? `The "${form.category}" category requires size/color variants. Please add at least one variant type with values (e.g. Size or Color) before saving.`
+          : 'Please add at least one variant type with values (e.g. Size or Color) before saving.';
         setErrorMsg(msg);
         setVariantError(msg);
         setSubmitting(false);
@@ -700,7 +703,7 @@ export default function AdminProducts() {
                   <label className="block text-sm font-bold mb-1.5 text-zinc-300">Category</label>
                   <select value={form.category} onChange={e => {
                     const newCat = e.target.value;
-                    const needsVariants = ['Clothing', 'T-Shirts', 'Shoes (Men)', 'Shoes (Women)', 'Shoes (Kids)', 'Pants', 'Belts', 'Hats', 'Jackets', 'Sweaters', 'Suits', 'Uniforms', 'Sportswear', 'Swimwear', 'Underwear', 'Socks', 'Scarves', 'Watches', 'Jewelry', 'Bags', 'Backpacks', 'Luggage', 'Perfumes', 'Beauty', 'Cosmetics', 'Skin Care', 'Hair Care'].includes(newCat);
+                    const needsVariants = VARIANT_REQUIRED_CATEGORIES.includes(newCat);
                     setForm(prev => ({
                       ...prev,
                       category: newCat,
@@ -847,9 +850,21 @@ export default function AdminProducts() {
 
               {/* Variant Manager — size/color variants for ALL products */}
               {form.variants.length === 0 && (
-                <div className="flex items-center gap-2 p-3 bg-amber-900/20 border border-amber-800 rounded-xl">
-                  <AlertTriangle className="w-4 h-4 text-amber-500 flex-shrink-0" />
-                  <p className="text-xs text-amber-700 dark:text-amber-400">Adding size/variant options helps customers pick exactly what they need. Add sizes in the Product Variants section below.</p>
+                <div className={`flex items-center gap-2 p-3 border rounded-xl ${
+                  VARIANT_REQUIRED_CATEGORIES.includes(form.category)
+                    ? 'bg-red-900/30 border-red-700'
+                    : 'bg-amber-900/20 border-amber-800'
+                }`}>
+                  <AlertTriangle className={`w-4 h-4 flex-shrink-0 ${
+                    VARIANT_REQUIRED_CATEGORIES.includes(form.category) ? 'text-red-500' : 'text-amber-500'
+                  }`} />
+                  <p className={`text-xs ${
+                    VARIANT_REQUIRED_CATEGORIES.includes(form.category) ? 'text-red-300 font-bold' : 'text-amber-400'
+                  }`}>
+                    {VARIANT_REQUIRED_CATEGORIES.includes(form.category)
+                      ? `The "${form.category}" category requires size/color variants. Add at least one variant type (e.g. Size or Color) below.`
+                      : 'Adding size/variant options helps customers pick exactly what they need. Add sizes in the Product Variants section below.'}
+                  </p>
                 </div>
               )}
               <VariantManager

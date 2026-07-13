@@ -1,6 +1,6 @@
 // API layer — back to Supabase
 import { supabase } from './supabase'
-import { CATEGORY_TO_ID, ID_TO_CATEGORY } from './constants'
+import { CATEGORY_TO_ID, ID_TO_CATEGORY, VARIANT_REQUIRED_CATEGORIES } from './constants'
 import { sounds } from './sounds'
 import { lookupAffiliateByCode } from './affiliate_api'
 import { processReferralPending } from './affiliate_logic'
@@ -637,6 +637,30 @@ export async function createOrder({ items, total, customerName, phone, email, ad
 
   if (!items || items.length === 0) {
     return { success: false, error: 'Your cart is empty. Please add items before checking out.' }
+  }
+
+  // Validate variant data for products in variant-required categories
+  const productIds = items.map(i => i.product_id).filter(Boolean);
+  if (productIds.length > 0) {
+    const { data: listings, error: listErr } = await supabase
+      .from('listings')
+      .select('id, category')
+      .in('id', productIds);
+    if (!listErr && listings) {
+      const catMap = {};
+      listings.forEach(l => { catMap[l.id] = l.category; });
+      const missingVariant = items.find(item => {
+        const cat = catMap[item.product_id];
+        if (cat && VARIANT_REQUIRED_CATEGORIES.includes(cat)) {
+          const hasVariant = item.variant_size || item.variant_color || item.variant_label || item.variant_sku || item.variant?.size || item.variant?.colorName || item.variant?.label || item.variant?.sku;
+          return !hasVariant;
+        }
+        return false;
+      });
+      if (missingVariant) {
+        return { success: false, error: `"${missingVariant.product_name}" requires size/colour selection. Please choose options before checking out.` }
+      }
+    }
   }
 
   // For guest checkout, skip profile lookup and set user_id to null

@@ -4,7 +4,7 @@ import { MapPin, CheckCircle, ShoppingCart, Minus, Plus, Package, Truck, Shield,
 import ProductCard from '../components/ProductCard';
 import { WhatsAppShareButton, FloatingWhatsAppButton } from '../components/WhatsAppButtons';
 import { fetchListing, fetchListings, watchPriceDrop, watchBackInStock, addToWishlist, removeFromWishlist, isInWishlist, getDeliveryZones, getProductQuestions, postProductQuestion, getWholesalePrices, getSellerProfile } from '../utils/api';
-import { formatKES } from '../utils/constants';
+import { formatKES, VARIANT_REQUIRED_CATEGORIES } from '../utils/constants';
 import { useCart } from '../context/CartContext';
 import { supabase } from '../utils/supabase';
 import ImageGallery from '../components/ImageGallery';
@@ -291,6 +291,10 @@ function ListingDetails() {
   const effectivePrice = (listing.price || 0) + (selectedVariantObj?.priceAdjustment || 0);
   const effectiveStock = selectedVariantObj?.quantity || listing.quantity;
   const isOutOfStock = hasVariants && selectedVariantObj && selectedVariantObj.quantity <= 0;
+
+  // Category-based variant requirement
+  const categoryRequiresVariants = VARIANT_REQUIRED_CATEGORIES.includes(listing?.category);
+  const variantConfigMissing = categoryRequiresVariants && !hasVariants;
 
   // Check if all variant types have been selected
   const allSelected = hasVariants && variantData.types.every(t => selections[t.id] != null);
@@ -702,7 +706,11 @@ function ListingDetails() {
             </div>
             {user ? (
               <>
-                {hasVariants && !allSelected ? (
+                {variantConfigMissing ? (
+                  <div className="p-4 bg-red-900/20 border border-red-800 rounded-xl">
+                    <p className="text-sm text-red-400 font-bold">This product requires size/colour selection but no options have been configured yet. Please contact the store for assistance.</p>
+                  </div>
+                ) : hasVariants && !allSelected ? (
                   <>
                     <button
                       disabled
@@ -736,12 +744,20 @@ function ListingDetails() {
               </>
             ) : (
               <>
-                <Link to={`/signup?redirect=/listing/${listing.id}`} className="w-full flex items-center justify-center gap-2 bg-[var(--seasonal-primary,#1a5632)] text-white font-black py-4 rounded-2xl hover:bg-[var(--seasonal-secondary,#14472a)] transition-all shadow-lg shadow-[var(--seasonal-primary,#1a5632)]/20 text-lg">
-                  <ShoppingCart className="w-5 h-5" /> {t('listing.signUpToAddToCart')}
-                </Link>
-                <Link to={`/login?redirect=/listing/${listing.id}`} className="w-full flex items-center justify-center gap-2 bg-zinc-900 dark:bg-white text-white dark:text-zinc-900 font-bold py-4 rounded-2xl hover:opacity-90 transition-all">
-                  {t('listing.loginToBuyNow')}
-                </Link>
+                {variantConfigMissing ? (
+                  <div className="p-4 bg-red-900/20 border border-red-800 rounded-xl">
+                    <p className="text-sm text-red-400 font-bold">This product requires size/colour selection but no options have been configured yet. Please contact the store for assistance.</p>
+                  </div>
+                ) : (
+                  <>
+                    <Link to={`/signup?redirect=/listing/${listing.id}`} className="w-full flex items-center justify-center gap-2 bg-[var(--seasonal-primary,#1a5632)] text-white font-black py-4 rounded-2xl hover:bg-[var(--seasonal-secondary,#14472a)] transition-all shadow-lg shadow-[var(--seasonal-primary,#1a5632)]/20 text-lg">
+                      <ShoppingCart className="w-5 h-5" /> {t('listing.signUpToAddToCart')}
+                    </Link>
+                    <Link to={`/login?redirect=/listing/${listing.id}`} className="w-full flex items-center justify-center gap-2 bg-zinc-900 dark:bg-white text-white dark:text-zinc-900 font-bold py-4 rounded-2xl hover:opacity-90 transition-all">
+                      {t('listing.loginToBuyNow')}
+                    </Link>
+                  </>
+                )}
               </>
             )}
           </div>

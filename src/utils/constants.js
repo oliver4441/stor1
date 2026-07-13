@@ -47,6 +47,13 @@ export function generateSKU(category) {
 
 export const LOCATIONS = ['CBD', 'Litein', 'Kapsoit', 'Brooke', 'Sosiot', 'Kaitet', 'Awasi', 'Kipchimchim', 'Chepseon'];
 
+// Categories where size/color/option variants are mandatory before adding to cart
+export const VARIANT_REQUIRED_CATEGORIES = [
+  'Clothing',
+  'Sports',
+  'Health & Beauty',
+];
+
 // Category name → category_id mapping (from Supabase categories table)
 export const CATEGORY_TO_ID = {
   'Electronics': 1,
