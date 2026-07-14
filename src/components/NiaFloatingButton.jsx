@@ -5,6 +5,10 @@ import { useAuth } from '../context/AuthContext';
 export default function NiaFloatingButton() {
   const { isOpen, openChat, closeChat, COLORS } = useNiaChat();
 
+  // Hide chat in offline browse mode
+  const isOffline = typeof window !== 'undefined' && localStorage.getItem('omix_offline_mode') === 'true';
+  if (isOffline) return null;
+
   return (
     <div className="fixed bottom-28 right-4 sm:bottom-28 sm:right-6 z-[55] flex flex-col items-center gap-1.5">
       {/* "Ask Nia" tag above the button */}

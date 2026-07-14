@@ -5,7 +5,7 @@ import {
   ShoppingCart, ChevronDown, LogOut, RefreshCw, DollarSign, Store,
   Smartphone, Sofa, Shirt, Wrench, Car, Home, BookOpen, Dumbbell, Heart,
   UtensilsCrossed, Coffee, Cookie, ChefHat, Grid, Tag, ChevronRight,
-  Layers
+  Layers, Eye, EyeOff
 } from 'lucide-react';
 import { supabase } from '../utils/supabase';
 import { useLang } from '../utils/lang';
@@ -200,6 +200,31 @@ function Navbar() {
               )}
             </Link>
 
+            {/* Offline mode toggle */}
+            <button
+              onClick={() => {
+                const next = localStorage.getItem('omix_offline_mode') !== 'true';
+                if (next) localStorage.setItem('omix_offline_mode', 'true');
+                else localStorage.removeItem('omix_offline_mode');
+                window.dispatchEvent(new Event('storage'));
+                // Force re-render
+                window.location.reload();
+              }}
+              className={`p-2 rounded-full transition-colors ${
+                localStorage.getItem('omix_offline_mode') === 'true'
+                  ? 'bg-amber-900/30 text-amber-400'
+                  : 'hover:bg-zinc-800 text-zinc-500'
+              }`}
+              aria-label="Toggle offline browse mode"
+              title={localStorage.getItem('omix_offline_mode') === 'true' ? 'Offline mode on' : 'Offline mode off'}
+            >
+              {localStorage.getItem('omix_offline_mode') === 'true' ? (
+                <EyeOff className="w-4 h-4" />
+              ) : (
+                <Eye className="w-4 h-4" />
+              )}
+            </button>
+
             {isUserAdmin && (
               <Link to="/admin" className="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold transition-all border"
                 style={{ color: navAccentColor, borderColor: navAccentColor + '33' }}
@@ -282,6 +307,16 @@ function Navbar() {
           </div>
         </div>
       </nav>
+
+      {/* Offline mode banner */}
+      {localStorage.getItem('omix_offline_mode') === 'true' && (
+        <div className="bg-amber-900/40 border-b border-amber-700/50 backdrop-blur-sm z-40">
+          <div className="max-w-7xl mx-auto px-4 py-2 flex items-center justify-center gap-2">
+            <EyeOff className="w-4 h-4 text-amber-400" />
+            <span className="text-xs font-bold text-amber-300">Offline Browse Mode — purchasing and chat are disabled</span>
+          </div>
+        </div>
+      )}
 
       {/* ── Category Bar (Jumia-style mega menu) ── */}
       <div className={`border-b border-zinc-800/50 bg-zinc-950/60 backdrop-blur-sm sticky z-40 transition-all duration-200 ease-out ${navVisible ? 'top-[56px]' : 'top-0'}`}>
@@ -442,6 +477,27 @@ function Navbar() {
                 <LogOut className="w-5 h-5" />
                 Log Out
               </button>
+              {/* Offline mode toggle */}
+              <button
+                onClick={() => {
+                  const next = localStorage.getItem('omix_offline_mode') !== 'true';
+                  if (next) localStorage.setItem('omix_offline_mode', 'true');
+                  else localStorage.removeItem('omix_offline_mode');
+                  window.location.reload();
+                }}
+                className={`flex items-center gap-3 px-4 py-3 rounded-2xl text-sm font-bold w-full text-left ${
+                  localStorage.getItem('omix_offline_mode') === 'true'
+                    ? 'text-amber-400 bg-amber-900/20'
+                    : 'text-zinc-400 hover:bg-zinc-800'
+                }`}
+              >
+                {localStorage.getItem('omix_offline_mode') === 'true' ? (
+                  <EyeOff className="w-5 h-5" />
+                ) : (
+                  <Eye className="w-5 h-5" />
+                )}
+                Offline Mode
+              </button>
             </>
           ) : (
             <>
@@ -460,6 +516,28 @@ function Navbar() {
               </Link>
             </>
           )}
+          {/* Offline mode toggle — always visible */}
+          <div className="border-t border-zinc-800 my-1" />
+          <button
+            onClick={() => {
+              const next = localStorage.getItem('omix_offline_mode') !== 'true';
+              if (next) localStorage.setItem('omix_offline_mode', 'true');
+              else localStorage.removeItem('omix_offline_mode');
+              window.location.reload();
+            }}
+            className={`flex items-center gap-3 px-4 py-3 rounded-2xl text-sm font-bold w-full text-left ${
+              localStorage.getItem('omix_offline_mode') === 'true'
+                ? 'text-amber-400 bg-amber-900/20'
+                : 'text-zinc-400 hover:bg-zinc-800'
+            }`}
+          >
+            {localStorage.getItem('omix_offline_mode') === 'true' ? (
+              <EyeOff className="w-5 h-5" />
+            ) : (
+              <Eye className="w-5 h-5" />
+            )}
+            Offline Mode
+          </button>
         </div>
       </div>
     </>

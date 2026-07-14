@@ -7,6 +7,7 @@ import { AuthProvider } from './context/AuthContext';
 import { CartProvider } from './context/CartContext';
 import { NiaChatProvider } from './context/NiaChatContext';
 import { NotificationProvider } from './context/NotificationContext';
+import { OfflineModeProvider } from './context/OfflineModeContext';
 import { initTracking } from './utils/analytics';
 import { initReferralTracking } from './utils/affiliate_api';
 import Navbar from './components/Navbar';
@@ -102,6 +103,7 @@ function App() {
     <AuthProvider>
     <CartProvider>
     <NiaChatProvider>
+    <OfflineModeProvider>
     <NotificationProvider>
     <ErrorBoundary>
       <ScrollToTop />
@@ -188,6 +190,7 @@ function App() {
       </div>
     </ErrorBoundary>
     </NotificationProvider>
+    </OfflineModeProvider>
     </NiaChatProvider>
     </CartProvider>
     </AuthProvider>

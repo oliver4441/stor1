@@ -1,4 +1,4 @@
-import { ShoppingCart } from 'lucide-react';
+import { ShoppingCart, Eye } from 'lucide-react';
 import { formatKES } from '../utils/constants';
 
 /**
@@ -9,6 +9,8 @@ import { formatKES } from '../utils/constants';
  */
 export default function StickyMobileCart({ listing, quantity, effectivePrice, selectedVariant, onAddToCart, onBuyNow, inCart, user }) {
   if (!listing) return null;
+
+  const isOffline = typeof window !== 'undefined' && localStorage.getItem('omix_offline_mode') === 'true';
 
   return (
     <div className="fixed bottom-0 left-0 right-0 z-40 md:hidden bg-zinc-950 border-t border-zinc-800 shadow-[0_-4px_20px_rgba(0,0,0,0.08)] safe-area-bottom">
@@ -21,7 +23,12 @@ export default function StickyMobileCart({ listing, quantity, effectivePrice, se
 
         {/* Buttons */}
         <div className="flex-1 flex gap-2">
-          {user ? (
+          {isOffline ? (
+            <div className="flex-1 flex items-center justify-center gap-1.5 bg-zinc-800 text-zinc-500 font-bold py-3 rounded-xl text-sm">
+              <Eye className="w-4 h-4" />
+              Browse Only
+            </div>
+          ) : user ? (
             <>
               <button
                 onClick={onAddToCart}

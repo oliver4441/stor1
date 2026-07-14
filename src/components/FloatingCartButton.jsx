@@ -7,6 +7,10 @@ import { formatKES } from '../utils/constants';
 export default function FloatingCartButton() {
   const [cartOpen, setCartOpen] = useState(false);
   const [bump, setBump] = useState(false);
+
+  // Hide floating cart in offline browse mode
+  const isOffline = typeof window !== 'undefined' && localStorage.getItem('omix_offline_mode') === 'true';
+  if (isOffline) return null;
   
   // Draggable state
   const [position, setPosition] = useState({ x: 16, y: 192 }); // Default to match bottom-48 right-4

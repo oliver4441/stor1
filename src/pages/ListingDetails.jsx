@@ -1,6 +1,6 @@
 import { useState, useEffect, useMemo } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
-import { MapPin, CheckCircle, ShoppingCart, Minus, Plus, Package, Truck, Shield, Tag, Cpu, HardDrive, Monitor, Battery, Camera, Wifi, Bell, Heart, Percent, MessageCircle, Store, RefreshCw, ChevronRight, ChevronDown, ChevronUp, Star } from 'lucide-react';
+import { MapPin, CheckCircle, ShoppingCart, Minus, Plus, Package, Truck, Shield, Tag, Cpu, HardDrive, Monitor, Battery, Camera, Wifi, Bell, Heart, Percent, MessageCircle, Store, RefreshCw, ChevronRight, ChevronDown, ChevronUp, Star, Eye } from 'lucide-react';
 import ProductCard from '../components/ProductCard';
 
 // Accordion section for below-the-fold content
@@ -648,6 +648,19 @@ function ListingDetails() {
                 <Plus className="w-5 h-5" />
               </button>
             </div>
+            {(() => {
+              const __isOffline = typeof window !== 'undefined' && localStorage.getItem('omix_offline_mode') === 'true';
+              if (__isOffline) {
+                return (
+                  <div className="p-6 bg-zinc-900/50 border border-zinc-700 rounded-2xl text-center">
+                    <Eye className="w-8 h-8 text-zinc-500 mx-auto mb-2" />
+                    <p className="text-sm font-bold text-zinc-400">Browse Only</p>
+                    <p className="text-xs text-zinc-500 mt-1">Offline mode — purchasing and chat are disabled</p>
+                  </div>
+                );
+              }
+              return (
+                <>
             {user ? (
               <>
                 {variantConfigMissing ? (
@@ -704,6 +717,8 @@ function ListingDetails() {
                 )}
               </>
             )}
+            </>
+            )})()}
           </div>
 
           {/* Wholesale / Bulk Purchase */}

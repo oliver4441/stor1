@@ -184,7 +184,11 @@ function ProductCard({ listing, compareMode, onCompareChange }) {
     window.open(`https://wa.me/?text=${encodeURIComponent(message)}`, '_blank');
   };
 
+  // ── Offline browse mode check ──
+  const isOfflineMode = typeof window !== 'undefined' && localStorage.getItem('omix_offline_mode') === 'true';
+
   const handleAddToCart = (e) => {
+    if (isOfflineMode) return;
     e.preventDefault();
     e.stopPropagation();
 
@@ -356,27 +360,33 @@ function ProductCard({ listing, compareMode, onCompareChange }) {
         {/* Add to Cart button — disabled until all variant types selected */}
         <button
           onClick={handleAddToCart}
-          disabled={hasVariants && !allSelected}
+          disabled={isOfflineMode || (hasVariants && !allSelected)}
           className={`absolute bottom-2 right-2 flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-[10px] font-bold shadow-sm transition-all opacity-0 group-hover:opacity-100 ${
-            isMaintenanceCached()
-              ? 'bg-amber-500 text-white'
-              : justAdded
-                ? 'bg-green-500 text-white'
-                : inCart
-                  ? 'bg-[var(--seasonal-primary,#1a5632)]/90 text-white'
-                  : hasVariants && !allSelected
-                    ? 'bg-zinc-700 text-zinc-400 cursor-not-allowed'
-                    : 'bg-white/90 dark:bg-black/90 text-white hover:bg-[var(--seasonal-primary,#1a5632)] hover:text-white'
+            isOfflineMode
+              ? 'bg-zinc-800 text-zinc-500 cursor-not-allowed'
+              : isMaintenanceCached()
+                ? 'bg-amber-500 text-white'
+                : justAdded
+                  ? 'bg-green-500 text-white'
+                  : inCart
+                    ? 'bg-[var(--seasonal-primary,#1a5632)]/90 text-white'
+                    : hasVariants && !allSelected
+                      ? 'bg-zinc-700 text-zinc-400 cursor-not-allowed'
+                      : 'bg-white/90 dark:bg-black/90 text-white hover:bg-[var(--seasonal-primary,#1a5632)] hover:text-white'
           }`}
           aria-label={
-            isMaintenanceCached()
-              ? 'Under maintenance'
-              : hasVariants && !allSelected
-                ? 'Select variants'
-                : 'Add to cart'
+            isOfflineMode
+              ? 'Browse only'
+              : isMaintenanceCached()
+                ? 'Under maintenance'
+                : hasVariants && !allSelected
+                  ? 'Select variants'
+                  : 'Add to cart'
           }
         >
-          {isMaintenanceCached() ? (
+          {isOfflineMode ? (
+            <><ShoppingCart className="w-3 h-3" /> Browse</>
+          ) : isMaintenanceCached() ? (
             <><AlertTriangle className="w-3 h-3" /> Unavailable</>
           ) : hasVariants && !allSelected ? (
             <><ShoppingCart className="w-3 h-3" /> Select variants</>

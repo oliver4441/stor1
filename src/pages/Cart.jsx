@@ -11,6 +11,25 @@ export default function CartPage() {
   const total = getTotal();
   const count = getItemCount();
 
+  // Offline browse mode — block checkout
+  const isOffline = typeof window !== 'undefined' && localStorage.getItem('omix_offline_mode') === 'true';
+  if (isOffline) {
+    return (
+      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+        <div className="text-center py-20">
+          <div className="w-24 h-24 mx-auto mb-6 rounded-full bg-zinc-800 flex items-center justify-center">
+            <ShoppingCart className="w-12 h-12 text-zinc-400" />
+          </div>
+          <h1 className="text-2xl font-bold text-white mb-3">Browse Only</h1>
+          <p className="text-zinc-400 mb-8">Offline mode is active. Purchasing is disabled.</p>
+          <Link to="/" className="inline-flex items-center gap-2 bg-[var(--seasonal-primary,#1a5632)] hover:bg-[#e62e4f] text-white font-semibold px-8 py-4 rounded-xl transition-colors mb-8">
+            Browse Products
+          </Link>
+        </div>
+      </div>
+    );
+  }
+
   if (items.length === 0) {
     return (
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
