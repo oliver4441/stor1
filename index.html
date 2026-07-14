@@ -41,20 +41,28 @@
     <!-- Tidio Live Chat -->
     <script src="//code.tidio.co/loth2aq1yxllnphoutbd0thpkfryp3hx.js" async></script>
     <style>
-      /* Move Tidio to the left so it doesn't overlap Nia (right side) and cart */
-      #tidio-chat, #tidio-chat-iframe, [id^="tidio-chat"] {
+      /* Tidio positioning — left side, above mobile bottom nav */
+      #tidio-chat, [id^="tidio-chat"] {
         right: auto !important;
         left: 16px !important;
+        z-index: 40 !important;
+      }
+      #tidio-chat {
+        bottom: 80px !important;
+        touch-action: none !important;
       }
       #tidio-chat-iframe {
-        bottom: 120px !important;
+        bottom: 104px !important;
       }
       @media (min-width: 640px) {
-        #tidio-chat, #tidio-chat-iframe, [id^="tidio-chat"] {
+        #tidio-chat, [id^="tidio-chat"] {
           left: 24px !important;
         }
+        #tidio-chat {
+          bottom: 24px !important;
+        }
         #tidio-chat-iframe {
-          bottom: 100px !important;
+          bottom: 80px !important;
         }
       }
     </style>
@@ -111,5 +119,290 @@
   <body>
     <div id="root"></div>
     <script type="module" src="/src/main.jsx"></script>
+    <!-- Tidio draggable + collapsible -->
+    <script>
+      (function() {
+        'use strict';
+        var POS_KEY = 'omix_tidio_pos';
+        var HIDE_KEY = 'omix_tidio_hidden';
+        var chat = null, overlay = null, closeBtn = null;
+        var dragging = false, moved = false;
+        var sx, sy, sl, sb;
+        var sizeObserver = null;
+
+        function q(id) { return document.getElementById(id); }
+
+        function init() {
+          chat = q('tidio-chat');
+          if (!chat) { setTimeout(init, 800); return; }
+
+          // Restore saved drag position
+          try {
+            var p = JSON.parse(localStorage.getItem(POS_KEY));
+            if (p && p.l != null) {
+              chat.style.left = p.l + 'px';
+              chat.style.bottom = p.b + 'px';
+              chat.style.right = 'auto';
+            }
+          } catch(e) {}
+
+          // Was hidden? show restore pill instead
+          if (localStorage.getItem(HIDE_KEY) === 'true') {
+            chat.style.display = 'none';
+            showRestore();
+            return;
+          }
+
+          buildOverlay();
+          buildCloseBtn();
+
+          // Listen to Tidio open/close so we free up the chat window for typing
+          waitForTidioApi();
+        }
+
+        // ------------------- OVERLAY (drag + click) -------------------
+        function buildOverlay() {
+          overlay = document.createElement('div');
+          overlay.id = 'omix-tidio-overlay';
+          overlay.style.cssText = [
+            'position:fixed',
+            'z-index:41',
+            'width:56px',
+            'height:56px',
+            'border-radius:50%',
+            'cursor:grab',
+            'touch-action:none',
+            'background:transparent',
+            'pointer-events:auto'
+          ].join(';') + ';';
+          document.body.appendChild(overlay);
+          syncOverlayPos();
+
+          // Pointer events for drag + click
+          overlay.addEventListener('pointerdown', onDown);
+          document.addEventListener('pointermove', onMove);
+          document.addEventListener('pointerup', onUp);
+
+          // Keep overlay centred over the bubble on style changes / resize
+          sizeObserver = new MutationObserver(syncOverlayPos);
+          sizeObserver.observe(chat, { attributes: true, attributeFilter: ['style'] });
+          window.addEventListener('resize', syncOverlayPos);
+          window.addEventListener('scroll', syncOverlayPos, true);
+        }
+
+        function syncOverlayPos() {
+          if (!overlay || !chat) return;
+          var r = chat.getBoundingClientRect();
+          if (r.width < 10) return; // not rendered yet
+          overlay.style.left = (r.left + r.width/2 - 28) + 'px';
+          overlay.style.top  = (r.top  + r.height/2 - 28) + 'px';
+        }
+
+        function onDown(e) {
+          var r = chat.getBoundingClientRect();
+          sx = e.clientX; sy = e.clientY;
+          sl = r.left;
+          sb = window.innerHeight - r.top - r.height/2;
+          moved = false; dragging = false;
+          overlay.setPointerCapture(e.pointerId);
+        }
+
+        function onMove(e) {
+          if (!overlay || !overlay.hasPointerCapture(e.pointerId)) return;
+          var dx = e.clientX - sx, dy = e.clientY - sy;
+          if (Math.abs(dx) > 5 || Math.abs(dy) > 5) { moved = true; dragging = true; }
+          if (dragging) {
+            var nl = clamp(sl + dx, 0, window.innerWidth - 60);
+            var nb = clamp(sb - dy, 16, window.innerHeight - 60);
+            chat.style.left = nl + 'px';
+            chat.style.bottom = nb + 'px';
+            chat.style.right = 'auto';
+            syncOverlayPos();
+            e.preventDefault();
+          }
+        }
+
+        function onUp() {
+          if (dragging) {
+            var r = chat.getBoundingClientRect();
+            localStorage.setItem(POS_KEY, JSON.stringify({
+              l: Math.round(r.left),
+              b: Math.round(window.innerHeight - r.top - r.height/2)
+            }));
+            dragging = false;
+          } else if (!moved) {
+            toggleChat();
+          }
+        }
+
+        function toggleChat() {
+          try {
+            if (window.tidioChatApi && window.tidioChatApi.toggle) {
+              window.tidioChatApi.toggle();
+            } else {
+              // fallback: simulate click on Tidio's button iframe
+              var btn = chat && chat.querySelector('iframe');
+              if (btn) btn.click();
+            }
+          } catch(e) {}
+        }
+
+        // ------------------- TIDIO API EVENTS -------------------
+        function waitForTidioApi() {
+          if (window.tidioChatApi && window.tidioChatApi.on) {
+            wireTidioEvents();
+          } else {
+            // Some Tidio implementations expose the api via a ready callback
+            if (window.tidioChatApi && typeof window.tidioChatApi.on === 'function') {
+              wireTidioEvents();
+            } else {
+              setTimeout(waitForTidioApi, 600);
+            }
+          }
+        }
+
+        function wireTidioEvents() {
+          try {
+            window.tidioChatApi.on('open', function() {
+              if (overlay) overlay.style.pointerEvents = 'none';
+              if (closeBtn) closeBtn.style.display = 'none';
+            });
+            window.tidioChatApi.on('close', function() {
+              if (overlay) {
+                overlay.style.pointerEvents = 'auto';
+                syncOverlayPos();
+              }
+              if (closeBtn) closeBtn.style.display = '';
+            });
+          } catch(e) {}
+        }
+
+        // ------------------- COLLAPSE BUTTON -------------------
+        function buildCloseBtn() {
+          closeBtn = document.createElement('button');
+          closeBtn.id = 'omix-tidio-close';
+          closeBtn.setAttribute('aria-label', 'Hide chat bubble');
+          closeBtn.innerHTML = '<svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M18 6L6 18M6 6l12 12"/></svg>';
+          closeBtn.style.cssText = [
+            'position:fixed',
+            'width:20px','height:20px',
+            'background:rgba(15,23,42,0.65)',
+            'backdrop-filter:blur(4px)',
+            'border:none','border-radius:50%',
+            'color:#fff',
+            'display:flex','align-items:center','justify-content:center',
+            'cursor:pointer',
+            'z-index:41',
+            'opacity:0',
+            'transition:opacity 0.2s',
+            'padding:0',
+            'box-shadow:0 1px 4px rgba(0,0,0,0.3)'
+          ].join(';') + ';';
+          document.body.appendChild(closeBtn);
+          syncClosePos();
+
+          // Show on hover near bubble
+          var hoverTimer;
+          document.addEventListener('mousemove', function(e) {
+            if (chat.style.display === 'none') { closeBtn.style.opacity = '0'; return; }
+            var r = chat.getBoundingClientRect();
+            if (r.width < 10) return;
+            var cx = r.left + r.width/2, cy = r.top + r.height/2;
+            var d = Math.hypot(e.clientX - cx, e.clientY - cy);
+            closeBtn.style.opacity = d < 130 ? '1' : '0';
+          });
+
+          closeBtn.addEventListener('click', function(e) {
+            e.stopPropagation();
+            collapse();
+          });
+
+          // Reposition on resize / chat move
+          window.addEventListener('resize', syncClosePos);
+          if (sizeObserver) sizeObserver.observe(chat, { attributes: true, attributeFilter: ['style'] });
+        }
+
+        function syncClosePos() {
+          if (!closeBtn || !chat) return;
+          var r = chat.getBoundingClientRect();
+          if (r.width < 10) return;
+          closeBtn.style.left = (r.left - 6) + 'px';
+          closeBtn.style.bottom = (window.innerHeight - r.top + 6) + 'px';
+        }
+
+        function collapse() {
+          chat.style.display = 'none';
+          if (overlay) overlay.style.display = 'none';
+          if (closeBtn) closeBtn.style.opacity = '0';
+          localStorage.setItem(HIDE_KEY, 'true');
+          setTimeout(showRestore, 100);
+        }
+
+        // ------------------- RESTORE BUTTON -------------------
+        function showRestore() {
+          var existing = q('omix-tidio-restore');
+          if (existing) return;
+
+          var btn = document.createElement('button');
+          btn.id = 'omix-tidio-restore';
+          btn.innerHTML = 'Chat';
+          btn.style.cssText = [
+            'position:fixed',
+            'z-index:40',
+            'background:#1a5632',
+            'color:#fff',
+            'border:none',
+            'border-radius:20px',
+            'padding:8px 16px',
+            'font-size:13px',
+            'font-weight:600',
+            'cursor:pointer',
+            'box-shadow:0 2px 12px rgba(0,0,0,0.3)',
+            'opacity:0',
+            'transition:opacity 0.25s'
+          ].join(';') + ';';
+          document.body.appendChild(btn);
+
+          function reposition() {
+            btn.style.left = (window.innerWidth < 640 ? 16 : 24) + 'px';
+            btn.style.bottom = (window.innerWidth < 640 ? 80 : 24) + 'px';
+          }
+          reposition();
+          window.addEventListener('resize', reposition);
+
+          requestAnimationFrame(function() { btn.style.opacity = '1'; });
+
+          btn.addEventListener('click', function restore() {
+            localStorage.removeItem(HIDE_KEY);
+            if (chat) chat.style.display = '';
+            if (overlay) { overlay.style.display = ''; syncOverlayPos(); }
+            if (closeBtn) closeBtn.style.display = '';
+            btn.remove();
+            // Re-hook overlay pointer-events if chat was closed
+            if (overlay) overlay.style.pointerEvents = 'auto';
+          });
+        }
+
+        function clamp(v, mn, mx) { return Math.max(mn, Math.min(mx, v)); }
+
+        // ------------------- BOOT -------------------
+        if (document.readyState === 'complete') {
+          init();
+        } else {
+          var domReady = function() { setTimeout(init, 800); };
+          if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', domReady);
+          } else {
+            domReady();
+          }
+        }
+        // MutationObserver fallback for async Tidio injection
+        var obs = new MutationObserver(function() {
+          if (q('tidio-chat') && !chat) { obs.disconnect(); setTimeout(init, 500); }
+        });
+        obs.observe(document.body, { childList: true, subtree: true });
+        setTimeout(function() { obs.disconnect(); }, 20000);
+      })();
+    </script>
   </body>
 </html>
