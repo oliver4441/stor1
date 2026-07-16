@@ -124,7 +124,7 @@ function App() {
               <Route path="/wishlist" element={<Wishlist />} />
               <Route path="/compare" element={<Compare />} />
               <Route path="/account" element={<UserDashboard />} />
-              <Route path="/inbox" element={<AdminInbox />} />
+              <Route path="/inbox" element={<Navigate to="/admin/inbox" replace />} />
               <Route path="/track-order" element={<TrackOrder />} />
               <Route path="/install" element={<Install />} />
               <Route path="/how-it-works" element={<HowItWorks />} />
