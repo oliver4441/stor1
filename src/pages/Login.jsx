@@ -133,6 +133,23 @@ function Login() {
         <div>
           <label className="block text-sm font-bold mb-2 text-zinc-300">{t('auth.password') || 'Password'}</label>
           <input required name="password" type="password" placeholder={t('auth.passwordPlaceholder') || '••••••••'} className="w-full px-4 py-3.5 rounded-xl bg-zinc-900 border border-transparent focus:border-[var(--seasonal-primary,#1a5632)] focus:bg-white dark:focus:bg-zinc-950 focus:outline-none text-white transition-all shadow-sm" />
+          <div className="flex justify-end mt-1.5">
+            <button
+              type="button"
+              onClick={() => {
+                const email = document.querySelector('input[name="email"]')?.value;
+                if (!email) {
+                  setError('Enter your email address first.');
+                  return;
+                }
+                supabase.auth.resetPasswordForEmail(email, { redirectTo: `${window.location.origin}/account` });
+                setError('Password reset link sent to your email.');
+              }}
+              className="text-xs text-zinc-500 hover:text-[var(--seasonal-primary,#1a5632)] transition-colors font-medium"
+            >
+              Forgot Password?
+            </button>
+          </div>
         </div>
         <button type="submit" disabled={loading} className="w-full bg-[var(--seasonal-primary,#1a5632)] text-white font-black py-4 rounded-2xl hover:bg-[var(--seasonal-secondary,#14472a)] transition-all disabled:opacity-50 shadow-lg shadow-[var(--seasonal-primary,#1a5632)]/20">
           {loading ? (t('auth.loggingIn') || 'Signing in...') : (t('auth.login') || 'Sign In')}

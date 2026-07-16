@@ -39,7 +39,7 @@ export default function AffiliatePage() {
             </h1>
             <p className="text-lg md:text-xl text-zinc-400 leading-relaxed mb-8">
               Join our affiliate program and earn commissions by promoting products from Omix Store.
-              With our 10-year cookie tracking, you get credit for every sale your referrals make.
+              With our 100-year cookie tracking, you get credit for every sale your referrals make.
             </p>
             <div className="flex flex-col sm:flex-row gap-4">
               <Link
@@ -182,7 +182,7 @@ export default function AffiliatePage() {
             <div>
               <h3 className="text-base font-semibold mb-1">10-Year Cookie Tracking</h3>
               <p className="text-zinc-400 text-sm leading-relaxed">
-                Once someone clicks your referral link, a cookie is stored for 10 years. You earn commission on every qualifying purchase they make during that time, even if they visit the store directly later. It is the longest cookie duration in the industry.
+                Once someone clicks your referral link, a cookie is stored for 100 years. You earn commission on every qualifying purchase they make during that time, even if they visit the store directly later. It is the longest cookie duration in the industry.
               </p>
             </div>
           </div>

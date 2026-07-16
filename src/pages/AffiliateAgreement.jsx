@@ -42,17 +42,15 @@ const SECTIONS = [
     title: 'Commission Structure',
     content: 'Affiliates earn commissions based on their tier level, calculated on total order value excluding shipping, taxes, and discounts. Only completed and delivered orders qualify.',
     subsections: [
-      { label: 'Bronze', text: '3% commission — 0 minimum orders, KES 0 minimum sales' },
-      { label: 'Silver', text: '5% commission — 5 minimum orders, KES 50,000 minimum sales' },
-      { label: 'Gold', text: '8% commission — 20 minimum orders, KES 250,000 minimum sales' },
-      { label: 'Platinum', text: '12% commission — 50 minimum orders, KES 1,000,000 minimum sales' },
+      { label: 'Silver', text: '5% commission — 0 to 29 qualifying orders' },
+      { label: 'Gold', text: '10% commission — 30 or more qualifying orders' },
     ],
   },
   {
     number: '5',
     title: 'Referral Tracking',
     content:
-      'Last-touch attribution via "omix_ref" cookie. The cookie has a validity period of 10 years from the date of the first click. Affiliates earn commissions on all qualifying purchases made by their referrals within this period.',
+      'First-touch attribution via "omix_ref" cookie. The cookie has a validity period of 100 years from the date of the first click. Affiliates earn commissions on all qualifying purchases made by their referrals within this period.',
   },
   {
     number: '6',

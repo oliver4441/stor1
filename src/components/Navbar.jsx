@@ -5,7 +5,7 @@ import {
   ShoppingCart, ChevronDown, LogOut, RefreshCw, DollarSign, Store,
   Smartphone, Sofa, Shirt, Wrench, Car, Home, BookOpen, Dumbbell, Heart,
   UtensilsCrossed, Coffee, Cookie, ChefHat, Grid, Tag, ChevronRight,
-  Layers, Eye, EyeOff
+  Layers, Eye, EyeOff, Search
 } from 'lucide-react';
 import { supabase } from '../utils/supabase';
 import { useLang } from '../utils/lang';
@@ -144,18 +144,9 @@ function Navbar() {
         <div className="max-w-7xl mx-auto px-4 h-14 flex items-center justify-between">
           {/* Logo */}
           <Link to="/" className="flex items-center gap-2 shrink-0">
-            {sticker && <span className="theme-sticker text-lg">{sticker}</span>}
             <span className="text-xl font-bold tracking-tight text-white" style={{ color: navAccentText || '#ffffff' }}>
               Omix Store
             </span>
-            {badgeText && (
-              <span
-                className="seasonal-badge text-[8px] font-black px-1.5 py-0.5 rounded-full leading-none"
-                style={{ backgroundColor: badgeBg, color: badgeTextColor }}
-              >
-                {badgeText}
-              </span>
-            )}
           </Link>
 
           {/* Desktop (lg+): Spacer so right section stays flush right */}
@@ -163,6 +154,9 @@ function Navbar() {
 
           {/* Desktop (lg+): Right side */}
           <div className="hidden lg:flex items-center gap-2">
+            <Link to="/search" className="p-2 rounded-full hover:bg-zinc-800 text-zinc-300 transition-colors" aria-label="Search">
+              <Search className="w-5 h-5" />
+            </Link>
             <WhatsAppNavButton />
             <NotificationBell />
             <Link to="/cart" className="relative p-2 rounded-full hover:bg-zinc-800 text-zinc-300 transition-colors" aria-label={`Shopping cart, ${cartCount} items`}>
@@ -301,6 +295,11 @@ function Navbar() {
           {/* Below lg: Compact controls + Hamburger */}
           <div className="flex lg:hidden items-center gap-1">
             <WhatsAppNavButton />
+            {/* Mobile search icon */}
+            <Link to="/search" className="p-2 rounded-full hover:bg-zinc-800 text-zinc-300 transition-colors" aria-label="Search">
+              <Search className="w-5 h-5" />
+            </Link>
+
             {/* Notification bell always visible on mobile */}
             <NotificationBell />
 

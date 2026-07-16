@@ -580,7 +580,7 @@ export default function AdminAffiliates() {
               </div>
               <div>
                 <label className="block text-sm font-bold mb-1.5 text-zinc-300">Password *</label>
-                <input required type="text" value={form.password} onChange={e => setForm({...form, password: e.target.value})}
+                <input required type="password" value={form.password} onChange={e => setForm({...form, password: e.target.value})}
                   placeholder="Generate and share securely"
                   className="w-full px-4 py-2.5 rounded-xl bg-zinc-800 border border-transparent focus:border-primary focus:outline-none text-white text-sm" />
               </div>

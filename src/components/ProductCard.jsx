@@ -265,7 +265,7 @@ function ProductCard({ listing, compareMode, onCompareChange }) {
           </div>
         )}
 
-        {sticker && socialBadge && (
+        {sticker && socialBadge && false && (
           <div className="absolute bottom-2 left-2 bg-white/90 dark:bg-black/80 text-white px-2 py-1 rounded-lg text-[10px] font-bold shadow-sm flex items-center gap-1">
             <span>{sticker}</span>
             <span className="truncate max-w-[80px]">{socialBadge}</span>
