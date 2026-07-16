@@ -43,11 +43,11 @@
         "heroOverlay": "rgba(0,77,35,0.3)",
         "heroAccent": "#FFD700"
       },
-      "heroTitle": "World Cup Season — Score Big Deals",
-      "heroSubtitle": "Celebrate the beautiful game with special offers. Browse, buy, and get delivered.",
-      "badgeText": "WORLD CUP",
-      "sticker": "⚽",
-      "socialBadge": "⚽ Fan Favorites",
+      "heroTitle": "World Cup Final — Argentina vs Spain",
+      "heroSubtitle": "Messi vs Yamal: The ultimate showdown. Grab your match-day essentials and celebrate with us.",
+      "badgeText": "FINAL",
+      "sticker": "🏆",
+      "socialBadge": "🏆 Argentina vs Spain",
       "particleType": "confetti",
       "backgroundPattern": "radial-gradient(circle at 25% 25%, rgba(255,215,0,0.03) 0%, transparent 50%)",
       "heroImages": [
