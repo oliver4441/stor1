@@ -44,7 +44,12 @@ function Login() {
           const ALLOWED_REDIRECTS = ['/account', '/admin', '/cart', '/checkout', '/listings', '/affiliate-dashboard', '/seller/register', '/seller/dashboard', '/'];
           const params = new URLSearchParams(window.location.search);
           const redirect = params.get('redirect');
-          if (redirect && ALLOWED_REDIRECTS.includes(redirect)) navigate(redirect);
+          const isAllowed = redirect && (
+            ALLOWED_REDIRECTS.includes(redirect) ||
+            redirect.startsWith('/listing/') ||
+            redirect.startsWith('/category/')
+          );
+          if (isAllowed) navigate(redirect);
           else if (profile?.role === 'admin') navigate('/admin');
           else if (profile?.role === 'affiliate') navigate('/affiliate-dashboard');
           else navigate('/');

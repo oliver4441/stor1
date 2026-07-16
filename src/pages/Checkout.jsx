@@ -202,6 +202,8 @@ export default function CheckoutPage() {
   }
 
   const [loading, setLoading] = useState(false);
+  const [authChecked, setAuthChecked] = useState(false);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [paymentMethod, setPaymentMethod] = useState('online');
   const [error, setError] = useState('');
   const [fieldErrors, setFieldErrors] = useState({});
@@ -320,13 +322,16 @@ export default function CheckoutPage() {
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
-      // Guest checkout: don't redirect if no session, just set user=null
+      setAuthChecked(true);
       if (session?.user) {
+        setIsAuthenticated(true);
         supabase.from('profiles').select('loyalty_points').eq('id', session.user.id).single()
           .then(({ data }) => setUserPoints(data?.loyalty_points || 0))
           .catch(() => {});
+      } else {
+        setIsAuthenticated(false);
       }
-    }).catch(() => {});
+    }).catch(() => { setAuthChecked(true); });
   }, []);
 
   // Fetch delivery zones and pickup stations
@@ -719,6 +724,29 @@ export default function CheckoutPage() {
           </div>
           <p className="text-[11px] mt-6 text-amber-500">
             Need help? Contact us at omixsystems@gmail.com or +254 768 213 649
+          </p>
+        </div>
+      </div>
+    );
+  }
+
+  // ── Auth Gate ───────────────────────────────────────────────────
+  if (authChecked && !isAuthenticated) {
+    return (
+      <div className="max-w-lg mx-auto px-4 py-16">
+        <div className="text-center py-12 rounded-2xl border" style={{ borderColor: C.border, backgroundColor: C.bg }}>
+          <div className="w-20 h-20 mx-auto mb-5 rounded-full" style={{ backgroundColor: C.bgGray }}>
+            <User className="w-10 h-10 mx-auto mt-5" style={{ color: C.textMuted }} />
+          </div>
+          <h1 className="text-2xl font-black mb-2" style={{ color: C.text }}>Log in to checkout</h1>
+          <p className="text-sm mb-8" style={{ color: C.textMuted }}>You need an account to place orders.</p>
+          <Link
+            to={`/login?redirect=${encodeURIComponent(window.location.pathname)}`}
+            className="inline-flex items-center gap-2 font-bold px-8 py-3.5 rounded-xl transition-all text-white"
+            style={{ backgroundColor: C.accent }}
+          >Sign In</Link>
+          <p className="mt-4 text-sm" style={{ color: C.textMuted }}>
+            Don't have an account? <Link to={`/signup?redirect=${encodeURIComponent(window.location.pathname)}`} className="font-bold" style={{ color: C.accent }}>Sign Up</Link>
           </p>
         </div>
       </div>
