@@ -41,10 +41,10 @@
     <!-- Tidio Live Chat -->
     <script src="//code.tidio.co/loth2aq1yxllnphoutbd0thpkfryp3hx.js" async></script>
     <style>
-      /* Tidio positioning — left side, above mobile bottom nav */
+      /* Tidio positioning — right side, aligned with other bubbles */
       #tidio-chat, [id^="tidio-chat"] {
-        right: auto !important;
-        left: 16px !important;
+        right: 16px !important;
+        left: auto !important;
         z-index: 40 !important;
       }
       #tidio-chat {
@@ -56,7 +56,8 @@
       }
       @media (min-width: 640px) {
         #tidio-chat, [id^="tidio-chat"] {
-          left: 24px !important;
+          right: 24px !important;
+          left: auto !important;
         }
         #tidio-chat {
           bottom: 24px !important;
@@ -125,7 +126,7 @@
         'use strict';
         var POS_KEY = 'omix_tidio_pos';
         var HIDE_KEY = 'omix_tidio_hidden';
-        var chat = null, overlay = null, closeBtn = null;
+        var chat = null, overlay = null, closeBtn = null, chatLabel = null;
         var dragging = false, moved = false;
         var sx, sy, sl, sb;
         var sizeObserver = null;
@@ -155,6 +156,7 @@
 
           buildOverlay();
           buildCloseBtn();
+          buildLabel();
 
           // Listen to Tidio open/close so we free up the chat window for typing
           waitForTidioApi();
@@ -266,6 +268,7 @@
             window.tidioChatApi.on('open', function() {
               if (overlay) overlay.style.pointerEvents = 'none';
               if (closeBtn) closeBtn.style.display = 'none';
+              if (chatLabel) chatLabel.style.opacity = '0';
             });
             window.tidioChatApi.on('close', function() {
               if (overlay) {
@@ -273,6 +276,7 @@
                 syncOverlayPos();
               }
               if (closeBtn) closeBtn.style.display = '';
+              if (chatLabel) { chatLabel.style.opacity = '1'; syncLabelPos(); }
             });
           } catch(e) {}
         }
@@ -322,6 +326,42 @@
           if (sizeObserver) sizeObserver.observe(chat, { attributes: true, attributeFilter: ['style'] });
         }
 
+        // ------------------- CHAT LABEL -------------------
+        function buildLabel() {
+          chatLabel = document.createElement('span');
+          chatLabel.id = 'omix-tidio-label';
+          chatLabel.textContent = 'Chat with us directly';
+          chatLabel.style.cssText = [
+            'position:fixed',
+            'z-index:41',
+            'background:#1a5632',
+            'color:#fff',
+            'font-size:10px',
+            'font-weight:900',
+            'padding:4px 10px',
+            'border-radius:9999px',
+            'box-shadow:0 2px 8px rgba(0,0,0,0.3)',
+            'white-space:nowrap',
+            'pointer-events:none',
+            'transition:opacity 0.2s'
+          ].join(';') + ';';
+          document.body.appendChild(chatLabel);
+          syncLabelPos();
+          // Reposition on resize / chat style changes
+          window.addEventListener('resize', syncLabelPos);
+          if (sizeObserver) sizeObserver.observe(chat, { attributes: true, attributeFilter: ['style'] });
+        }
+
+        function syncLabelPos() {
+          if (!chatLabel || !chat) { if (chatLabel) chatLabel.style.opacity = '0'; return; }
+          var r = chat.getBoundingClientRect();
+          if (r.width < 10) { chatLabel.style.opacity = '0'; return; }
+          chatLabel.style.opacity = '1';
+          var labelW = chatLabel.offsetWidth || 80;
+          chatLabel.style.left = (r.left + r.width/2 - labelW/2) + 'px';
+          chatLabel.style.bottom = (window.innerHeight - r.top + 6) + 'px';
+        }
+
         function syncClosePos() {
           if (!closeBtn || !chat) return;
           var r = chat.getBoundingClientRect();
@@ -334,6 +374,7 @@
           chat.style.display = 'none';
           if (overlay) overlay.style.display = 'none';
           if (closeBtn) closeBtn.style.opacity = '0';
+          if (chatLabel) chatLabel.style.opacity = '0';
           localStorage.setItem(HIDE_KEY, 'true');
           setTimeout(showRestore, 100);
         }
@@ -364,7 +405,8 @@
           document.body.appendChild(btn);
 
           function reposition() {
-            btn.style.left = (window.innerWidth < 640 ? 16 : 24) + 'px';
+            btn.style.left = 'auto';
+            btn.style.right = (window.innerWidth < 640 ? 16 : 24) + 'px';
             btn.style.bottom = (window.innerWidth < 640 ? 144 : 24) + 'px';
           }
           reposition();

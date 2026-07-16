@@ -17,7 +17,7 @@ export default function NiaFloatingButton() {
           className="text-[10px] font-black text-white px-2.5 py-0.5 rounded-full shadow-md whitespace-nowrap"
           style={{ backgroundColor: COLORS.accent }}
         >
-          Live Chat
+          Chat with Nia
         </span>
       )}
       {/* Button */}
