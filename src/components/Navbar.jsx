@@ -45,6 +45,7 @@ function Navbar() {
   const [isUserAffiliate, setIsUserAffiliate] = useState(false);
   const [isUserSeller, setIsUserSeller] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
+  const [desktopMenuOpen, setDesktopMenuOpen] = useState(false);
   const drawerRef = useRef(null);
   const { t } = useLang();
   const location = useLocation();
@@ -90,7 +91,7 @@ function Navbar() {
   }, []);
 
   // Close menu on route change
-  useEffect(() => { setMenuOpen(false); }, [location.pathname]);
+  useEffect(() => { setMenuOpen(false); setDesktopMenuOpen(false); }, [location.pathname]);
 
   // Filter out how-it-works for logged-in users
   const visibleLinks = FEATURE_LINKS.filter(
@@ -99,15 +100,15 @@ function Navbar() {
 
   // Close menu on Escape key
   const handleKeyDown = useCallback((e) => {
-    if (e.key === 'Escape') setMenuOpen(false);
+    if (e.key === 'Escape') { setMenuOpen(false); setDesktopMenuOpen(false); }
   }, []);
 
   useEffect(() => {
-    if (menuOpen) {
+    if (menuOpen || desktopMenuOpen) {
       document.addEventListener('keydown', handleKeyDown);
     }
     return () => document.removeEventListener('keydown', handleKeyDown);
-  }, [menuOpen, handleKeyDown]);
+  }, [menuOpen, desktopMenuOpen, handleKeyDown]);
 
   // Lock body scroll when menu open on mobile
   useEffect(() => {
@@ -157,33 +158,8 @@ function Navbar() {
             )}
           </Link>
 
-          {/* Desktop (lg+): Feature Links */}
-          <div className="hidden lg:flex items-center gap-1.5">
-            {visibleLinks.map(link => {
-              const Icon = link.icon;
-              const isActive = !link.external && location.pathname === link.to;
-              const linkClass = `relative flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-sm font-bold transition-all duration-300 group ${
-                isActive
-                  ? `bg-gradient-to-r ${link.color} text-white shadow-lg ${link.glow}`
-                  : `text-zinc-300 hover:text-white hover:bg-gradient-to-r hover:${link.color} hover:shadow-md hover:${link.glow}`
-              }`;
-              const iconEl = <Icon className={`w-4 h-4 ${isActive ? 'animate-bounce-subtle' : 'group-hover:animate-bounce-subtle'}`} />;
-              const labelEl = <span>{link.label}</span>;
-              const pingEl = <span className={`absolute inset-0 rounded-full bg-gradient-to-r ${link.color} opacity-0 group-hover:opacity-20 animate-ping-slow pointer-events-none`} />;
-              if (link.external) {
-                return (
-                  <a key={link.to} href={link.to} target="_blank" rel="noopener noreferrer" className={linkClass}>
-                    {iconEl}{labelEl}{pingEl}
-                  </a>
-                );
-              }
-              return (
-                <Link key={link.to} to={link.to} className={linkClass}>
-                  {iconEl}{labelEl}{pingEl}
-                </Link>
-              );
-            })}
-          </div>
+          {/* Desktop (lg+): Spacer so right section stays flush right */}
+          <div className="hidden lg:block flex-1" />
 
           {/* Desktop (lg+): Right side */}
           <div className="hidden lg:flex items-center gap-2">
@@ -276,6 +252,50 @@ function Navbar() {
                 </Link>
               </>
             )}
+
+            {/* Desktop menu trigger */}
+            <div className="relative">
+              <button
+                onClick={() => setDesktopMenuOpen(!desktopMenuOpen)}
+                className="p-2 rounded-full hover:bg-zinc-800 text-zinc-300 transition-colors"
+                aria-label={desktopMenuOpen ? 'Close navigation menu' : 'Open navigation menu'}
+              >
+                {desktopMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+              </button>
+
+              {desktopMenuOpen && (
+                <>
+                  {/* Backdrop */}
+                  <div className="fixed inset-0 z-40" onClick={() => setDesktopMenuOpen(false)} />
+                  {/* Dropdown */}
+                  <div className="absolute right-0 top-full mt-2 w-56 bg-zinc-950 border border-zinc-800 rounded-2xl shadow-2xl z-50 py-2 overflow-hidden">
+                    {visibleLinks.map(link => {
+                      const Icon = link.icon;
+                      const isActive = !link.external && location.pathname === link.to;
+                      const btnClass = `flex items-center gap-3 px-4 py-2.5 text-sm font-bold transition-all ${
+                        isActive
+                          ? `bg-gradient-to-r ${link.color} text-white`
+                          : 'text-zinc-300 hover:bg-zinc-800'
+                      }`;
+                      if (link.external) {
+                        return (
+                          <a key={link.to} href={link.to} target="_blank" rel="noopener noreferrer" className={btnClass} onClick={() => setDesktopMenuOpen(false)}>
+                            <Icon className="w-4 h-4" />
+                            {link.label}
+                          </a>
+                        );
+                      }
+                      return (
+                        <Link key={link.to} to={link.to} className={btnClass} onClick={() => setDesktopMenuOpen(false)}>
+                          <Icon className="w-4 h-4" />
+                          {link.label}
+                        </Link>
+                      );
+                    })}
+                  </div>
+                </>
+              )}
+            </div>
           </div>
 
           {/* Below lg: Compact controls + Hamburger */}

@@ -1785,12 +1785,12 @@ export async function getSellerBySlug(slug) {
   }
 }
 
-export async function registerSeller({ userId, shopName, shopSlug, description, phone, email, address }) {
+export async function registerSeller({ userId, shopName, shopSlug, description, phone, email, address, businessRegistration, kraPin, idNumber, mpesaPhone }) {
   try {
     const resp = await fetch(`${API_URL}/api/seller/register`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ userId, shopName, shopSlug, description, phone, email, address }),
+      body: JSON.stringify({ userId, shopName, shopSlug, description, phone, email, address, businessRegistration, kraPin, idNumber, mpesaPhone }),
     });
     const data = await resp.json();
     return data;

@@ -18,6 +18,7 @@ function Signup() {
   const navigate = useNavigate();
   const params = new URLSearchParams(window.location.search);
   const refCode = params.get('ref') || getCookie('omix_ref');
+  const redirectUrl = params.get('redirect') || '/';
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState(false);
@@ -75,7 +76,7 @@ function Signup() {
           }
         } catch {}
 
-        if (result.session) { setSuccess(true); successTimer.current = setTimeout(() => navigate('/'), 1500); }
+        if (result.session) { setSuccess(true); successTimer.current = setTimeout(() => navigate(redirectUrl), 1500); }
         else { setNeedsVerification(true); setRegisteredEmail(formData.email); setLoading(false); }
       } else { setError(result.error); setLoading(false); }
     } catch (err) { 
@@ -94,7 +95,7 @@ function Signup() {
           <p className="text-zinc-400 mb-2">We sent a verification link to <strong className="text-zinc-300">{registeredEmail}</strong></p>
           <p className="text-sm text-zinc-400">Click the link to activate your account.</p>
         </div>
-        <Link to="/login" className="text-[var(--seasonal-primary,#1a5632)] font-bold hover:underline">Go to Login</Link>
+        <Link to={`/login${window.location.search}`} className="text-[var(--seasonal-primary,#1a5632)] font-bold hover:underline">Go to Login</Link>
       </div>
     );
   }
@@ -117,7 +118,7 @@ function Signup() {
       await supabase.auth.signInWithOAuth({
         provider: 'google',
         options: {
-          redirectTo: `${window.location.origin}/auth/callback`,
+          redirectTo: `${window.location.origin}/auth/callback${window.location.search}`,
         },
       });
     } catch (err) {
@@ -133,7 +134,7 @@ function Signup() {
       await supabase.auth.signInWithOAuth({
         provider: 'linkedin_oidc',
         options: {
-          redirectTo: `${window.location.origin}/auth/callback`,
+          redirectTo: `${window.location.origin}/auth/callback${window.location.search}`,
         },
       });
     } catch (err) {
@@ -257,7 +258,7 @@ function Signup() {
       </form>
 
       <p className="mt-8 text-center text-zinc-400 text-sm">
-        Already have an account? <Link to="/login" className="text-[var(--seasonal-primary,#1a5632)] font-bold hover:underline">Log In</Link>
+        Already have an account? <Link to={`/login${window.location.search}`} className="text-[var(--seasonal-primary,#1a5632)] font-bold hover:underline">Log In</Link>
       </p>
     </div>
   );

@@ -318,6 +318,12 @@ export default function AdminSellers() {
                           {seller.phone}
                         </span>
                       )}
+                      {seller.mpesa_phone && (
+                        <span className="flex items-center gap-1">
+                          <span className="text-emerald-400">M-Pesa</span>
+                          {seller.mpesa_phone}
+                        </span>
+                      )}
                       <span className="flex items-center gap-1">
                         <Calendar className="w-3 h-3" />
                         Registered {formatDate(seller.created_at)}
@@ -331,6 +337,14 @@ export default function AdminSellers() {
                       <p className="text-xs text-zinc-500 mt-1.5 line-clamp-1">
                         {seller.shop_description}
                       </p>
+                    )}
+
+                    {(seller.business_registration || seller.kra_pin || seller.id_number) && (
+                      <div className="flex flex-wrap gap-x-4 gap-y-1 mt-2 text-[10px] text-zinc-500">
+                        {seller.business_registration && <span>Reg: {seller.business_registration}</span>}
+                        {seller.kra_pin && <span>KRA: {seller.kra_pin}</span>}
+                        {seller.id_number && <span>ID: {seller.id_number}</span>}
+                      </div>
                     )}
 
                     {seller.status === 'rejected' && seller.rejection_reason && (

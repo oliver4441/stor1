@@ -31,6 +31,10 @@ export default function SellerRegistration() {
     phone: '',
     email: '',
     address: '',
+    businessRegistration: '',
+    kraPin: '',
+    idNumber: '',
+    mpesaPhone: '',
   });
 
   // If user is not logged in, redirect to login
@@ -119,6 +123,10 @@ export default function SellerRegistration() {
         phone: form.phone.trim(),
         email: form.email.trim(),
         address: form.address.trim(),
+        businessRegistration: form.businessRegistration.trim(),
+        kraPin: form.kraPin.trim(),
+        idNumber: form.idNumber.trim(),
+        mpesaPhone: form.mpesaPhone.trim(),
       });
 
       if (result?.success || result?.seller) {
@@ -348,6 +356,68 @@ export default function SellerRegistration() {
               value={form.address}
               onChange={(e) => updateField('address', e.target.value)}
               placeholder="Nairobi, Kenya"
+              className="w-full bg-zinc-800/80 border border-zinc-700 rounded-xl px-4 py-2.5 text-white placeholder-zinc-500 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500/50 focus:border-emerald-500 transition-colors"
+            />
+          </div>
+
+          {/* Business Details Header */}
+          <div className="pt-2 border-t border-zinc-800">
+            <h3 className="text-sm font-semibold text-zinc-400 uppercase tracking-wider">Business Details</h3>
+          </div>
+
+          {/* Business Registration */}
+          <div>
+            <label className="block text-sm font-medium text-zinc-300 mb-1.5">
+              Business Registration Number
+            </label>
+            <input
+              type="text"
+              value={form.businessRegistration}
+              onChange={(e) => updateField('businessRegistration', e.target.value)}
+              placeholder="e.g. BRN-2024-12345"
+              className="w-full bg-zinc-800/80 border border-zinc-700 rounded-xl px-4 py-2.5 text-white placeholder-zinc-500 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500/50 focus:border-emerald-500 transition-colors"
+            />
+          </div>
+
+          {/* KRA PIN */}
+          <div>
+            <label className="block text-sm font-medium text-zinc-300 mb-1.5">
+              KRA PIN <span className="text-zinc-500 font-normal">(tax ID)</span>
+            </label>
+            <input
+              type="text"
+              value={form.kraPin}
+              onChange={(e) => updateField('kraPin', e.target.value.toUpperCase())}
+              placeholder="e.g. P051234567Z"
+              maxLength={11}
+              className="w-full bg-zinc-800/80 border border-zinc-700 rounded-xl px-4 py-2.5 text-white placeholder-zinc-500 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500/50 focus:border-emerald-500 transition-colors font-mono uppercase"
+            />
+          </div>
+
+          {/* National ID */}
+          <div>
+            <label className="block text-sm font-medium text-zinc-300 mb-1.5">
+              National ID Number
+            </label>
+            <input
+              type="text"
+              value={form.idNumber}
+              onChange={(e) => updateField('idNumber', e.target.value)}
+              placeholder="e.g. 12345678"
+              className="w-full bg-zinc-800/80 border border-zinc-700 rounded-xl px-4 py-2.5 text-white placeholder-zinc-500 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500/50 focus:border-emerald-500 transition-colors"
+            />
+          </div>
+
+          {/* M-Pesa Phone */}
+          <div>
+            <label className="block text-sm font-medium text-zinc-300 mb-1.5">
+              M-Pesa Phone Number <span className="text-zinc-500 font-normal">(for payouts)</span>
+            </label>
+            <input
+              type="tel"
+              value={form.mpesaPhone}
+              onChange={(e) => updateField('mpesaPhone', e.target.value)}
+              placeholder="+254 7XX XXX XXX"
               className="w-full bg-zinc-800/80 border border-zinc-700 rounded-xl px-4 py-2.5 text-white placeholder-zinc-500 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500/50 focus:border-emerald-500 transition-colors"
             />
           </div>

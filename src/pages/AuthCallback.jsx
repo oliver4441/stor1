@@ -10,6 +10,8 @@ export default function AuthCallback() {
     if (handled.current) return;
     handled.current = true;
 
+    const redirectUrl = new URLSearchParams(window.location.search).get('redirect') || null;
+
     const handleCallback = async () => {
       try {
         // The Supabase client (with detectSessionInUrl: true) automatically
@@ -57,12 +59,14 @@ export default function AuthCallback() {
 
         if (profile?.role === 'admin') {
           navigate('/admin', { replace: true });
+        } else if (redirectUrl?.startsWith('/')) {
+          navigate(redirectUrl, { replace: true });
         } else {
           navigate('/account', { replace: true });
         }
       } catch {
-        // Profile might not exist for new OAuth users — go to account anyway
-        navigate('/account', { replace: true });
+        // Profile might not exist for new OAuth users — go to account or redirect
+        navigate(redirectUrl?.startsWith('/') ? redirectUrl : '/account', { replace: true });
       }
     };
 

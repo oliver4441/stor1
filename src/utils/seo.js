@@ -1,4 +1,4 @@
-const siteUrl = import.meta.env.VITE_SITE_URL || 'https://www.omixstore.co.ke'
+const siteUrl = import.meta.env.VITE_SITE_URL || 'https://market.omixsystems.store';
 
 const seoConfig = {
   defaultTitle: 'Omix Store — Your Online Store in Kericho',

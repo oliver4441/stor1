@@ -41,7 +41,7 @@ function Login() {
         try {
           const { data: profile } = await supabase
             .from('profiles').select('role').eq('id', result.user.id).single();
-          const ALLOWED_REDIRECTS = ['/account', '/admin', '/cart', '/checkout', '/listings', '/affiliate-dashboard', '/'];
+          const ALLOWED_REDIRECTS = ['/account', '/admin', '/cart', '/checkout', '/listings', '/affiliate-dashboard', '/seller/register', '/seller/dashboard', '/'];
           const params = new URLSearchParams(window.location.search);
           const redirect = params.get('redirect');
           if (redirect && ALLOWED_REDIRECTS.includes(redirect)) navigate(redirect);
@@ -167,7 +167,7 @@ function Login() {
       </form>
 
       <p className="mt-8 text-center text-zinc-400 text-sm">
-        {t('auth.noAccount') || "Don't have an account?"} <Link to="/signup" className="text-[var(--seasonal-primary,#1a5632)] font-bold hover:underline">{t('auth.signUp') || 'Sign Up'}</Link>
+        {t('auth.noAccount') || "Don't have an account?"} <Link to={`/signup${window.location.search}`} className="text-[var(--seasonal-primary,#1a5632)] font-bold hover:underline">{t('auth.signUp') || 'Sign Up'}</Link>
       </p>
     </div>
   );
