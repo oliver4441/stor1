@@ -56,5 +56,5 @@ export function formatKES(amount) {
 }
 
 export function getReferralLink(referralCode) {
-  return `https://www.omixstore.co.ke/?ref=${referralCode}`;
+  return `https://market.omixsystems.store/?ref=${referralCode}`;
 }
