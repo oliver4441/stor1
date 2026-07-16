@@ -13,7 +13,7 @@ export default function StickyMobileCart({ listing, quantity, effectivePrice, se
   const isOffline = typeof window !== 'undefined' && localStorage.getItem('omix_offline_mode') === 'true';
 
   return (
-    <div className="fixed bottom-0 left-0 right-0 z-40 md:hidden bg-zinc-950 border-t border-zinc-800 shadow-[0_-4px_20px_rgba(0,0,0,0.08)] safe-area-bottom">
+    <div className="fixed bottom-16 left-0 right-0 z-40 md:hidden bg-zinc-950 border-t border-zinc-800 shadow-[0_-4px_20px_rgba(0,0,0,0.08)] safe-area-bottom">
       <div className="flex items-center gap-3 px-4 py-3">
         {/* Price */}
         <div className="flex-shrink-0">

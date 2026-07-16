@@ -49,6 +49,7 @@ export default function AdminProducts() {
   const [deleteAllBusy, setDeleteAllBusy] = useState(false);
   const [deleteAllConfirmText, setDeleteAllConfirmText] = useState('');
   const [imageUploading, setImageUploading] = useState(false);
+  const [uploadProgress, setUploadProgress] = useState(0);
   const [processing, setProcessing] = useState(false);
   const fileInputRef = useRef(null);
   const successTimer = useRef(null);
@@ -193,10 +194,14 @@ export default function AdminProducts() {
     if (remaining <= 0) { alert(`Maximum ${MAX_IMAGES} images allowed`); return; }
     const toUpload = files.slice(0, remaining);
     setImageUploading(true);
+    setUploadProgress(0);
     const newUrls = [];
     let uploadError = '';
     for (const file of toUpload) {
-      const result = await uploadImage(file);
+      const result = await uploadImage(file, (stage) => {
+        const pct = stage === 'compressing' ? 10 : stage === 'uploading' ? 50 : 100;
+        setUploadProgress(pct);
+      });
       if (result.success) {
         newUrls.push(result.url);
       } else {
@@ -205,6 +210,7 @@ export default function AdminProducts() {
     }
     setForm(prev => ({ ...prev, images: [...prev.images, ...newUrls] }));
     setImageUploading(false);
+    setUploadProgress(0);
     if (uploadError) {
       setErrorMsg(uploadError);
       errorTimer.current = setTimeout(() => setErrorMsg(''), 5000);
@@ -673,7 +679,13 @@ export default function AdminProducts() {
                     <div className="w-24 h-24 rounded-xl bg-zinc-800 border-2 border-dashed border-zinc-300 dark:border-zinc-600 flex flex-col items-center justify-center cursor-pointer hover:border-primary transition-colors"
                       onClick={() => fileInputRef.current?.click()}>
                       {imageUploading ? (
-                        <Loader2 className="w-5 h-5 text-zinc-400 animate-spin" />
+                        <div className="flex flex-col items-center gap-1 w-full px-1">
+                          <Loader2 className="w-5 h-5 text-zinc-400 animate-spin" />
+                          <div className="w-full h-1 rounded-full bg-zinc-700 overflow-hidden">
+                            <div className="h-full bg-primary transition-all" style={{ width: `${uploadProgress}%` }} />
+                          </div>
+                          <span className="text-[9px] text-zinc-400">{uploadProgress}%</span>
+                        </div>
                       ) : (
                         <>
                           <Upload className="w-5 h-5 text-zinc-400 mb-1" />

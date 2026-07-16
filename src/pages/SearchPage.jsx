@@ -25,6 +25,7 @@ import {
   Cookie,
   UtensilsCrossed,
   MoreHorizontal,
+  ArrowLeft,
 } from 'lucide-react';
 import ProductCard from '../components/ProductCard';
 import { ProductCardSkeleton } from '../components/Skeleton';
@@ -519,7 +520,15 @@ function SearchPage() {
       <div className="max-w-7xl mx-auto px-4 py-6">
         {/* ── Search Header ── */}
         <div className="mb-6">
-          <form onSubmit={handleSearchSubmit} className="relative max-w-2xl">
+          <div className="flex items-center gap-3">
+            <button
+              onClick={() => window.history.back()}
+              className="lg:hidden p-2 -ml-2 rounded-full hover:bg-zinc-800 text-zinc-300 transition-colors"
+              aria-label="Go back"
+            >
+              <ArrowLeft className="w-5 h-5" />
+            </button>
+            <form onSubmit={handleSearchSubmit} className="relative flex-1 max-w-2xl">
             <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-zinc-400" />
             <input
               type="text"
@@ -548,6 +557,7 @@ function SearchPage() {
               Search
             </button>
           </form>
+          </div>
         </div>
 
         {/* ── Mobile Filter Toggle + Sort ── */}
