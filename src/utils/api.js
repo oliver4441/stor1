@@ -5,7 +5,7 @@ import { sounds } from './sounds'
 import { lookupAffiliateByCode } from './affiliate_api'
 import { processReferralPending } from './affiliate_logic'
 
-const API_BASE = import.meta.env.VITE_API_URL || 'https://stor1-api.onrender.com'
+const API_URL = import.meta.env.VITE_API_URL || 'https://stor1-api.onrender.com'
 
 // Cookie helper — also used for referral cookie
 function getCookie(name) {

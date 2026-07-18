@@ -104,7 +104,7 @@ export default function CartMiniPopup() {
                     </div>
                     <div className="flex items-center gap-1">
                       <button
-                        onClick={() => updateQuantity(item.id, item.quantity - 1)}
+                        onClick={() => updateQuantity(item.id, item.quantity - 1, item._cartKey)}
                         className="w-6 h-6 rounded-md bg-zinc-200 dark:bg-zinc-700 flex items-center justify-center text-zinc-300 hover:bg-zinc-300 dark:hover:bg-zinc-600"
                         aria-label={`Decrease quantity of ${item.name}`}
                       >
@@ -112,14 +112,14 @@ export default function CartMiniPopup() {
                       </button>
                       <span className="text-xs font-bold w-5 text-center text-white">{item.quantity}</span>
                       <button
-                        onClick={() => updateQuantity(item.id, item.quantity + 1)}
+                        onClick={() => updateQuantity(item.id, item.quantity + 1, item._cartKey)}
                         className="w-6 h-6 rounded-md bg-zinc-200 dark:bg-zinc-700 flex items-center justify-center text-zinc-300 hover:bg-zinc-300 dark:hover:bg-zinc-600"
                         aria-label={`Increase quantity of ${item.name}`}
                       >
                         <Plus className="w-3 h-3" />
                       </button>
                       <button
-                        onClick={() => removeItem(item.id)}
+                        onClick={() => removeItem(item.id, item._cartKey)}
                         className="w-6 h-6 rounded-md flex items-center justify-center text-zinc-400 hover:text-red-500 hover:bg-red-900/20 ml-1"
                         aria-label={`Remove ${item.name} from cart`}
                       >

@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import { DollarSign, Users, TrendingUp, Target, Gift, MousePointerClick, ChevronRight, Award, Shield, Clock, ExternalLink } from 'lucide-react';
+import { DollarSign, Users, TrendingUp, Target, Gift, MousePointerClick, ChevronRight, Award, Shield, Clock, ExternalLink, Share2, Calendar, CreditCard } from 'lucide-react';
 
 const TIERS = [
   { name: 'Silver', rate: '5%', orders: '0', sales: 'KES 0', color: 'text-zinc-300', bar: 'bg-zinc-400' },
@@ -146,7 +146,7 @@ export default function AffiliatePage() {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           <div className="p-6 rounded-xl bg-gradient-to-br from-blue-500/5 to-transparent border border-blue-500/10">
             <div className="w-12 h-12 rounded-lg bg-blue-500/10 flex items-center justify-center mb-4">
-              <Share2Icon className="text-blue-400" />
+              <Share2 className="text-blue-400" />
             </div>
             <h3 className="text-lg font-semibold mb-2">Share Your Link Everywhere</h3>
             <p className="text-zinc-400 text-sm leading-relaxed">
@@ -155,7 +155,7 @@ export default function AffiliatePage() {
           </div>
           <div className="p-6 rounded-xl bg-gradient-to-br from-amber-500/5 to-transparent border border-amber-500/10">
             <div className="w-12 h-12 rounded-lg bg-amber-500/10 flex items-center justify-center mb-4">
-              <TargetIcon className="text-amber-400" />
+              <Target className="text-amber-400" />
             </div>
             <h3 className="text-lg font-semibold mb-2">Focus on High-Value Products</h3>
             <p className="text-zinc-400 text-sm leading-relaxed">
@@ -164,7 +164,7 @@ export default function AffiliatePage() {
           </div>
           <div className="p-6 rounded-xl bg-gradient-to-br from-green-500/5 to-transparent border border-green-500/10">
             <div className="w-12 h-12 rounded-lg bg-green-500/10 flex items-center justify-center mb-4">
-              <CalendarIcon className="text-green-400" />
+              <Calendar className="text-green-400" />
             </div>
             <h3 className="text-lg font-semibold mb-2">Promote During Peak Seasons</h3>
             <p className="text-zinc-400 text-sm leading-relaxed">
@@ -209,7 +209,7 @@ export default function AffiliatePage() {
             </div>
             <div className="p-6 rounded-xl bg-zinc-900 border border-zinc-800 text-center">
               <div className="w-14 h-14 rounded-full bg-green-500/10 flex items-center justify-center mx-auto mb-4">
-                <PaymentIcon className="text-green-400" />
+                <CreditCard className="text-green-400" />
               </div>
               <h3 className="text-lg font-semibold mb-1">Payment Method</h3>
               <p className="text-2xl font-bold text-green-400">M-Pesa</p>
@@ -254,45 +254,3 @@ export default function AffiliatePage() {
   );
 }
 
-// Inline icon components to avoid naming collisions
-function Share2Icon(props) {
-  return (
-    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}>
-      <circle cx="18" cy="5" r="3" />
-      <circle cx="6" cy="12" r="3" />
-      <circle cx="18" cy="19" r="3" />
-      <line x1="8.59" y1="13.51" x2="15.42" y2="17.49" />
-      <line x1="15.41" y1="6.51" x2="8.59" y2="10.49" />
-    </svg>
-  );
-}
-
-function TargetIcon(props) {
-  return (
-    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}>
-      <circle cx="12" cy="12" r="10" />
-      <circle cx="12" cy="12" r="6" />
-      <circle cx="12" cy="12" r="2" />
-    </svg>
-  );
-}
-
-function CalendarIcon(props) {
-  return (
-    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}>
-      <rect x="3" y="4" width="18" height="18" rx="2" ry="2" />
-      <line x1="16" y1="2" x2="16" y2="6" />
-      <line x1="8" y1="2" x2="8" y2="6" />
-      <line x1="3" y1="10" x2="21" y2="10" />
-    </svg>
-  );
-}
-
-function PaymentIcon(props) {
-  return (
-    <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}>
-      <rect x="1" y="4" width="22" height="16" rx="2" ry="2" />
-      <line x1="1" y1="10" x2="23" y2="10" />
-    </svg>
-  );
-}

@@ -129,14 +129,14 @@ function ContactFloat() {
                         <p className="text-[var(--seasonal-primary,#1a5632)] font-bold text-sm">{formatKES(item.price * item.quantity)}</p>
                       </div>
                       <div className="flex items-center gap-1 flex-shrink-0">
-                        <button onClick={() => updateQuantity(item.id, Math.max(0, item.quantity - 1))} className="w-7 h-7 rounded-lg bg-zinc-800 flex items-center justify-center hover:bg-zinc-700" aria-label={`Decrease quantity of ${item.name}`}>
+                        <button onClick={() => updateQuantity(item.id, Math.max(0, item.quantity - 1), item._cartKey)} className="w-7 h-7 rounded-lg bg-zinc-800 flex items-center justify-center hover:bg-zinc-700" aria-label={`Decrease quantity of ${item.name}`}>
                           <Minus className="w-3 h-3 text-zinc-300" />
                         </button>
                         <span className="text-sm font-bold w-6 text-center text-white">{item.quantity}</span>
-                        <button onClick={() => updateQuantity(item.id, item.quantity + 1)} className="w-7 h-7 rounded-lg bg-zinc-800 flex items-center justify-center hover:bg-zinc-700" aria-label={`Increase quantity of ${item.name}`}>
+                        <button onClick={() => updateQuantity(item.id, item.quantity + 1, item._cartKey)} className="w-7 h-7 rounded-lg bg-zinc-800 flex items-center justify-center hover:bg-zinc-700" aria-label={`Increase quantity of ${item.name}`}>
                           <Plus className="w-3 h-3 text-zinc-300" />
                         </button>
-                        <button onClick={() => removeItem(item.id)} className="w-7 h-7 rounded-lg flex items-center justify-center text-zinc-400 hover:text-red-500 hover:bg-red-900/20 ml-1" aria-label={`Remove ${item.name} from cart`}>
+                        <button onClick={() => removeItem(item.id, item._cartKey)} className="w-7 h-7 rounded-lg flex items-center justify-center text-zinc-400 hover:text-red-500 hover:bg-red-900/20 ml-1" aria-label={`Remove ${item.name} from cart`}>
                           <Trash2 className="w-3 h-3" />
                         </button>
                       </div>

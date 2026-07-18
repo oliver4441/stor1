@@ -1,4 +1,5 @@
 import { ShoppingCart, Eye } from 'lucide-react';
+import { Link } from 'react-router-dom';
 import { formatKES } from '../utils/constants';
 
 /**
@@ -46,18 +47,18 @@ export default function StickyMobileCart({ listing, quantity, effectivePrice, se
             </>
           ) : (
             <>
-              <a
-                href={`/signup?redirect=/listing/${listing.id}`}
+              <Link
+                to={`/signup?redirect=/listing/${listing.id}`}
                 className="flex-1 flex items-center justify-center gap-1.5 bg-[var(--seasonal-primary,#1a5632)] text-white font-bold py-3 rounded-xl text-sm text-center"
               >
                 Sign Up to Buy
-              </a>
-              <a
-                href={`/login?redirect=/listing/${listing.id}`}
+              </Link>
+              <Link
+                to={`/login?redirect=/listing/${listing.id}`}
                 className="flex-1 flex items-center justify-center gap-1.5 bg-zinc-800 text-white font-bold py-3 rounded-xl text-sm text-center"
               >
                 Log In
-              </a>
+              </Link>
             </>
           )}
         </div>
