@@ -1,9 +1,9 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { supabase } from '../utils/supabase';
-import { getAffiliateProfile, getDashboardStats, getMonthlyEarnings, getRecentReferrals, getRecentAffiliateOrders, requestPayout, getPayoutHistory } from '../utils/affiliate_api';
+import { getAffiliateProfile, getDashboardStats, getMonthlyEarnings, getRecentReferrals, getRecentAffiliateOrders, requestPayout, getPayoutHistory, removeAffiliateAccount } from '../utils/affiliate_api';
 import { AFFILIATE_CONFIG, computeTier, formatKES, getReferralLink } from '../config/affiliate';
-import { Copy, Share2, Users, ShoppingBag, TrendingUp, Award, Calendar, ChevronDown, ChevronUp, Wallet, Send, CheckCircle, X, Loader2 } from 'lucide-react';
+import { Copy, Share2, Users, ShoppingBag, TrendingUp, Award, Calendar, ChevronDown, ChevronUp, Wallet, Send, CheckCircle, X, Loader2, MousePointerClick, AlertTriangle, Trash2 } from 'lucide-react';
 
 const TIER_META = {
   silver:   { label: 'Silver',   color: 'text-zinc-300',   bg: 'bg-zinc-600/20',   bar: 'bg-zinc-400',   iconBg: 'bg-gradient-to-br from-zinc-500 to-zinc-200 text-white' },
@@ -161,6 +161,8 @@ export default function AffiliateDashboard() {
   const [showEarnings, setShowEarnings] = useState(false);
   const [showPayouts, setShowPayouts] = useState(false);
   const [showPayoutModal, setShowPayoutModal] = useState(false);
+  const [showRemoveAffiliate, setShowRemoveAffiliate] = useState(false);
+  const [removing, setRemoving] = useState(false);
   const [error, setError] = useState('');
 
   const loadData = async () => {
@@ -176,7 +178,7 @@ export default function AffiliateDashboard() {
       const [stats, earnData, recentRefs, recentOrders, payoutData] = await Promise.all([
         getDashboardStats(profile.id),
         getMonthlyEarnings(profile.id),
-        getRecentReferrals(profile.id),
+        getRecentReferrals(profile.id, 50),
         getRecentAffiliateOrders(profile.id),
         getPayoutHistory(profile.id),
       ]);
@@ -208,6 +210,20 @@ export default function AffiliateDashboard() {
     navigator.clipboard.writeText(referralLink);
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
+  };
+
+  const handleRemoveAffiliate = async () => {
+    if (!affiliate?.id) return;
+    setRemoving(true);
+    try {
+      await removeAffiliateAccount(affiliate.id);
+      await supabase.auth.signOut();
+      window.location.href = '/';
+    } catch (err) {
+      setRemoving(false);
+      setShowRemoveAffiliate(false);
+      alert('Could not remove affiliate account: ' + (err.message || 'unknown error'));
+    }
   };
 
   if (loading) {
@@ -295,7 +311,12 @@ export default function AffiliateDashboard() {
         </div>
 
         {/* Stats Grid */}
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
+          <div className="bg-zinc-900 rounded-2xl border border-zinc-800 p-4">
+            <MousePointerClick className="w-5 h-5 text-fuchsia-500 mb-2" />
+            <p className="text-2xl font-black text-white">{stats.yearly?.totalClicks || stats.lifetime?.totalClicks || 0}</p>
+            <p className="text-xs text-zinc-400">Link Clicks</p>
+          </div>
           <div className="bg-zinc-900 rounded-2xl border border-zinc-800 p-4">
             <Users className="w-5 h-5 text-primary mb-2" />
             <p className="text-2xl font-black text-white">{stats.lifetime?.totalReferred || 0}</p>
@@ -419,22 +440,30 @@ export default function AffiliateDashboard() {
           )}
         </div>
 
-        {/* Recent Referrals */}
+        {/* Referred Users (named list) */}
         <div className="bg-zinc-900 rounded-2xl border border-zinc-800 p-5">
-          <h3 className="text-sm font-bold text-zinc-300 mb-3 flex items-center gap-2">
-            <Users className="w-4 h-4" /> Recent Referrals
-          </h3>
+          <div className="flex items-center justify-between mb-3">
+            <h3 className="text-sm font-bold text-zinc-300 flex items-center gap-2">
+              <Users className="w-4 h-4" /> People You Referred
+            </h3>
+            <span className="text-xs text-zinc-500">{referrals.length} total</span>
+          </div>
           {referrals.length === 0 ? (
-            <p className="text-sm text-zinc-500 text-center py-4">Share your referral link to start earning.</p>
+            <p className="text-sm text-zinc-500 text-center py-4">Share your referral link to start earning. Anyone who signs up through it appears here by name.</p>
           ) : (
             <div className="divide-y divide-zinc-800">
               {referrals.map((r, i) => (
                 <div key={i} className="flex items-center justify-between py-2.5">
-                  <div>
-                    <p className="text-sm font-bold text-white">{r.full_name || 'Customer'}</p>
-                    <p className="text-xs text-zinc-400">{r.email}</p>
+                  <div className="min-w-0">
+                    <p className="text-sm font-bold text-white truncate">{r.full_name || 'Customer'}</p>
+                    <p className="text-xs text-zinc-400 truncate">{r.email}</p>
                   </div>
-                  <span className="text-xs text-zinc-400">{new Date(r.created_at).toLocaleDateString()}</span>
+                  <div className="flex items-center gap-3 shrink-0">
+                    <span className={`text-[10px] uppercase font-bold px-2 py-0.5 rounded-full ${r.status === 'converted' ? 'bg-green-900/30 text-green-400' : 'bg-zinc-700/40 text-zinc-400'}`}>
+                      {r.status || 'pending'}
+                    </span>
+                    <span className="text-xs text-zinc-500">{new Date(r.created_at).toLocaleDateString()}</span>
+                  </div>
                 </div>
               ))}
             </div>
@@ -464,7 +493,50 @@ export default function AffiliateDashboard() {
             </div>
           )}
         </div>
+
+        {/* Danger Zone — Remove Affiliate Account */}
+        <div className="bg-red-950/20 rounded-2xl border border-red-900/40 p-5">
+          <div className="flex items-center gap-2 mb-2">
+            <AlertTriangle className="w-4 h-4 text-red-400" />
+            <h3 className="text-sm font-bold text-red-400">Danger Zone</h3>
+          </div>
+          <p className="text-xs text-zinc-400 mb-4">
+            Permanently remove your affiliate account. This deletes all your referral links, click history,
+            commissions, and payout records. Your customer account stays intact and you can re-apply later. This cannot be undone.
+          </p>
+          <button
+            onClick={() => setShowRemoveAffiliate(true)}
+            className="px-4 py-2.5 rounded-xl bg-red-600/20 border border-red-700/50 text-red-400 font-bold text-sm hover:bg-red-600/30 transition-colors"
+          >
+            Remove Affiliate Account
+          </button>
+        </div>
       </div>
+
+      {/* Remove Affiliate Confirm Modal */}
+      {showRemoveAffiliate && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+          <div className="absolute inset-0 bg-black/50 backdrop-blur-sm" onClick={() => setShowRemoveAffiliate(false)} />
+          <div className="relative bg-zinc-900 rounded-2xl border border-red-900/40 p-6 w-full max-w-sm shadow-2xl text-center">
+            <AlertTriangle className="w-12 h-12 text-red-400 mx-auto mb-3" />
+            <h3 className="text-lg font-bold text-white mb-1">Remove Affiliate Account?</h3>
+            <p className="text-sm text-zinc-400 mb-6">
+              This permanently deletes your affiliate record, referrals, clicks, and commission history. Your main login stays.
+            </p>
+            <div className="flex gap-3">
+              <button onClick={() => setShowRemoveAffiliate(false)} disabled={removing}
+                className="flex-1 py-2.5 rounded-xl bg-zinc-800 text-zinc-300 font-bold text-sm hover:bg-zinc-700">
+                Cancel
+              </button>
+              <button onClick={handleRemoveAffiliate} disabled={removing}
+                className="flex-1 py-2.5 rounded-xl bg-red-600 text-white font-bold text-sm hover:bg-red-700 flex items-center justify-center gap-2 disabled:opacity-50">
+                {removing ? <Loader2 className="w-4 h-4 animate-spin" /> : <Trash2 className="w-4 h-4" />}
+                {removing ? 'Removing...' : 'Remove'}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Payout Modal */}
       <PayoutModal

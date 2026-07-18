@@ -533,6 +533,31 @@ function UserDashboard() {
 
   const handleLogout = async () => { sounds.logout(); await supabase.auth.signOut(); navigate('/login'); };
 
+  // ── Delete own account ──────────────────────────────────────
+  const [showDelete, setShowDelete] = useState(false);
+  const [deleting, setDeleting] = useState(false);
+  const [deleteError, setDeleteError] = useState('');
+
+  const handleDeleteAccount = async () => {
+    setDeleting(true);
+    setDeleteError('');
+    try {
+      const { data: { session } } = await supabase.auth.getSession();
+      const token = session?.access_token;
+      const res = await fetch(`${import.meta.env.VITE_API_URL || 'https://stor1-api.onrender.com'}/api/users/me`, {
+        method: 'DELETE',
+        headers: { 'Content-Type': 'application/json', ...(token ? { Authorization: `Bearer ${token}` } : {}) },
+      });
+      const data = await res.json();
+      if (!data.success) throw new Error(data.error || 'Failed to delete account');
+      await supabase.auth.signOut();
+      navigate('/');
+    } catch (err) {
+      setDeleting(false);
+      setDeleteError(err.message || 'Could not delete account');
+    }
+  };
+
   // ── Sound Toggle ─────────────────────────────────────────────────
   const handleSoundToggle = () => {
     const next = sounds.toggleMute();
@@ -1463,6 +1488,53 @@ function UserDashboard() {
                 </button>
               </div>
             </div>
+
+            {/* Danger Zone — Delete Account */}
+            <div className="bg-red-950/20 rounded-2xl border border-red-900/40 p-6">
+              <div className="flex items-center gap-3 mb-3">
+                <div className="w-10 h-10 rounded-xl bg-red-600/20 flex items-center justify-center">
+                  <AlertTriangle className="w-5 h-5 text-red-400" />
+                </div>
+                <div>
+                  <h2 className="text-lg font-bold text-red-400">Danger Zone</h2>
+                  <p className="text-xs text-zinc-400">Permanently delete your account</p>
+                </div>
+              </div>
+              <p className="text-xs text-zinc-400 mb-4">
+                This permanently removes your profile, order history, addresses, and affiliate records.
+                This action cannot be undone. The last admin cannot delete their own account.
+              </p>
+              {deleteError && (
+                <div className="p-3 rounded-xl bg-red-900/20 border border-red-800 text-xs text-red-400 mb-4">{deleteError}</div>
+              )}
+              <button
+                onClick={() => setShowDelete(true)}
+                className="px-4 py-2.5 rounded-xl bg-red-600/20 border border-red-700/50 text-red-400 font-bold text-sm hover:bg-red-600/30 transition-colors flex items-center gap-2"
+              >
+                <Trash2 className="w-4 h-4" /> Delete My Account
+              </button>
+            </div>
+
+            {/* Delete confirm modal */}
+            {showDelete && (
+              <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+                <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" onClick={() => !deleting && setShowDelete(false)} />
+                <div className="relative bg-zinc-900 rounded-2xl border border-red-900/40 p-6 w-full max-w-sm shadow-2xl text-center">
+                  <AlertTriangle className="w-12 h-12 text-red-400 mx-auto mb-3" />
+                  <h3 className="text-lg font-bold text-white mb-1">Delete Account Permanently?</h3>
+                  <p className="text-sm text-zinc-400 mb-6">All your data will be erased and you will be signed out. This cannot be undone.</p>
+                  <div className="flex gap-3">
+                    <button onClick={() => setShowDelete(false)} disabled={deleting}
+                      className="flex-1 py-2.5 rounded-xl bg-zinc-800 text-zinc-300 font-bold text-sm hover:bg-zinc-700">Cancel</button>
+                    <button onClick={handleDeleteAccount} disabled={deleting}
+                      className="flex-1 py-2.5 rounded-xl bg-red-600 text-white font-bold text-sm hover:bg-red-700 flex items-center justify-center gap-2 disabled:opacity-50">
+                      {deleting ? <Loader2 className="w-4 h-4 animate-spin" /> : <Trash2 className="w-4 h-4" />}
+                      {deleting ? 'Deleting...' : 'Delete'}
+                    </button>
+                  </div>
+                </div>
+              </div>
+            )}
           </div>
         );
 

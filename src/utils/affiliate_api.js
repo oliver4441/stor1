@@ -57,11 +57,13 @@ export async function getDashboardStats(affiliateId) {
     return {
       lifetime: {
         totalReferred: result.stats?.totalReferrals || 0,
+        totalClicks: result.stats?.totalClicks || 0,
         totalSales: result.stats?.monthlySales || 0,
         totalOrders: result.stats?.monthlyOrders || 0,
         totalCommission: result.latestCommission?.commission_amount || 0,
       },
       yearly: {
+        totalClicks: result.stats?.totalClicks || 0,
         totalSales: result.stats?.monthlySales || 0,
         qualifiedCount: result.stats?.convertedReferrals || 0,
         tier: result.currentTier?.name?.toLowerCase() || 'silver',
@@ -74,8 +76,8 @@ export async function getDashboardStats(affiliateId) {
   } catch (err) {
     console.error('getDashboardStats error:', err);
     return {
-      lifetime: { totalReferred: 0, totalSales: 0, totalOrders: 0, totalCommission: 0 },
-      yearly: { totalSales: 0, qualifiedCount: 0, tier: 'silver', commissionRate: 0.05 },
+      lifetime: { totalReferred: 0, totalClicks: 0, totalSales: 0, totalOrders: 0, totalCommission: 0 },
+      yearly: { totalClicks: 0, totalSales: 0, qualifiedCount: 0, tier: 'silver', commissionRate: 0.05 },
       progress: null,
       pendingCommission: 0,
       paidCommission: 0,
@@ -150,7 +152,10 @@ export async function getTierInfo() {
   }
 }
 
-// ─── Referral Tracking (Cookie + Logging) ──────────────────────
+// ─── Remove own affiliate account permanently ─────────────────
+export async function removeAffiliateAccount(affiliateId) {
+  return apiPost(`${AFFILIATE_CONFIG.ENDPOINTS.ADMIN_AFFILIATES.replace('/admin/affiliates', '')}/affiliate/${affiliateId}`, {});
+}
 /**
  * Set the referral cookie on page load when ref param is present.
  * Cookie is permanent (100 year expiry, effectively never expires).

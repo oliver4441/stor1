@@ -71,6 +71,8 @@ const AdminAffiliates = React.lazy(() => import('./pages/AdminAffiliates'));
 const AdminInbox = React.lazy(() => import('./pages/AdminInbox'));
 const AdminSellers = React.lazy(() => import('./pages/AdminSellers'));
 const AdminDeals = React.lazy(() => import('./pages/AdminDeals'));
+const AdminUsers = React.lazy(() => import('./pages/AdminUsers'));
+const AdminBroadcast = React.lazy(() => import('./pages/AdminBroadcast'));
 const AffiliateDashboard = React.lazy(() => import('./pages/AffiliateDashboard'));
 const AffiliatePage = React.lazy(() => import('./pages/AffiliatePage'));
 const AffiliateApply = React.lazy(() => import('./pages/AffiliateApply'));
@@ -167,6 +169,8 @@ function App() {
                 <Route path="notifications" element={<AdminNotifications />} />
                 <Route path="inbox" element={<AdminInbox />} />
                 <Route path="sellers" element={<AdminSellers />} />
+                <Route path="users" element={<AdminUsers />} />
+                <Route path="broadcast" element={<AdminBroadcast />} />
               <Route path="deals" element={<AdminDeals />} />
               </Route>
               <Route path="/listings" element={<Navigate to="/search" replace />} />
