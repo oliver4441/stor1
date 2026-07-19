@@ -78,6 +78,9 @@ export default defineConfig({
             'react-dom',
             'react-router-dom',
           ],
+          // Heavy libs split out so they only load where used (not in the shared admin chunk)
+          recharts: ['recharts'],
+          supabase: ['@supabase/supabase-js'],
           // Admin chunk — all admin pages grouped together
           admin: [
             resolve(__dirname, 'src/pages/AdminLayout.jsx'),
