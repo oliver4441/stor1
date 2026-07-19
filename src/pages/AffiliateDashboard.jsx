@@ -2,8 +2,8 @@ import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { supabase } from '../utils/supabase';
 import { getAffiliateProfile, getDashboardStats, getMonthlyEarnings, getRecentReferrals, getRecentAffiliateOrders, requestPayout, getPayoutHistory, removeAffiliateAccount } from '../utils/affiliate_api';
-import { AFFILIATE_CONFIG, computeTier, formatKES, getReferralLink } from '../config/affiliate';
-import { Copy, Share2, Users, ShoppingBag, TrendingUp, Award, Calendar, ChevronDown, ChevronUp, Wallet, Send, CheckCircle, X, Loader2, MousePointerClick, AlertTriangle, Trash2 } from 'lucide-react';
+import { AFFILIATE_CONFIG, formatKES, getReferralLink } from '../config/affiliate';
+import { Copy, Share2, Users, ShoppingBag, TrendingUp, Award, Wallet, Send, CheckCircle, X, Loader2, MousePointerClick, AlertTriangle, Trash2 } from 'lucide-react';
 
 // ponytail: one tiny hook reused by every stat tile, reduced-motion safe
 function useCountUp(target, dur = 700) {
@@ -177,7 +177,6 @@ export default function AffiliateDashboard() {
   const [payouts, setPayouts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [copied, setCopied] = useState(false);
-  const [showEarnings, setShowEarnings] = useState(false);
   const [showPayouts, setShowPayouts] = useState(false);
   const [showPayoutModal, setShowPayoutModal] = useState(false);
   const [showRemoveAffiliate, setShowRemoveAffiliate] = useState(false);
