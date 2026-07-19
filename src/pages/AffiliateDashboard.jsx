@@ -24,6 +24,24 @@ function useCountUp(target, dur = 700) {
   return val;
 }
 
+// ponytail: real component so useCountUp is at top level (Rules of Hooks)
+function StatTile({ s, i }) {
+  const val = useCountUp(s.val);
+  return (
+    <div
+      key={s.label}
+      className={`bg-zinc-900 rounded-2xl border border-zinc-800 border-t-2 ${s.top} p-4 transition-transform hover:-translate-y-0.5 hover:shadow-lg hover:shadow-black/20`}
+      style={{ animation: 'fadeUp .4s ease-out both', animationDelay: `${i * 50}ms` }}
+    >
+      <div className={`w-9 h-9 rounded-xl ${s.chip} flex items-center justify-center mb-2`}>
+        <s.icon className={`w-5 h-5 ${s.color}`} />
+      </div>
+      <p className="text-2xl font-black text-white">{s.money ? formatKES(val) : val.toLocaleString()}</p>
+      <p className="text-xs text-zinc-400 mt-0.5">{s.label}</p>
+    </div>
+  );
+}
+
 const TIER_META = {
   silver:   { label: 'Silver',   color: 'text-zinc-300',   bg: 'bg-zinc-600/20',   bar: 'bg-zinc-400',   iconBg: 'bg-gradient-to-br from-zinc-500 to-zinc-200 text-white' },
   gold:     { label: 'Gold',     color: 'text-amber-400',  bg: 'bg-amber-500/20',  bar: 'bg-amber-400',  iconBg: 'bg-gradient-to-br from-amber-500 to-yellow-300 text-white' },
@@ -355,13 +373,7 @@ export default function AffiliateDashboard() {
             { icon: TrendingUp, color: 'text-green-400', chip: 'bg-green-500/15', top: 'border-t-green-500/40', val: Math.round(stats.yearly?.totalSales || 0), label: 'Sales Value', money: true },
             { icon: Wallet, color: 'text-amber-400', chip: 'bg-amber-500/15', top: 'border-t-amber-500/40', val: Math.round(pendingCommission), label: 'Pending Commission', money: true },
           ].map((s, i) => (
-            <div key={s.label} className={`bg-zinc-900 rounded-2xl border border-zinc-800 border-t-2 ${s.top} p-4 transition-transform hover:-translate-y-0.5 hover:shadow-lg hover:shadow-black/20`} style={{ animation: 'fadeUp .4s ease-out both', animationDelay: `${i * 50}ms` }}>
-              <div className={`w-9 h-9 rounded-xl ${s.chip} flex items-center justify-center mb-2`}>
-                <s.icon className={`w-5 h-5 ${s.color}`} />
-              </div>
-              <p className="text-2xl font-black text-white">{s.money ? formatKES(useCountUp(s.val)) : useCountUp(s.val).toLocaleString()}</p>
-              <p className="text-xs text-zinc-400 mt-0.5">{s.label}</p>
-            </div>
+            <StatTile s={s} i={i} />
           ))}
         </div>
 
