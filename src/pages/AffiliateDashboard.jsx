@@ -1,32 +1,12 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { supabase } from '../utils/supabase';
 import { getAffiliateProfile, getDashboardStats, getMonthlyEarnings, getRecentReferrals, getRecentAffiliateOrders, requestPayout, getPayoutHistory, removeAffiliateAccount } from '../utils/affiliate_api';
 import { AFFILIATE_CONFIG, formatKES, getReferralLink } from '../config/affiliate';
 import { Copy, Share2, Users, ShoppingBag, TrendingUp, Award, Wallet, Send, CheckCircle, X, Loader2, MousePointerClick, AlertTriangle, Trash2 } from 'lucide-react';
 
-// ponytail: one tiny hook reused by every stat tile, reduced-motion safe
-function useCountUp(target, dur = 700) {
-  const [val, setVal] = useState(0);
-  useEffect(() => {
-    const mq = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)');
-    if (mq && mq.matches) { setVal(target); return; }
-    let raf = 0, start = 0;
-    const tick = (now) => {
-      if (!start) start = now;
-      const p = Math.min(1, (now - start) / dur);
-      setVal(Math.round(target * (1 - Math.pow(1 - p, 3))));
-      if (p < 1) raf = requestAnimationFrame(tick);
-    };
-    raf = requestAnimationFrame(tick);
-    return () => cancelAnimationFrame(raf);
-  }, [target, dur]);
-  return val;
-}
-
-// ponytail: real component so useCountUp is at top level (Rules of Hooks)
+// ponytail: stat tile — uses plain value (count-up hook caused react #310)
 function StatTile({ s, i }) {
-  const val = useCountUp(s.val);
   return (
     <div
       key={s.label}
@@ -36,7 +16,7 @@ function StatTile({ s, i }) {
       <div className={`w-9 h-9 rounded-xl ${s.chip} flex items-center justify-center mb-2`}>
         <s.icon className={`w-5 h-5 ${s.color}`} />
       </div>
-      <p className="text-2xl font-black text-white">{s.money ? formatKES(val) : val.toLocaleString()}</p>
+      <p className="text-2xl font-black text-white">{s.money ? formatKES(s.val) : s.val.toLocaleString()}</p>
       <p className="text-xs text-zinc-400 mt-0.5">{s.label}</p>
     </div>
   );
@@ -300,7 +280,7 @@ export default function AffiliateDashboard() {
           </div>
           <div className="text-left sm:text-right shrink-0">
             <p className="text-xs text-zinc-400 uppercase tracking-wider">Pending Commission</p>
-            <p className="text-3xl font-black text-amber-400">{formatKES(useCountUp(Math.round(pendingCommission)))}</p>
+            <p className="text-3xl font-black text-amber-400">{formatKES(Math.round(pendingCommission))}</p>
             {availableForPayout >= AFFILIATE_CONFIG.MIN_PAYOUT && (
               <button onClick={() => setShowPayoutModal(true)}
                 className="mt-2 px-4 py-2.5 bg-primary text-white rounded-xl font-bold text-sm hover:bg-primary-hover transition-colors flex items-center gap-2">
