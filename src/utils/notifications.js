@@ -62,7 +62,7 @@ export function storeNotification({ type, title, body, icon, url, tag }) {
   supabase.auth.getUser().then(({ data: { user } }) => {
     if (user) {
       supabase
-        .from('in_app_notifications')
+        .from('notifications')
         .insert({
           user_id: user.id,
           type: notif.type,
@@ -92,7 +92,7 @@ export async function getNotifications() {
     const { data: { user } } = await supabase.auth.getUser();
     if (user) {
       const { data: dbNotifs, error } = await supabase
-        .from('in_app_notifications')
+        .from('notifications')
         .select('*')
         .eq('user_id', user.id)
         .order('created_at', { ascending: false })
@@ -147,7 +147,7 @@ export async function markAllNotificationsRead() {
     const { data: { user } } = await supabase.auth.getUser();
     if (user) {
       await supabase
-        .from('in_app_notifications')
+        .from('notifications')
         .update({ read: true })
         .eq('user_id', user.id)
         .eq('read', false);
@@ -169,7 +169,7 @@ export async function clearNotifications() {
     const { data: { user } } = await supabase.auth.getUser();
     if (user) {
       await supabase
-        .from('in_app_notifications')
+        .from('notifications')
         .delete()
         .eq('user_id', user.id);
     }

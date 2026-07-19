@@ -1,6 +1,6 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { supabase } from '../utils/supabase';
-import { Send, Mail, Bell, Loader2, CheckCircle, AlertTriangle, Users } from 'lucide-react';
+import { Send, Mail, Bell, Loader2, CheckCircle, AlertTriangle, Users, Power, Fingerprint } from 'lucide-react';
 
 const API_BASE = import.meta.env.VITE_API_URL || 'https://stor1-api.onrender.com';
 
@@ -26,6 +26,36 @@ export default function AdminBroadcast() {
   const [sending, setSending] = useState(false);
   const [result, setResult] = useState(null);
   const [error, setError] = useState('');
+
+  // Broadcast master settings
+  const [settings, setSettings] = useState({ enabled: true, default_email: true, default_push: true });
+  const [settingsLoading, setSettingsLoading] = useState(true);
+  const [savingSetting, setSavingSetting] = useState('');
+
+  useEffect(() => {
+    (async () => {
+      try {
+        const headers = await getAuthHeaders();
+        const res = await fetch(`${API_BASE}/api/admin/broadcast/settings`, { headers });
+        const data = await res.json();
+        if (data.success) setSettings(data.settings);
+      } catch {} finally { setSettingsLoading(false); }
+    })();
+  }, []);
+
+  const updateSetting = async (key, value) => {
+    setSavingSetting(key);
+    const next = { ...settings, [key]: value };
+    setSettings(next);
+    try {
+      const headers = await getAuthHeaders();
+      await fetch(`${API_BASE}/api/admin/broadcast/settings`, {
+        method: 'PUT', headers,
+        body: JSON.stringify(next),
+      });
+    } catch (e) { setError('Failed to save setting'); }
+    finally { setSavingSetting(''); }
+  };
 
   const handleSend = async (e) => {
     e.preventDefault();
@@ -61,6 +91,59 @@ export default function AdminBroadcast() {
         <h2 className="text-xl font-bold text-white">Broadcast to All Users</h2>
         <p className="text-sm text-zinc-400">Send an email and/or push notification to every registered Omix Store user.</p>
       </div>
+
+      {!settingsLoading && (
+        <div className="bg-zinc-900 rounded-2xl border border-zinc-800 p-5 space-y-4">
+          <div className="flex items-center gap-2">
+            <Fingerprint className="w-5 h-5 text-primary" />
+            <h3 className="text-sm font-bold text-white">Broadcast Controls</h3>
+          </div>
+          <div className="flex items-center justify-between p-3 rounded-xl bg-zinc-800/50">
+            <div>
+              <p className="text-sm font-semibold text-zinc-200">Enable broadcasts</p>
+              <p className="text-xs text-zinc-500">Turn off to block all broadcast sends.</p>
+            </div>
+            <button
+              onClick={() => updateSetting('enabled', !settings.enabled)}
+              disabled={savingSetting === 'enabled'}
+              className={`relative w-12 h-7 rounded-full transition-colors ${settings.enabled ? 'bg-primary' : 'bg-zinc-600'}`}
+            >
+              <span className={`absolute top-1 w-5 h-5 bg-white rounded-full transition-all ${settings.enabled ? 'left-6' : 'left-1'}`} />
+            </button>
+          </div>
+          <div className="flex items-center justify-between p-3 rounded-xl bg-zinc-800/50">
+            <div>
+              <p className="text-sm font-semibold text-zinc-200">Default: email channel</p>
+              <p className="text-xs text-zinc-500">Used when a broadcast doesn't specify.</p>
+            </div>
+            <button
+              onClick={() => updateSetting('default_email', !settings.default_email)}
+              disabled={savingSetting === 'default_email'}
+              className={`relative w-12 h-7 rounded-full transition-colors ${settings.default_email ? 'bg-primary' : 'bg-zinc-600'}`}
+            >
+              <span className={`absolute top-1 w-5 h-5 bg-white rounded-full transition-all ${settings.default_email ? 'left-6' : 'left-1'}`} />
+            </button>
+          </div>
+          <div className="flex items-center justify-between p-3 rounded-xl bg-zinc-800/50">
+            <div>
+              <p className="text-sm font-semibold text-zinc-200">Default: push channel</p>
+              <p className="text-xs text-zinc-500">Used when a broadcast doesn't specify.</p>
+            </div>
+            <button
+              onClick={() => updateSetting('default_push', !settings.default_push)}
+              disabled={savingSetting === 'default_push'}
+              className={`relative w-12 h-7 rounded-full transition-colors ${settings.default_push ? 'bg-primary' : 'bg-zinc-600'}`}
+            >
+              <span className={`absolute top-1 w-5 h-5 bg-white rounded-full transition-all ${settings.default_push ? 'left-6' : 'left-1'}`} />
+            </button>
+          </div>
+          {!settings.enabled && (
+            <div className="p-3 rounded-xl bg-amber-900/20 border border-amber-800/40 flex items-center gap-2 text-sm text-amber-400">
+              <Power className="w-4 h-4" /> Broadcasts are currently DISABLED — sends will be blocked until re-enabled.
+            </div>
+          )}
+        </div>
+      )}
 
       {result && (
         <div className="p-4 rounded-2xl bg-green-900/20 border border-green-800/40 flex items-start gap-3">

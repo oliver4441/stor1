@@ -6,6 +6,8 @@ import { supabase } from '../utils/supabase';
 import { checkRateLimit, recordActionAttempt, clearRateLimit } from '../utils/rateLimit';
 import { trackUserLogin, trackError } from '../utils/analytics';
 import { sounds } from '../utils/sounds';
+import { biometricLoginBegin, isBiometricSupported } from '../utils/biometric';
+import { Fingerprint, Loader2 } from 'lucide-react';
 
 function Login() {
   const { t } = useLang();
@@ -13,6 +15,29 @@ function Login() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [needsVerification, setNeedsVerification] = useState(false);
+  const [bioSupported] = useState(isBiometricSupported());
+  const [bioLoading, setBioLoading] = useState(false);
+
+  const handleBiometricLogin = async () => {
+    const email = document.querySelector('input[type="email"]')?.value || '';
+    if (!email) { setError('Enter your email first, then tap biometric login.'); return; }
+    setBioLoading(true); setError('');
+    try {
+      const session = await biometricLoginBegin(email);
+      const { error: setErr } = await supabase.auth.setSession(session);
+      if (setErr) throw setErr;
+      const { data: { user } } = await supabase.auth.getUser();
+      if (user) {
+        clearRateLimit(`login-${email}`);
+        sounds.success();
+        trackUserLogin(true);
+        const aff = await isAffiliate(user.id);
+        navigate(aff ? '/affiliate-dashboard' : '/dashboard');
+      }
+    } catch (e) {
+      setError(e.message || 'Biometric login failed');
+    } finally { setBioLoading(false); }
+  };
 
   const handleLogin = async (e) => {
     e.preventDefault();
@@ -186,6 +211,22 @@ function Login() {
           </svg>
           <span>Continue with LinkedIn</span>
         </button>
+
+        {bioSupported && (
+          <button
+            type="button"
+            onClick={handleBiometricLogin}
+            disabled={bioLoading || loading}
+            className="w-full flex items-center justify-center gap-3 bg-zinc-800 hover:bg-zinc-700 text-white font-bold py-3.5 rounded-2xl transition-all disabled:opacity-50 border border-zinc-600 shadow-sm"
+          >
+            {bioLoading ? (
+              <Loader2 className="w-5 h-5 animate-spin" />
+            ) : (
+              <Fingerprint className="w-5 h-5" />
+            )}
+            <span>{bioLoading ? 'Waiting for biometric…' : 'Sign in with Biometrics'}</span>
+          </button>
+        )}
       </form>
 
       <p className="mt-8 text-center text-zinc-400 text-sm">
