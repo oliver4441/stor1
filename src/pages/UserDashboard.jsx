@@ -5,7 +5,7 @@ import {
   ChevronDown, ChevronUp, Clock, Gift, Copy, Check, Star, ChevronRight,
   ExternalLink, Users, Bookmark, X, Bell, BellRing, BellOff,
   User, Mail, Phone, Camera, Edit2, MapPin, Plus, Trash2, AlertTriangle,
-  Loader2, CheckCircle2, Shield, Lock, CreditCard, Settings, Home,
+  Loader2, CheckCircle2, Shield, Lock, CreditCard, Settings, Home, TrendingUp,
 } from 'lucide-react';
 import 'leaflet/dist/leaflet.css';
 import { supabase } from '../utils/supabase';
@@ -13,7 +13,7 @@ import {
   fetchOrders, fetchListings, fetchAddresses, saveAddress, deleteAddress,
   setDefaultAddress, getReferralCode, getReferralStats, getLoyaltyPoints,
   getPointsHistory, getSavedSearches, removeSavedSearch,
-  updateProfile, uploadAvatar, cancelOrderWithReason, getProfile,
+  updateProfile, uploadAvatar, cancelOrderWithReason, getProfile, isAffiliate,
 } from '../utils/api';
 import { formatKES, CATEGORIES } from '../utils/constants';
 import ProductCard from '../components/ProductCard';
@@ -377,6 +377,9 @@ function UserDashboard() {
   const [pwBusy, setPwBusy] = useState(false);
   const [pwMsg, setPwMsg] = useState({ type: 'success', text: '' });
 
+  // ponytail: only show affiliate entry to actual affiliates
+  const [isAffiliateUser, setIsAffiliateUser] = useState(false);
+
   // Products (for browsing)
   const [products, setProducts] = useState([]);
   const [activeCategory, setActiveCategory] = useState('All');
@@ -392,6 +395,7 @@ function UserDashboard() {
       const [
         profileData, userOrders, allProducts, userAddresses,
         code, stats, pts, hist, searches,
+        aff,
       ] = await Promise.all([
         getProfile(user.id),
         fetchOrders(user.id),
@@ -402,6 +406,7 @@ function UserDashboard() {
         getLoyaltyPoints(user.id),
         getPointsHistory(user.id),
         getSavedSearches(user.id),
+        isAffiliate(),
       ]);
 
       setProfile(profileData);
@@ -413,6 +418,7 @@ function UserDashboard() {
       setLoyaltyPoints(pts.points);
       setPointsHistory(hist);
       setSavedSearches(searches);
+      setIsAffiliateUser(!!aff);
       setEditForm({
         full_name: profileData?.full_name || user?.user_metadata?.full_name || '',
         phone: profileData?.phone || '',
@@ -1395,6 +1401,25 @@ function UserDashboard() {
                 </div>
               )}
             </div>
+
+            {/* Affiliate Program — only for affiliates */}
+            {isAffiliateUser && (
+              <div className="bg-gradient-to-br from-amber-500/15 to-violet-500/10 rounded-2xl border border-amber-500/30 p-6">
+                <div className="flex items-center gap-3 mb-3">
+                  <div className="w-10 h-10 rounded-xl bg-amber-500/20 flex items-center justify-center">
+                    <TrendingUp className="w-5 h-5 text-amber-400" />
+                  </div>
+                  <h2 className="text-lg font-bold text-white">Affiliate Dashboard</h2>
+                </div>
+                <p className="text-sm text-zinc-400 mb-4">You're an affiliate. Track your link clicks, referrals, and commissions.</p>
+                <button
+                  onClick={() => navigate('/affiliate-dashboard')}
+                  className="w-full sm:w-auto px-5 py-3 bg-primary text-white rounded-xl font-bold text-sm hover:bg-primary-hover transition-colors flex items-center justify-center gap-2 min-h-[44px]"
+                >
+                  <TrendingUp className="w-4 h-4" /> Open Affiliate Dashboard
+                </button>
+              </div>
+            )}
 
             {/* Security */}
             <div className="bg-zinc-900 rounded-2xl border border-zinc-800 p-6">

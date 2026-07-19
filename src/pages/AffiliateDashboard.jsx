@@ -5,6 +5,25 @@ import { getAffiliateProfile, getDashboardStats, getMonthlyEarnings, getRecentRe
 import { AFFILIATE_CONFIG, computeTier, formatKES, getReferralLink } from '../config/affiliate';
 import { Copy, Share2, Users, ShoppingBag, TrendingUp, Award, Calendar, ChevronDown, ChevronUp, Wallet, Send, CheckCircle, X, Loader2, MousePointerClick, AlertTriangle, Trash2 } from 'lucide-react';
 
+// ponytail: one tiny hook reused by every stat tile, reduced-motion safe
+function useCountUp(target, dur = 700) {
+  const [val, setVal] = useState(0);
+  useEffect(() => {
+    const mq = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)');
+    if (mq && mq.matches) { setVal(target); return; }
+    let raf = 0, start = 0;
+    const tick = (now) => {
+      if (!start) start = now;
+      const p = Math.min(1, (now - start) / dur);
+      setVal(Math.round(target * (1 - Math.pow(1 - p, 3))));
+      if (p < 1) raf = requestAnimationFrame(tick);
+    };
+    raf = requestAnimationFrame(tick);
+    return () => cancelAnimationFrame(raf);
+  }, [target, dur]);
+  return val;
+}
+
 const TIER_META = {
   silver:   { label: 'Silver',   color: 'text-zinc-300',   bg: 'bg-zinc-600/20',   bar: 'bg-zinc-400',   iconBg: 'bg-gradient-to-br from-zinc-500 to-zinc-200 text-white' },
   gold:     { label: 'Gold',     color: 'text-amber-400',  bg: 'bg-amber-500/20',  bar: 'bg-amber-400',  iconBg: 'bg-gradient-to-br from-amber-500 to-yellow-300 text-white' },
@@ -249,11 +268,29 @@ export default function AffiliateDashboard() {
 
   return (
     <div className="min-h-screen bg-zinc-950">
-      {/* Header */}
-      <div className="bg-gradient-to-b from-primary/20 to-zinc-950 px-4 py-8">
-        <div className="max-w-4xl mx-auto">
-          <h1 className="text-2xl font-black text-white">Affiliate Dashboard</h1>
-          <p className="text-zinc-400 text-sm">Welcome, {affiliate?.full_name || user?.email}</p>
+      {/* Hero */}
+      <div className="bg-gradient-to-br from-amber-500/20 via-violet-500/10 to-zinc-950 px-4 py-8">
+        <div className="max-w-4xl mx-auto flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4">
+          <div className="min-w-0">
+            <div className="flex items-center gap-2 mb-1">
+              <TierBadge tier={currentTier} />
+              <span className={`px-2.5 py-0.5 rounded-full text-[10px] font-bold ${affiliate?.status === 'active' ? 'bg-green-900/30 text-green-400' : 'bg-red-900/30 text-red-400'}`}>
+                {affiliate?.status || 'inactive'}
+              </span>
+            </div>
+            <h1 className="text-2xl font-black text-white truncate">Welcome back, {affiliate?.full_name || user?.email}</h1>
+            <p className="text-zinc-400 text-sm mt-0.5">{(commissionRate * 100).toFixed(0)}% commission on every referred sale</p>
+          </div>
+          <div className="text-left sm:text-right shrink-0">
+            <p className="text-xs text-zinc-400 uppercase tracking-wider">Pending Commission</p>
+            <p className="text-3xl font-black text-amber-400">{formatKES(useCountUp(Math.round(pendingCommission)))}</p>
+            {availableForPayout >= AFFILIATE_CONFIG.MIN_PAYOUT && (
+              <button onClick={() => setShowPayoutModal(true)}
+                className="mt-2 px-4 py-2.5 bg-primary text-white rounded-xl font-bold text-sm hover:bg-primary-hover transition-colors flex items-center gap-2">
+                <Send className="w-4 h-4" /> Request Payout
+              </button>
+            )}
+          </div>
         </div>
       </div>
 
@@ -310,33 +347,23 @@ export default function AffiliateDashboard() {
           </div>
         </div>
 
-        {/* Stats Grid */}
+        {/* Stats Grid — gradient tiles w/ count-up */}
         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
-          <div className="bg-zinc-900 rounded-2xl border border-zinc-800 p-4">
-            <MousePointerClick className="w-5 h-5 text-fuchsia-500 mb-2" />
-            <p className="text-2xl font-black text-white">{stats.yearly?.totalClicks || stats.lifetime?.totalClicks || 0}</p>
-            <p className="text-xs text-zinc-400">Link Clicks</p>
-          </div>
-          <div className="bg-zinc-900 rounded-2xl border border-zinc-800 p-4">
-            <Users className="w-5 h-5 text-primary mb-2" />
-            <p className="text-2xl font-black text-white">{stats.lifetime?.totalReferred || 0}</p>
-            <p className="text-xs text-zinc-400">Total Referrals</p>
-          </div>
-          <div className="bg-zinc-900 rounded-2xl border border-zinc-800 p-4">
-            <ShoppingBag className="w-5 h-5 text-blue-500 mb-2" />
-            <p className="text-2xl font-black text-white">{qualifiedCount}</p>
-            <p className="text-xs text-zinc-400">Qualified Sales</p>
-          </div>
-          <div className="bg-zinc-900 rounded-2xl border border-zinc-800 p-4">
-            <TrendingUp className="w-5 h-5 text-green-500 mb-2" />
-            <p className="text-xl font-black text-white">{formatKES(stats.yearly?.totalSales || 0)}</p>
-            <p className="text-xs text-zinc-400">Sales Value</p>
-          </div>
-          <div className="bg-zinc-900 rounded-2xl border border-zinc-800 p-4">
-            <Wallet className="w-5 h-5 text-amber-400 mb-2" />
-            <p className="text-lg font-black text-white">{formatKES(pendingCommission)}</p>
-            <p className="text-xs text-zinc-400">Pending Commission</p>
-          </div>
+          {[
+            { icon: MousePointerClick, color: 'text-fuchsia-400', chip: 'bg-fuchsia-500/15', top: 'border-t-fuchsia-500/40', val: stats.yearly?.totalClicks || stats.lifetime?.totalClicks || 0, label: 'Link Clicks' },
+            { icon: Users, color: 'text-violet-400', chip: 'bg-violet-500/15', top: 'border-t-violet-500/40', val: stats.lifetime?.totalReferred || 0, label: 'Total Referrals' },
+            { icon: ShoppingBag, color: 'text-blue-400', chip: 'bg-blue-500/15', top: 'border-t-blue-500/40', val: qualifiedCount, label: 'Qualified Sales' },
+            { icon: TrendingUp, color: 'text-green-400', chip: 'bg-green-500/15', top: 'border-t-green-500/40', val: Math.round(stats.yearly?.totalSales || 0), label: 'Sales Value', money: true },
+            { icon: Wallet, color: 'text-amber-400', chip: 'bg-amber-500/15', top: 'border-t-amber-500/40', val: Math.round(pendingCommission), label: 'Pending Commission', money: true },
+          ].map((s, i) => (
+            <div key={s.label} className={`bg-zinc-900 rounded-2xl border border-zinc-800 border-t-2 ${s.top} p-4 transition-transform hover:-translate-y-0.5 hover:shadow-lg hover:shadow-black/20`} style={{ animation: 'fadeUp .4s ease-out both', animationDelay: `${i * 50}ms` }}>
+              <div className={`w-9 h-9 rounded-xl ${s.chip} flex items-center justify-center mb-2`}>
+                <s.icon className={`w-5 h-5 ${s.color}`} />
+              </div>
+              <p className="text-2xl font-black text-white">{s.money ? formatKES(useCountUp(s.val)) : useCountUp(s.val).toLocaleString()}</p>
+              <p className="text-xs text-zinc-400 mt-0.5">{s.label}</p>
+            </div>
+          ))}
         </div>
 
         {/* Payout Section */}
@@ -388,59 +415,43 @@ export default function AffiliateDashboard() {
           </div>
         )}
 
-        {/* Monthly Earnings */}
-        <div className="bg-zinc-900 rounded-2xl border border-zinc-800 overflow-hidden">
-          <button
-            onClick={() => setShowEarnings(!showEarnings)}
-            className="w-full flex items-center justify-between px-5 py-4 text-left"
-          >
+        {/* Monthly Earnings — inline sparkline */}
+        <div className="bg-zinc-900 rounded-2xl border border-zinc-800 p-5">
+          <div className="flex items-center justify-between mb-4">
             <h3 className="text-sm font-bold text-zinc-300 flex items-center gap-2">
               <TrendingUp className="w-4 h-4" /> Monthly Commission
             </h3>
-            {showEarnings ? <ChevronUp className="w-4 h-4 text-zinc-400" /> : <ChevronDown className="w-4 h-4 text-zinc-400" />}
-          </button>
-          {showEarnings && (
-            <div className="border-t border-zinc-800">
-              {earnings.length === 0 ? (
-                <p className="px-5 py-6 text-sm text-zinc-500 text-center">No commission records yet</p>
-              ) : (
-                <div className="divide-y divide-zinc-800">
-                  {earnings.map((e, i) => {
-                    const tierInfo = computeTier(e.qualified_order_count || e.qualifiedCount || 0);
-                    return (
-                      <div key={i} className="flex items-center justify-between px-5 py-3">
-                        <div>
-                          <p className="text-sm font-bold text-white">
-                            {e.year}-{String(e.month).padStart(2, '0')}
-                          </p>
-                          <p className="text-xs text-zinc-400">
-                            {e.qualifiedCount || e.qualified_order_count || 0} orders | {formatKES(e.totalSales || e.total_sales || 0)} sales | {tierInfo.label}
-                          </p>
-                        </div>
-                        <div className="text-right">
-                          <p className="text-sm font-bold text-primary">{formatKES(e.commission || e.commission_amount || 0)}</p>
-                          <span className={`text-xs font-bold ${(e.status === 'pending' || e.status === 'calculated') ? 'text-amber-400' : 'text-green-400'}`}>
-                            {e.status || 'pending'}
-                          </span>
-                        </div>
-                      </div>
-                    );
-                  })}
-                </div>
-              )}
-              <div className="border-t border-zinc-800 px-5 py-3 flex justify-between">
-                <span className="text-sm text-zinc-400">Pending Commission</span>
-                <span className="text-sm font-bold text-amber-400">{formatKES(pendingCommission)}</span>
-              </div>
-              <div className="px-5 py-3 flex justify-between bg-zinc-800/50">
-                <span className="text-sm text-zinc-400">Paid Commission</span>
-                <span className="text-sm font-bold text-green-400">{formatKES(paidCommission)}</span>
-              </div>
+            <span className="text-xs text-zinc-500">{earnings.length} months</span>
+          </div>
+          {earnings.length === 0 ? (
+            <p className="text-sm text-zinc-500 text-center py-4">No commission records yet</p>
+          ) : (
+            <div className="flex items-end gap-2 h-32">
+              {earnings.slice(0, 6).map((e, i) => {
+                const amt = e.commission || e.commission_amount || 0;
+                const max = Math.max(...earnings.map(x => x.commission || x.commission_amount || 0), 1);
+                const h = Math.max(8, (amt / max) * 100);
+                return (
+                  <div key={i} className="flex-1 flex flex-col items-center justify-end h-full group" title={`${e.year}-${String(e.month).padStart(2, '0')}: ${formatKES(amt)}`}>
+                    <span className="text-[10px] text-zinc-400 mb-1 opacity-0 group-hover:opacity-100 transition-opacity">{formatKES(amt)}</span>
+                    <div className="w-full rounded-t-lg bg-gradient-to-t from-primary/40 to-primary group-hover:from-primary/60 transition-all" style={{ height: `${h}%` }} />
+                    <span className="text-[9px] text-zinc-500 mt-1">{String(e.month).padStart(2, '0')}</span>
+                  </div>
+                );
+              })}
             </div>
           )}
+          <div className="border-t border-zinc-800 mt-4 pt-3 flex justify-between">
+            <span className="text-sm text-zinc-400">Pending</span>
+            <span className="text-sm font-bold text-amber-400">{formatKES(pendingCommission)}</span>
+          </div>
+          <div className="flex justify-between bg-zinc-800/50 -mx-5 px-5 py-3 mt-3 rounded-b-2xl">
+            <span className="text-sm text-zinc-400">Paid</span>
+            <span className="text-sm font-bold text-green-400">{formatKES(paidCommission)}</span>
+          </div>
         </div>
 
-        {/* Referred Users (named list) */}
+        {/* Referred Users — cards */}
         <div className="bg-zinc-900 rounded-2xl border border-zinc-800 p-5">
           <div className="flex items-center justify-between mb-3">
             <h3 className="text-sm font-bold text-zinc-300 flex items-center gap-2">
@@ -451,21 +462,25 @@ export default function AffiliateDashboard() {
           {referrals.length === 0 ? (
             <p className="text-sm text-zinc-500 text-center py-4">Share your referral link to start earning. Anyone who signs up through it appears here by name.</p>
           ) : (
-            <div className="divide-y divide-zinc-800">
-              {referrals.map((r, i) => (
-                <div key={i} className="flex items-center justify-between py-2.5">
-                  <div className="min-w-0">
-                    <p className="text-sm font-bold text-white truncate">{r.full_name || 'Customer'}</p>
-                    <p className="text-xs text-zinc-400 truncate">{r.email}</p>
-                  </div>
-                  <div className="flex items-center gap-3 shrink-0">
-                    <span className={`text-[10px] uppercase font-bold px-2 py-0.5 rounded-full ${r.status === 'converted' ? 'bg-green-900/30 text-green-400' : 'bg-zinc-700/40 text-zinc-400'}`}>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              {referrals.map((r, i) => {
+                const initials = (r.full_name || r.email || 'C').split(/[\s@]+/).map(s => s[0]).slice(0, 2).join('').toUpperCase();
+                return (
+                  <div key={i} className="flex items-center gap-3 bg-zinc-800/40 rounded-xl p-3">
+                    <div className="w-10 h-10 rounded-full bg-gradient-to-br from-primary/30 to-violet-500/30 flex items-center justify-center text-sm font-bold text-white shrink-0">
+                      {initials}
+                    </div>
+                    <div className="min-w-0 flex-1">
+                      <p className="text-sm font-bold text-white truncate">{r.full_name || 'Customer'}</p>
+                      <p className="text-xs text-zinc-400 truncate">{r.email}</p>
+                      <p className="text-[10px] text-zinc-500 mt-0.5">{new Date(r.created_at).toLocaleDateString()}</p>
+                    </div>
+                    <span className={`text-[10px] uppercase font-bold px-2 py-0.5 rounded-full shrink-0 ${r.status === 'converted' ? 'bg-green-900/30 text-green-400' : 'bg-zinc-700/40 text-zinc-400'}`}>
                       {r.status || 'pending'}
                     </span>
-                    <span className="text-xs text-zinc-500">{new Date(r.created_at).toLocaleDateString()}</span>
                   </div>
-                </div>
-              ))}
+                );
+              })}
             </div>
           )}
         </div>
