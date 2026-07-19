@@ -1192,14 +1192,12 @@ export async function isAffiliate() {
   try {
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) return false;
-
-    const { data: profile, error } = await supabase
-      .from('profiles')
-      .select('role')
-      .eq('id', user.id)
-      .single();
-
-    return !error && profile?.role === 'affiliate';
+    const { data } = await supabase
+      .from('affiliates')
+      .select('id')
+      .eq('user_id', user.id)
+      .maybeSingle();
+    return !!data;
   } catch {
     return false;
   }

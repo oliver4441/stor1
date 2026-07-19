@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import { signIn } from '../utils/api';
+import { signIn, isAffiliate } from '../utils/api';
 import { useLang } from '../utils/lang';
 import { supabase } from '../utils/supabase';
 import { checkRateLimit, recordActionAttempt, clearRateLimit } from '../utils/rateLimit';
@@ -51,7 +51,7 @@ function Login() {
           );
           if (isAllowed) navigate(redirect);
           else if (profile?.role === 'admin') navigate('/admin');
-          else if (profile?.role === 'affiliate') navigate('/affiliate-dashboard');
+          else if (await isAffiliate()) navigate('/affiliate-dashboard');
           else navigate('/');
         } catch {
           // Profile fetch failed, still navigate
