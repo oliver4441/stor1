@@ -5,6 +5,7 @@ import { fetchAllListings, createListing, updateListing, deleteListing, adminDel
 import { formatKES, CATEGORIES, generateSKU, COLOR_PALETTE, SIZE_PRESETS, getPresetSizes, VARIANT_REQUIRED_CATEGORIES } from '../utils/constants';
 import { uploadImage } from '../utils/api';
 import VariantManager from '../components/VariantManager';
+import usePersistFilter from '../hooks/usePersistFilter';
 
 const CONDITIONS = [
   { value: 'new', label: 'New' },
@@ -19,10 +20,10 @@ const MAX_IMAGES = 5;
 export default function AdminProducts() {
   const [listings, setListings] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [searchQuery, setSearchQuery] = useState('');
-  const [filterCategory, setFilterCategory] = useState('All');
-  const [filterStatus, setFilterStatus] = useState('All');
-  const [filterPage, setFilterPage] = useState('All');
+  const [searchQuery, setSearchQuery] = usePersistFilter('ap_search', '');
+  const [filterCategory, setFilterCategory] = usePersistFilter('ap_category', 'All');
+  const [filterStatus, setFilterStatus] = usePersistFilter('ap_status', 'All');
+  const [filterPage, setFilterPage] = usePersistFilter('ap_page', 'All');
 
   // Selection
   const [selectedIds, setSelectedIds] = useState([]);

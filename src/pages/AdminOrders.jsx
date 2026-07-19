@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback, useRef } from 'react';
 import { Search, Eye, X, Calendar, Download, RefreshCw, MessageSquare, Package, MapPin, Phone, Mail, User, Clock, AlertTriangle } from 'lucide-react';
 import { fetchAllOrders, updateOrderStatus, updateOrderNotes, cancelOrder } from '../utils/api';
 import { formatKES } from '../utils/constants';
+import usePersistFilter from '../hooks/usePersistFilter';
 
 const ORDER_STATUSES = ['pending', 'processing', 'shipped', 'delivered', 'cancelled'];
 // Valid transitions: pending -> processing -> shipped -> delivered, or any -> cancelled
@@ -31,9 +32,9 @@ const DATE_RANGES = [
 export default function AdminOrders() {
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [searchQuery, setSearchQuery] = useState('');
-  const [filterStatus, setFilterStatus] = useState('All');
-  const [dateRange, setDateRange] = useState('all');
+  const [searchQuery, setSearchQuery] = usePersistFilter('ao_search', '');
+  const [filterStatus, setFilterStatus] = usePersistFilter('ao_status', 'All');
+  const [dateRange, setDateRange] = usePersistFilter('ao_date', 'all');
   const [selectedOrder, setSelectedOrder] = useState(null);
   const [editingNotes, setEditingNotes] = useState(false);
   const [notesValue, setNotesValue] = useState('');

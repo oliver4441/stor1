@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback } from 'react';
 import { supabase } from '../utils/supabase';
 import { Users, Plus, Search, X, Loader2, Check, AlertTriangle, DollarSign, Activity, Link as LinkIcon, Filter, ChevronDown, ChevronUp, Award, UserCheck } from 'lucide-react';
 import { formatKES, AFFILIATE_CONFIG } from '../config/affiliate';
+import usePersistFilter from '../hooks/usePersistFilter';
 
 const API_BASE = import.meta.env.VITE_API_URL || 'https://stor1-api.onrender.com';
 
@@ -85,8 +86,8 @@ export default function AdminAffiliates() {
   const [payouts, setPayouts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState('affiliates');
-  const [searchQuery, setSearchQuery] = useState('');
-  const [tierFilter, setTierFilter] = useState('all');
+  const [searchQuery, setSearchQuery] = usePersistFilter('aa_search', '');
+  const [tierFilter, setTierFilter] = usePersistFilter('aa_tier', 'all');
   const [statusFilter, setStatusFilter] = useState('all');
   const [successMsg, setSuccessMsg] = useState('');
   const [errorMsg, setErrorMsg] = useState('');

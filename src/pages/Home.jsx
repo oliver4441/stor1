@@ -11,7 +11,7 @@ import SearchBar from '../components/SearchBar';
 import RecentlyViewed from '../components/RecentlyViewed';
 import QuickViewModal from '../components/QuickViewModal';
 import SeasonalParticles from '../components/SeasonalParticles';
-import { useActiveTheme } from '../context/SeasonalContext';
+import { useSeasonalTheme } from '../context/SeasonalContext';
 import AutoScrollCarousel from '../components/AutoScrollCarousel';
 import FlashDealsBar from '../components/FlashDealsBar';
 import Pagination from '../components/Pagination';
@@ -28,7 +28,7 @@ function Home() {
   const [page, setPage] = useState(1);
   const [totalCount, setTotalCount] = useState(0);
   const [popularProducts, setPopularProducts] = useState([]);
-  const theme = useActiveTheme();
+  const { activeTheme: theme, heroOverride } = useSeasonalTheme();
   const [isAiMode, setIsAiMode] = useState(false);
   const [quickViewListing, setQuickViewListing] = useState(null);
   const totalPages = Math.ceil(totalCount / ITEMS_PER_PAGE);
@@ -96,11 +96,13 @@ function Home() {
   const heroAccent = theme?.colors?.heroAccent || '#ffffff';
   const ctaBg = theme?.colors?.ctaBg || '#ffffff';
   const ctaText = theme?.colors?.ctaText || '#1a5632';
-  const heroTitle = theme?.heroTitle || "Kericho's #1 Online Store";
-  const heroSubtitle = theme?.heroSubtitle || 'M-Pesa Payments · Free Delivery · 7-Day Returns · Shop from anywhere in Kericho';
+  const heroTitle = heroOverride?.title || theme?.heroTitle || "Kericho's #1 Online Store";
+  const heroSubtitle = heroOverride?.subtitle || theme?.heroSubtitle || 'M-Pesa Payments · Free Delivery · 7-Day Returns · Shop from anywhere in Kericho';
+  const heroImageUrl = heroOverride?.imageUrl || '';
+  const hasHeroImage = !!heroImageUrl;
   const particleType = theme?.particleType || 'none';
   const heroImages = theme?.heroImages || [];
-  const hasHeroImages = heroImages.length > 0;
+  const hasHeroImages = heroImageUrl ? true : heroImages.length > 0;
   const sticker = theme?.sticker || '';
   const socialBadge = theme?.socialBadge || '';
   const vibe = theme?.vibe || 'default';
@@ -200,7 +202,7 @@ function Home() {
             {hasHeroImages && (
               <div className="mt-10 max-w-4xl mx-auto">
                 <div className="grid grid-cols-3 gap-3 md:gap-5">
-                  {heroImages.map((img, idx) => (
+                  {(heroImageUrl ? [heroImageUrl] : heroImages).map((img, idx) => (
                     <div
                       key={idx}
                       className="relative rounded-2xl overflow-hidden shadow-2xl border-2 border-white/20 hover:border-white/50 transition-all duration-500 hover:scale-[1.03] hover:-translate-y-1 group"

@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Save, Store, Truck, Bell, Palette, Eye, Calendar, Wrench, Megaphone } from 'lucide-react';
+import { Save, Store, Truck, Bell, Palette, Eye, Calendar, Wrench, Megaphone, Image } from 'lucide-react';
 import themesConfig from '../config/seasonal-themes.json';
 import { supabase } from '../utils/supabase';
 
@@ -43,6 +43,9 @@ export default function AdminSettings() {
     freeShippingThreshold: '5000',
     maintenanceMode: false,
     emailNotifications: true,
+    heroTitle: '',
+    heroSubtitle: '',
+    heroImageUrl: '',
   });
 
   // Load saved states from Supabase on mount
@@ -81,6 +84,24 @@ export default function AdminSettings() {
         }
       } catch (err) {
         console.warn('Could not fetch maintenance mode:', err.message);
+      }
+
+      try {
+        const { data: heroData } = await supabase
+          .from('app_settings')
+          .select('value')
+          .eq('key', 'hero_override')
+          .single();
+        if (!cancelled && heroData?.value) {
+          setForm(prev => ({
+            ...prev,
+            heroTitle: heroData.value.title || '',
+            heroSubtitle: heroData.value.subtitle || '',
+            heroImageUrl: heroData.value.imageUrl || '',
+          }));
+        }
+      } catch (err) {
+        console.warn('Could not load hero override:', err.message);
       }
     })();
     return () => { cancelled = true; };
@@ -165,6 +186,28 @@ export default function AdminSettings() {
         }
       }
     
+      // 4. Save hero override
+      const heroValue = {
+        title: form.heroTitle || null,
+        subtitle: form.heroSubtitle || null,
+        imageUrl: form.heroImageUrl || null,
+      };
+      const { data: existingHero } = await supabase
+        .from('app_settings')
+        .select('key')
+        .eq('key', 'hero_override')
+        .single();
+      if (existingHero) {
+        await supabase
+          .from('app_settings')
+          .update({ value: heroValue, updated_at: new Date().toISOString() })
+          .eq('key', 'hero_override');
+      } else {
+        await supabase
+          .from('app_settings')
+          .insert({ key: 'hero_override', value: heroValue, description: 'Custom hero section content (overrides seasonal themes)' });
+      }
+
       setSaved(true);
       setTimeout(() => setSaved(false), 3000);
     } catch (err) {
@@ -326,6 +369,38 @@ export default function AdminSettings() {
             </p>
           </div>
         )}
+      </div>
+
+      {/* Hero Override */}
+      <div className="bg-zinc-900 rounded-2xl border border-zinc-800 p-6">
+        <div className="flex items-center gap-3 mb-2">
+          <Image className="w-5 h-5 text-emerald-500" />
+          <h3 className="text-base font-bold text-white">Hero Override</h3>
+        </div>
+        <p className="text-xs text-zinc-400 mb-4">
+          Override the hero section title, subtitle, and image. Leave blank to use the seasonal theme defaults.
+        </p>
+
+        <div className="space-y-4">
+          <div>
+            <label className="block text-xs font-bold text-zinc-400 uppercase tracking-wider mb-1.5">Hero Title</label>
+            <input type="text" value={form.heroTitle} onChange={e => updateField('heroTitle', e.target.value)}
+              placeholder="e.g. Kericho's #1 Online Store"
+              className="w-full px-4 py-2.5 rounded-xl bg-zinc-800 border border-zinc-700 focus:border-emerald-500 focus:outline-none text-white text-sm" />
+          </div>
+          <div>
+            <label className="block text-xs font-bold text-zinc-400 uppercase tracking-wider mb-1.5">Hero Subtitle</label>
+            <input type="text" value={form.heroSubtitle} onChange={e => updateField('heroSubtitle', e.target.value)}
+              placeholder="e.g. M-Pesa Payments &middot; Free Delivery &middot; 7-Day Returns"
+              className="w-full px-4 py-2.5 rounded-xl bg-zinc-800 border border-zinc-700 focus:border-emerald-500 focus:outline-none text-white text-sm" />
+          </div>
+          <div>
+            <label className="block text-xs font-bold text-zinc-400 uppercase tracking-wider mb-1.5">Hero Image URL</label>
+            <input type="url" value={form.heroImageUrl} onChange={e => updateField('heroImageUrl', e.target.value)}
+              placeholder="https://example.com/hero.jpg"
+              className="w-full px-4 py-2.5 rounded-xl bg-zinc-800 border border-zinc-700 focus:border-emerald-500 focus:outline-none text-white text-sm" />
+          </div>
+        </div>
       </div>
 
       {/* Seasonal Themes */}

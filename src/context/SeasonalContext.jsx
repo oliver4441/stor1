@@ -65,8 +65,9 @@ function mergeThemeStates(themes) {
 export function SeasonalProvider({ children, previewThemeId = null }) {
   const [previewTheme, setPreviewTheme] = useState(previewThemeId);
   const [savedStates, setSavedStates] = useState(null);
+  const [heroOverride, setHeroOverride] = useState(null);
 
-  // Load saved theme states from Supabase on mount
+  // Load saved theme states and hero override from Supabase on mount
   useEffect(() => {
     let cancelled = false;
     (async () => {
@@ -78,12 +79,21 @@ export function SeasonalProvider({ children, previewThemeId = null }) {
           .single();
         if (!cancelled && data?.value) {
           setSavedStates(data.value);
-          // Also sync to localStorage for immediate use
           try { localStorage.setItem(THEME_STATES_KEY, JSON.stringify(data.value)); } catch {}
         }
-      } catch {
-        // Row might not exist — use defaults
-      }
+      } catch {}
+    })();
+    (async () => {
+      try {
+        const { data } = await supabase
+          .from('app_settings')
+          .select('value')
+          .eq('key', 'hero_override')
+          .single();
+        if (!cancelled && data?.value) {
+          setHeroOverride(data.value);
+        }
+      } catch {}
     })();
     return () => { cancelled = true; };
   }, []);
@@ -109,10 +119,11 @@ export function SeasonalProvider({ children, previewThemeId = null }) {
   const value = useMemo(() => ({
     activeTheme,
     allThemes: themes,
+    heroOverride,
     setPreviewTheme,
     clearPreview: () => setPreviewTheme(null),
     isPreviewing: !!previewTheme,
-  }), [activeTheme, themes, previewTheme]);
+  }), [activeTheme, themes, heroOverride, previewTheme]);
 
   return (
     <SeasonalContext.Provider value={value}>
