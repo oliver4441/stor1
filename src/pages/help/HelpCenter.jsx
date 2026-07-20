@@ -10,6 +10,14 @@ const sections = [
     ],
   },
   {
+    title: 'Account & Features',
+    links: [
+      { to: '/help/wishlist', label: 'Wishlist', desc: 'Save products and buy them later' },
+      { to: '/help/affiliate', label: 'Affiliate Program', desc: 'Earn commissions by promoting Omix Store' },
+      { to: '/help/track-order', label: 'Track Your Order', desc: 'Real-time order status and delivery tracking' },
+    ],
+  },
+  {
     title: 'Orders & Policies',
     links: [
       { to: '/help/delivery', label: 'Delivery and Shipping', desc: 'Shipping rates, coverage areas, and delivery process' },
@@ -23,6 +31,7 @@ const sections = [
     links: [
       { to: '/help/faq', label: 'FAQ Center', desc: 'Answers to the most common questions' },
       { to: '/help/flash-sale', label: 'Flash Sale', desc: 'Limited-time deals and how they work' },
+      { to: '/help/seller-guide', label: 'Seller Guide', desc: 'How to sell on Omix Store' },
     ],
   },
 ];

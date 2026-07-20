@@ -90,6 +90,10 @@ const FAQ = React.lazy(() => import('./pages/help/FAQ'));
 const Payment = React.lazy(() => import('./pages/help/Payment'));
 const DeliveryTime = React.lazy(() => import('./pages/help/DeliveryTime'));
 const FlashSale = React.lazy(() => import('./pages/help/FlashSale'));
+const AffiliateHelp = React.lazy(() => import('./pages/help/AffiliateHelp'));
+const WishlistHelp = React.lazy(() => import('./pages/help/WishlistHelp'));
+const TrackOrderHelp = React.lazy(() => import('./pages/help/TrackOrderHelp'));
+const SellerGuideHelp = React.lazy(() => import('./pages/help/SellerGuideHelp'));
 
 function App() {
   // Initialize tracking cookies and activity monitoring
@@ -145,6 +149,10 @@ function App() {
               <Route path="/help/payment" element={<Payment />} />
               <Route path="/help/delivery-time" element={<DeliveryTime />} />
               <Route path="/help/flash-sale" element={<FlashSale />} />
+              <Route path="/help/affiliate" element={<AffiliateHelp />} />
+              <Route path="/help/wishlist" element={<WishlistHelp />} />
+              <Route path="/help/track-order" element={<TrackOrderHelp />} />
+              <Route path="/help/seller-guide" element={<SellerGuideHelp />} />
               <Route path="/refurbished" element={<Refurbished />} />
               <Route path="/search" element={<SearchPage />} />
               <Route path="/flash-deals" element={<FlashDeals />} />
