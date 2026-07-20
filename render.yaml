@@ -12,3 +12,5 @@ services:
         value: production
       - key: VITE_OPENCODE_API_KEY
         sync: false
+      - key: VITE_ONESIGNAL_APP_ID
+        sync: false
