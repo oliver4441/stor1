@@ -3,7 +3,8 @@ import { Link } from 'react-router-dom';
 import { supabase } from '../utils/supabase';
 import { getAffiliateProfile, getDashboardStats, getMonthlyEarnings, getRecentReferrals, getRecentAffiliateOrders, requestPayout, getPayoutHistory, removeAffiliateAccount } from '../utils/affiliate_api';
 import { AFFILIATE_CONFIG, formatKES, getReferralLink } from '../config/affiliate';
-import { Copy, Share2, Users, ShoppingBag, TrendingUp, Award, Wallet, Send, CheckCircle, X, Loader2, MousePointerClick, AlertTriangle, Trash2 } from 'lucide-react';
+import { Copy, Share2, Users, ShoppingBag, TrendingUp, Award, Wallet, Send, CheckCircle, X, Loader2, MousePointerClick, AlertTriangle, Trash2, ChevronDown, ChevronUp } from 'lucide-react';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 
 // ponytail: stat tile — uses plain value (count-up hook caused react #310)
 function StatTile({ s, i }) {
@@ -180,6 +181,7 @@ export default function AffiliateDashboard() {
   const [showRemoveAffiliate, setShowRemoveAffiliate] = useState(false);
   const [removing, setRemoving] = useState(false);
   const [error, setError] = useState('');
+  const location = useLocation();
 
   const loadData = async () => {
     try {
@@ -214,10 +216,10 @@ export default function AffiliateDashboard() {
   useEffect(() => { loadData(); }, []);
 
   const referralLink = affiliate ? getReferralLink(affiliate.referral_code) : '';
-  const stats = dashboardStats || { lifetime: {}, yearly: {} };
-  const currentTier = stats.yearly?.tier || affiliate?.tier || 'silver';
-  const qualifiedCount = stats.yearly?.qualifiedCount || 0;
-  const commissionRate = stats.yearly?.commissionRate || 0.05;
+  const stats = dashboardStats || { lifetime: {}, current: {} };
+  const currentTier = stats.current?.tier || affiliate?.tier || 'silver';
+  const qualifiedCount = stats.current?.qualifiedCount || 0;
+  const commissionRate = stats.current?.commissionRate || 0.05;
   const pendingCommission = stats.pendingCommission || 0;
   const paidCommission = stats.paidCommission || 0;
   const availableForPayout = pendingCommission;
@@ -291,6 +293,27 @@ export default function AffiliateDashboard() {
         </div>
       </div>
 
+      {/* Nav tabs */}
+      <div className="max-w-4xl mx-auto px-4 mt-6">
+        <div className="flex gap-1 bg-zinc-900 rounded-xl p-1 overflow-x-auto">
+          {[
+            { path: '/affiliate-dashboard', label: 'Dashboard', icon: Award },
+            { path: '/affiliate-referrals', label: 'Referrals', icon: Share2 },
+            { path: '/affiliate-withdrawals', label: 'Withdrawals', icon: Wallet },
+          ].map(tab => (
+            <Link key={tab.path} to={tab.path}
+              className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-bold whitespace-nowrap transition-colors ${
+                location.pathname === tab.path
+                  ? 'bg-primary text-white'
+                  : 'text-zinc-400 hover:text-white'
+              }`}>
+              <tab.icon className="w-4 h-4" />
+              {tab.label}
+            </Link>
+          ))}
+        </div>
+      </div>
+
       <div className="max-w-4xl mx-auto px-4 space-y-6 mt-6">
         {/* Tier & Status Card */}
         <div className="fusion-recessed-card p-5">
@@ -347,10 +370,10 @@ export default function AffiliateDashboard() {
         {/* Stats Grid — gradient tiles w/ count-up */}
         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
           {[
-            { icon: MousePointerClick, color: 'text-fuchsia-400', chip: 'bg-fuchsia-500/15', top: 'border-t-fuchsia-500/40', val: stats.yearly?.totalClicks || stats.lifetime?.totalClicks || 0, label: 'Link Clicks' },
+            { icon: MousePointerClick, color: 'text-fuchsia-400', chip: 'bg-fuchsia-500/15', top: 'border-t-fuchsia-500/40', val: stats.lifetime?.totalClicks || 0, label: 'Link Clicks' },
             { icon: Users, color: 'text-violet-400', chip: 'bg-violet-500/15', top: 'border-t-violet-500/40', val: stats.lifetime?.totalReferred || 0, label: 'Total Referrals' },
             { icon: ShoppingBag, color: 'text-blue-400', chip: 'bg-blue-500/15', top: 'border-t-blue-500/40', val: qualifiedCount, label: 'Qualified Sales' },
-            { icon: TrendingUp, color: 'text-green-400', chip: 'bg-green-500/15', top: 'border-t-green-500/40', val: Math.round(stats.yearly?.totalSales || 0), label: 'Sales Value', money: true },
+            { icon: TrendingUp, color: 'text-green-400', chip: 'bg-green-500/15', top: 'border-t-green-500/40', val: Math.round(stats.current?.totalSales || 0), label: 'Sales Value', money: true },
             { icon: Wallet, color: 'text-amber-400', chip: 'bg-amber-500/15', top: 'border-t-amber-500/40', val: Math.round(pendingCommission), label: 'Pending Commission', money: true },
           ].map((s, i) => (
             <StatTile s={s} i={i} />

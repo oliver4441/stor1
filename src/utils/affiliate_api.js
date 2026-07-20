@@ -39,6 +39,18 @@ async function apiPost(url, body = {}) {
   return data.data ?? data;
 }
 
+async function apiDelete(url) {
+  const headers = await getAuthHeaders();
+  const res = await fetch(url, {
+    method: 'DELETE',
+    headers,
+    credentials: 'include',
+  });
+  const data = await res.json();
+  if (!data.success) throw new Error(data.error || 'Request failed');
+  return data.data ?? data;
+}
+
 // ─── Affiliate Profile ─────────────────────────────────────────
 export async function getAffiliateProfile(userId) {
   try {
@@ -62,9 +74,9 @@ export async function getDashboardStats(affiliateId) {
         totalOrders: result.stats?.monthlyOrders || 0,
         totalCommission: result.latestCommission?.commission_amount || 0,
       },
-      yearly: {
-        totalClicks: result.stats?.totalClicks || 0,
+      current: {
         totalSales: result.stats?.monthlySales || 0,
+        qualifiedOrders: result.stats?.monthlyOrders || 0,
         qualifiedCount: result.stats?.convertedReferrals || 0,
         tier: result.currentTier?.name?.toLowerCase() || 'silver',
         commissionRate: result.currentTier?.commission_rate || 0.05,
@@ -77,7 +89,7 @@ export async function getDashboardStats(affiliateId) {
     console.error('getDashboardStats error:', err);
     return {
       lifetime: { totalReferred: 0, totalClicks: 0, totalSales: 0, totalOrders: 0, totalCommission: 0 },
-      yearly: { totalClicks: 0, totalSales: 0, qualifiedCount: 0, tier: 'silver', commissionRate: 0.05 },
+      current: { totalSales: 0, qualifiedOrders: 0, qualifiedCount: 0, tier: 'silver', commissionRate: 0.05 },
       progress: null,
       pendingCommission: 0,
       paidCommission: 0,
@@ -154,7 +166,7 @@ export async function getTierInfo() {
 
 // ─── Remove own affiliate account permanently ─────────────────
 export async function removeAffiliateAccount(affiliateId) {
-  return apiPost(`${AFFILIATE_CONFIG.ENDPOINTS.ADMIN_AFFILIATES.replace('/admin/affiliates', '')}/affiliate/${affiliateId}`, {});
+  return apiDelete(`${AFFILIATE_CONFIG.ENDPOINTS.ADMIN_AFFILIATES.replace('/admin/affiliates', '')}/affiliate/${affiliateId}`);
 }
 /**
  * Set the referral cookie on page load when ref param is present.

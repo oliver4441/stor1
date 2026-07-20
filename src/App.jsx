@@ -77,6 +77,8 @@ const AffiliateDashboard = React.lazy(() => import('./pages/AffiliateDashboard')
 const AffiliatePage = React.lazy(() => import('./pages/AffiliatePage'));
 const AffiliateApply = React.lazy(() => import('./pages/AffiliateApply'));
 const AffiliateAgreement = React.lazy(() => import('./pages/AffiliateAgreement'));
+const AffiliateWithdrawals = React.lazy(() => import('./pages/AffiliateWithdrawals'));
+const AffiliateReferrals = React.lazy(() => import('./pages/AffiliateReferrals'));
 const NotFound = React.lazy(() => import('./pages/NotFound'));
 
 // Help Center pages — co-split as a help chunk
@@ -162,6 +164,8 @@ function App() {
               <Route path="/seller/dashboard" element={<SellerDashboard />} />
               <Route path="/seller/register" element={<SellerRegistration />} />
               <Route path="/affiliate-dashboard" element={<AffiliateDashboard />} />
+              <Route path="/affiliate-referrals" element={<AffiliateReferrals />} />
+              <Route path="/affiliate-withdrawals" element={<AffiliateWithdrawals />} />
               <Route path="/affiliate" element={<AffiliatePage />} />
               <Route path="/affiliate/apply" element={<AffiliateApply />} />
               <Route path="/affiliate/agreement" element={<AffiliateAgreement />} />

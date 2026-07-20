@@ -1,5 +1,6 @@
 // Affiliate Program Configuration
-// Aligned with spec: admin-managed, first-attribution, Silver/Gold tiers
+// Matches legal agreement: 2 tiers — Silver (5%, 0-29 orders), Gold (10%, 30+ orders)
+// Attribution: first-touch (100yr cookie), commission paid via M-Pesa, min KES 2,000
 
 const API_BASE = import.meta.env.VITE_API_URL || 'https://stor1-api.onrender.com';
 
