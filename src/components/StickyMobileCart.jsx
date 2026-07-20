@@ -11,7 +11,7 @@ import { formatKES } from '../utils/constants';
 export default function StickyMobileCart({ listing, quantity, effectivePrice, selectedVariant, onAddToCart, onBuyNow, inCart, user }) {
   if (!listing) return null;
 
-  const isOffline = typeof window !== 'undefined' && localStorage.getItem('omix_offline_mode') === 'true';
+  // ── Offline check removed ──
 
   return (
     <div className="fixed bottom-16 left-0 right-0 z-40 md:hidden bg-zinc-950 border-t border-zinc-800 shadow-[0_-4px_20px_rgba(0,0,0,0.08)] safe-area-bottom">

@@ -102,8 +102,7 @@ export function NiaChatProvider({ children }) {
   const { lang } = useLang();
 
   const openChat = useCallback(() => {
-    // Block chat in offline browse mode
-    if (typeof window !== 'undefined' && localStorage.getItem('omix_offline_mode') === 'true') return;
+    // ── Offline check removed ──
     setIsOpen(true);
     setHasOpened(true);
     try { localStorage.setItem('nia-has-opened', 'true'); } catch {}

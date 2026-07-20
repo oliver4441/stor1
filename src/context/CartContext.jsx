@@ -202,10 +202,7 @@ export function CartProvider({ children }) {
 
   // ── Actions ──
   const addItem = useCallback((product) => {
-    // Offline browse mode — block purchases
-    try {
-      if (localStorage.getItem('omix_offline_mode') === 'true') return;
-    } catch {}
+    // ── Offline check removed ──
     dispatch({ type: 'ADD_ITEM', payload: product });
     sounds.addToCart();
     // Track add to cart event

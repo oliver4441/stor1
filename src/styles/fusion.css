@@ -271,7 +271,34 @@
 }
 .fusion-check-pop { animation: fusion-check-pop 0.35s var(--fusion-spring); }
 
-/* ponytail: ticker-scroll for MaintenanceBanner */
+/* ponytail: Aurora theme — animated gradient overlay on product card images */
+@keyframes aurora-drift {
+  0%   { background-position: 0% 50%; }
+  50%  { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+.fusion-aurora {
+  position: relative;
+  overflow: hidden;
+}
+.fusion-aurora::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg,
+    rgba(120, 119, 198, 0.12),
+    rgba(72, 202, 228, 0.08),
+    rgba(168, 85, 247, 0.10),
+    rgba(236, 72, 153, 0.06)
+  );
+  background-size: 400% 400%;
+  animation: aurora-drift 8s ease infinite;
+  pointer-events: none;
+  z-index: 1;
+  mix-blend-mode: overlay;
+}
+
+/* Respect reduced-motion (already global in index.css) */
 @keyframes ticker-scroll {
   0%   { transform: translateX(0); }
   100% { transform: translateX(-50%); }

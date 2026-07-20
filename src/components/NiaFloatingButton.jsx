@@ -5,9 +5,7 @@ import { useAuth } from '../context/AuthContext';
 export default function NiaFloatingButton() {
   const { isOpen, openChat, closeChat, COLORS } = useNiaChat();
 
-  // Hide chat in offline browse mode
-  const isOffline = typeof window !== 'undefined' && localStorage.getItem('omix_offline_mode') === 'true';
-  if (isOffline) return null;
+  // ── Offline check removed ──
 
   return (
     <div className="fixed bottom-20 right-4 sm:bottom-28 sm:right-6 z-[55] flex flex-col items-center gap-1.5">
@@ -20,23 +18,21 @@ export default function NiaFloatingButton() {
           Chat with Nia
         </span>
       )}
-      {/* Button */}
+
+      {/* Main floating action button */}
       <button
-        onClick={() => isOpen ? closeChat() : openChat()}
-        className="w-12 h-12 rounded-full flex items-center justify-center shadow-lg transition-all duration-200 hover:scale-105 active:scale-95 overflow-hidden"
-        style={{
-          backgroundColor: isOpen ? '#3f3f46' : COLORS.accent,
-          boxShadow: `0 8px 20px -4px ${COLORS.accent}40`,
-        }}
-        aria-label={isOpen ? 'Close chat' : 'Ask Nia'}
+        onClick={isOpen ? closeChat : openChat}
+        className="w-14 h-14 rounded-full flex items-center justify-center shadow-xl transition-transform hover:scale-110 active:scale-95"
+        style={{ backgroundColor: COLORS.accent }}
+        aria-label={isOpen ? 'Close chat' : 'Open chat'}
       >
         {isOpen ? (
-          <X className="w-5 h-5 text-white" />
+          <X className="w-6 h-6 text-white" />
         ) : (
           <img
-            src="/nia-avatar.jpg"
+            src="/nia-avatar.svg"
             alt="Nia"
-            className="w-full h-full object-cover"
+            className="w-9 h-9 rounded-full"
           />
         )}
       </button>

@@ -7,7 +7,6 @@ import { AuthProvider } from './context/AuthContext';
 import { CartProvider } from './context/CartContext';
 import { NiaChatProvider } from './context/NiaChatContext';
 import { NotificationProvider } from './context/NotificationContext';
-import { OfflineModeProvider } from './context/OfflineModeContext';
 import { initTracking } from './utils/analytics';
 import { initReferralTracking } from './utils/affiliate_api';
 import Navbar from './components/Navbar';
@@ -95,7 +94,6 @@ const AffiliateHelp = React.lazy(() => import('./pages/help/AffiliateHelp'));
 const WishlistHelp = React.lazy(() => import('./pages/help/WishlistHelp'));
 const TrackOrderHelp = React.lazy(() => import('./pages/help/TrackOrderHelp'));
 const SellerGuideHelp = React.lazy(() => import('./pages/help/SellerGuideHelp'));
-const BiometricsHelp = React.lazy(() => import('./pages/help/BiometricsHelp'));
 
 function App() {
   // Initialize tracking cookies and activity monitoring
@@ -111,7 +109,6 @@ function App() {
     <AuthProvider>
     <CartProvider>
     <NiaChatProvider>
-    <OfflineModeProvider>
     <NotificationProvider>
     <ErrorBoundary>
       <ScrollToTop />
@@ -156,7 +153,6 @@ function App() {
               <Route path="/help/wishlist" element={<WishlistHelp />} />
               <Route path="/help/track-order" element={<TrackOrderHelp />} />
               <Route path="/help/seller-guide" element={<SellerGuideHelp />} />
-              <Route path="/help/biometrics" element={<BiometricsHelp />} />
               <Route path="/refurbished" element={<Refurbished />} />
               <Route path="/search" element={<SearchPage />} />
               <Route path="/flash-deals" element={<FlashDeals />} />
@@ -206,7 +202,6 @@ function App() {
       </div>
     </ErrorBoundary>
     </NotificationProvider>
-    </OfflineModeProvider>
     </NiaChatProvider>
     </CartProvider>
     </AuthProvider>

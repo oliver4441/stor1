@@ -5,7 +5,7 @@ import {
   ChevronDown, ChevronUp, Clock, Gift, Copy, Check, Star, ChevronRight,
   ExternalLink, Users, Bookmark, X, Bell, BellRing, BellOff,
   User, Mail, Phone, Camera, Edit2, MapPin, Plus, Trash2, AlertTriangle,
-  Loader2, CheckCircle2, Shield, Lock, CreditCard, Settings, Home, TrendingUp, Fingerprint,
+  Loader2, CheckCircle2, Shield, Lock, CreditCard, Settings, Home, TrendingUp,
 } from 'lucide-react';
 import 'leaflet/dist/leaflet.css';
 import { supabase } from '../utils/supabase';
@@ -15,9 +15,6 @@ import {
   getPointsHistory, getSavedSearches, removeSavedSearch,
   updateProfile, uploadAvatar, cancelOrderWithReason, getProfile, isAffiliate,
 } from '../utils/api';
-import {
-  startBiometricRegistration, listBiometricCredentials, removeBiometricCredential, isBiometricSupported,
-} from '../utils/biometric';
 import { formatKES, CATEGORIES } from '../utils/constants';
 import ProductCard from '../components/ProductCard';
 import Breadcrumb from '../components/Breadcrumb';
@@ -382,42 +379,6 @@ function UserDashboard() {
 
   // ponytail: only show affiliate entry to actual affiliates
   const [isAffiliateUser, setIsAffiliateUser] = useState(false);
-
-  // Biometric / passkey
-  const [bioSupported] = useState(isBiometricSupported());
-  const [bioCreds, setBioCreds] = useState([]);
-  const [bioLoading, setBioLoading] = useState(false);
-  const [bioRegistering, setBioRegistering] = useState(false);
-  const [bioMsg, setBioMsg] = useState('');
-
-  const refreshBioCreds = useCallback(async () => {
-    try {
-      const creds = await listBiometricCredentials();
-      setBioCreds(creds);
-    } catch {}
-  }, []);
-
-  const handleRegisterBio = async () => {
-    if (!bioSupported) { setBioMsg('Biometrics not supported on this device/browser.'); return; }
-    setBioRegistering(true); setBioMsg('');
-    try {
-      const name = prompt('Name this device (e.g. My Phone):') || 'Biometric device';
-      await startBiometricRegistration(name);
-      setBioMsg('Biometric login added!');
-      await refreshBioCreds();
-    } catch (e) {
-      setBioMsg(e.message || 'Could not register biometric');
-    } finally { setBioRegistering(false); }
-  };
-
-  const handleRemoveBio = async (id) => {
-    try {
-      await removeBiometricCredential(id);
-      await refreshBioCreds();
-    } catch (e) { setBioMsg(e.message || 'Remove failed'); }
-  };
-
-  useEffect(() => { if (user) refreshBioCreds(); }, [user, refreshBioCreds]);
 
   // Products (for browsing)
   const [products, setProducts] = useState([]);
@@ -1459,48 +1420,6 @@ function UserDashboard() {
                 </button>
               </div>
             )}
-
-            {/* Biometrics / Passkey */}
-            <div className="fusion-recessed-card p-6">
-              <div className="flex items-center gap-3 mb-4">
-                <div className="w-10 h-10 rounded-xl bg-primary/20 flex items-center justify-center">
-                  <Fingerprint className="w-5 h-5 text-primary" />
-                </div>
-                <h2 className="text-lg font-bold text-white">Biometric Login</h2>
-              </div>
-              {!bioSupported ? (
-                <p className="text-sm text-zinc-400">Your device or browser doesn't support biometric/passkey login (WebAuthn).</p>
-              ) : (
-                <>
-                  <p className="text-sm text-zinc-400 mb-4">Add fingerprint, face, or device PIN login for faster, password-free sign-in.</p>
-                  {bioMsg && <p className="text-xs text-primary mb-3">{bioMsg}</p>}
-                  <button
-                    onClick={handleRegisterBio}
-                    disabled={bioRegistering}
-                    className="w-full sm:w-auto px-5 py-3 bg-primary text-white rounded-xl font-bold text-sm hover:bg-primary-hover transition-colors flex items-center justify-center gap-2 min-h-[44px] disabled:opacity-50"
-                  >
-                    {bioRegistering ? <Loader2 className="w-4 h-4 animate-spin" /> : <Fingerprint className="w-4 h-4" />}
-                    {bioRegistering ? 'Waiting for biometric…' : 'Add Biometric Login'}
-                  </button>
-                  {bioCreds.length > 0 && (
-                    <div className="mt-4 space-y-2">
-                      <p className="text-xs font-bold text-zinc-500 uppercase tracking-wider">Registered devices</p>
-                      {bioCreds.map(c => (
-                        <div key={c.id} className="flex items-center justify-between p-3 rounded-xl bg-zinc-800/50">
-                          <div className="flex items-center gap-2 min-w-0">
-                            <Fingerprint className="w-4 h-4 text-primary shrink-0" />
-                            <span className="text-sm text-zinc-200 truncate">{c.device_name || 'Device'}</span>
-                          </div>
-                          <button onClick={() => handleRemoveBio(c.id)} className="text-zinc-500 hover:text-red-400 p-1">
-                            <Trash2 className="w-4 h-4" />
-                          </button>
-                        </div>
-                      ))}
-                    </div>
-                  )}
-                </>
-              )}
-            </div>
 
             {/* Security */}
             <div className="fusion-recessed-card p-6">

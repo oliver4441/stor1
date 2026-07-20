@@ -8,9 +8,7 @@ export default function FloatingCartButton() {
   const [cartOpen, setCartOpen] = useState(false);
   const [bump, setBump] = useState(false);
 
-  // Hide floating cart in offline browse mode
-  const isOffline = typeof window !== 'undefined' && localStorage.getItem('omix_offline_mode') === 'true';
-  if (isOffline) return null;
+  // ── Offline check removed ──
   
   // Draggable state
   const [position, setPosition] = useState({ x: 16, y: 220 }); // Default to match bottom-55 right-4
