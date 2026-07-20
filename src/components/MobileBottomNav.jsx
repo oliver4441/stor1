@@ -147,83 +147,54 @@ export default function MobileBottomNav() {
       <nav
         className="lg:hidden fusion-tabbar"
       >
-        <div className="flex items-center justify-between h-16 max-w-lg mx-auto">
-          {/* Left items: Home, Search */}
-          {navItems.slice(0, 2).map((item) => {
+        {/* ponytail: grid-cols-5 gives equal columns; center button lives in col 3 */}
+        <div className="grid grid-cols-5 items-center h-16 max-w-lg mx-auto">
+          {navItems.map((item, idx) => {
             const Icon = item.icon;
             const active = isActive(item.to);
             const badge = item.badge ? getBadgeCount(item.badge) : 0;
-
+            // Insert center button before col 3 (Cart index)
             return (
-              <Link
-                key={item.to}
-                to={item.to}
-                className={`relative flex flex-col items-center justify-center gap-0.5 flex-1 min-w-0 h-full transition-all duration-150 ${
-                  active
-                    ? 'text-[var(--seasonal-primary,#1a5632)]'
-                    : 'text-zinc-400 active:text-zinc-200'
-                }`}
-                aria-label={item.label}
-              >
-                <div className={`relative transition-transform duration-150 ${active ? 'scale-110 -translate-y-0.5' : ''}`}>
-                  <Icon className="w-5 h-5" strokeWidth={active ? 2.5 : 1.5} />
-                  {badge > 0 && (
-                    <span className="absolute -top-1.5 -right-2.5 min-w-[16px] h-4 px-1 bg-emerald-400 text-black text-[9px] font-bold rounded-full flex items-center justify-center shadow-lg">
-                      {badge > 99 ? '99+' : badge}
-                    </span>
-                  )}
-                </div>
-                <span className="text-[10px] font-medium leading-none">{item.label}</span>
-              </Link>
-            );
-          })}
-
-          {/* Center: Cascading trigger - takes no flex space */}
-          <div className="flex items-center justify-center w-[72px] shrink-0">
-            <button
-              onClick={() => setCascadeOpen(!cascadeOpen)}
-              className={`relative -mt-5 w-[56px] h-[56px] rounded-full flex items-center justify-center shadow-xl transition-all duration-300 active:scale-90 ${
-                cascadeOpen
-                  ? 'bg-red-500 rotate-45 scale-110 shadow-red-500/40'
-                  : 'bg-gradient-to-br from-[var(--seasonal-primary,#1a5632)] to-[var(--seasonal-secondary,#14472a)] hover:scale-105 shadow-black/30'
-              }`}
-              aria-label={cascadeOpen ? 'Close menu' : 'Open actions'}
-            >
-              {cascadeOpen ? (
-                <X className="w-6 h-6 text-white" />
-              ) : (
-                <Plus className="w-6 h-6 text-white" />
-              )}
-            </button>
-          </div>
-
-          {/* Right items: Cart, Wishlist */}
-          {navItems.slice(2, 4).map((item) => {
-            const Icon = item.icon;
-            const active = isActive(item.to);
-            const badge = item.badge ? getBadgeCount(item.badge) : 0;
-
-            return (
-              <Link
-                key={item.to}
-                to={item.to}
-                className={`relative flex flex-col items-center justify-center gap-0.5 flex-1 min-w-0 h-full transition-all duration-150 ${
-                  active
-                    ? 'text-[var(--seasonal-primary,#1a5632)]'
-                    : 'text-zinc-400 active:text-zinc-200'
-                }`}
-                aria-label={item.label}
-              >
-                <div className={`relative transition-transform duration-150 ${active ? 'scale-110 -translate-y-0.5' : ''}`}>
-                  <Icon className="w-5 h-5" strokeWidth={active ? 2.5 : 1.5} />
-                  {badge > 0 && (
-                    <span className="absolute -top-1.5 -right-2.5 min-w-[16px] h-4 px-1 bg-emerald-400 text-black text-[9px] font-bold rounded-full flex items-center justify-center shadow-lg">
-                      {badge > 99 ? '99+' : badge}
-                    </span>
-                  )}
-                </div>
-                <span className="text-[10px] font-medium leading-none">{item.label}</span>
-              </Link>
+              <React.Fragment key={item.to}>
+                {idx === 2 && (
+                  <div className="flex items-center justify-center">
+                    <button
+                      onClick={() => setCascadeOpen(!cascadeOpen)}
+                      className={`relative -mt-5 w-[52px] h-[52px] rounded-full flex items-center justify-center shadow-xl transition-all duration-300 active:scale-90 ${
+                        cascadeOpen
+                          ? 'bg-red-500 rotate-45 scale-110 shadow-red-500/40'
+                          : 'bg-gradient-to-br from-[var(--seasonal-primary,#1a5632)] to-[var(--seasonal-secondary,#14472a)] hover:scale-105 shadow-black/30'
+                      }`}
+                      aria-label={cascadeOpen ? 'Close menu' : 'Open actions'}
+                    >
+                      {cascadeOpen ? (
+                        <X className="w-6 h-6 text-white" />
+                      ) : (
+                        <Plus className="w-6 h-6 text-white" />
+                      )}
+                    </button>
+                  </div>
+                )}
+                <Link
+                  to={item.to}
+                  className={`relative flex flex-col items-center justify-center gap-0.5 h-full transition-all duration-150 ${
+                    active
+                      ? 'text-[var(--seasonal-primary,#1a5632)]'
+                      : 'text-zinc-400 active:text-zinc-200'
+                  }`}
+                  aria-label={item.label}
+                >
+                  <div className={`relative transition-transform duration-150 ${active ? 'scale-110 -translate-y-0.5' : ''}`}>
+                    <Icon className="w-5 h-5" strokeWidth={active ? 2.5 : 1.5} />
+                    {badge > 0 && (
+                      <span className="absolute -top-1.5 -right-2.5 min-w-[16px] h-4 px-1 bg-emerald-400 text-black text-[9px] font-bold rounded-full flex items-center justify-center shadow-lg">
+                        {badge > 99 ? '99+' : badge}
+                      </span>
+                    )}
+                  </div>
+                  <span className="text-[10px] font-medium leading-none">{item.label}</span>
+                </Link>
+              </React.Fragment>
             );
           })}
         </div>

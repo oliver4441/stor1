@@ -15,6 +15,7 @@ const sections = [
       { to: '/help/wishlist', label: 'Wishlist', desc: 'Save products and buy them later' },
       { to: '/help/affiliate', label: 'Affiliate Program', desc: 'Earn commissions by promoting Omix Store' },
       { to: '/help/track-order', label: 'Track Your Order', desc: 'Real-time order status and delivery tracking' },
+      { to: '/help/biometrics', label: 'Biometric & Passkey Login', desc: 'Set up fingerprint, face, or PIN for fast sign-in — dos and don\'ts' },
     ],
   },
   {

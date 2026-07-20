@@ -302,17 +302,17 @@ function Home() {
           </div>
         )}
 
-        {/* Popular Products */}
+        {/* Popular Products - Auto Scroll Carousel */}
         {popularProducts.length > 0 && activeCategory === 'All' && !searchQuery && (
           <div className="mb-10">
             <div className="flex items-center justify-between mb-4">
               <h2 className="text-xl font-bold text-white">Popular Right Now</h2>
             </div>
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
+            <AutoScrollCarousel itemMinWidth={260} gap={16} speed={30}>
               {popularProducts.map((product) => (
                 <ProductCard key={product.id} listing={product} />
               ))}
-            </div>
+            </AutoScrollCarousel>
           </div>
         )}
 

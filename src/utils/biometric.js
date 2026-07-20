@@ -11,10 +11,16 @@ async function authHeaders() {
   return h;
 }
 
+// ponytail: base64url → base64 fix. atob() rejects URL-safe chars (-/_)
+// and expects padding. WebAuthn servers send base64url without padding.
 function base64ToUint8Array(b64) {
-  const s = atob(b64);
-  const bytes = new Uint8Array(s.length);
-  for (let i = 0; i < s.length; i++) bytes[i] = s.charCodeAt(i);
+  // Convert base64url to standard base64
+  let s = b64.replace(/-/g, '+').replace(/_/g, '/');
+  // Add padding if missing
+  while (s.length % 4) s += '=';
+  const decoded = atob(s);
+  const bytes = new Uint8Array(decoded.length);
+  for (let i = 0; i < decoded.length; i++) bytes[i] = decoded.charCodeAt(i);
   return bytes;
 }
 

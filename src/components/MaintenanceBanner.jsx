@@ -1,26 +1,38 @@
-import { AlertTriangle, Wrench } from 'lucide-react';
+import { Settings } from 'lucide-react';
 
 /**
- * Full-width maintenance warning banner.
- * Shows at the top of the page when maintenance mode is active.
- * Non-intrusive but clearly visible.
+ * ponytail: Maintenance banner — scrolling ticker at top of every page.
+ * Scrolls right-to-left like news headlines.
+ * Controlled by MAINTENANCE_MODE env var (VITE_MAINTENANCE_MODE).
+ * Pass maintenanceMsg for custom text.
  */
-export default function MaintenanceBanner() {
+export default function MaintenanceBanner({ message }) {
+  const msg = message || 'We are currently performing scheduled maintenance. Some features may be temporarily unavailable. We apologize for the inconvenience.';
+
+  // Duplicate text for seamless loop
+  const ticker = `${msg}  ///  ${msg}  ///  ${msg}  ///  ${msg}  ///  `;
+
   return (
-    <div
-      className="w-full text-center py-2.5 px-4 font-semibold text-sm flex items-center justify-center gap-2"
-      style={{
-        background: 'linear-gradient(90deg, #f59e0b, #ef4444, #f59e0b)',
-        color: '#fff',
-        textShadow: '0 1px 2px rgba(0,0,0,0.3)',
-      }}
-      role="alert"
-    >
-      <Wrench className="w-4 h-4 flex-shrink-0 animate-pulse" />
-      <span>
-        ⚠️ We're currently under maintenance. You can browse but purchasing is temporarily disabled. We'll be back shortly!
-      </span>
-      <AlertTriangle className="w-4 h-4 flex-shrink-0" />
+    <div className="relative w-full overflow-hidden bg-amber-900/30 border-b border-amber-700/40 py-1.5 z-50">
+      <div className="flex items-center">
+        {/* Static icon */}
+        <div className="shrink-0 flex items-center gap-1.5 pl-3 pr-2 text-amber-400 z-10 bg-amber-900/30">
+          <Settings className="w-3.5 h-3.5 animate-spin" style={{ animationDuration: '3s' }} />
+          <span className="text-[10px] font-bold uppercase tracking-wider text-amber-300">Maint</span>
+        </div>
+        {/* Scrolling text */}
+        <div className="overflow-hidden flex-1">
+          <div
+            className="whitespace-nowrap text-xs font-medium text-amber-200/90"
+            style={{
+              animation: 'ticker-scroll 40s linear infinite',
+              width: 'max-content',
+            }}
+          >
+            {ticker}
+          </div>
+        </div>
+      </div>
     </div>
   );
 }

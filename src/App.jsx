@@ -26,6 +26,7 @@ import ThemeStyles from './components/ThemeStyles';
 import PWAUpdateChecker from './components/PWAUpdateChecker';
 import CookieConsentBanner from './components/CookieConsentBanner';
 import RealtimeOrderWatcher from './components/RealtimeOrderWatcher';
+import MaintenanceBanner from './components/MaintenanceBanner';
 import RouteFallback from './components/RouteFallback';
 
 // Lazy-loaded pages — split at route boundaries for granular code splitting
@@ -94,6 +95,7 @@ const AffiliateHelp = React.lazy(() => import('./pages/help/AffiliateHelp'));
 const WishlistHelp = React.lazy(() => import('./pages/help/WishlistHelp'));
 const TrackOrderHelp = React.lazy(() => import('./pages/help/TrackOrderHelp'));
 const SellerGuideHelp = React.lazy(() => import('./pages/help/SellerGuideHelp'));
+const BiometricsHelp = React.lazy(() => import('./pages/help/BiometricsHelp'));
 
 function App() {
   // Initialize tracking cookies and activity monitoring
@@ -117,6 +119,7 @@ function App() {
       <div className="min-h-screen flex flex-col bg-[#08080a]">
         <a href="#main-content" className="sr-only focus:not-sr-only focus:absolute focus:top-2 focus:left-2 focus:z-[100] focus:bg-white focus:text-black focus:px-4 focus:py-2 focus:rounded-lg focus:font-bold">Skip to main content</a>
         <Navbar />
+        {import.meta.env.VITE_MAINTENANCE_MODE === 'true' && <MaintenanceBanner />}
         <main id="main-content" className="flex-grow pb-16 lg:pb-0">
           <Suspense fallback={<RouteFallback />}>
             <Routes>
@@ -153,6 +156,7 @@ function App() {
               <Route path="/help/wishlist" element={<WishlistHelp />} />
               <Route path="/help/track-order" element={<TrackOrderHelp />} />
               <Route path="/help/seller-guide" element={<SellerGuideHelp />} />
+              <Route path="/help/biometrics" element={<BiometricsHelp />} />
               <Route path="/refurbished" element={<Refurbished />} />
               <Route path="/search" element={<SearchPage />} />
               <Route path="/flash-deals" element={<FlashDeals />} />

@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import ProductCard from './ProductCard';
+import AutoScrollCarousel from './AutoScrollCarousel';
 
 const RECENTLY_VIEWED_KEY = 'omix_recently_viewed';
 const MAX_RECENT = 10;
@@ -47,13 +48,13 @@ export default function RecentlyViewed({ currentListing, allListings }) {
   return (
     <div className="mt-12 pt-8 border-t border-zinc-800">
       <h2 className="text-xl font-bold mb-6 text-white">Recently Viewed</h2>
-      <div className="flex gap-4 overflow-x-auto scrollbar-hide pb-2 -mx-1 px-1">
+      <AutoScrollCarousel itemMinWidth={180} gap={16} speed={25}>
         {viewedProducts.map(product => (
-          <div key={product.id} className="flex-shrink-0 w-44">
+          <div key={product.id} className="flex-shrink-0 w-[180px]">
             <ProductCard listing={product} />
           </div>
         ))}
-      </div>
+      </AutoScrollCarousel>
     </div>
   );
 }

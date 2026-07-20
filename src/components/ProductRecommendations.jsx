@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
+import AutoScrollCarousel from './AutoScrollCarousel';
 
 const API_BASE = import.meta.env.VITE_API_URL || 'https://stor1-api.onrender.com';
 
@@ -118,29 +119,20 @@ export default function ProductRecommendations({ title, listingId, category, lim
 
   return (
     <div className="mt-16 pt-8 border-t border-zinc-800">
-      <h2 className="text-2xl font-bold mb-6 text-white">{title}</h2>
-
-      {loading ? (
-        <div
-          ref={scrollRef}
-          className="flex gap-4 overflow-x-auto scrollbar-hide pb-2 snap-x snap-mandatory"
-          style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
-        >
-          {Array.from({ length: 5 }).map((_, i) => (
-            <ProductCardSkeleton key={i} />
-          ))}
-        </div>
-      ) : (
-        <div
-          ref={scrollRef}
-          className="flex gap-4 overflow-x-auto scrollbar-hide pb-2 snap-x snap-mandatory"
-          style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
-        >
-          {recommendations.map(item => (
-            <RecommendationCard key={item.id} listing={item} />
-          ))}
-        </div>
-      )}
-    </div>
-  );
+        <h2 className="text-2xl font-bold mb-6 text-white">{title}</h2>
+        {loading ? (
+          <div className="flex gap-4 overflow-x-auto scrollbar-hide pb-2">
+            {Array.from({ length: 5 }).map((_, i) => (
+              <ProductCardSkeleton key={i} />
+            ))}
+          </div>
+        ) : (
+          <AutoScrollCarousel itemMinWidth={200} gap={16} speed={25}>
+            {recommendations.map(item => (
+              <RecommendationCard key={item.id} listing={item} />
+            ))}
+          </AutoScrollCarousel>
+        )}
+      </div>
+    );
 }

@@ -271,6 +271,12 @@
 }
 .fusion-check-pop { animation: fusion-check-pop 0.35s var(--fusion-spring); }
 
+/* ponytail: ticker-scroll for MaintenanceBanner */
+@keyframes ticker-scroll {
+  0%   { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+
 /* Respect reduced-motion (already global in index.css) */
 @media (prefers-reduced-motion: reduce) {
   .fusion-clay-btn, .fusion-tab { transition: none; }
