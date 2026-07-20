@@ -1,6 +1,5 @@
-import { X } from 'lucide-react';
+import { MessageCircle, X } from 'lucide-react';
 import { useNiaChat } from '../context/NiaChatContext';
-import { useAuth } from '../context/AuthContext';
 
 export default function NiaFloatingButton() {
   const { isOpen, openChat, closeChat, COLORS } = useNiaChat();
@@ -29,11 +28,7 @@ export default function NiaFloatingButton() {
         {isOpen ? (
           <X className="w-6 h-6 text-white" />
         ) : (
-          <img
-            src="/nia-avatar.svg"
-            alt="Nia"
-            className="w-9 h-9 rounded-full"
-          />
+          <MessageCircle className="w-7 h-7 text-white" />
         )}
       </button>
     </div>
