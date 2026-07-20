@@ -75,7 +75,7 @@ export default function AdminOverview() {
         {stats.map(stat => {
           const Icon = stat.icon;
           return (
-            <div key={stat.label} className="bg-zinc-900 rounded-2xl border border-zinc-800 p-5">
+            <div key={stat.label} className="fusion-recessed-card p-5">
               <div className="flex items-center justify-between mb-3">
                 <div className={`w-10 h-10 rounded-xl ${stat.bg} flex items-center justify-center`}>
                   <Icon className={`w-5 h-5 ${stat.color}`} />
@@ -91,7 +91,7 @@ export default function AdminOverview() {
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Recent Orders */}
-        <div className="bg-zinc-900 rounded-2xl border border-zinc-800 p-5">
+        <div className="fusion-recessed-card p-5">
           <div className="flex items-center justify-between mb-4">
             <h3 className="text-base font-bold text-white">Recent Orders</h3>
             <a href="/admin/orders" className="text-xs font-semibold text-primary hover:underline">View all orders</a>
@@ -128,7 +128,7 @@ export default function AdminOverview() {
         </div>
 
         {/* Top Products */}
-        <div className="bg-zinc-900 rounded-2xl border border-zinc-800 p-5">
+        <div className="fusion-recessed-card p-5">
           <div className="flex items-center justify-between mb-4">
             <h3 className="text-base font-bold text-white">Top Products</h3>
             <a href="/admin/products" className="text-xs font-semibold text-primary hover:underline">View all products</a>
@@ -158,7 +158,7 @@ export default function AdminOverview() {
       </div>
 
       {/* Quick Actions */}
-      <div className="bg-zinc-900 rounded-2xl border border-zinc-800 p-5">
+      <div className="fusion-recessed-card p-5">
         <h3 className="text-base font-bold text-white mb-4">Quick Actions</h3>
         <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
           <a href="/admin/products" className="flex items-center gap-3 p-3 rounded-xl bg-zinc-800 hover:bg-primary/10 hover:border-primary/30 border border-transparent transition-all group">

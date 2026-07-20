@@ -93,7 +93,7 @@ export default function AdminBroadcast() {
       </div>
 
       {!settingsLoading && (
-        <div className="bg-zinc-900 rounded-2xl border border-zinc-800 p-5 space-y-4">
+        <div className="fusion-recessed-card p-5 space-y-4">
           <div className="flex items-center gap-2">
             <Fingerprint className="w-5 h-5 text-primary" />
             <h3 className="text-sm font-bold text-white">Broadcast Controls</h3>
@@ -161,7 +161,7 @@ export default function AdminBroadcast() {
         </div>
       )}
 
-      <form onSubmit={handleSend} className="bg-zinc-900 rounded-2xl border border-zinc-800 p-6 space-y-5">
+      <form onSubmit={handleSend} className="fusion-recessed-card p-6 space-y-5">
         <div>
           <label className="block text-sm font-bold mb-1.5 text-zinc-300">Subject</label>
           <input

@@ -1420,11 +1420,7 @@ export default function CheckoutPage() {
                   type="button"
                   onClick={handleCOD}
                   disabled={loading}
-                  className="w-full text-white font-black py-4 rounded-xl transition-all disabled:opacity-50 flex items-center justify-center gap-2 text-base hover:opacity-90 active:98]"
-                  style={{
-                    background: `linear-gradient(135deg, #059669, #047857)`,
-                    boxShadow: `0 8px 24px #05966930`,
-                  }}
+                  className="fusion-chrome w-full font-black py-4 rounded-xl transition-all disabled:opacity-50 flex items-center justify-center gap-2 text-base hover:opacity-90 active:scale-[0.98]"
                 >
                   {loading ? (
                     <><Loader2 className="w-5 h-5 animate-spin" /> Processing...</>
@@ -1436,11 +1432,7 @@ export default function CheckoutPage() {
               <button
                 type="submit"
                 disabled={loading}
-                className="w-full text-white font-black py-4 rounded-xl transition-all disabled:opacity-50 flex items-center justify-center gap-2 text-base hover:opacity-90 active:scale-[0.98]"
-                style={{
-                  background: `linear-gradient(135deg, ${C.accent}, ${C.accentDark})`,
-                  boxShadow: `0 8px 24px ${C.accent}30`,
-                }}
+                className="fusion-chrome w-full font-black py-4 rounded-xl transition-all disabled:opacity-50 flex items-center justify-center gap-2 text-base hover:opacity-90 active:scale-[0.98]"
               >
                 {loading ? (
                   <><Loader2 className="w-5 h-5 animate-spin" /> Processing...</>

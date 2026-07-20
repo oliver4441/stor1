@@ -627,7 +627,7 @@ function SearchPage() {
         <div className="flex gap-6 relative">
           {/* ── Sidebar (Desktop) ── */}
           <aside className="hidden lg:block w-64 flex-shrink-0">
-            <div className="sticky top-4 bg-zinc-900/80 backdrop-blur-sm rounded-2xl border border-zinc-800 p-5 max-h-[calc(100vh-120px)] overflow-y-auto">
+            <div className="sticky top-4 fusion-recessed-card backdrop-blur-sm p-5 max-h-[calc(100vh-120px)] overflow-y-auto">
               {filterPanel}
             </div>
           </aside>

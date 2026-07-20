@@ -3,7 +3,7 @@
     {
       "id": "worldcup",
       "name": "FIFA World Cup",
-      "enabled": true,
+      "enabled": false,
       "dateRange": { "start": "06-01", "end": "07-31" },
       "vibe": "stadium",
       "colors": {

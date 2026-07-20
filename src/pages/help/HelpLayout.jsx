@@ -15,7 +15,7 @@ export default function HelpLayout({ title, children, backLabel = 'Back to Help 
         </div>
 
         {/* Content card */}
-        <div className="bg-zinc-900/70 border border-zinc-800 rounded-2xl p-6 md:p-8">
+        <div className="fusion-recessed-card p-6 md:p-8">
           <h1 className="text-2xl md:text-3xl font-black text-white mb-6">
             {title}
           </h1>

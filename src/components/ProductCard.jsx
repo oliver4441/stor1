@@ -256,9 +256,11 @@ function ProductCard({ listing, compareMode, onCompareChange }) {
 
   return (
     <Link to={`/listing/${listing.id}`} className="block group theme-card-shimmer theme-card-glow">
-      <div className="bg-zinc-900 rounded-2xl overflow-hidden aspect-[4/5] mb-3 relative">
+      <div className="fusion-recessed-card fusion-card-interactive aspect-[4/5] mb-3 relative">
         {hasImage ? (
+          <div className="fusion-img-frame w-full h-full">
           <img key={mainImage} src={mainImage} alt={listing.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" loading="lazy" onError={() => setImgError(true)} />
+          </div>
         ) : (
           <div className="w-full h-full flex items-center justify-center text-zinc-400">
             <ImageIcon className="w-10 h-10" />
@@ -289,7 +291,7 @@ function ProductCard({ listing, compareMode, onCompareChange }) {
         )}
 
         {listing.featured && (
-          <div className="absolute top-2 right-16 bg-amber-500 text-white px-2 py-1 rounded-lg text-[10px] font-bold shadow-sm">
+          <div className="fusion-chrome absolute top-2 right-16 px-2 py-1 rounded-lg text-[10px] font-bold shadow-sm">
             Popular
           </div>
         )}

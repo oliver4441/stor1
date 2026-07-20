@@ -237,7 +237,7 @@ function Privacy() {
           <p>
             If you have any questions, concerns, or requests regarding this Privacy Policy or our data practices, please contact us:
           </p>
-          <div className="bg-zinc-900 rounded-2xl p-6 my-4 border border-zinc-800">
+          <div className="fusion-recessed-card p-6 my-4">
             <p className="mb-2"><strong>Omix Marketplace — Data Protection Officer</strong></p>
             <p className="mb-2">Kericho, Kenya</p>
             <p className="mb-2">Email: <a href="mailto:omixsystems@gmail.com" className="text-[var(--seasonal-primary,#1a5632)] hover:underline">omixsystems@gmail.com</a></p>
@@ -277,7 +277,7 @@ function Privacy() {
       </div>
 
       {/* Table of Contents */}
-      <div className="mb-12 p-6 bg-zinc-900 rounded-2xl border border-zinc-800">
+      <div className="mb-12 p-6 fusion-recessed-card">
         <h2 className="text-lg font-bold text-white mb-4">Table of Contents</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
           {sections.map((section) => (

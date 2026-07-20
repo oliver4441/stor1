@@ -116,7 +116,7 @@ export default function MobileBottomNav() {
         }`}
       >
         <div
-          className={`mx-4 mb-24 bg-zinc-900/95 backdrop-blur-xl border border-zinc-800 rounded-2xl shadow-2xl overflow-hidden transition-all duration-300 ${
+          className={`mx-4 mb-24 fusion-glass rounded-2xl shadow-2xl overflow-hidden transition-all duration-300 ${
             cascadeOpen ? 'translate-y-0' : 'translate-y-4'
           }`}
         >
@@ -145,7 +145,7 @@ export default function MobileBottomNav() {
 
       {/* Bottom navigation bar */}
       <nav
-        className={`lg:hidden fixed bottom-0 left-0 right-0 z-30 bg-zinc-950/95 backdrop-blur-lg border-t border-zinc-800/50 safe-bottom`}
+        className="lg:hidden fusion-tabbar"
       >
         <div className="flex items-center justify-between h-16 max-w-lg mx-auto">
           {/* Left items: Home, Search */}

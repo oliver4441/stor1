@@ -51,7 +51,7 @@ export default function AdminInbox() {
       </div>
 
       {/* Desktop: split view */}
-      <div className="hidden lg:flex h-full gap-0 bg-zinc-900 rounded-2xl border border-zinc-800 overflow-hidden">
+      <div className="hidden lg:flex h-full gap-0 fusion-recessed-card overflow-hidden">
         {/* Left panel — ChatList */}
         <div className="w-80 xl:w-96 shrink-0 border-r border-zinc-800 overflow-hidden">
           <ChatList

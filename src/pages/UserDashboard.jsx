@@ -159,7 +159,7 @@ function OrderCard({ order, onCancel, isExpanded, onToggle }) {
   const canCancel = CANCELLABLE_STATUSES.includes(order.status);
 
   return (
-    <div className="bg-zinc-900 rounded-2xl border border-zinc-800 overflow-hidden transition-all duration-200">
+    <div className="fusion-recessed-card overflow-hidden transition-all duration-200">
       {/* Header */}
       <button
         onClick={onToggle}
@@ -183,7 +183,7 @@ function OrderCard({ order, onCancel, isExpanded, onToggle }) {
           <span className={`text-xs font-bold px-2.5 py-1 rounded-full capitalize ${status.bg} ${status.color}`}>
             {status.label}
           </span>
-          <span className="font-bold text-[var(--seasonal-primary,#1a5632)] text-sm">{formatKES(order.total_amount)}</span>
+          <span className="fusion-price font-bold text-sm">{formatKES(order.total_amount)}</span>
           {isExpanded ? <ChevronUp className="w-4 h-4 text-zinc-400" /> : <ChevronDown className="w-4 h-4 text-zinc-400" />}
         </div>
       </button>
@@ -750,7 +750,7 @@ function UserDashboard() {
         return (
           <div className="space-y-6">
             {/* Profile Header */}
-            <div className="bg-zinc-900 rounded-2xl border border-zinc-800 p-6">
+            <div className="fusion-recessed-card p-6">
               <div className="flex flex-col sm:flex-row items-center sm:items-start gap-5">
                 <AvatarUpload
                   currentUrl={avatarUrl}
@@ -825,22 +825,22 @@ function UserDashboard() {
 
             {/* Quick Stats */}
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-              <div className="bg-zinc-900 rounded-2xl border border-zinc-800 p-4 text-center">
+              <div className="fusion-recessed-card p-4 text-center">
                 <ShoppingBag className="w-5 h-5 text-[var(--seasonal-primary,#1a5632)] mx-auto mb-1" />
                 <p className="text-2xl font-black text-white">{orders.length}</p>
                 <p className="text-xs text-zinc-400">Orders</p>
               </div>
-              <div className="bg-zinc-900 rounded-2xl border border-zinc-800 p-4 text-center">
+              <div className="fusion-recessed-card p-4 text-center">
                 <Star className="w-5 h-5 text-amber-500 mx-auto mb-1" />
                 <p className="text-2xl font-black text-white">{loyaltyPoints}</p>
                 <p className="text-xs text-zinc-400">Points</p>
               </div>
-              <div className="bg-zinc-900 rounded-2xl border border-zinc-800 p-4 text-center">
+              <div className="fusion-recessed-card p-4 text-center">
                 <MapPin className="w-5 h-5 text-emerald-500 mx-auto mb-1" />
                 <p className="text-2xl font-black text-white">{addresses.length}</p>
                 <p className="text-xs text-zinc-400">Addresses</p>
               </div>
-              <div className="bg-zinc-900 rounded-2xl border border-zinc-800 p-4 text-center">
+              <div className="fusion-recessed-card p-4 text-center">
                 <Gift className="w-5 h-5 text-purple-500 mx-auto mb-1" />
                 <p className="text-2xl font-black text-white">{referralCount}</p>
                 <p className="text-xs text-zinc-400">Referrals</p>
@@ -849,14 +849,14 @@ function UserDashboard() {
 
             {/* Quick Links */}
             <div className="grid grid-cols-2 gap-3">
-              <Link to="/track-order" className="bg-zinc-900 rounded-2xl border border-zinc-800 p-4 flex items-center justify-between group hover:border-[var(--seasonal-primary,#1a5632)]/30 transition-colors">
+              <Link to="/track-order" className="fusion-recessed-card p-4 flex items-center justify-between group hover:border-[var(--seasonal-primary,#1a5632)]/30 transition-colors">
                 <div>
                   <p className="font-bold text-white text-sm">Track Order</p>
                   <p className="text-xs text-zinc-400">Check delivery status</p>
                 </div>
                 <Package className="w-6 h-6 text-[var(--seasonal-primary,#1a5632)] group-hover:scale-110 transition-transform" />
               </Link>
-              <Link to="/wishlist" className="bg-zinc-900 rounded-2xl border border-zinc-800 p-4 flex items-center justify-between group hover:border-[var(--seasonal-primary,#1a5632)]/30 transition-colors">
+              <Link to="/wishlist" className="fusion-recessed-card p-4 flex items-center justify-between group hover:border-[var(--seasonal-primary,#1a5632)]/30 transition-colors">
                 <div>
                   <p className="font-bold text-white text-sm">Wishlist</p>
                   <p className="text-xs text-zinc-400">Saved items</p>
@@ -919,7 +919,7 @@ function UserDashboard() {
                 ))}
               </div>
             ) : (
-              <div className="text-center py-12 bg-zinc-900 rounded-2xl border border-zinc-800">
+              <div className="text-center py-12 fusion-recessed-card">
                 <Package className="w-12 h-12 text-zinc-300 mx-auto mb-3" />
                 <h3 className="font-bold text-white mb-1">No orders yet</h3>
                 <p className="text-sm text-zinc-400 mb-4">{hiddenOrders.length > 0 ? 'All orders cleared. New orders will appear here.' : 'When you place an order, it will appear here.'}</p>
@@ -955,7 +955,7 @@ function UserDashboard() {
             {addresses.length > 0 ? (
               <div className="space-y-3">
                 {addresses.map(addr => (
-                  <div key={addr.id} className="bg-zinc-900 rounded-2xl border border-zinc-800 p-4">
+                  <div key={addr.id} className="fusion-recessed-card p-4">
                     <div className="flex items-start justify-between">
                       <div className="flex items-start gap-3">
                         <div className={`w-8 h-8 rounded-xl flex items-center justify-center flex-shrink-0 ${
@@ -989,7 +989,7 @@ function UserDashboard() {
                 ))}
               </div>
             ) : (
-              <div className="text-center py-12 bg-zinc-900 rounded-2xl border border-zinc-800">
+              <div className="text-center py-12 fusion-recessed-card">
                 <MapPin className="w-10 h-10 text-zinc-300 mx-auto mb-3" />
                 <h3 className="font-bold text-white mb-1">No addresses saved</h3>
                 <p className="text-sm text-zinc-400">Save your delivery addresses for faster checkout.</p>
@@ -1003,7 +1003,7 @@ function UserDashboard() {
         return (
           <div className="space-y-6">
             {/* Referral */}
-            <div className="bg-zinc-900 rounded-2xl border border-zinc-800 p-6">
+            <div className="fusion-recessed-card p-6">
               <div className="flex items-center gap-3 mb-5">
                 <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[var(--seasonal-primary,#1a5632)] to-[var(--seasonal-secondary,#14472a)] flex items-center justify-center">
                   <Users className="w-5 h-5 text-white" />
@@ -1037,7 +1037,7 @@ function UserDashboard() {
             </div>
 
             {/* Loyalty Points */}
-            <div className="bg-zinc-900 rounded-2xl border border-zinc-800 p-6">
+            <div className="fusion-recessed-card p-6">
               <div className="flex items-center gap-3 mb-5">
                 <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-amber-400 to-orange-500 flex items-center justify-center">
                   <Star className="w-5 h-5 text-white" />
@@ -1094,7 +1094,7 @@ function UserDashboard() {
         return (
           <div className="space-y-6">
             {/* In-App Notifications */}
-            <div className="bg-zinc-900 rounded-2xl border border-zinc-800 p-6">
+            <div className="fusion-recessed-card p-6">
               <div className="flex items-center justify-between mb-5">
                 <div className="flex items-center gap-3">
                   <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-amber-400 to-orange-500 flex items-center justify-center">
@@ -1206,7 +1206,7 @@ function UserDashboard() {
         return (
           <div className="space-y-6">
             {/* Notification Preferences */}
-            <div className="bg-zinc-900 rounded-2xl border border-zinc-800 p-6">
+            <div className="fusion-recessed-card p-6">
               <div className="flex items-center gap-3 mb-5">
                 <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-amber-400 to-orange-500 flex items-center justify-center">
                   {notifStatus === 'on' ? <BellRing className="w-5 h-5 text-white" /> : <Bell className="w-5 h-5 text-white" />}
@@ -1329,7 +1329,7 @@ function UserDashboard() {
             </div>
 
             {/* Sound & Vibration Preferences */}
-            <div className="bg-zinc-900 rounded-2xl border border-zinc-800 p-6">
+            <div className="fusion-recessed-card p-6">
               <div className="flex items-center gap-3 mb-5">
                 <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-blue-400 to-indigo-500 flex items-center justify-center">
                   <svg className="w-5 h-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
@@ -1406,7 +1406,7 @@ function UserDashboard() {
             </div>
 
             {/* Saved Searches */}
-            <div className="bg-zinc-900 rounded-2xl border border-zinc-800 p-6">
+            <div className="fusion-recessed-card p-6">
               <div className="flex items-center gap-3 mb-5">
                 <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[var(--seasonal-primary,#1a5632)] to-[var(--seasonal-secondary,#14472a)] flex items-center justify-center">
                   <Bookmark className="w-5 h-5 text-white" />
@@ -1461,7 +1461,7 @@ function UserDashboard() {
             )}
 
             {/* Biometrics / Passkey */}
-            <div className="bg-zinc-900 rounded-2xl border border-zinc-800 p-6">
+            <div className="fusion-recessed-card p-6">
               <div className="flex items-center gap-3 mb-4">
                 <div className="w-10 h-10 rounded-xl bg-primary/20 flex items-center justify-center">
                   <Fingerprint className="w-5 h-5 text-primary" />
@@ -1503,7 +1503,7 @@ function UserDashboard() {
             </div>
 
             {/* Security */}
-            <div className="bg-zinc-900 rounded-2xl border border-zinc-800 p-6">
+            <div className="fusion-recessed-card p-6">
               <div className="flex items-center gap-3 mb-4">
                 <div className="w-10 h-10 rounded-xl bg-blue-900/30 flex items-center justify-center">
                   <Shield className="w-5 h-5 text-blue-500" />
@@ -1568,7 +1568,7 @@ function UserDashboard() {
             </div>
 
             {/* Account Actions */}
-            <div className="bg-zinc-900 rounded-2xl border border-zinc-800 p-6">
+            <div className="fusion-recessed-card p-6">
               <h2 className="text-lg font-bold text-white mb-4">Account</h2>
               <div className="space-y-2">
                 <Link to="/track-order" className="flex items-center justify-between w-full p-3 rounded-xl bg-zinc-800/50 hover:bg-zinc-800 transition-colors">
@@ -1867,7 +1867,7 @@ function AddressForm({ onSave, onClose }) {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="bg-zinc-900 rounded-2xl border border-zinc-800 p-4 space-y-3">
+    <form onSubmit={handleSubmit} className="fusion-recessed-card p-4 space-y-3">
       <div>
         <label className="text-xs font-bold text-zinc-400 uppercase tracking-wider mb-1 block">Label</label>
         <div className="flex gap-2">

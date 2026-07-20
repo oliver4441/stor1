@@ -389,7 +389,7 @@ function ListingDetails() {
           <div className="mb-4">
             <h1 className="text-2xl md:text-3xl font-bold mb-2 text-white leading-tight">{listing.title}</h1>
             <div className="flex items-center gap-3 flex-wrap">
-              <p className="text-3xl font-black text-[var(--seasonal-primary,#1a5632)]">
+              <p className="text-3xl font-black fusion-price">
                 {hasVariants && selectedVariantObj && selectedVariantObj.priceAdjustment !== 0
                   ? formatKES(effectivePrice)
                   : formatKES(listing.price)}
@@ -652,7 +652,7 @@ function ListingDetails() {
               const __isOffline = typeof window !== 'undefined' && localStorage.getItem('omix_offline_mode') === 'true';
               if (__isOffline) {
                 return (
-                  <div className="p-6 bg-zinc-900/50 border border-zinc-700 rounded-2xl text-center">
+                  <div className="p-6 fusion-recessed-card text-center">
                     <Eye className="w-8 h-8 text-zinc-500 mx-auto mb-2" />
                     <p className="text-sm font-bold text-zinc-400">Browse Only</p>
                     <p className="text-xs text-zinc-500 mt-1">Offline mode — purchasing and chat are disabled</p>
@@ -723,7 +723,7 @@ function ListingDetails() {
 
           {/* Wholesale / Bulk Purchase */}
           {listing.wholesale_enabled && wholesalePrices.length > 0 && (
-            <div className="mt-6 bg-zinc-900/50 rounded-2xl p-4 border border-zinc-800">
+            <div className="mt-6 fusion-recessed-card p-4">
               <div className="flex items-center gap-2 mb-3">
                 <Package className="w-4 h-4 text-[var(--seasonal-primary,#1a5632)]" />
                 <span className="font-bold text-sm text-white">Wholesale / Bulk Purchase Available</span>
@@ -797,7 +797,7 @@ function ListingDetails() {
                 {specCategories.map((cat, ci) => (
                   <div key={ci}>
                     <h4 className="font-bold text-xs text-zinc-400 uppercase tracking-wider mb-2">{cat.title}</h4>
-                    <div className="bg-zinc-900/50 rounded-2xl border border-zinc-800 divide-y divide-zinc-800">
+                    <div className="fusion-recessed-card divide-y divide-zinc-800">
                       {cat.specs.map((spec, si) => (
                         <div key={si} className="flex items-center gap-3 px-4 py-2.5">
                           <span className="text-xs text-zinc-500 w-32 flex-shrink-0 font-medium">{spec.label}</span>
@@ -824,7 +824,7 @@ function ListingDetails() {
                 {listing.warranty_period && (
                   <div>
                     <h4 className="font-bold text-xs text-zinc-400 uppercase tracking-wider mb-2">Warranty</h4>
-                    <div className="bg-zinc-900/50 rounded-2xl border border-zinc-800 divide-y divide-zinc-800">
+                    <div className="fusion-recessed-card divide-y divide-zinc-800">
                       {listing.warranty_period && (
                         <div className="flex items-center gap-3 px-4 py-2.5">
                           <Shield className="w-4 h-4 text-zinc-400" />
@@ -849,7 +849,7 @@ function ListingDetails() {
           {/* Shipping Info */}
           <AccordionSection title="Delivery & Shipping" icon={ChevronDown}>
             <div className="px-6 pb-6">
-              <div className="bg-zinc-900/50 rounded-2xl border border-zinc-800 divide-y divide-zinc-800">
+              <div className="fusion-recessed-card divide-y divide-zinc-800">
                 {deliveryZones.length > 0 && (
                   <div className="px-4 py-3 flex items-center gap-3">
                     <Truck className="w-4 h-4 text-emerald-400" />

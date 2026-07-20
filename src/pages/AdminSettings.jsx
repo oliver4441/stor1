@@ -254,7 +254,7 @@ export default function AdminSettings() {
       )}
 
       {/* Store Info */}
-      <div className="bg-zinc-900 rounded-2xl border border-zinc-800 p-6">
+      <div className="fusion-recessed-card p-6">
         <div className="flex items-center gap-3 mb-5">
           <Store className="w-5 h-5 text-primary" />
           <h3 className="text-base font-bold text-white">Store Information</h3>
@@ -281,7 +281,7 @@ export default function AdminSettings() {
       </div>
 
       {/* Delivery */}
-      <div className="bg-zinc-900 rounded-2xl border border-zinc-800 p-6">
+      <div className="fusion-recessed-card p-6">
         <div className="flex items-center gap-3 mb-5">
           <Truck className="w-5 h-5 text-blue-500" />
           <h3 className="text-base font-bold text-white">Delivery</h3>
@@ -314,7 +314,7 @@ export default function AdminSettings() {
       </div>
 
       {/* Notifications */}
-      <div className="bg-zinc-900 rounded-2xl border border-zinc-800 p-6">
+      <div className="fusion-recessed-card p-6">
         <div className="flex items-center gap-3 mb-5">
           <Bell className="w-5 h-5 text-amber-500" />
           <h3 className="text-base font-bold text-white">Notifications</h3>
@@ -372,7 +372,7 @@ export default function AdminSettings() {
       </div>
 
       {/* Hero Override */}
-      <div className="bg-zinc-900 rounded-2xl border border-zinc-800 p-6">
+      <div className="fusion-recessed-card p-6">
         <div className="flex items-center gap-3 mb-2">
           <Image className="w-5 h-5 text-emerald-500" />
           <h3 className="text-base font-bold text-white">Hero Override</h3>
@@ -404,7 +404,7 @@ export default function AdminSettings() {
       </div>
 
       {/* Seasonal Themes */}
-      <div className="bg-zinc-900 rounded-2xl border border-zinc-800 p-6">
+      <div className="fusion-recessed-card p-6">
         <div className="flex items-center gap-3 mb-2">
           <Palette className="w-5 h-5 text-pink-500" />
           <h3 className="text-base font-bold text-white">Seasonal Themes</h3>
@@ -511,7 +511,7 @@ export default function AdminSettings() {
       </div>
 
       {/* Broadcast Update */}
-      <div className="bg-zinc-900 rounded-2xl border border-zinc-800 p-6">
+      <div className="fusion-recessed-card p-6">
         <div className="flex items-center gap-3 mb-5">
           <Megaphone className="w-5 h-5 text-purple-500" />
           <h3 className="text-base font-bold text-white">Broadcast Update</h3>

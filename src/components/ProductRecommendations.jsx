@@ -37,7 +37,7 @@ function RecommendationCard({ listing }) {
       to={`/listing/${listing.id}`}
       className="flex-shrink-0 w-[200px] snap-start group"
     >
-      <div className="bg-zinc-900 border border-zinc-800 rounded-2xl overflow-hidden hover:border-zinc-600 transition-colors h-full flex flex-col">
+      <div className="fusion-recessed-card overflow-hidden hover:border-zinc-600 transition-colors h-full flex flex-col">
         <div className="aspect-square bg-zinc-800 overflow-hidden">
           {imageUrl ? (
             <img

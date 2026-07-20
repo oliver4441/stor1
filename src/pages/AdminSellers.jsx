@@ -282,7 +282,7 @@ export default function AdminSellers() {
             return (
               <div
                 key={seller.id}
-                className="bg-zinc-900/60 border border-zinc-800 rounded-2xl p-5 hover:border-zinc-700 transition-colors"
+                className="fusion-recessed-card p-5 hover:border-zinc-700 transition-colors"
               >
                 <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
                   {/* Shop info */}

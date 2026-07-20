@@ -152,27 +152,27 @@ export default function AdminAnalytics() {
 
       {/* Stats */}
       <div className="grid grid-cols-2 lg:grid-cols-5 gap-4">
-        <div className="bg-zinc-900 rounded-2xl border border-zinc-800 p-5">
+        <div className="fusion-recessed-card p-5">
           <DollarSign className="w-5 h-5 text-emerald-500 mb-2" />
           <p className="text-2xl font-black text-white">{formatKES(totalRevenue)}</p>
           <p className="text-xs text-zinc-400 mt-1">Revenue</p>
         </div>
-        <div className="bg-zinc-900 rounded-2xl border border-zinc-800 p-5">
+        <div className="fusion-recessed-card p-5">
           <ShoppingBag className="w-5 h-5 text-blue-500 mb-2" />
           <p className="text-2xl font-black text-white">{filteredOrders.length}</p>
           <p className="text-xs text-zinc-400 mt-1">Orders</p>
         </div>
-        <div className="bg-zinc-900 rounded-2xl border border-zinc-800 p-5">
+        <div className="fusion-recessed-card p-5">
           <TrendingUp className="w-5 h-5 text-purple-500 mb-2" />
           <p className="text-2xl font-black text-white">{formatKES(avgOrderValue)}</p>
           <p className="text-xs text-zinc-400 mt-1">Avg Order</p>
         </div>
-        <div className="bg-zinc-900 rounded-2xl border border-zinc-800 p-5">
+        <div className="fusion-recessed-card p-5">
           <Users className="w-5 h-5 text-sky-500 mb-2" />
           <p className="text-2xl font-black text-white">{customerCount}</p>
           <p className="text-xs text-zinc-400 mt-1">Customers</p>
         </div>
-        <div className="bg-zinc-900 rounded-2xl border border-zinc-800 p-5">
+        <div className="fusion-recessed-card p-5">
           <Package className="w-5 h-5 text-amber-500 mb-2" />
           <p className="text-2xl font-black text-white">{listings.length} / {activeListings}</p>
           <p className="text-xs text-zinc-400 mt-1">Products</p>
@@ -180,7 +180,7 @@ export default function AdminAnalytics() {
       </div>
 
       {/* Growth Metrics */}
-      <div className="bg-zinc-900 rounded-2xl border border-zinc-800 p-4 flex items-center gap-6">
+      <div className="fusion-recessed-card p-4 flex items-center gap-6">
         <Activity className="w-5 h-5 text-emerald-500" />
         <div className="flex flex-wrap items-center gap-4 text-sm">
           <div className="flex items-center gap-2">
@@ -210,7 +210,7 @@ export default function AdminAnalytics() {
       </div>
 
       {/* Revenue Chart */}
-      <div className="bg-zinc-900 rounded-2xl border border-zinc-800 p-5">
+      <div className="fusion-recessed-card p-5">
         <h3 className="text-base font-bold text-white mb-4">Revenue Trend</h3>
         {chartData.length > 0 && chartData.some(d => d.revenue > 0) ? (
           <div className="h-64">
@@ -235,7 +235,7 @@ export default function AdminAnalytics() {
       </div>
 
       {/* Orders Chart */}
-      <div className="bg-zinc-900 rounded-2xl border border-zinc-800 p-5">
+      <div className="fusion-recessed-card p-5">
         <h3 className="text-base font-bold text-white mb-4">Orders Over Time</h3>
         {chartData.length > 0 && chartData.some(d => d.orders > 0) ? (
           <div className="h-56">
@@ -255,7 +255,7 @@ export default function AdminAnalytics() {
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Top Products */}
-        <div className="bg-zinc-900 rounded-2xl border border-zinc-800 p-5">
+        <div className="fusion-recessed-card p-5">
           <h3 className="text-base font-bold text-white mb-4">Top Products</h3>
           {topProducts.length > 0 ? (
             <div className="space-y-3">
@@ -278,7 +278,7 @@ export default function AdminAnalytics() {
         </div>
 
         {/* Category Breakdown */}
-        <div className="bg-zinc-900 rounded-2xl border border-zinc-800 p-5">
+        <div className="fusion-recessed-card p-5">
           <h3 className="text-base font-bold text-white mb-4">Sales by Category</h3>
           {categoryData.length > 0 ? (
             <div className="space-y-4">
@@ -304,7 +304,7 @@ export default function AdminAnalytics() {
       </div>
 
       {/* Orders by Status */}
-      <div className="bg-zinc-900 rounded-2xl border border-zinc-800 p-5">
+      <div className="fusion-recessed-card p-5">
         <h3 className="text-base font-bold text-white mb-4">Orders by Status</h3>
         {Object.keys(ordersByStatus).length > 0 ? (
           <div className="h-64">

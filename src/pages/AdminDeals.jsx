@@ -265,7 +265,7 @@ export default function AdminDeals() {
             return (
               <div
                 key={deal.id}
-                className="rounded-2xl border border-zinc-800 bg-zinc-900 overflow-hidden transition-all"
+                className="fusion-recessed-card overflow-hidden transition-all"
               >
                 {/* Deal Header */}
                 <div className="p-4">

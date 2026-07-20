@@ -99,7 +99,7 @@ export default function AdminCustomers() {
           <div className="inline-block w-8 h-8 border-4 border-primary border-t-transparent rounded-full animate-spin" />
         </div>
       ) : filteredCustomers.length > 0 ? (
-        <div className="bg-zinc-900 rounded-2xl border border-zinc-800 overflow-hidden">
+        <div className="fusion-recessed-card overflow-hidden">
           <div className="overflow-x-auto">
             <table className="w-full">
               <thead>

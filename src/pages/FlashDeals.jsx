@@ -123,7 +123,7 @@ export default function FlashDeals() {
         ) : (
           <div className="space-y-10">
             {deals.map((deal) => (
-              <div key={deal.id} className="rounded-2xl border border-zinc-800 bg-zinc-900 overflow-hidden">
+              <div key={deal.id} className="fusion-recessed-card overflow-hidden">
                 {/* Deal Header */}
                 <div className="p-5 border-b border-zinc-800">
                   <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">

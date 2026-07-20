@@ -166,7 +166,7 @@ function HowItWorks() {
 
           <div className="grid sm:grid-cols-2 gap-4">
             {features.map((feature, i) => (
-              <div key={i} className="bg-zinc-900 border border-zinc-800 rounded-2xl p-6 flex gap-4 hover:border-[var(--seasonal-primary,#1a5632)]/30 transition-all">
+              <div key={i} className="fusion-recessed-card p-6 flex gap-4 hover:border-[var(--seasonal-primary,#1a5632)]/30 transition-all">
                 <div className="w-12 h-12 rounded-xl bg-zinc-800 flex items-center justify-center flex-shrink-0">
                   {feature.icon}
                 </div>
@@ -188,7 +188,7 @@ function HowItWorks() {
 
           <div className="max-w-3xl mx-auto space-y-3">
             {faqs.map((faq, i) => (
-              <div key={i} className="bg-zinc-900 border border-zinc-800 rounded-2xl overflow-hidden">
+              <div key={i} className="fusion-recessed-card overflow-hidden">
                 <button onClick={() => toggleFaq(i)} className="w-full flex items-center justify-between px-6 py-5 text-left hover:bg-zinc-50 dark:hover:bg-zinc-800/50 transition-colors">
                   <span className="font-bold text-white pr-4">{faq.question}</span>
                   {openFaq === i ? <ChevronUp className="w-5 h-5 text-zinc-400 flex-shrink-0" /> : <ChevronDown className="w-5 h-5 text-zinc-400 flex-shrink-0" />}

@@ -54,7 +54,7 @@ function Skeleton({ className = '' }) {
 
 function StatCard({ icon: Icon, label, value, subtext, color = 'text-emerald-400' }) {
   return (
-    <div className="bg-zinc-900/80 border border-zinc-800 rounded-2xl p-5 transition-all duration-300 hover:border-zinc-700 hover:bg-zinc-900">
+    <div className="fusion-recessed-card p-5 transition-all duration-300 hover:border-zinc-700 hover:bg-zinc-900">
       <div className="flex items-start justify-between mb-3">
         <div className={`p-2.5 rounded-xl bg-zinc-800/80 border border-zinc-700/60 ${color}`}>
           <Icon className="w-5 h-5" />
@@ -363,21 +363,21 @@ export default function SellerDashboard() {
 
         {/* ── Summary Row ── */}
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
-          <div className="bg-zinc-900/80 border border-zinc-800 rounded-2xl p-5">
+          <div className="fusion-recessed-card p-5">
             <div className="flex items-center gap-2 text-emerald-400 mb-2">
               <Package className="w-4 h-4" />
               <span className="text-xs font-semibold uppercase tracking-wider">Active Listings</span>
             </div>
             <p className="text-3xl font-bold text-white">{activeListings}</p>
           </div>
-          <div className="bg-zinc-900/80 border border-zinc-800 rounded-2xl p-5">
+          <div className="fusion-recessed-card p-5">
             <div className="flex items-center gap-2 text-zinc-400 mb-2">
               <EyeOff className="w-4 h-4" />
               <span className="text-xs font-semibold uppercase tracking-wider">Inactive Listings</span>
             </div>
             <p className="text-3xl font-bold text-white">{inactiveListings}</p>
           </div>
-          <div className="bg-zinc-900/80 border border-zinc-800 rounded-2xl p-5">
+          <div className="fusion-recessed-card p-5">
             <div className="flex items-center gap-2 text-amber-400 mb-2">
               <TrendingUp className="w-4 h-4" />
               <span className="text-xs font-semibold uppercase tracking-wider">Conversion</span>

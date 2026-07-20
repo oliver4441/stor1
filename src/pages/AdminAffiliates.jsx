@@ -325,7 +325,7 @@ export default function AdminAffiliates() {
           <Loader2 className="w-6 h-6 animate-spin text-primary" />
         </div>
       ) : activeTab === 'affiliates' ? (
-        <div className="bg-zinc-900 rounded-2xl border border-zinc-800 overflow-hidden">
+        <div className="fusion-recessed-card overflow-hidden">
           {filteredAffiliates.length === 0 ? (
             <div className="p-12 text-center">
               <Users className="w-10 h-10 text-zinc-700 mx-auto mb-3" />
@@ -409,7 +409,7 @@ export default function AdminAffiliates() {
       ) : activeTab === 'commissions' ? (
         <div>
           {/* Calculate controls */}
-          <div className="flex items-center gap-3 mb-4 p-4 bg-zinc-900 rounded-2xl border border-zinc-800">
+          <div className="flex items-center gap-3 mb-4 p-4 fusion-recessed-card">
             <span className="text-sm text-zinc-400">Calculate for:</span>
             <input type="month" value={calcPeriod} onChange={e => setCalcPeriod(e.target.value)}
               className="px-3 py-2 rounded-lg bg-zinc-800 border border-zinc-700 text-white text-sm" />
@@ -436,7 +436,7 @@ export default function AdminAffiliates() {
             </div>
           </div>
 
-          <div className="bg-zinc-900 rounded-2xl border border-zinc-800 overflow-hidden">
+          <div className="fusion-recessed-card overflow-hidden">
             {commissions.length === 0 ? (
               <div className="p-12 text-center text-zinc-400">No commission records</div>
             ) : (
@@ -479,7 +479,7 @@ export default function AdminAffiliates() {
           </div>
         </div>
       ) : activeTab === 'payouts' ? (
-        <div className="bg-zinc-900 rounded-2xl border border-zinc-800 overflow-hidden">
+        <div className="fusion-recessed-card overflow-hidden">
           {payouts.length === 0 ? (
             <div className="p-12 text-center text-zinc-400">No payout requests yet</div>
           ) : (
@@ -512,7 +512,7 @@ export default function AdminAffiliates() {
           )}
         </div>
       ) : activeTab === 'logs' ? (
-        <div className="bg-zinc-900 rounded-2xl border border-zinc-800 overflow-hidden">
+        <div className="fusion-recessed-card overflow-hidden">
           {logs.length === 0 ? (
             <div className="p-12 text-center text-zinc-400">No audit logs yet</div>
           ) : (

@@ -10,7 +10,7 @@ function StatTile({ s, i }) {
   return (
     <div
       key={s.label}
-      className={`bg-zinc-900 rounded-2xl border border-zinc-800 border-t-2 ${s.top} p-4 transition-transform hover:-translate-y-0.5 hover:shadow-lg hover:shadow-black/20`}
+      className={`fusion-recessed-card border-t-2 ${s.top} p-4 transition-transform hover:-translate-y-0.5 hover:shadow-lg hover:shadow-black/20`}
       style={{ animation: 'fadeUp .4s ease-out both', animationDelay: `${i * 50}ms` }}
     >
       <div className={`w-9 h-9 rounded-xl ${s.chip} flex items-center justify-center mb-2`}>
@@ -293,7 +293,7 @@ export default function AffiliateDashboard() {
 
       <div className="max-w-4xl mx-auto px-4 space-y-6 mt-6">
         {/* Tier & Status Card */}
-        <div className="bg-zinc-900 rounded-2xl border border-zinc-800 p-5">
+        <div className="fusion-recessed-card p-5">
           <div className="flex items-center justify-between mb-1">
             <div className="flex items-center gap-3">
               <div className={`w-12 h-12 rounded-full flex items-center justify-center ${(TIER_META[currentTier]?.iconBg) || 'bg-zinc-800 text-zinc-400'}`}>
@@ -324,7 +324,7 @@ export default function AffiliateDashboard() {
         </div>
 
         {/* Referral Link Card */}
-        <div className="bg-zinc-900 rounded-2xl border border-zinc-800 p-5">
+        <div className="fusion-recessed-card p-5">
           <h3 className="text-sm font-bold text-zinc-300 mb-3 flex items-center gap-2">
             <Share2 className="w-4 h-4" /> Referral Link
           </h3>
@@ -378,7 +378,7 @@ export default function AffiliateDashboard() {
 
         {/* Payout History */}
         {payouts.length > 0 && (
-          <div className="bg-zinc-900 rounded-2xl border border-zinc-800 overflow-hidden">
+          <div className="fusion-recessed-card overflow-hidden">
             <button
               onClick={() => setShowPayouts(!showPayouts)}
               className="w-full flex items-center justify-between px-5 py-4 text-left"
@@ -407,7 +407,7 @@ export default function AffiliateDashboard() {
         )}
 
         {/* Monthly Earnings — inline sparkline */}
-        <div className="bg-zinc-900 rounded-2xl border border-zinc-800 p-5">
+        <div className="fusion-recessed-card p-5">
           <div className="flex items-center justify-between mb-4">
             <h3 className="text-sm font-bold text-zinc-300 flex items-center gap-2">
               <TrendingUp className="w-4 h-4" /> Monthly Commission
@@ -443,7 +443,7 @@ export default function AffiliateDashboard() {
         </div>
 
         {/* Referred Users — cards */}
-        <div className="bg-zinc-900 rounded-2xl border border-zinc-800 p-5">
+        <div className="fusion-recessed-card p-5">
           <div className="flex items-center justify-between mb-3">
             <h3 className="text-sm font-bold text-zinc-300 flex items-center gap-2">
               <Users className="w-4 h-4" /> People You Referred
@@ -477,7 +477,7 @@ export default function AffiliateDashboard() {
         </div>
 
         {/* Recent Orders */}
-        <div className="bg-zinc-900 rounded-2xl border border-zinc-800 p-5">
+        <div className="fusion-recessed-card p-5">
           <h3 className="text-sm font-bold text-zinc-300 mb-3 flex items-center gap-2">
             <ShoppingBag className="w-4 h-4" /> Qualifying Orders
           </h3>

@@ -42,7 +42,7 @@ export default function HelpCenter() {
         </div>
 
         {/* Search hint */}
-        <div className="backdrop-blur-xl bg-zinc-900/50 border border-zinc-800 rounded-2xl p-6 mb-8">
+        <div className="backdrop-blur-xl fusion-recessed-card p-6 mb-8">
           <p className="text-sm text-zinc-400 text-center">
             Browse topics below or use the search bar at the top of the page to find answers fast
           </p>
@@ -74,7 +74,7 @@ export default function HelpCenter() {
         ))}
 
         {/* Still need help */}
-        <div className="backdrop-blur-xl bg-zinc-900/50 border border-zinc-800 rounded-2xl p-6 text-center mt-8">
+        <div className="backdrop-blur-xl fusion-recessed-card p-6 text-center mt-8">
           <h3 className="font-bold text-white mb-2">Still need help?</h3>
           <p className="text-sm text-zinc-400 mb-4">
             Contact us via WhatsApp or email and we will get back to you within 24 hours

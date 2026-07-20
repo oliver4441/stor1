@@ -270,7 +270,7 @@ function Home() {
 
       {/* Video Preview */}
       <div className="max-w-4xl mx-auto px-4 mb-12">
-        <div className="rounded-2xl overflow-hidden shadow-2xl border border-zinc-800 bg-zinc-900">
+        <div className="fusion-recessed-card overflow-hidden shadow-2xl">
           <video
             autoPlay
             muted

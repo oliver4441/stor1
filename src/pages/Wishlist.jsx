@@ -141,7 +141,7 @@ export default function Wishlist() {
             const inCart = addedToCart[listing.id];
 
             return (
-              <div key={item.id} className="flex gap-4 bg-zinc-900 rounded-2xl border border-zinc-800 p-3 hover:border-zinc-700 transition-colors">
+              <div key={item.id} className="flex gap-4 fusion-recessed-card p-3 hover:border-zinc-700 transition-colors">
                 {/* Image */}
                 <Link to={`/listing/${listing.id}`} className="flex-shrink-0 w-24 h-24 md:w-28 md:h-28 bg-zinc-800 rounded-xl overflow-hidden">
                   {listing.images?.[0] ? (
