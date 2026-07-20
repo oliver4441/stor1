@@ -1,10 +1,9 @@
 import { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
 import { supabase } from '../utils/supabase';
 import { getAffiliateProfile, getDashboardStats, getMonthlyEarnings, getRecentReferrals, getRecentAffiliateOrders, requestPayout, getPayoutHistory, removeAffiliateAccount } from '../utils/affiliate_api';
 import { AFFILIATE_CONFIG, formatKES, getReferralLink } from '../config/affiliate';
 import { Copy, Share2, Users, ShoppingBag, TrendingUp, Award, Wallet, Send, CheckCircle, X, Loader2, MousePointerClick, AlertTriangle, Trash2, ChevronDown, ChevronUp } from 'lucide-react';
-import { Link, useNavigate, useLocation } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 
 // ponytail: stat tile — uses plain value (count-up hook caused react #310)
 function StatTile({ s, i }) {
