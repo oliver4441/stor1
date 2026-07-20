@@ -135,7 +135,6 @@
   transform: translateX(-50%);
   bottom: max(0.75rem, env(safe-area-inset-bottom));
   width: min(92vw, 30rem);
-  height: var(--fusion-touch-min);
   display: flex;
   align-items: center;
   justify-content: space-around;

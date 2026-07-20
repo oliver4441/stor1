@@ -58,7 +58,7 @@ function mergeThemeStates(themes) {
   } catch {}
   return themes.map(t => ({
     ...t,
-    enabled: savedStates[t.id] !== undefined ? savedStates[t.id] : t.enabled,
+    enabled: t.enabled === false ? false : (savedStates[t.id] !== undefined ? savedStates[t.id] : t.enabled),
   }));
 }
 
@@ -102,7 +102,7 @@ export function SeasonalProvider({ children, previewThemeId = null }) {
     if (savedStates) {
       return themesConfig.themes.map(t => ({
         ...t,
-        enabled: savedStates[t.id] !== undefined ? savedStates[t.id] : t.enabled,
+        enabled: t.enabled === false ? false : (savedStates[t.id] !== undefined ? savedStates[t.id] : t.enabled),
       }));
     }
     // Fall back to localStorage + JSON defaults
