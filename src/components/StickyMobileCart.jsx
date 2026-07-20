@@ -1,4 +1,4 @@
-import { ShoppingCart, Eye } from 'lucide-react';
+import { ShoppingCart } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { formatKES } from '../utils/constants';
 
@@ -24,12 +24,7 @@ export default function StickyMobileCart({ listing, quantity, effectivePrice, se
 
         {/* Buttons */}
         <div className="flex-1 flex gap-2">
-          {isOffline ? (
-            <div className="flex-1 flex items-center justify-center gap-1.5 bg-zinc-800 text-zinc-500 font-bold py-3 rounded-xl text-sm">
-              <Eye className="w-4 h-4" />
-              Browse Only
-            </div>
-          ) : user ? (
+          {user ? (
             <>
               <button
                 onClick={onAddToCart}
