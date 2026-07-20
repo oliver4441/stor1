@@ -29,13 +29,11 @@ export default function AutoScrollCarousel({
 
   useEffect(() => {
     if (scrollRef.current) {
-      // Measure the width of the original content (half of total)
       const fullWidth = scrollRef.current.scrollWidth;
       setContentWidth(fullWidth / 2);
     }
   }, [children]);
 
-  // CSS animation duration based on content width and speed
   const duration = contentWidth > 0 ? contentWidth / speed : 20;
 
   return (
@@ -46,16 +44,13 @@ export default function AutoScrollCarousel({
       onTouchStart={() => setIsPaused(true)}
       onTouchEnd={() => setIsPaused(false)}
     >
-      {/* Scrolling container */}
       <div
         ref={scrollRef}
         className="flex"
         style={{
           gap: `${gap}px`,
           width: 'max-content',
-          animation: contentWidth > 0
-            ? `carousel-scroll ${duration}s linear infinite`
-            : 'none',
+          animation: `carousel-scroll ${duration}s linear infinite`,
           animationPlayState: isPaused ? 'paused' : 'running',
         }}
       >
@@ -76,9 +71,3 @@ export default function AutoScrollCarousel({
     </div>
   );
 }
-
-// CSS injection helper - add this to your index.css:
-// @keyframes carousel-scroll {
-//   0% { transform: translateX(0); }
-//   100% { transform: translateX(-50%); }
-// }
