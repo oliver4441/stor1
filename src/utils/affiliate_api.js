@@ -134,11 +134,12 @@ export async function getRecentAffiliateOrders(affiliateId, limit = 10) {
 }
 
 // ─── Payout Request ────────────────────────────────────────────
-export async function requestPayout(affiliateId, amount, mpesaNumber) {
+export async function requestPayout(affiliateId, amount, mpesaNumber, extraData = {}) {
   return apiPost(AFFILIATE_CONFIG.ENDPOINTS.PAYOUT_REQUEST, {
     affiliate_id: affiliateId,
     amount,
     mpesa_number: mpesaNumber,
+    ...extraData,
   });
 }
 
@@ -233,5 +234,26 @@ export async function lookupAffiliateByCode(referralCode) {
     return data || null;
   } catch {
     return null;
+  }
+}
+
+// ─── Leaderboard ─────────────────────────────────────────────
+export async function getLeaderboard(period = 'all-time', limit = 20) {
+  try {
+    const data = await apiGet(`${AFFILIATE_CONFIG.ENDPOINTS.LEADERBOARD}?period=${period}&limit=${limit}`);
+    return data || [];
+  } catch (err) {
+    console.error('getLeaderboard error:', err);
+    return [];
+  }
+}
+
+// ─── Achievements ────────────────────────────────────────────
+export async function getAchievements(affiliateId) {
+  try {
+    return await apiGet(`${AFFILIATE_CONFIG.ENDPOINTS.ACHIEVEMENTS}/${affiliateId}`);
+  } catch (err) {
+    console.error('getAchievements error:', err);
+    return [];
   }
 }

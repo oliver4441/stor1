@@ -39,6 +39,8 @@ export const AFFILIATE_CONFIG = {
     LINK_AFFILIATE: `${API_BASE}/api/affiliate/link`,
     LOG_CLICK: `${API_BASE}/api/affiliate/log-click`,
     TIERS: `${API_BASE}/api/affiliate/tiers`,
+    LEADERBOARD: `${API_BASE}/api/affiliate/leaderboard`,
+    ACHIEVEMENTS: `${API_BASE}/api/affiliate/achievements`,
     ADMIN_AFFILIATES: `${API_BASE}/api/admin/affiliates`,
   },
 };

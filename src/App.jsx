@@ -73,12 +73,15 @@ const AdminSellers = React.lazy(() => import('./pages/AdminSellers'));
 const AdminDeals = React.lazy(() => import('./pages/AdminDeals'));
 const AdminUsers = React.lazy(() => import('./pages/AdminUsers'));
 const AdminBroadcast = React.lazy(() => import('./pages/AdminBroadcast'));
+const AdminFraud = React.lazy(() => import('./pages/AdminFraud'));
 const AffiliateDashboard = React.lazy(() => import('./pages/AffiliateDashboard'));
 const AffiliatePage = React.lazy(() => import('./pages/AffiliatePage'));
 const AffiliateApply = React.lazy(() => import('./pages/AffiliateApply'));
 const AffiliateAgreement = React.lazy(() => import('./pages/AffiliateAgreement'));
 const AffiliateWithdrawals = React.lazy(() => import('./pages/AffiliateWithdrawals'));
 const AffiliateReferrals = React.lazy(() => import('./pages/AffiliateReferrals'));
+const AffiliateLeaderboard = React.lazy(() => import('./pages/AffiliateLeaderboard'));
+const AffiliateAchievements = React.lazy(() => import('./pages/AffiliateAchievements'));
 const NotFound = React.lazy(() => import('./pages/NotFound'));
 
 // Help Center pages — co-split as a help chunk
@@ -166,6 +169,8 @@ function App() {
               <Route path="/affiliate-dashboard" element={<AffiliateDashboard />} />
               <Route path="/affiliate-referrals" element={<AffiliateReferrals />} />
               <Route path="/affiliate-withdrawals" element={<AffiliateWithdrawals />} />
+              <Route path="/affiliate-leaderboard" element={<AffiliateLeaderboard />} />
+              <Route path="/affiliate-achievements" element={<AffiliateAchievements />} />
               <Route path="/affiliate" element={<AffiliatePage />} />
               <Route path="/affiliate/apply" element={<AffiliateApply />} />
               <Route path="/affiliate/agreement" element={<AffiliateAgreement />} />
@@ -183,6 +188,7 @@ function App() {
                 <Route path="sellers" element={<AdminSellers />} />
                 <Route path="users" element={<AdminUsers />} />
                 <Route path="broadcast" element={<AdminBroadcast />} />
+                <Route path="fraud" element={<AdminFraud />} />
               <Route path="deals" element={<AdminDeals />} />
               </Route>
               <Route path="/listings" element={<Navigate to="/search" replace />} />

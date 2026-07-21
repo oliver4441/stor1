@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { supabase } from '../utils/supabase';
 import { getAffiliateProfile, requestPayout, getPayoutHistory } from '../utils/affiliate_api';
 import { AFFILIATE_CONFIG, formatKES } from '../config/affiliate';
-import { Wallet, Send, Loader2, CheckCircle, X, Copy, ExternalLink, ChevronDown, ChevronUp, Smartphone, Building2, CreditCard, Award, Share2 } from 'lucide-react';
+import { Wallet, Send, Loader2, CheckCircle, X, Copy, ExternalLink, ChevronDown, ChevronUp, Smartphone, Building2, CreditCard, Award, Share2, Trophy } from 'lucide-react';
 import { Link, useLocation } from 'react-router-dom';
 
 const PAYOUT_METHODS = [
@@ -73,17 +73,11 @@ export default function AffiliateWithdrawals() {
 
     setSubmitting(true);
     try {
-      const payload = {
-        affiliate_id: affiliate.id,
-        amount,
-        mpesa_number: accountNumber,
-        mpesa_name: accountName || undefined,
+      const res = await requestPayout(affiliate.id, amount, accountNumber, { 
+        mpesa_name: accountName,
         payment_method: method,
-      };
-      if (method === 'bank') {
-        payload.bank_name = bankName;
-      }
-      const res = await requestPayout(affiliate.id, amount, accountNumber);
+        bank_name: method === 'bank' ? bankName : undefined,
+      });
       setResult(res);
       await loadData();
     } catch (err) {
@@ -141,6 +135,8 @@ export default function AffiliateWithdrawals() {
           {[
             { path: '/affiliate-dashboard', label: 'Dashboard', icon: Award },
             { path: '/affiliate-referrals', label: 'Referrals', icon: Share2 },
+            { path: '/affiliate-leaderboard', label: 'Leaderboard', icon: Trophy },
+            { path: '/affiliate-achievements', label: 'Achievements', icon: Award },
             { path: '/affiliate-withdrawals', label: 'Withdrawals', icon: Wallet },
           ].map(tab => (
             <Link key={tab.path} to={tab.path}

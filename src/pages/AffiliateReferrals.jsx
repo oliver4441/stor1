@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { supabase } from '../utils/supabase';
 import { getAffiliateProfile, getRecentReferrals } from '../utils/affiliate_api';
 import { AFFILIATE_CONFIG, formatKES, getReferralLink } from '../config/affiliate';
-import { Share2, Copy, Users, Loader2, CheckCircle, ExternalLink, MessageCircle, Send, Globe, Download, Award, Wallet } from 'lucide-react';
+import { Share2, Copy, Users, Loader2, CheckCircle, ExternalLink, MessageCircle, Send, Globe, Download, Award, Wallet, Trophy } from 'lucide-react';
 import { Link, useLocation } from 'react-router-dom';
 
 export default function AffiliateReferrals() {
@@ -120,6 +120,8 @@ export default function AffiliateReferrals() {
           {[
             { path: '/affiliate-dashboard', label: 'Dashboard', icon: Award },
             { path: '/affiliate-referrals', label: 'Referrals', icon: Share2 },
+            { path: '/affiliate-leaderboard', label: 'Leaderboard', icon: Trophy },
+            { path: '/affiliate-achievements', label: 'Achievements', icon: Award },
             { path: '/affiliate-withdrawals', label: 'Withdrawals', icon: Wallet },
           ].map(tab => (
             <Link key={tab.path} to={tab.path}
