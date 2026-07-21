@@ -3,6 +3,7 @@ import { useNavigate, useLocation, Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { supabase } from '../utils/supabase';
 import { Loader2, CheckCircle, AlertCircle, ArrowLeft, Send, FileText } from 'lucide-react';
+import { GooeyLoader } from '@/components/ui/loader-10';
 
 const API_BASE = import.meta.env.VITE_API_URL || 'https://stor1-api.onrender.com';
 
@@ -80,7 +81,7 @@ export default function AffiliateApply() {
   if (authLoading) {
     return (
       <div className="min-h-screen bg-zinc-950 flex items-center justify-center">
-        <Loader2 size={32} className="animate-spin text-blue-400" />
+        <GooeyLoader />
       </div>
     );
   }

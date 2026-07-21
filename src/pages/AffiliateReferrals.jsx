@@ -2,8 +2,9 @@ import { useState, useEffect } from 'react';
 import { supabase } from '../utils/supabase';
 import { getAffiliateProfile, getRecentReferrals } from '../utils/affiliate_api';
 import { AFFILIATE_CONFIG, formatKES, getReferralLink } from '../config/affiliate';
-import { Share2, Copy, Users, Loader2, CheckCircle, ExternalLink, MessageCircle, Send, Globe, Download, Award, Wallet, Trophy } from 'lucide-react';
+import { Share2, Copy, Users, CheckCircle, ExternalLink, MessageCircle, Send, Globe, Download, Award, Wallet, Trophy } from 'lucide-react';
 import { Link, useLocation } from 'react-router-dom';
+import { GooeyLoader } from '@/components/ui/loader-10';
 
 export default function AffiliateReferrals() {
   const [affiliate, setAffiliate] = useState(null);
@@ -84,7 +85,7 @@ export default function AffiliateReferrals() {
   if (loading) {
     return (
       <div className="min-h-screen bg-zinc-950 flex items-center justify-center">
-        <Loader2 className="w-8 h-8 animate-spin text-primary" />
+        <GooeyLoader />
       </div>
     );
   }

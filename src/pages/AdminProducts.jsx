@@ -6,6 +6,7 @@ import { formatKES, CATEGORIES, generateSKU, COLOR_PALETTE, SIZE_PRESETS, getPre
 import { uploadImage } from '../utils/api';
 import VariantManager from '../components/VariantManager';
 import usePersistFilter from '../hooks/usePersistFilter';
+import { GooeyLoader } from '@/components/ui/loader-10';
 
 const CONDITIONS = [
   { value: 'new', label: 'New' },
@@ -457,7 +458,7 @@ export default function AdminProducts() {
       {/* Table */}
       {loading ? (
         <div className="flex items-center justify-center h-40">
-          <div className="inline-block w-8 h-8 border-4 border-primary border-t-transparent rounded-full animate-spin" />
+          <GooeyLoader />
         </div>
       ) : filteredListings.length > 0 ? (
         <div className="fusion-recessed-card overflow-hidden">

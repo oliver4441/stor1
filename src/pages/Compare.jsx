@@ -4,6 +4,7 @@ import { Scale, X, ArrowLeft, Image as ImageIcon } from 'lucide-react';
 import { supabase } from '../utils/supabase';
 import { formatKES } from '../utils/constants';
 import Breadcrumb from '../components/Breadcrumb';
+import { GooeyLoader } from '@/components/ui/loader-10';
 
 export default function Compare() {
   const [searchParams] = useSearchParams();
@@ -119,9 +120,8 @@ export default function Compare() {
 
   if (loading) {
     return (
-      <div className="max-w-7xl mx-auto px-4 py-20 text-center">
-        <div className="inline-block w-8 h-8 border-4 border-[var(--seasonal-primary,#1a5632)] border-t-transparent rounded-full animate-spin mb-4" />
-        <p className="text-zinc-400">Loading comparison...</p>
+      <div className="max-w-7xl mx-auto px-4 py-20">
+        <GooeyLoader />
       </div>
     );
   }

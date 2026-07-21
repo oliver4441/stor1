@@ -3,6 +3,7 @@ import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { getSellerProfile, registerSeller } from '../utils/api';
 import { Store, Loader2, CheckCircle2, ArrowRight, AlertTriangle, Clock } from 'lucide-react';
+import { GooeyLoader } from '@/components/ui/loader-10';
 
 function slugify(text) {
   return text
@@ -145,10 +146,7 @@ export default function SellerRegistration() {
   if (authLoading || checkingSeller) {
     return (
       <div className="min-h-screen bg-zinc-950 flex items-center justify-center">
-        <div className="flex flex-col items-center gap-3 text-zinc-400">
-          <Loader2 className="w-8 h-8 animate-spin text-emerald-400" />
-          <span className="text-sm font-medium">Checking account...</span>
-        </div>
+        <GooeyLoader />
       </div>
     );
   }

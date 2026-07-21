@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { Zap, Clock, ShoppingBag, Package, ChevronLeft } from 'lucide-react';
 import ProductCard from '../components/ProductCard';
 import { supabase } from '../utils/supabase';
+import { GooeyLoader } from '@/components/ui/loader-10';
 
 const API_BASE = import.meta.env.VITE_API_URL || 'https://stor1-api.onrender.com';
 
@@ -76,7 +77,7 @@ export default function FlashDeals() {
   if (loading) {
     return (
       <div className="min-h-screen bg-zinc-950 flex items-center justify-center">
-        <div className="inline-block w-8 h-8 border-4 border-primary border-t-transparent rounded-full animate-spin" style={{ borderColor: '#1a5632', borderTopColor: 'transparent' }} />
+        <GooeyLoader />
       </div>
     );
   }

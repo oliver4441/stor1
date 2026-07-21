@@ -4,6 +4,7 @@ import {
   Calendar, Image, ToggleLeft, ToggleRight, ExternalLink, Search
 } from 'lucide-react';
 import { supabase } from '../utils/supabase';
+import { GooeyLoader } from '@/components/ui/loader-10';
 
 export default function AdminDeals() {
   const [deals, setDeals] = useState([]);
@@ -248,7 +249,7 @@ export default function AdminDeals() {
       {/* Deals List */}
       {loading ? (
         <div className="flex items-center justify-center py-16">
-          <Loader2 className="w-6 h-6 animate-spin" style={{ color: '#1a5632' }} />
+          <GooeyLoader />
         </div>
       ) : deals.length === 0 ? (
         <div className="text-center py-16 rounded-2xl border border-zinc-800">

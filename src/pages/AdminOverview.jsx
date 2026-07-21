@@ -3,6 +3,7 @@ import { Package, ShoppingBag, DollarSign, Banknote, AlertTriangle, TrendingUp, 
 import { supabase } from '../utils/supabase';
 import { formatKES } from '../utils/constants';
 import { fetchAllListings, fetchAllOrders } from '../utils/api';
+import { GooeyLoader } from '@/components/ui/loader-10';
 
 export default function AdminOverview() {
   const [listings, setListings] = useState([]);
@@ -55,7 +56,7 @@ export default function AdminOverview() {
   if (loading) {
     return (
       <div className="flex items-center justify-center h-64">
-        <div className="inline-block w-8 h-8 border-4 border-primary border-t-transparent rounded-full animate-spin" />
+        <GooeyLoader />
       </div>
     );
   }

@@ -61,6 +61,7 @@ export default defineConfig({
     alias: {
       // Use browser native WebSocket instead of Node.js ws package
       'ws': resolve(__dirname, 'src/utils/browser-ws.js'),
+      '@': resolve(__dirname, 'src'),
     },
   },
   define: {

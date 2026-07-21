@@ -3,6 +3,7 @@ import { Search, Eye, X, Calendar, Download, RefreshCw, MessageSquare, Package, 
 import { fetchAllOrders, updateOrderStatus, updateOrderNotes, cancelOrder } from '../utils/api';
 import { formatKES } from '../utils/constants';
 import usePersistFilter from '../hooks/usePersistFilter';
+import { GooeyLoader } from '@/components/ui/loader-10';
 
 const ORDER_STATUSES = ['pending', 'processing', 'shipped', 'delivered', 'cancelled'];
 // Valid transitions: pending -> processing -> shipped -> delivered, or any -> cancelled
@@ -246,7 +247,7 @@ export default function AdminOrders() {
       {/* Table */}
       {loading ? (
         <div className="flex items-center justify-center h-40">
-          <div className="inline-block w-8 h-8 border-4 border-primary border-t-transparent rounded-full animate-spin" />
+          <GooeyLoader />
         </div>
       ) : filteredOrders.length > 0 ? (
         <div className="fusion-recessed-card overflow-hidden">

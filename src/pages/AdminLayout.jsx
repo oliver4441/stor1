@@ -7,6 +7,7 @@ import {
   LogOut, Shield, Menu, X, ChevronRight, Tag, Bell, Link as LinkIcon, MessageSquare, Gift, Zap, Store, Send, UserCog
 } from 'lucide-react';
 import { sounds } from '../utils/sounds';
+import { GooeyLoader } from '@/components/ui/loader-10';
 
 const NAV_ITEMS = [
   { path: '/admin/dashboard', label: 'Dashboard', icon: LayoutDashboard },
@@ -64,7 +65,7 @@ export default function AdminLayout() {
   if (loading || accessDenied) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-zinc-950">
-        <div className="inline-block w-8 h-8 border-4 border-primary border-t-transparent rounded-full animate-spin" />
+        <GooeyLoader />
       </div>
     );
   }

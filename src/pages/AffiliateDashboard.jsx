@@ -4,6 +4,7 @@ import { getAffiliateProfile, getDashboardStats, getMonthlyEarnings, getRecentRe
 import { AFFILIATE_CONFIG, formatKES, getReferralLink } from '../config/affiliate';
 import { Copy, Share2, Users, ShoppingBag, TrendingUp, Award, Wallet, Send, CheckCircle, X, Loader2, MousePointerClick, AlertTriangle, Trash2, ChevronDown, ChevronUp, Trophy } from 'lucide-react';
 import { Link, useLocation } from 'react-router-dom';
+import { GooeyLoader } from '@/components/ui/loader-10';
 
 // ponytail: stat tile — uses plain value (count-up hook caused react #310)
 function StatTile({ s, i }) {
@@ -246,7 +247,7 @@ export default function AffiliateDashboard() {
   if (loading) {
     return (
       <div className="min-h-screen bg-zinc-950 flex items-center justify-center">
-        <Loader2 className="w-8 h-8 animate-spin text-primary" />
+        <GooeyLoader />
       </div>
     );
   }

@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import { supabase } from '../utils/supabase';
 import { Users, Search, X, Loader2, Shield, ShieldCheck, User as UserIcon, Trash2, AlertTriangle, Mail, Phone, Calendar } from 'lucide-react';
+import { GooeyLoader } from '@/components/ui/loader-10';
 
 const API_BASE = import.meta.env.VITE_API_URL || 'https://stor1-api.onrender.com';
 
@@ -115,7 +116,7 @@ export default function AdminUsers() {
 
       {loading ? (
         <div className="flex items-center justify-center h-40">
-          <div className="inline-block w-8 h-8 border-4 border-primary border-t-transparent rounded-full animate-spin" />
+          <GooeyLoader />
         </div>
       ) : filtered.length > 0 ? (
         <div className="fusion-recessed-card overflow-hidden">

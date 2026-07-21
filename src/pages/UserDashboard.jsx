@@ -9,6 +9,7 @@ import {
 } from 'lucide-react';
 import 'leaflet/dist/leaflet.css';
 import { supabase } from '../utils/supabase';
+import { GooeyLoader } from '@/components/ui/loader-10';
 import {
   fetchOrders, fetchListings, fetchAddresses, saveAddress, deleteAddress,
   setDefaultAddress, getReferralCode, getReferralStats, getLoyaltyPoints,
@@ -693,9 +694,8 @@ function UserDashboard() {
   // ── Loading ───────────────────────────────────────────────────────
   if (loading) {
     return (
-      <div className="max-w-7xl mx-auto px-4 py-20 text-center">
-        <div className="inline-block w-8 h-8 border-4 border-[var(--seasonal-primary,#1a5632)] border-t-transparent rounded-full animate-spin mb-4" />
-        <p className="text-zinc-400">Loading your account...</p>
+      <div className="max-w-7xl mx-auto px-4 py-20">
+        <GooeyLoader />
       </div>
     );
   }

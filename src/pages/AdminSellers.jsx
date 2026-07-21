@@ -19,6 +19,7 @@ import {
   ChevronLeft,
   ChevronRight,
 } from 'lucide-react';
+import { GooeyLoader } from '@/components/ui/loader-10';
 
 const TABS = [
   { key: '', label: 'All' },
@@ -179,7 +180,7 @@ export default function AdminSellers() {
   if (checkingAuth) {
     return (
       <div className="flex items-center justify-center py-20">
-        <Loader2 className="w-6 h-6 animate-spin text-emerald-400" />
+        <GooeyLoader />
       </div>
     );
   }
