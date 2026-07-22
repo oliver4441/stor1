@@ -7,11 +7,14 @@ const API_BASE = import.meta.env.VITE_API_URL || 'https://stor1-api.onrender.com
 export const AFFILIATE_CONFIG = {
   API_BASE,
   
-  // Tier definition (matches affiliate_tiers table — spec: Silver 0-29, Gold 30+)
-  TIERS: [
-    { id: 'silver', label: 'Silver', min_orders: 0,  min_sales: 0,   rate: 0.05, color: 'text-zinc-300',  badge: 'bg-zinc-600/20 text-zinc-300' },
-    { id: 'gold',   label: 'Gold',   min_orders: 30, min_sales: 0,   rate: 0.10, color: 'text-amber-400',  badge: 'bg-amber-500/20 text-amber-400' },
-  ],
+  // Tier definition (matches backend affiliate_tiers table — 4 tiers: Bronze/Silver/Gold/Platinum)
+    // Backend: Bronze(0, 3%), Silver(10, 5%), Gold(30, 8%), Platinum(100, 10%)
+    TIERS: [
+      { id: 'bronze',  label: 'Bronze',  min_orders: 0,   min_sales: 0,  rate: 0.03, color: 'text-amber-700',  badge: 'bg-amber-700/20 text-amber-700'  },
+      { id: 'silver',  label: 'Silver',  min_orders: 10,  min_sales: 0,  rate: 0.05, color: 'text-zinc-300',   badge: 'bg-zinc-600/20 text-zinc-300'   },
+      { id: 'gold',    label: 'Gold',    min_orders: 30,  min_sales: 0,  rate: 0.08, color: 'text-amber-400',  badge: 'bg-amber-500/20 text-amber-400' },
+      { id: 'platinum',label: 'Platinum',min_orders: 100, min_sales: 0,  rate: 0.10, color: 'text-blue-300',   badge: 'bg-blue-500/20 text-blue-300'   },
+    ],
 
   // Default referral reward points (not used — purely monetary)
   DEFAULT_REWARD_POINTS: 0,

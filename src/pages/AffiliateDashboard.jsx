@@ -24,8 +24,10 @@ function StatTile({ s, i }) {
 }
 
 const TIER_META = {
+  bronze:   { label: 'Bronze',   color: 'text-amber-700',  bg: 'bg-amber-700/20',  bar: 'bg-amber-700',  iconBg: 'bg-gradient-to-br from-amber-700 to-amber-500 text-white' },
   silver:   { label: 'Silver',   color: 'text-zinc-300',   bg: 'bg-zinc-600/20',   bar: 'bg-zinc-400',   iconBg: 'bg-gradient-to-br from-zinc-500 to-zinc-200 text-white' },
   gold:     { label: 'Gold',     color: 'text-amber-400',  bg: 'bg-amber-500/20',  bar: 'bg-amber-400',  iconBg: 'bg-gradient-to-br from-amber-500 to-yellow-300 text-white' },
+  platinum: { label: 'Platinum', color: 'text-blue-300',   bg: 'bg-blue-500/20',   bar: 'bg-blue-400',   iconBg: 'bg-gradient-to-br from-blue-500 to-cyan-300 text-white' },
 };
 
 function TierBadge({ tier }) {

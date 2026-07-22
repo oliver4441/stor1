@@ -63,38 +63,27 @@ export async function getAffiliateProfile(userId) {
 
 // ─── Dashboard (aggregated stats) ──────────────────────────────
 export async function getDashboardStats(affiliateId) {
-  try {
-    const result = await apiGet(`${AFFILIATE_CONFIG.ENDPOINTS.DASHBOARD}/${affiliateId}`);
-    // Map backend response to frontend's expected structure
-    return {
-      lifetime: {
-        totalReferred: result.stats?.totalReferrals || 0,
-        totalClicks: result.stats?.totalClicks || 0,
-        totalSales: result.stats?.monthlySales || 0,
-        totalOrders: result.stats?.monthlyOrders || 0,
-        totalCommission: result.latestCommission?.commission_amount || 0,
-      },
-      current: {
-        totalSales: result.stats?.monthlySales || 0,
-        qualifiedOrders: result.stats?.monthlyOrders || 0,
-        qualifiedCount: result.stats?.convertedReferrals || 0,
-        tier: result.currentTier?.name?.toLowerCase() || 'silver',
-        commissionRate: result.currentTier?.commission_rate || 0.05,
-      },
-      progress: result.progress || null,
-      pendingCommission: result.totalPendingCommission || 0,
-      paidCommission: result.totalPaidCommission || 0,
-    };
-  } catch (err) {
-    console.error('getDashboardStats error:', err);
-    return {
-      lifetime: { totalReferred: 0, totalClicks: 0, totalSales: 0, totalOrders: 0, totalCommission: 0 },
-      current: { totalSales: 0, qualifiedOrders: 0, qualifiedCount: 0, tier: 'silver', commissionRate: 0.05 },
-      progress: null,
-      pendingCommission: 0,
-      paidCommission: 0,
-    };
-  }
+  const result = await apiGet(`${AFFILIATE_CONFIG.ENDPOINTS.DASHBOARD}/${affiliateId}`);
+  // Map backend response to frontend's expected structure
+  return {
+    lifetime: {
+      totalReferred: result.stats?.totalReferrals || 0,
+      totalClicks: result.stats?.totalClicks || 0,
+      totalSales: result.stats?.monthlySales || 0,
+      totalOrders: result.stats?.monthlyOrders || 0,
+      totalCommission: result.latestCommission?.commission_amount || 0,
+    },
+    current: {
+      totalSales: result.stats?.monthlySales || 0,
+      qualifiedOrders: result.stats?.monthlyOrders || 0,
+      qualifiedCount: result.stats?.convertedReferrals || 0,
+      tier: result.currentTier?.name?.toLowerCase() || 'silver',
+      commissionRate: result.currentTier?.commission_rate || 0.05,
+    },
+    progress: result.progress || null,
+    pendingCommission: result.totalPendingCommission || 0,
+    paidCommission: result.totalPaidCommission || 0,
+  };
 }
 
 // ─── Referral Link ─────────────────────────────────────────────
@@ -102,35 +91,20 @@ export { getReferralLink };
 
 // ─── Monthly Earnings ──────────────────────────────────────────
 export async function getMonthlyEarnings(affiliateId) {
-  try {
-    const data = await apiGet(`${AFFILIATE_CONFIG.ENDPOINTS.COMMISSIONS}/${affiliateId}`);
-    return Array.isArray(data) ? data : [];
-  } catch (err) {
-    console.error('getMonthlyEarnings error:', err);
-    return [];
-  }
+  const data = await apiGet(`${AFFILIATE_CONFIG.ENDPOINTS.COMMISSIONS}/${affiliateId}`);
+  return Array.isArray(data) ? data : [];
 }
 
 // ─── Recent Referrals ──────────────────────────────────────────
 export async function getRecentReferrals(affiliateId, limit = 10) {
-  try {
-    const data = await apiGet(`${AFFILIATE_CONFIG.ENDPOINTS.REFERRALS}/${affiliateId}?limit=${limit}`);
-    return Array.isArray(data) ? data : [];
-  } catch (err) {
-    console.error('getRecentReferrals error:', err);
-    return [];
-  }
+  const data = await apiGet(`${AFFILIATE_CONFIG.ENDPOINTS.REFERRALS}/${affiliateId}?limit=${limit}`);
+  return Array.isArray(data) ? data : [];
 }
 
 // ─── Recent Qualifying Orders ──────────────────────────────────
 export async function getRecentAffiliateOrders(affiliateId, limit = 10) {
-  try {
-    const data = await apiGet(`${AFFILIATE_CONFIG.ENDPOINTS.ORDERS}/${affiliateId}?limit=${limit}`);
-    return Array.isArray(data) ? data : [];
-  } catch (err) {
-    console.error('getRecentAffiliateOrders error:', err);
-    return [];
-  }
+  const data = await apiGet(`${AFFILIATE_CONFIG.ENDPOINTS.ORDERS}/${affiliateId}?limit=${limit}`);
+  return Array.isArray(data) ? data : [];
 }
 
 // ─── Payout Request ────────────────────────────────────────────
@@ -145,13 +119,8 @@ export async function requestPayout(affiliateId, amount, mpesaNumber, extraData 
 
 // ─── Payout History ────────────────────────────────────────────
 export async function getPayoutHistory(affiliateId) {
-  try {
-    const data = await apiGet(`${AFFILIATE_CONFIG.ENDPOINTS.PAYOUT_HISTORY}/${affiliateId}`);
-    return Array.isArray(data) ? data : [];
-  } catch (err) {
-    console.error('getPayoutHistory error:', err);
-    return [];
-  }
+  const data = await apiGet(`${AFFILIATE_CONFIG.ENDPOINTS.PAYOUT_HISTORY}/${affiliateId}`);
+  return Array.isArray(data) ? data : [];
 }
 
 // ─── Tier Info ─────────────────────────────────────────────────
@@ -241,13 +210,8 @@ export async function lookupAffiliateByCode(referralCode) {
 
 // ─── Leaderboard ─────────────────────────────────────────────
 export async function getLeaderboard(period = 'all-time', limit = 20) {
-  try {
-    const data = await apiGet(`${AFFILIATE_CONFIG.ENDPOINTS.LEADERBOARD}?period=${period}&limit=${limit}`);
-    return data || [];
-  } catch (err) {
-    console.error('getLeaderboard error:', err);
-    return [];
-  }
+  const data = await apiGet(`${AFFILIATE_CONFIG.ENDPOINTS.LEADERBOARD}?period=${period}&limit=${limit}`);
+  return data || [];
 }
 
 // ─── Achievements ────────────────────────────────────────────
