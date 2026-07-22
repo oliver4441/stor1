@@ -187,6 +187,8 @@ export function initReferralTracking() {
   const refCode = params.get('ref');
   if (refCode && refCode.startsWith('AFF-')) {
     setReferralCookie(refCode);
+    // Log the click event to the backend for dashboard analytics
+    logReferralClick(refCode);
     // Clean URL params without reload
     const url = new URL(window.location);
     url.searchParams.delete('ref');

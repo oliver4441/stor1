@@ -4,9 +4,9 @@ import { cn } from "@/lib/utils";
 const GooeyLoader = React.forwardRef(
   ({ className, primaryColor, secondaryColor, borderColor, ...props }, ref) => {
     const style = {
-      "--gooey-primary-color": primaryColor || "hsl(var(--primary))",
-      "--gooey-secondary-color": secondaryColor || "hsl(var(--secondary))",
-      "--gooey-border-color": borderColor || "hsl(var(--border))",
+      "--gooey-primary-color": primaryColor || "#1a5632",
+      "--gooey-secondary-color": secondaryColor || "#14472a",
+      "--gooey-border-color": borderColor || "#27272a",
     };
 
     return (

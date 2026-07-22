@@ -2,6 +2,7 @@ import { useState, useRef, useEffect } from 'react';
 import { Search, X, Clock, TrendingUp, Mic, Bookmark } from 'lucide-react';
 import { saveSearch } from '../utils/api';
 import { supabase } from '../utils/supabase';
+import { sounds } from '../utils/sounds';
 
 const TRENDING_SEARCHES = [
   'iPhone', 'Sofa', 'Laptop', 'TV', 'Shoes',
@@ -90,6 +91,7 @@ export default function SearchBar({ onSearch, initialValue = '' }) {
     onSearch(query.trim());
     setFocused(false);
     inputRef.current?.blur();
+    sounds.search();
 
     // Auto-save search for logged-in users
     supabase.auth.getUser().then(({ data: { user } }) => {
