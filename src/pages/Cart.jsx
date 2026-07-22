@@ -70,14 +70,14 @@ export default function CartPage() {
                 <p className="text-[var(--seasonal-primary,#1a5632)] font-bold">{formatKES(item.price)}</p>
                 <div className="flex items-center gap-3 mt-2">
                   <div className="flex items-center gap-2">
-                    <button onClick={() => updateQuantity(item.id, item.quantity - 1)} className="w-8 h-8 rounded-lg bg-zinc-800 flex items-center justify-center hover:bg-zinc-700 transition-colors" aria-label={`Decrease quantity of ${item.name}`}>
+                    <button onClick={() => updateQuantity(item.id, item.quantity - 1, item._cartKey)} className="w-8 h-8 rounded-lg bg-zinc-800 flex items-center justify-center hover:bg-zinc-700 transition-colors" aria-label={`Decrease quantity of ${item.name}`}>
                       <Minus className="w-3 h-3" />
                     </button>
                     <span className="text-sm font-bold w-8 text-center text-white">{item.quantity}</span>
-                    <button onClick={() => updateQuantity(item.id, item.quantity + 1)} className="w-8 h-8 rounded-lg bg-zinc-800 flex items-center justify-center hover:bg-zinc-700 transition-colors" aria-label={`Increase quantity of ${item.name}`}>
+                    <button onClick={() => updateQuantity(item.id, item.quantity + 1, item._cartKey)} className="w-8 h-8 rounded-lg bg-zinc-800 flex items-center justify-center hover:bg-zinc-700 transition-colors" aria-label={`Increase quantity of ${item.name}`}>
                       <Plus className="w-3 h-3" />
                     </button>
-                    <button onClick={() => removeItem(item.id)} className="text-zinc-400 hover:text-red-500 p-1 transition-colors" aria-label={`Remove ${item.name} from cart`}>
+                    <button onClick={() => removeItem(item.id, item._cartKey)} className="text-zinc-400 hover:text-red-500 p-1 transition-colors" aria-label={`Remove ${item.name} from cart`}>
                       <Trash2 className="w-4 h-4" />
                     </button>
                   </div>
