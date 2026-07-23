@@ -24,6 +24,7 @@ import { fetchListing, fetchListings, watchPriceDrop, watchBackInStock, addToWis
 import { formatKES, VARIANT_REQUIRED_CATEGORIES } from '../utils/constants';
 import { useCart } from '../context/CartContext';
 import { supabase } from '../utils/supabase';
+import { storeNotification } from '../utils/notifications';
 import ImageGallery from '../components/ImageGallery';
 import StickyMobileCart from '../components/StickyMobileCart';
 import RecentlyViewed, { trackViewedProduct } from '../components/RecentlyViewed';
@@ -85,7 +86,6 @@ function ListingDetails() {
   const [selections, setSelections] = useState({});
   const [user, setUser] = useState(null);
   const { addItem, cart } = useCart();
-  const [notifyMsg, setNotifyMsg] = useState('');
   const [wishlisted, setWishlisted] = useState(false);
   const [wishBusy, setWishBusy] = useState(false);
   const [deliveryZones, setDeliveryZones] = useState([]);
@@ -738,8 +738,7 @@ function ListingDetails() {
               <button
                 onClick={async () => {
                   await watchPriceDrop(user.id, listing.id);
-                  setNotifyMsg('You\'ll be notified when the price drops!');
-                  setTimeout(() => setNotifyMsg(''), 3000);
+                  storeNotification({ type: 'default', title: 'Price Watch Set', body: `You'll be notified when "${listing.title}" drops in price.`, tag: 'price-watch' });
                 }}
                 className="w-full flex items-center justify-center gap-2 border-2 border-[var(--seasonal-primary,#1a5632)] text-[var(--seasonal-primary,#1a5632)] font-bold py-3 rounded-xl hover:bg-[var(--seasonal-primary,#1a5632)]/5 transition-all"
               >
@@ -748,18 +747,12 @@ function ListingDetails() {
               <button
                 onClick={async () => {
                   await watchBackInStock(user.id, listing.id);
-                  setNotifyMsg('You\'ll be notified when back in stock!');
-                  setTimeout(() => setNotifyMsg(''), 3000);
+                  storeNotification({ type: 'default', title: 'Back-in-Stock Watch Set', body: `You'll be notified when "${listing.title}" is back in stock.`, tag: 'stock-watch' });
                 }}
                 className="w-full flex items-center justify-center gap-2 border-2 border-[var(--seasonal-primary,#1a5632)] text-[var(--seasonal-primary,#1a5632)] font-bold py-3 rounded-xl hover:bg-[var(--seasonal-primary,#1a5632)]/5 transition-all"
               >
                 <Bell className="w-4 h-4" /> Notify when back in stock
               </button>
-              {notifyMsg && (
-                <div className="text-center text-sm font-medium text-emerald-400 bg-emerald-900/20 px-4 py-2 rounded-xl animate-fade-in">
-                  {notifyMsg}
-                </div>
-              )}
             </div>
           )}
         </div>

@@ -14,13 +14,9 @@ import Footer from './components/Footer';
 import MobileBottomNav from './components/MobileBottomNav';
 import BackToTop from './components/BackToTop';
 import ScrollToTop from './components/ScrollToTop';
-import FloatingCartButton from './components/FloatingCartButton';
 import NiaChat from './components/NiaChat';
 import NiaFloatingButton from './components/NiaFloatingButton';
 import InstallBanner from './components/InstallBanner';
-import PushNudge from './components/PushNudge';
-import CartReminder from './components/CartReminder';
-import CartWishlistNudge from './components/CartWishlistNudge';
 import ThemeStyles from './components/ThemeStyles';
 import PWAUpdateChecker from './components/PWAUpdateChecker';
 import CookieConsentBanner from './components/CookieConsentBanner';
@@ -200,13 +196,9 @@ function App() {
         <Footer />
         <MobileBottomNav />
         <BackToTop />
-        <FloatingCartButton />
         <NiaFloatingButton />
         <NiaChat />
         <InstallBanner />
-        <PushNudge />
-        <CartReminder />
-        <CartWishlistNudge />
         <PWAUpdateChecker />
         <CookieConsentBanner />
       </div>

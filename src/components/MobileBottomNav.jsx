@@ -3,7 +3,7 @@ import { Link, useLocation } from 'react-router-dom';
 import { Home, Search, ShoppingCart, Heart, User, Download, HelpCircle, Info, LogIn, UserPlus, Plus, X } from 'lucide-react';
 import { useCart } from '../context/CartContext';
 import { supabase } from '../utils/supabase';
-import { WISHLIST_CHANGE_EVENT } from './CartWishlistNudge';
+import { WISHLIST_CHANGE_EVENT } from '../utils/constants';
 
 const CASCADE_ITEMS = [
   { to: '/account', icon: User, label: 'Account' },

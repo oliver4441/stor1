@@ -6,7 +6,7 @@ import { formatKES } from '../utils/constants';
 import { useCart } from '../context/CartContext';
 import { watchPriceDrop, watchBackInStock } from '../utils/api';
 import Breadcrumb from '../components/Breadcrumb';
-import { WISHLIST_CHANGE_EVENT } from '../components/CartWishlistNudge';
+import { WISHLIST_CHANGE_EVENT } from '../utils/constants';
 import { sendNotification, NotifType } from '../utils/notifications';
 import { GooeyLoader } from '@/components/ui/loader-10';
 

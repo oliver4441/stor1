@@ -146,6 +146,8 @@ export function getPresetSizes(category) {
 }
 
 // ── Color Palette ──────────────────────────────────────────
+export const WISHLIST_CHANGE_EVENT = 'omix:wishlist-changed';
+
 export const COLOR_PALETTE = [
   { name: 'Black',       hex: '#1a1a1a' },
   { name: 'White',       hex: '#FFFFFF' },

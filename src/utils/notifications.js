@@ -202,6 +202,8 @@ const VIBRATE_PATTERNS = {
   DELIVERY_ALERT: [200, 100, 300],
   RATING_REMINDER: [60, 40, 80],
   ACHIEVEMENT: [100, 50, 100, 50, 150, 50, 200],
+  REFERRAL_SIGNUP: [80, 40, 80, 40, 80],
+  REFERRAL_CONVERTED: [100, 80, 100, 80, 200],
   PROMOTION: [80, 40, 80],
 };
 
@@ -227,6 +229,8 @@ const SOUND_NAMES = {
   DELIVERY_ALERT: 'delivery',
   RATING_REMINDER: 'rating',
   ACHIEVEMENT: 'achievement',
+  REFERRAL_SIGNUP: 'notification',
+  REFERRAL_CONVERTED: 'achievement',
   PROMOTION: 'coupon',
 };
 
@@ -351,6 +355,18 @@ export const NotifType = {
     title: 'Achievement Unlocked',
     body: 'You reached a new milestone on Omix Store!',
     tag: 'achievement',
+    sound: 'achievement',
+  },
+  REFERRAL_SIGNUP: {
+    title: 'New Referral Signup',
+    body: 'Someone signed up using your referral link!',
+    tag: 'referral',
+    sound: 'notification',
+  },
+  REFERRAL_CONVERTED: {
+    title: 'Commission Earned!',
+    body: 'A referral placed an order and you earned a commission!',
+    tag: 'commission',
     sound: 'achievement',
   },
   PROMOTION: {
