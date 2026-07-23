@@ -232,6 +232,17 @@ export default function AffiliateDashboard() {
     setTimeout(() => setCopied(false), 2000);
   };
 
+  const shareLink = () => {
+    const shareData = { title: 'Shop on Omix Store', text: `Shop on Omix Store and earn rewards! Use my referral link.`, url: referralLink };
+    if (navigator.share) {
+      navigator.share(shareData).catch(() => {});
+    } else {
+      navigator.clipboard.writeText(referralLink);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    }
+  };
+
   const handleRemoveAffiliate = async () => {
     if (!affiliate?.id) return;
     setRemoving(true);
@@ -367,6 +378,13 @@ export default function AffiliateDashboard() {
             >
               <Copy className="w-4 h-4" />
               {copied ? 'Copied!' : 'Copy'}
+            </button>
+            <button
+              onClick={shareLink}
+              className="px-4 py-2.5 bg-zinc-800 text-white rounded-xl font-bold text-sm hover:bg-zinc-700 flex items-center gap-2 transition-colors"
+            >
+              <Share2 className="w-4 h-4" />
+              Share
             </button>
           </div>
         </div>

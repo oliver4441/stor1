@@ -79,6 +79,17 @@ export default function AffiliateReferrals() {
     }
   };
 
+  const nativeShare = () => {
+    const shareData = { title: 'Shop on Omix Store', text: `Shop on Omix Store and earn rewards! Use my referral link.`, url: referralLink };
+    if (navigator.share) {
+      navigator.share(shareData).catch(() => {});
+    } else {
+      navigator.clipboard.writeText(referralLink);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    }
+  };
+
   const convertedCount = referrals.filter(r => r.status === 'converted').length;
   const pendingCount = referrals.filter(r => r.status === 'pending').length;
 
@@ -185,6 +196,14 @@ export default function AffiliateReferrals() {
           <h3 className="text-sm font-bold text-zinc-300 mb-3 flex items-center gap-2">
             <Send className="w-4 h-4" /> Share Via
           </h3>
+          <button onClick={nativeShare}
+            className="w-full flex items-center gap-2.5 p-3 rounded-xl bg-primary/10 border border-primary/20 hover:bg-primary/20 transition-colors text-left mb-3">
+            <Share2 className="w-5 h-5 text-primary shrink-0" />
+            <div>
+              <p className="text-sm font-bold text-white">Share with anyone</p>
+              <p className="text-xs text-zinc-400">One-tap share via apps</p>
+            </div>
+          </button>
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
             <button onClick={() => shareVia('whatsapp')}
               className="flex items-center gap-2.5 p-3 rounded-xl bg-green-500/10 border border-green-500/20 hover:bg-green-500/20 transition-colors text-left">
