@@ -1649,8 +1649,6 @@ function AddressForm({ onSave, onClose }) {
   const markerRef = useRef(null);
   const [mapReady, setMapReady] = useState(false);
 
-  const AREA_OPTIONS = ['Kericho CBD', 'Moi Junction', 'Litein', 'Kapsoit', 'Brooke', 'Sosiot', 'Kaitet', 'Awasi', 'Kipchimchim', 'Chepseon', 'Londiani', 'Kedowa', 'Kabianga', 'Kipkelion', 'Ainamoi', 'Roret', 'Fort Ternan', 'OTHER'];
-
   // Reverse geocode using Nominatim (free, no API key)
   const reverseGeocode = async (lat, lng) => {
     try {
@@ -1692,7 +1690,7 @@ function AddressForm({ onSave, onClose }) {
         if (geo) {
           setForm(f => ({
             ...f,
-            area: AREA_OPTIONS.includes(geo.area) ? geo.area : 'OTHER',
+            area: geo.area || 'OTHER',
             landmark: geo.landmark || f.landmark,
             address_line: geo.fullAddress || f.address_line,
             latitude,
@@ -1753,7 +1751,7 @@ function AddressForm({ onSave, onClose }) {
         if (geo) {
           setForm(f => ({
             ...f,
-            area: AREA_OPTIONS.includes(geo.area) ? geo.area : f.area,
+            area: geo.area || f.area,
             landmark: geo.landmark || f.landmark,
             address_line: geo.fullAddress || f.address_line,
             latitude: lat,
@@ -1827,11 +1825,9 @@ function AddressForm({ onSave, onClose }) {
 
       <div>
         <label className="text-xs font-bold text-zinc-400 uppercase tracking-wider mb-1 block">Area</label>
-        <select value={form.area} onChange={e => setForm({ ...form, area: e.target.value })}
-          className="w-full px-3 py-2.5 rounded-xl bg-zinc-800/50 border border-zinc-700 text-sm text-white focus:outline-none focus:border-[var(--seasonal-primary,#1a5632)]">
-          <option value="">Select area...</option>
-          {AREA_OPTIONS.map(a => <option key={a} value={a}>{a}</option>)}
-        </select>
+        <input type="text" value={form.area} onChange={e => setForm({ ...form, area: e.target.value })}
+          placeholder="Area / Estate / Neighbourhood"
+          className="w-full px-3 py-2.5 rounded-xl bg-zinc-800/50 border border-zinc-700 text-sm text-white focus:outline-none focus:border-[var(--seasonal-primary,#1a5632)]" />
       </div>
       <div>
         <label className="text-xs font-bold text-zinc-400 uppercase tracking-wider mb-1 block">Landmark</label>

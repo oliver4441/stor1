@@ -376,7 +376,7 @@ export async function createListing(formData) {
       condition: formData.condition,
       category_id: catId,
       location_city: formData.location,
-      location_region: 'Kericho',
+      location_region: 'Kenya',
       images: formData.images && formData.images.length > 0 ? formData.images : (formData.image_url ? [formData.image_url] : []),
       seller_name: formData.seller_name || user?.user_metadata?.full_name,
       seller_id: user?.id || null,
@@ -437,7 +437,7 @@ export async function updateListing(id, formData) {
       condition: formData.condition,
       category_id: catId,
       location_city: formData.location,
-      location_region: 'Kericho',
+      location_region: 'Kenya',
       images: formData.images && formData.images.length > 0 ? formData.images : (formData.image_url ? [formData.image_url] : []),
       seller_name: formData.seller_name || user?.user_metadata?.full_name,
       seller_phone: formData.seller_phone || null,
@@ -990,6 +990,30 @@ export async function createOrder({ items, total, customerName, phone, email, ad
   }
 
   return { success: true, order }
+}
+
+// Initiate M-Pesa STK push for an order
+export async function initMpesaPayment(phone, amount, orderId) {
+  try {
+    const resp = await fetch(`${API_URL}/api/mpesa/stk-push`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ phone, amount, orderId }),
+    });
+    return await resp.json();
+  } catch (err) {
+    return { success: false, error: err.message };
+  }
+}
+
+// Poll M-Pesa payment status
+export async function checkMpesaStatus(checkoutRequestId) {
+  try {
+    const resp = await fetch(`${API_URL}/api/mpesa/status/${checkoutRequestId}`);
+    return await resp.json();
+  } catch {
+    return { success: false, status: 'unknown' };
+  }
 }
 
 export async function fetchOrders(userId) {

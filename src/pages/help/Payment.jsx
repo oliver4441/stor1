@@ -38,12 +38,12 @@ const paymentSteps = [
   },
   {
     title: 'Cash on Delivery',
-    desc: 'Available within Kericho town only. No upfront payment required. Pay cash to the delivery person when your order arrives.',
+    desc: 'Available for cash on delivery orders nationwide.',
     svg: `<svg viewBox="0 0 400 100" xmlns="http://www.w3.org/2000/svg" class="w-full">
       <rect x="0" y="0" width="400" height="100" rx="8" fill="#ecfdf5"/>
       <rect x="20" y="20" width="360" height="60" rx="6" fill="#10b981"/>
       <text x="200" y="50" font-size="14" fill="white" text-anchor="middle" font-weight="bold">Cash on Delivery</text>
-      <text x="200" y="72" font-size="11" fill="white" text-anchor="middle">Available in Kericho Town</text>
+      <text x="200" y="72" font-size="11" fill="white" text-anchor="middle">Available Nationwide</text>
       <text x="200" y="35" font-size="12" fill="white" text-anchor="middle">+ Ksh 50 convenience fee</text>
     </svg>`
   }

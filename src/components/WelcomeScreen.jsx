@@ -54,7 +54,7 @@ export function WelcomeScreen({ onFinish }) {
         <div className="space-y-3 mb-8">
           {[
             { icon: ShoppingBag, text: 'Browse hundreds of products' },
-            { icon: Truck, text: 'Fast delivery across Kericho' },
+            { icon: Truck, text: 'Fast delivery across Kenya' },
             { icon: Shield, text: 'Secure M-Pesa payments' },
             { icon: Star, text: 'Best prices, zero hassle' },
           ].map((item, i) => (
@@ -86,7 +86,7 @@ export function WelcomeScreen({ onFinish }) {
             animStep >= 4 ? 'opacity-100' : 'opacity-0'
           }`}
         >
-          Your Online Store in Kericho
+          Your Kenya Online Marketplace
         </p>
       </div>
     </div>

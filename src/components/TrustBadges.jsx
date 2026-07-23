@@ -2,7 +2,7 @@ import { Shield, Truck, Lock, RefreshCw, Headphones } from 'lucide-react';
 
 const BADGES = [
   { icon: Lock, label: 'Secure Payment', desc: '256-bit SSL encryption' },
-  { icon: Truck, label: 'Fast Delivery', desc: 'Same day in Kericho CBD' },
+  { icon: Truck, label: 'Fast Delivery', desc: 'Nationwide delivery' },
   { icon: Shield, label: 'Buyer Protection', desc: '100% money-back guarantee' },
   { icon: RefreshCw, label: 'Easy Returns', desc: '7-day return policy' },
   { icon: Headphones, label: '24/7 Support', desc: 'Call or WhatsApp us anytime' },

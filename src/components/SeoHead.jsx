@@ -48,7 +48,7 @@ export default function SeoHead({
 
       {/* Geo / location hints */}
       <meta name="geo.region" content="KE" />
-      <meta name="geo.placename" content="Kericho" />
+      <meta name="geo.placename" content="Kenya" />
 
       {/* JSON-LD Structured Data */}
       {jsonLd.map((item, index) => (

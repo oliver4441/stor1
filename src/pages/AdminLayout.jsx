@@ -24,6 +24,7 @@ const NAV_ITEMS = [
   { path: '/admin/notifications', label: 'Notifications', icon: Bell },
   { path: '/admin/inbox', label: 'Inbox', icon: MessageSquare },
   { path: '/admin/deals', label: 'Flash Deals', icon: Gift },
+  { path: '/admin/dropship', label: 'Dropship', icon: Package },
 ];
 
 export default function AdminLayout() {

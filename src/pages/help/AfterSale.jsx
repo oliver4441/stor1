@@ -17,7 +17,7 @@ export default function AfterSale() {
 
       <h3>Exchanges</h3>
       <p>
-        For size issues or wrong color delivered, we offer free exchanges within Kericho.
+        For size issues or wrong color delivered, we offer free exchanges.
         For upcountry orders, shipping costs may apply.
       </p>
 

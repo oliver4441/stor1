@@ -96,8 +96,8 @@ function Home() {
   const heroAccent = theme?.colors?.heroAccent || '#ffffff';
   const ctaBg = theme?.colors?.ctaBg || '#ffffff';
   const ctaText = theme?.colors?.ctaText || '#1a5632';
-  const heroTitle = heroOverride?.title || theme?.heroTitle || "Kericho's #1 Online Store";
-  const heroSubtitle = heroOverride?.subtitle || theme?.heroSubtitle || 'M-Pesa Payments · Free Delivery · 7-Day Returns · Shop from anywhere in Kericho';
+  const heroTitle = heroOverride?.title || theme?.heroTitle || "Kenya's #1 Online Store";
+  const heroSubtitle = heroOverride?.subtitle || theme?.heroSubtitle || 'M-Pesa Payments · Free Delivery · 7-Day Returns · Shop from anywhere in Kenya';
   const heroImageUrl = heroOverride?.imageUrl || '';
   const hasHeroImage = !!heroImageUrl;
   const particleType = theme?.particleType || 'none';
@@ -244,7 +244,7 @@ function Home() {
             </div>
             <div>
               <p className="text-sm font-bold text-white">Free Delivery</p>
-              <p className="text-xs text-zinc-400">All Kericho areas</p>
+              <p className="text-xs text-zinc-400">Nationwide delivery</p>
             </div>
           </div>
           <div className="flex items-center gap-3 bg-zinc-900 border border-zinc-800 rounded-xl p-4">

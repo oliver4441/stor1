@@ -126,7 +126,7 @@ export default function SellerProfile() {
     banner_url,
     phone = '+254 768 213 649',
     email = 'omixsystems@gmail.com',
-    address = 'Kericho, Kenya',
+    address = 'Kenya',
     whatsapp = '+254 768 213 649',
     total_orders = 0,
     satisfaction_rate = 0,
@@ -253,7 +253,7 @@ export default function SellerProfile() {
               icon={Users}
               label="Happy Customers"
               value={formatOrders(total_orders)}
-              subtext="Across Kericho and surrounding regions"
+              subtext="Across Kenya"
               color="text-blue-400"
             />
             <TrustBadge

@@ -61,7 +61,7 @@ export default function QuickViewModal({ listing, onClose }) {
 
   const handleShare = (e) => {
     e.stopPropagation();
-    const message = `Check out this ${listing.title} on Omix!\nKES ${listing.price?.toLocaleString()} - Kericho\n${window.location.origin}/listing/${listing.id}`;
+    const message = `Check out this ${listing.title} on Omix!\\nKES ${listing.price?.toLocaleString()} - Kenya\\n${window.location.origin}/listing/${listing.id}`;
     window.open(`https://wa.me/?text=${encodeURIComponent(message)}`, '_blank');
   };
 

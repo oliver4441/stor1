@@ -27,7 +27,7 @@ function Footer() {
           className="text-sm"
           style={{ color: footerText || undefined }}
         >
-          &copy; 2026 Omix Store. Your trusted online store in Kericho, Kenya.
+          &copy; 2026 Omix Store. Your trusted Kenya online marketplace.
           {badgeText && (
             <span className="ml-2 text-[10px] font-black px-1.5 py-0.5 rounded-full align-middle">
               {sticker} {badgeText}

@@ -34,7 +34,7 @@ function HowItWorks() {
     {
       icon: <Truck className="w-7 h-7" />,
       title: 'Get Delivered',
-      description: 'We deliver to your doorstep in Kericho within 2-5 business days. Track your order in real-time.',
+      description: 'We deliver to your doorstep nationwide within 2-5 business days. Track your order in real-time.',
       color: 'from-emerald-500 to-emerald-600',
       bg: 'bg-emerald-900/20',
     },
@@ -74,7 +74,7 @@ function HowItWorks() {
     },
     {
       question: 'How long does delivery take?',
-      answer: 'We deliver within Kericho in 2-5 business days. You can track your order status anytime.',
+      answer: 'We deliver nationwide within 2-5 business days. You can track your order status anytime.',
     },
     {
       question: 'Do I need an account to order?',
@@ -107,7 +107,7 @@ function HowItWorks() {
               How Omix Works
             </h1>
             <p className="text-lg md:text-xl text-zinc-400 max-w-2xl mx-auto mb-8">
-              Shop online in Kericho. Browse, add to cart, pay via M-Pesa, get delivered.
+              Shop online with Omix. Browse, add to cart, pay via M-Pesa, get delivered.
             </p>
             <div className="flex flex-wrap gap-3 justify-center">
               <Link to="/" className="bg-[var(--seasonal-primary,#1a5632)] text-white px-6 py-3 rounded-xl font-bold hover:bg-[var(--seasonal-secondary,#14472a)] transition-all flex items-center gap-2">

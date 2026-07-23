@@ -1,8 +1,8 @@
 import { useState, useEffect, useRef } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import { ShoppingCart, ArrowRight, Loader2, Package, CreditCard, Trash2, Plus, Minus, CheckCircle, MapPin, Phone, User, Mail, Wrench, AlertTriangle } from 'lucide-react';
+import { ShoppingCart, ArrowRight, Loader2, Package, CreditCard, Trash2, Plus, Minus, CheckCircle, MapPin, Phone, User, Mail, Wrench, AlertTriangle, Smartphone } from 'lucide-react';
 import { useCart } from '../context/CartContext';
-import { createOrder, getDeliveryZones, getPickupStations } from '../utils/api';
+import { createOrder, getDeliveryZones, getPickupStations, initMpesaPayment, checkMpesaStatus } from '../utils/api';
 import { formatKES } from '../utils/constants';
 import { supabase } from '../utils/supabase';
 import { useMaintenanceMode } from '../hooks/useMaintenanceMode';
@@ -13,19 +13,6 @@ import { sounds } from '../utils/sounds';
 import { sendTypedNotification } from '../utils/notifications';
 import TrustBadges from '../components/TrustBadges';
 import { trackBeginCheckout, trackError } from '../utils/analytics';
-
-const PAYSTACK_PUBLIC_KEY = import.meta.env.VITE_PAYSTACK_PUBLIC_KEY || '';
-
-function loadPaystackScript() {
-  return new Promise((resolve, reject) => {
-    if (window.PaystackPop) return resolve();
-    const script = document.createElement('script');
-    script.src = 'https://js.paystack.co/v1/inline.js';
-    script.onload = resolve;
-    script.onerror = reject;
-    document.body.appendChild(script);
-  });
-}
 
 // ── Design Tokens (matching Nia chat) ──────────────────────────────
 const C = {
@@ -148,33 +135,7 @@ function TextAreaField({ icon: Icon, label, error, dark, ...props }) {
   );
 }
 
-// ── Kericho Area / Landmark Data ────────────────────────────────────
-const AREA_LANDMARKS = {
-  "Kericho CBD":      ["Kericho Town Hall", "Nakumatt / Former Superstore", "Kericho Bus Park", "Kericho Post Office", "Barclays / Absa Bank Junction"],
-  "Moi Junction":     ["Moi Junction Roundabout", "Equity Bank Moi", "Shell Petrol Station", "Kericho Stadium Gate"],
-  "Kericho Stage":    ["Kericho Main Stage", "Eldoret Road Turnoff", "Tuk-Tuk Stage"],
-  "Litein Road":      ["Litein Rd Junction", "Tea Board Offices", "AIC Church Litein Rd"],
-  "Hospital Area":    ["Kericho County Hospital Gate", "Kericho District Hospital", "Red Cross Offices"],
-  "Chepseon":         ["Chepseon Market", "Chepseon Primary School", "Chepseon Chief's Office", "ACK Chepseon"],
-  "Kipkelion":        ["Kipkelion Market", "Kipkelion Stage", "Kipkelion Chief's Camp", "Kipkelion Hospital"],
-  "Ainamoi":          ["Ainamoi Market", "Ainamoi Tea Factory", "Ainamoi Primary School"],
-  "Kabianga":         ["Kabianga University Gate", "Kabianga Market", "Kabianga Stage"],
-  "Kapkugerwet":      ["Kapkugerwet Market", "Kapkugerwet Stage", "KTDA Factory Kapkugerwet"],
-  "Londiani":         ["Londiani Town Center", "Londiani Stage", "Londiani Police Station"],
-  "Kedowa":           ["Kedowa Market", "Kedowa Stage", "Kedowa Chief's Office"],
-  "Brooke":           ["Brooke Market", "Brooke Tea Factory", "Brooke Stage"],
-  "Sosiot":           ["Sosiot Market", "Sosiot Stage", "Sosiot Chief's Camp"],
-  "Roret":            ["Roret Market", "Roret Stage", "Roret Girls High School"],
-  "Fort Ternan":      ["Fort Ternan Market", "Fort Ternan Stage", "Fort Ternan Hospital"],
-  "Cheborge":         ["Cheborge Market", "Cheborge Stage", "Cheborge Tea Factory"],
-  "Sigowet":          ["Sigowet Market", "Sigowet Stage", "Sigowet Chief's Office"],
-};
-
-const AREA_GROUPS = [
-  { label: "Kericho Town", areas: ["Kericho CBD", "Moi Junction", "Kericho Stage", "Litein Road", "Hospital Area"] },
-  { label: "Residential", areas: ["Chepseon", "Kipkelion", "Ainamoi", "Kabianga", "Kapkugerwet", "Londiani", "Kedowa"] },
-  { label: "Outskirts / Towns", areas: ["Brooke", "Sosiot", "Roret", "Fort Ternan", "Cheborge", "Sigowet"] },
-];
+// ── Kenya Location Data (area/landmark free-text for now) ──────────
 
 // ── Main Checkout Page ─────────────────────────────────────────────
 export default function CheckoutPage() {
@@ -189,6 +150,7 @@ export default function CheckoutPage() {
   const [authChecked, setAuthChecked] = useState(false);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [paymentMethod, setPaymentMethod] = useState('online');
+  const [mpesaPending, setMpesaPending] = useState(null);
   const [error, setError] = useState('');
   const [fieldErrors, setFieldErrors] = useState({});
   const [form, setForm] = useState({
@@ -198,6 +160,7 @@ export default function CheckoutPage() {
     area: '',
     landmark: '',
     street: '',
+    city: '',
     deliveryInstructions: '',
     alternatePhone: '',
     orderNotes: '',
@@ -342,7 +305,7 @@ export default function CheckoutPage() {
     const errs = {};
     if (!form.fullName.trim()) errs.fullName = 'Required';
     if (!form.phone.trim()) {
-      errs.phone = 'Required for M-Pesa';
+      errs.phone = 'Required for payment';
     } else {
       // Kenyan phone validation: 07XX XXX XXX or 2547XX XXX XXX
       const cleaned = form.phone.trim().replace(/[^0-9]/g, '');
@@ -419,8 +382,8 @@ export default function CheckoutPage() {
         customerName: form.fullName.trim(),
         phone: form.phone.trim(),
         email: form.email.trim(),
-        address: `${form.landmark}, ${form.area}, Kericho`,
-        city: 'Kericho',
+        address: `${form.landmark}, ${form.area}${form.city ? ', ' + form.city : ''}`,
+        city: form.city || '',
         area: form.area,
         landmark: form.landmark,
         promoCode: promoApplied ? promoApplied.code : null,
@@ -472,7 +435,7 @@ export default function CheckoutPage() {
 
       const deliveryInfo = deliveryMethod === 'pickup' && selectedPickupStation
         ? `Pick-Up: ${selectedPickupStation.name}, ${selectedPickupStation.area}${selectedPickupStation.landmark ? ` (Near: ${selectedPickupStation.landmark})` : ''}`
-        : `Delivery Address: ${form.landmark}, ${form.area}, Kericho${selectedZone ? ` (Zone: ${selectedZone.display_name || selectedZone.zone_name})` : ''}`;
+        : `Delivery Address: ${form.landmark}, ${form.area}${form.city ? ', ' + form.city : ''}${selectedZone ? ` (Zone: ${selectedZone.display_name || selectedZone.zone_name})` : ''}`;
 
       const message = `Hello Omix Store!\n\nI have placed a Cash on Delivery order.\n\nOrder ID: #${orderId.toString().slice(0,8).toUpperCase()}\n\nItems:\n${itemList}\n\nTotal: KES ${currentDiscounted.toLocaleString()}\nPayment: Cash on Delivery\n\n${deliveryInfo}\nPhone: ${form.phone}\nName: ${form.fullName}\n\nPlease confirm my order. Asante!`;
 
@@ -557,14 +520,6 @@ export default function CheckoutPage() {
         }
       }
 
-      await loadPaystackScript();
-
-      if (!window.PaystackPop) {
-        setError('Payment system failed to load. Please check your internet connection and try again.');
-        setLoading(false);
-        return;
-      }
-
       const orderResult = await createOrder({
         items: currentItems.map(item => ({
           product_id: item.id,
@@ -582,8 +537,8 @@ export default function CheckoutPage() {
         customerName: form.fullName.trim(),
         phone: form.phone.trim(),
         email: form.email.trim(),
-        address: `${form.landmark}, ${form.area}, Kericho`,
-        city: 'Kericho',
+        address: `${form.landmark}, ${form.area}${form.city ? ', ' + form.city : ''}`,
+        city: form.city || '',
         area: form.area,
         landmark: form.landmark,
         promoCode: promoApplied ? promoApplied.code : null,
@@ -591,7 +546,7 @@ export default function CheckoutPage() {
         isFreeDelivery,
         loyaltyPointsUsed: redeemPoints ? computedPtsDiscount : 0,
         referralCode: form.referralCode || null,
-        paymentMethod: 'online',
+        paymentMethod: 'mpesa',
         guestId: guestId.current,
         delivery_zone_id: selectedZone?.id || null,
         delivery_type: deliveryMethod,
@@ -634,43 +589,37 @@ export default function CheckoutPage() {
         })),
       }));
 
+      // Initiate M-Pesa STK push
       try {
-        window.PaystackPop.setup({
-          key: PAYSTACK_PUBLIC_KEY,
-          email: form.email.trim() || 'customer@omix.store',
-          amount: Math.round(currentDiscounted * 100),
-          currency: 'KES',
-          ref: `omix_${orderId}_${Date.now()}`,
-          metadata: {
-            order_id: orderId,
-            customer_name: form.fullName.trim(),
-            phone: form.phone.trim(),
-          },
-          callback: function(response) {
-            if (response && response.trxref) {
-              sounds.checkout();
-              sendTypedNotification('ORDER_CONFIRMED', {
-                title: 'Payment Successful',
-                body: `Order #${orderId.toString().slice(0,8).toUpperCase()} confirmed! Payment of KES ${currentDiscounted.toLocaleString()} received.`,
-                tag: `order_${orderId}`,
-              });
-              clearCart();
-              navigate(`/order-success?orderId=${orderId}&reference=${response.trxref}`);
-            } else {
-              setError('Payment was not verified. Please contact support with your order ID.');
-              setLoading(false);
-            }
-          },
-          onClose: function() {
-            orderCreated.current = false;
-            setLoading(false);
-            setError('Payment was not completed. Your order is saved — you can try again from My Account.');
-          },
-        }).openIframe();
-      } catch (paystackErr) {
-        console.error('Paystack setup error:', paystackErr);
-        setError('Payment system error. Please try again or contact support. Your order has been saved.');
+        const mpesaRes = await initMpesaPayment(form.phone.trim(), currentDiscounted, orderId);
+
+        if (!mpesaRes.success && mpesaRes.code === 'MPESA_NOT_CONFIGURED') {
+          setLoading(false);
+          setError('M-Pesa is not configured yet. Please use Cash on Delivery.');
+          return;
+        }
+
+        if (!mpesaRes.success) {
+          setLoading(false);
+          setError(mpesaRes.error || 'Failed to initiate M-Pesa payment. Please try again.');
+          return;
+        }
+
+        sounds.checkout();
+        await new Promise(resolve => setTimeout(resolve, 500));
+
         setLoading(false);
+        setMpesaPending({
+          checkoutRequestId: mpesaRes.checkoutRequestId,
+          orderId,
+          phone: form.phone.trim(),
+          amount: currentDiscounted,
+        });
+      } catch (err) {
+        console.error('M-Pesa init error:', err);
+        setError(err.message || 'Failed to initiate payment. Your order has been saved.');
+        setLoading(false);
+        orderCreated.current = false;
       }
 
     } catch (err) {
@@ -1006,90 +955,30 @@ export default function CheckoutPage() {
                 error={fieldErrors.email}
               />
 
-              {/* ── Kericho Location Selector ── */}
+              {/* ── Location (Area + Landmark) ── */}
               {deliveryMethod === 'delivery' && <div>
                 <label className="block text-xs font-bold mb-1.5 uppercase tracking-wider" style={{ color: C.textMuted }}>
                   Location <span style={{ color: '#ef4444' }}>*</span>
                 </label>
                 <div className="space-y-2">
-                  {/* City - locked */}
-                  <div className="flex items-center justify-between rounded-xl px-3.5 py-3" style={{ backgroundColor: C.bgGray, border: `1px solid ${C.border}` }}>
-                    <div className="flex items-center gap-2">
-                      <MapPin className="w-4 h-4" style={{ color: C.accent }} />
-                      <span className="text-sm font-semibold" style={{ color: C.text }}>Kericho</span>
-                    </div>
-                    <span className="flex items-center gap-1 text-[11px]" style={{ color: C.textMuted }}>
-                      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
-                        <rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/>
-                      </svg>
-                      Fixed
-                    </span>
-                  </div>
-
-                  {/* Area dropdown */}
-                  <div className="relative">
-                    <select
-                      value={form.area}
-                      onChange={(e) => setForm({ ...form, area: e.target.value, landmark: '' })}
-                      className="w-full text-sm rounded-xl px-3.5 py-3 appearance-none cursor-pointer focus:outline-none transition-all"
-                      style={{
-                        backgroundColor: C.bgGray,
-                        color: form.area ? C.text : C.textMuted,
-                        border: `1.5px solid ${fieldErrors.area ? '#ef4444' : C.border}`,
-                      }}
-                    >
-                      <option value="">Select your area...</option>
-                      {AREA_GROUPS.map((group) => (
-                        <optgroup key={group.label} label={group.label}>
-                          {group.areas.map((area) => (
-                            <option key={area} value={area}>{area}</option>
-                          ))}
-                        </optgroup>
-                      ))}
-                    </select>
-                    <div className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none" style={{ color: C.textMuted }}>
-                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
-                        <path d="m6 9 6 6 6-6"/>
-                      </svg>
-                    </div>
-                  </div>
-                  {fieldErrors.area && <p className="text-xs mt-1" style={{ color: '#ef4444' }}>{fieldErrors.area}</p>}
-
-                  {/* Landmark dropdown */}
-                  <div className="relative">
-                    <select
-                      value={form.landmark}
-                      onChange={(e) => setForm({ ...form, landmark: e.target.value })}
-                      disabled={!form.area}
-                      className="w-full text-sm rounded-xl px-3.5 py-3 appearance-none cursor-pointer focus:outline-none transition-all disabled:opacity-50"
-                      style={{
-                        backgroundColor: C.bgGray,
-                        color: form.landmark ? C.text : C.textMuted,
-                        border: `1.5px solid ${fieldErrors.landmark ? '#ef4444' : C.border}`,
-                      }}
-                    >
-                      <option value="">{form.area ? 'Select a landmark...' : 'Select area first...'}</option>
-                      {form.area && AREA_LANDMARKS[form.area]?.map((lm) => (
-                        <option key={lm} value={lm}>{lm}</option>
-                      ))}
-                    </select>
-                    <div className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none" style={{ color: C.textMuted }}>
-                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
-                        <path d="m6 9 6 6 6-6"/>
-                      </svg>
-                    </div>
-                  </div>
-                  {fieldErrors.landmark && <p className="text-xs mt-1" style={{ color: '#ef4444' }}>{fieldErrors.landmark}</p>}
-
-                  {/* Selected location chip */}
-                  {form.area && form.landmark && (
-                    <div className="flex items-center gap-1.5 px-3 py-2 rounded-lg text-xs font-semibold" style={{ backgroundColor: '#fff0f2', border: '1px solid #fecdd3', color: '#c41f3a' }}>
-                      <MapPin className="w-3.5 h-3.5" />
-                      <span>{form.landmark}, {form.area}, Kericho</span>
-                    </div>
-                  )}
-
-                  {/* Street / Plot Number */}
+                  <input
+                    type="text"
+                    value={form.area}
+                    onChange={(e) => setForm({ ...form, area: e.target.value })}
+                    name="area"
+                    placeholder="Area / Estate / Neighbourhood (e.g. Westlands, Kilimani)"
+                    className="w-full text-sm rounded-xl px-3.5 py-3 focus:outline-none transition-all"
+                    style={{ backgroundColor: C.bgGray, color: C.text, border: `1px solid ${C.border}` }}
+                  />
+                  <input
+                    type="text"
+                    value={form.landmark}
+                    onChange={(e) => setForm({ ...form, landmark: e.target.value })}
+                    name="landmark"
+                    placeholder="Landmark / Nearest intersection (e.g. Junction, Mall, School)"
+                    className="w-full text-sm rounded-xl px-3.5 py-3 focus:outline-none transition-all"
+                    style={{ backgroundColor: C.bgGray, color: C.text, border: `1px solid ${C.border}` }}
+                  />
                   <input
                     type="text"
                     value={form.street}
@@ -1097,15 +986,28 @@ export default function CheckoutPage() {
                     name="street"
                     placeholder="Street / Plot / Building Number (optional)"
                     className="w-full text-sm rounded-xl px-3.5 py-3 focus:outline-none transition-all"
-                    style={{
-                      backgroundColor: C.bgGray,
-                      color: C.text,
-                      border: `1px solid ${C.border}`,
-                    }}
+                    style={{ backgroundColor: C.bgGray, color: C.text, border: `1px solid ${C.border}` }}
                   />
                 </div>
               </div>
               }
+
+              {/* City / Town */}
+              <div className="col-span-2">
+                <input
+                  type="text"
+                  value={form.city}
+                  onChange={(e) => setForm({ ...form, city: e.target.value })}
+                  name="city"
+                  placeholder="City / Town (e.g. Nairobi, Mombasa, Kisumu)"
+                  className="w-full text-sm rounded-xl px-3.5 py-3 focus:outline-none transition-all"
+                  style={{
+                    backgroundColor: C.bgGray,
+                    color: C.text,
+                    border: `1px solid ${C.border}`,
+                  }}
+                />
+              </div>
 
               {/* ── Delivery Instructions & Additional Info ── */}
               {deliveryMethod === 'delivery' && <div>
@@ -1427,16 +1329,110 @@ export default function CheckoutPage() {
               )}
 
               <p className="text-center text-xs" style={{ color: C.textMuted }}>
-                Powered by Paystack. Your payment is secure and encrypted.
+                M-Pesa STK Push. Secure and encrypted.
               </p>
             </form>
           </div>
+
+          {/* ── M-Pesa Pending Dialog ── */}
+          {mpesaPending && <MpesaPaymentDialog pending={mpesaPending} onDone={() => { setMpesaPending(null); orderCreated.current = false; }} />}
 
           {/* Nia contextual help */}
           <div className="mt-4">
             <NiaContextualTrigger page="checkout" />
           </div>
         </div>
+      </div>
+    </div>
+  );
+}
+
+// ── M-Pesa Payment Dialog ───────────────────────────────────────────
+function MpesaPaymentDialog({ pending, onDone }) {
+  const navigate = useNavigate();
+  const { clearCart } = useCart();
+  const [status, setStatus] = useState('pending');
+  const [message, setMessage] = useState('Waiting for M-Pesa prompt...');
+  const pollRef = useRef(null);
+
+  const maskedPhone = pending.phone.replace(/(\d{4})\d{4}(\d{2})/, '$1****$2');
+
+  useEffect(() => {
+    let attempts = 0;
+    const MAX_ATTEMPTS = 40;
+
+    pollRef.current = setInterval(async () => {
+      attempts++;
+      try {
+        const res = await checkMpesaStatus(pending.checkoutRequestId);
+        if (res.success && res.status === 'paid') {
+          clearInterval(pollRef.current);
+          setStatus('paid');
+          setMessage('Payment received!');
+          setTimeout(() => {
+            clearCart();
+            navigate(`/order-success?orderId=${pending.orderId}`);
+          }, 1500);
+          return;
+        }
+        if (attempts >= MAX_ATTEMPTS) {
+          clearInterval(pollRef.current);
+          setStatus('failed');
+          setMessage('Payment not completed within the expected time. Please try again.');
+        }
+      } catch {
+        // silent retry
+      }
+    }, 3000);
+
+    return () => clearInterval(pollRef.current);
+  }, [pending]);
+
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm">
+      <div className="bg-white rounded-2xl p-6 max-w-sm w-full mx-4 text-center shadow-2xl">
+        {status === 'paid' ? (
+          <CheckCircle className="w-14 h-14 mx-auto mb-3 text-green-500" />
+        ) : (
+          <Smartphone className="w-14 h-14 mx-auto mb-3 text-primary" />
+        )}
+
+        <h2 className="text-lg font-black mb-2">
+          {status === 'paid' ? 'Payment Successful!' : 'Check Your Phone'}
+        </h2>
+
+        <p className="text-sm mb-4" style={{ color: '#71717a' }}>{message}</p>
+
+        <div className="rounded-xl p-4 mb-4 text-sm space-y-2" style={{ backgroundColor: '#f4f4f5' }}>
+          <div className="flex justify-between">
+            <span style={{ color: '#71717a' }}>Amount</span>
+            <span className="font-bold">KES {Number(pending.amount).toLocaleString()}</span>
+          </div>
+          <div className="flex justify-between">
+            <span style={{ color: '#71717a' }}>Phone</span>
+            <span className="font-bold">{maskedPhone}</span>
+          </div>
+          <div className="flex justify-between">
+            <span style={{ color: '#71717a' }}>Order</span>
+            <span className="font-bold">#{String(pending.orderId).slice(0, 8).toUpperCase()}</span>
+          </div>
+        </div>
+
+        {status === 'failed' && (
+          <button
+            onClick={onDone}
+            className="w-full py-3 rounded-xl font-bold text-white bg-primary hover:opacity-90 transition-all"
+          >
+            Try Again
+          </button>
+        )}
+
+        {status === 'pending' && (
+          <div className="flex items-center justify-center gap-2 text-sm" style={{ color: '#71717a' }}>
+            <Loader2 className="w-4 h-4 animate-spin" />
+            <span>Waiting for PIN entry...</span>
+          </div>
+        )}
       </div>
     </div>
   );

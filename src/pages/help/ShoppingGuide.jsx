@@ -51,12 +51,12 @@ const shoppingSteps = [
   },
   {
     title: 'Checkout',
-    desc: 'Click "View Cart" then "Checkout". Enter your delivery location (Kericho town/county) and phone number. Confirm your order.',
+    desc: 'Click "View Cart" then "Checkout". Enter your delivery location (city/county) and phone number. Confirm your order.',
     svg: `<svg viewBox="0 0 400 140" xmlns="http://www.w3.org/2000/svg" class="w-full">
       <rect x="0" y="0" width="400" height="140" rx="8" fill="#1e293b"/>
       <text x="20" y="30" font-size="14" fill="#f1f5f9" font-weight="bold">Delivery Details</text>
       <rect x="20" y="40" width="360" height="30" rx="4" fill="#334155"/>
-      <text x="30" y="58" font-size="12" fill="#94a3b8">Kericho Town, Phone number</text>
+      <text x="30" y="58" font-size="12" fill="#94a3b8">City, Phone number</text>
       <text x="40" y="90" font-size="13" fill="#f1f5f9">Payment Method:</text>
       <rect x="40" y="100" width="100" height="25" rx="4" fill="#10b981"/>
       <text x="90" y="117" font-size="11" fill="white" text-anchor="middle" font-weight="bold">M-Pesa</text>

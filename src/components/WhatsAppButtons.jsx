@@ -8,7 +8,7 @@ import { STORE_WHATSAPP } from '../utils/storeConfig';
 export function WhatsAppShareButton({ title, url, price, type = 'listing', className = '' }) {
   const message = type === 'wish'
     ? `Hi! I saw your wish for "${title}" on Omix. I might have what you're looking for!`
-    : `Check out this ${title} on Omix!\n${price ? `KES ${price.toLocaleString()} - ` : ''}Kericho\n${url}`;
+    : `Check out this ${title} on Omix!\n${price ? `KES ${price.toLocaleString()} - ` : ''}Kenya\n${url}`;
 
   const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(message)}`;
 
@@ -82,7 +82,7 @@ export function FloatingWhatsAppButton({ title, price, url, listingId, phone = S
   if (!title) return null;
 
   const productUrl = url || (listingId ? `${window.location.origin}/listing/${listingId}` : window.location.href);
-  const message = `Check out this ${title} on Omix!\n${price ? `KES ${price.toLocaleString()} - ` : ''}Kericho\n${productUrl}`;
+  const message = `Check out this ${title} on Omix!\n${price ? `KES ${price.toLocaleString()} - ` : ''}Kenya\n${productUrl}`;
   const whatsappUrl = `https://wa.me/${phone}?text=${encodeURIComponent(message)}`;
 
   return (

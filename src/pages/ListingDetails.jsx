@@ -413,7 +413,7 @@ function ListingDetails() {
             {deliveryZones.length > 0 ? (
               <>
                 <span className="flex items-center gap-1.5 bg-blue-900/20 text-blue-700 dark:text-blue-400 px-3 py-1.5 rounded-xl text-xs font-bold border border-blue-800">
-                  <Truck className="w-3.5 h-3.5" /> Free delivery in {deliveryZones[0].name || 'Kericho'}
+                  <Truck className="w-3.5 h-3.5" /> Free delivery in {deliveryZones[0].name || 'Kenya'}
                 </span>
                 <span className="flex items-center gap-1.5 bg-purple-900/20 text-purple-700 dark:text-purple-400 px-3 py-1.5 rounded-xl text-xs font-bold border border-purple-200 dark:border-purple-800">
                   <Package className="w-3.5 h-3.5" /> Delivered in {deliveryZones[0].delivery_days || '1-2'} days
@@ -422,7 +422,7 @@ function ListingDetails() {
             ) : (
               <>
                 <span className="flex items-center gap-1.5 bg-blue-900/20 text-blue-700 dark:text-blue-400 px-3 py-1.5 rounded-xl text-xs font-bold border border-blue-800">
-                  <Truck className="w-3.5 h-3.5" /> Free delivery in Kericho
+                  <Truck className="w-3.5 h-3.5" /> Free delivery nationwide
                 </span>
                 <span className="flex items-center gap-1.5 bg-purple-900/20 text-purple-700 dark:text-purple-400 px-3 py-1.5 rounded-xl text-xs font-bold border border-purple-200 dark:border-purple-800">
                   <Package className="w-3.5 h-3.5" /> Delivered in 1-2 days
@@ -835,7 +835,7 @@ function ListingDetails() {
                     <Truck className="w-4 h-4 text-emerald-400" />
                     <span className="text-xs text-zinc-500 w-32 flex-shrink-0 font-medium">Delivery</span>
                     <div>
-                      <p className="text-xs font-bold text-white">Free delivery in {deliveryZones[0].name || 'Kericho'}</p>
+                      <p className="text-xs font-bold text-white">Free delivery in {deliveryZones[0].name || 'Kenya'}</p>
                       <p className="text-[10px] text-zinc-400">Delivered in {deliveryZones[0].delivery_days || '1-2'} days</p>
                     </div>
                   </div>

@@ -15,7 +15,7 @@ const faqSteps = [
   },
   {
     title: 'What payment methods do you accept?',
-    desc: 'M-Pesa STK push is our main method. We also accept Paybill, Bank Transfer, and Cash on Delivery in Kericho town.',
+    desc: 'M-Pesa STK push is our main method. We also accept Paybill, Bank Transfer, and Cash on Delivery.',
     svg: `<svg viewBox="0 0 400 70" xmlns="http://www.w3.org/2000/svg" class="w-full">
       <rect x="0" y="0" width="400" height="70" rx="8" fill="#f1f5f9" stroke="#cbd5e1"/>
       <rect x="20" y="15" width="80" height="40" rx="6" fill="#10b981"/>

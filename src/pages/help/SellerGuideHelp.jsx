@@ -58,7 +58,7 @@ export default function SellerGuideHelp() {
   return (
     <HelpLayout title="Seller Guide">
       <p className="mb-6 text-zinc-400">
-        Sell your products on Omix Store and reach customers in Kericho and beyond.
+        Sell your products on Omix Store and reach customers across Kenya.
       </p>
       
       <ScreenshotGuide steps={sellerSteps} />

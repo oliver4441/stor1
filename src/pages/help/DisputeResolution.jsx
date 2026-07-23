@@ -27,7 +27,7 @@ export default function DisputeResolution() {
       <h3>Mediation</h3>
       <p>
         If you disagree with our initial resolution, we can arrange independent mediation
-        through Kericho Consumer Affairs or a neutral third party.
+        through Consumer Affairs or a neutral third party.
       </p>
     </HelpLayout>
   );

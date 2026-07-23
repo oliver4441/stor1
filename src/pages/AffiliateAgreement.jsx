@@ -6,7 +6,7 @@ const SECTIONS = [
     number: '1',
     title: 'Parties',
     content:
-      'This Agreement is entered into between Omix Store (a brand of Omix Systems), Kericho, Kenya ("the Company") represented by Gideon Kipkirui, and the approved affiliate partner ("the Affiliate").',
+      'This Agreement is entered into between Omix Store (a brand of Omix Systems), Kenya ("the Company") represented by Gideon Kipkirui, and the approved affiliate partner ("the Affiliate").',
   },
   {
     number: '2',

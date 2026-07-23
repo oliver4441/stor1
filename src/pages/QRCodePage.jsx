@@ -154,7 +154,7 @@ export default function QRCodePage() {
         <div class="flyer">
           <div class="logo"><img src="${APP_URL}/logo.svg" alt="Omix" width="80" height="80" /></div>
           <h1>Install Omix Store</h1>
-          <p class="subtitle">Your Online Store in Kericho. Browse products, add to cart, and pay via M-Pesa.</p>
+          <p class="subtitle">Omix - Browse products, add to cart, and pay via M-Pesa.</p>
           <div class="qr-container">
             <canvas id="qr-canvas"></canvas>
           </div>
@@ -179,10 +179,10 @@ export default function QRCodePage() {
             <div class="feature">
               <div class="feature-icon">FAST</div>
               <div class="feature-title">Fast Delivery</div>
-              <div class="feature-desc">Delivered across Kericho</div>
+              <div class="feature-desc">Delivered across Kenya</div>
             </div>
           </div>
-          <p class="footer">Omix Store — Your Online Store in Kericho</p>
+          <p class="footer">Omix Store — Kenya Online Marketplace</p>
         </div>
         <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js"></script>
         <script>
@@ -243,7 +243,7 @@ export default function QRCodePage() {
         {[
           { title: 'Browse Products', desc: 'Hundreds of items' },
           { title: 'M-Pesa Payments', desc: 'Pay from your phone' },
-          { title: 'Fast Delivery', desc: 'Across Kericho' },
+          { title: 'Fast Delivery', desc: 'Across Kenya' },
           { title: 'Full Screen App', desc: 'Works like native' },
         ].map((f, i) => (
           <div key={i} className="bg-zinc-900 rounded-xl p-4 text-center border border-zinc-100 dark:border-zinc-800">

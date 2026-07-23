@@ -9,7 +9,7 @@ function About() {
         <section>
           <h2 className="text-2xl font-bold mb-4 text-white">What is Omix?</h2>
           <p className="leading-relaxed text-lg">
-            Omix Store is your trusted online store in Kericho, Kenya. We offer a curated selection of quality products — from electronics and fashion to home essentials and school supplies — all at great prices. Browse, add to cart, and pay easily via M-Pesa with delivery to your doorstep.
+            Omix Store is a Kenya-wide online marketplace. We offer a curated selection of quality products — from electronics and fashion to home essentials and school supplies — all at great prices. Browse, add to cart, and pay easily via M-Pesa with delivery to your doorstep.
           </p>
         </section>
 
@@ -27,7 +27,7 @@ function About() {
           <div className="bg-zinc-900 p-6 rounded-3xl border border-zinc-800 text-center">
             <Truck className="w-8 h-8 text-[var(--seasonal-primary,#1a5632)] mx-auto mb-3" />
             <h3 className="font-bold text-white mb-1">Fast Delivery</h3>
-            <p className="text-sm">We deliver within Kericho in 2-5 business days.</p>
+            <p className="text-sm">We deliver nationwide within 2-5 business days.</p>
           </div>
         </section>
 
@@ -45,14 +45,14 @@ function About() {
               </li>
               <li className="flex gap-3">
                 <div className="w-6 h-6 rounded-full bg-[var(--seasonal-primary,#1a5632)]/10 text-[var(--seasonal-primary,#1a5632)] flex-shrink-0 flex items-center justify-center text-xs font-bold">3</div>
-                <p><strong>Delivered:</strong> We deliver to your doorstep in Kericho.</p>
+                <p><strong>Delivered:</strong> We deliver to your doorstep nationwide.</p>
               </li>
             </ul>
           </div>
           
           <div className="bg-zinc-900 p-8 rounded-3xl border border-zinc-800">
             <h2 className="text-xl font-bold mb-4 text-white">Contact Us</h2>
-            <p className="mb-6 text-sm">Need help with an order? Reach out to our team in Kericho.</p>
+            <p className="mb-6 text-sm">Need help with an order? Reach out to our team.</p>
             <div className="space-y-4">
               <div className="flex items-center gap-3">
                 <Mail className="w-5 h-5 text-[var(--seasonal-primary,#1a5632)]" />

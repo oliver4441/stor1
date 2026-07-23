@@ -30,7 +30,7 @@ function App() {
         {/* Hero Section */}
         <div className="bg-gradient-to-br from-[#1a5632]/10 via-zinc-100 to-white dark:from-[#1a5632]/10 dark:via-zinc-900 dark:to-zinc-950 py-16 px-4 mb-8">
           <div className="max-w-7xl mx-auto text-center">
-            <h1 className="text-4xl md:text-6xl font-extrabold mb-4 tracking-tight">Buy and sell in Kericho</h1>
+            <h1 className="text-4xl md:text-6xl font-extrabold mb-4 tracking-tight">Buy and sell on Omix</h1>
             <p className="text-zinc-600 dark:text-zinc-400 mb-8 max-w-xl mx-auto text-lg">The cleanest marketplace to find electronics, furniture, vehicles, and services near you.</p>
             
             <div className="max-w-2xl mx-auto relative group">

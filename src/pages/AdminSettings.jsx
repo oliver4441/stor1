@@ -38,7 +38,7 @@ export default function AdminSettings() {
     storePhone: '+254 768 213 649',
     currency: 'KES',
     deliveryCBD: '100',
-    deliveryKericho: '200',
+    deliveryWithinCity: '200',
     deliveryOutside: '500',
     freeShippingThreshold: '5000',
     maintenanceMode: false,
@@ -294,12 +294,12 @@ export default function AdminSettings() {
                 className="w-full px-4 py-2.5 rounded-xl bg-zinc-800 border border-transparent focus:border-primary focus:outline-none text-white text-sm" />
             </div>
             <div>
-              <label className="block text-sm font-bold mb-1.5 text-zinc-300">Kericho (KES)</label>
-              <input type="number" value={form.deliveryKericho} onChange={e => updateField('deliveryKericho', e.target.value)}
+              <label className="block text-sm font-bold mb-1.5 text-zinc-300">Within City (KES)</label>
+              <input type="number" value={form.deliveryWithinCity} onChange={e => updateField('deliveryWithinCity', e.target.value)}
                 className="w-full px-4 py-2.5 rounded-xl bg-zinc-800 border border-transparent focus:border-primary focus:outline-none text-white text-sm" />
             </div>
             <div>
-              <label className="block text-sm font-bold mb-1.5 text-zinc-300">Outside Kericho (KES)</label>
+              <label className="block text-sm font-bold mb-1.5 text-zinc-300">Outside Within City (KES)</label>
               <input type="number" value={form.deliveryOutside} onChange={e => updateField('deliveryOutside', e.target.value)}
                 className="w-full px-4 py-2.5 rounded-xl bg-zinc-800 border border-transparent focus:border-primary focus:outline-none text-white text-sm" />
             </div>
@@ -385,7 +385,7 @@ export default function AdminSettings() {
           <div>
             <label className="block text-xs font-bold text-zinc-400 uppercase tracking-wider mb-1.5">Hero Title</label>
             <input type="text" value={form.heroTitle} onChange={e => updateField('heroTitle', e.target.value)}
-              placeholder="e.g. Kericho's #1 Online Store"
+              placeholder="e.g. Kenya's #1 Online Store"
               className="w-full px-4 py-2.5 rounded-xl bg-zinc-800 border border-zinc-700 focus:border-emerald-500 focus:outline-none text-white text-sm" />
           </div>
           <div>

@@ -430,7 +430,7 @@ export default function Install() {
             </div>
             <h2 className="text-3xl md:text-4xl font-black text-white mb-3">Ready to get started?</h2>
             <p className="text-zinc-400 mb-8 max-w-md mx-auto">
-              Join thousands of buyers on Kericho's cleanest online store.
+              Join thousands of buyers on Kenya's cleanest online store.
             </p>
             <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
               {installState === 'installed' || window.matchMedia('(display-mode: standalone)').matches ? (

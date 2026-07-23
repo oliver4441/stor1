@@ -3,12 +3,12 @@ import ScreenshotGuide from '../../components/ScreenshotGuide';
 
 const deliveryTimeSteps = [
   {
-    title: 'Orders Within Kericho Town',
+    title: 'Orders Within Major Cities',
     desc: 'Same-day or next-day delivery. Orders placed before 2 PM get delivered same day. After 2 PM, delivery is next day.',
     svg: `<svg viewBox="0 0 400 100" xmlns="http://www.w3.org/2000/svg" class="w-full">
       <rect x="0" y="0" width="400" height="100" rx="8" fill="#eff6ff"/>
       <rect x="20" y="20" width="160" height="60" rx="6" fill="#3b82f6"/>
-      <text x="100" y="45" font-size="14" fill="white" text-anchor="middle" font-weight="bold">Kericho Town</text>
+      <text x="100" y="45" font-size="14" fill="white" text-anchor="middle" font-weight="bold">Nairobi / Mombasa / Kisumu</text>
       <text x="100" y="65" font-size="12" fill="white" text-anchor="middle">Same day / Next day</text>
       <rect x="200" y="20" width="180" height="60" rx="6" fill="#dbeafe"/>
       <text x="290" y="45" font-size="11" fill="#1e40af">2 PM cutoff for same day</text>
@@ -16,7 +16,7 @@ const deliveryTimeSteps = [
     </svg>`
   },
   {
-    title: 'Orders Outside Kericho Town',
+    title: 'Orders Outside Nairobi / Mombasa / Kisumu',
     desc: '3-7 business days depending on your location. We partner with local courier services for county-wide delivery.',
     svg: `<svg viewBox="00 0 400 120" xmlns="http://www.w3.org/2000/svg" class="w-full">
       <rect x="0" y="0" width="400" height="120" rx="8" fill="#fff7ed"/>

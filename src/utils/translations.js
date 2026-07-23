@@ -20,8 +20,8 @@ const translations = {
 
     // ── Home ──
     home: {
-      heroTitle: 'Buy & Sell in Kericho',
-      heroSubtitle: 'The cleanest P2P marketplace in Kericho. List items for free, connect with buyers, and get paid.',
+      heroTitle: 'Buy & Sell on Omix',
+      heroSubtitle: 'The cleanest marketplace in Kenya. List items for free, connect with buyers, and get paid.',
       browseListings: 'Browse Listings',
       startSelling: 'Start Selling',
       featuredListings: 'Featured Listings',
@@ -31,13 +31,13 @@ const translations = {
       forBuyers: 'For Buyers',
       forSellers: 'For Sellers',
       browseTitle: 'Browse & Discover',
-      browseDesc: 'Search through listings from sellers in Kericho. Filter by category, price, and location.',
+      browseDesc: 'Search through listings from sellers across Kenya. Filter by category, price, and location.',
       contactTitle: 'Contact Sellers',
       contactDesc: 'Reach out directly via phone or WhatsApp. No middleman, no extra fees.',
       payTitle: 'Pay Securely',
       payDesc: 'Meet in person and pay cash, or use M-Pesa for secure transfers.',
       listTitle: 'List Your Items',
-      listDesc: 'Post your items with photos and descriptions. Reach thousands of buyers in Kericho.',
+      listDesc: 'Post your items with photos and descriptions. Reach thousands of buyers on Omix.',
       shareTitle: 'Share & Promote',
       shareDesc: 'Share your listings on WhatsApp, Facebook, and other platforms with one click.',
       getPaidTitle: 'Get Paid',
@@ -47,7 +47,7 @@ const translations = {
       safeTransactions: 'Safe Transactions',
       safeTransactionsDesc: 'Verified sellers and secure payment options for peace of mind.',
       localCommunity: 'Local Community',
-      localCommunityDesc: 'Connect with buyers and sellers in Kericho and surrounding areas.',
+      localCommunityDesc: 'Connect with buyers and sellers across Kenya.',
     },
 
     // ── Sell / Create Listing ──
@@ -130,7 +130,7 @@ const translations = {
     // ── Events ──
     events: {
       title: 'Events',
-      subtitle: 'Discover and attend events in Kericho',
+      subtitle: 'Discover and attend events across Kenya',
       createEvent: 'Create Event',
       noEvents: 'No events found. Be the first to create one!',
       ticketsLeft: 'tickets left',
@@ -171,12 +171,12 @@ const translations = {
       step1: 'Event Details',
       step2: 'Ticket Types',
       eventName: 'Event Title *',
-      eventNamePlaceholder: 'e.g. Kericho Music Festival 2026',
+      eventNamePlaceholder: 'e.g. Nairobi Music Festival 2026',
       description: 'Description',
       descriptionPlaceholder: 'Tell people about your event...',
       category: 'Category',
       venue: 'Venue *',
-      venuePlaceholder: 'e.g. Kericho Green Stadium',
+      venuePlaceholder: 'e.g. Kasarani Stadium',
       date: 'Date *',
       time: 'Time *',
       imageUrl: 'Image URL (optional)',
@@ -209,7 +209,7 @@ const translations = {
 
     // ── Footer ──
     footer: {
-      tagline: 'The cleanest P2P marketplace in Kericho, Kenya.',
+      tagline: 'The cleanest marketplace in Kenya.',
       quickLinks: 'Quick Links',
       sell: 'Sell',
       events: 'Events',
@@ -398,9 +398,9 @@ const translations = {
       fast: 'Fast',
       support: 'Support',
       omixStore: 'Omix Store',
-      kerichoKenya: 'Kericho, Kenya',
+      kerichoKenya: 'Kenya',
       officialStore: 'Official Store',
-      freeDeliveryInKericho: 'Free delivery in Kericho',
+      freeDeliveryNationwide: 'Free delivery nationwide',
       deliveryByTomorrow: 'Delivery by tomorrow',
       peopleViewing: 'people viewing this',
       soldRecently: 'sold recently',
@@ -450,7 +450,7 @@ const translations = {
     about: {
       title: 'About Omix Store',
       whatIsOmix: 'What is Omix?',
-      whatIsOmixDesc: 'An online store in Kericho, Kenya. Browse products, add to cart, and pay via M-Pesa.',
+      whatIsOmixDesc: 'A Kenya-wide online marketplace. Browse products, add to cart, and pay via M-Pesa.',
       shopOnline: 'Shop Online',
       shopOnlineDesc: 'Browse products, add to cart, and checkout in seconds.',
       securePayments: 'Secure Payments',
@@ -597,8 +597,8 @@ const translations = {
 
     // ── Home ──
     home: {
-      heroTitle: 'Ununuzi & Uuzaji Kericho',
-      heroSubtitle: 'Soko safi zaidi la P2P Kericho. Orodhesha bidhaa kwa bure, ungane na wanunuzi, na ulipwe.',
+      heroTitle: 'Ununuzi & Uuzaji Omix',
+      heroSubtitle: 'Soko safi zaidi nchini Kenya. Orodhesha bidhaa kwa bure, ungane na wanunuzi, na ulipwe.',
       browseListings: 'Vinjari Orodha',
       startSelling: 'Anza Kuuza',
       featuredListings: 'Orodha Maalum',
@@ -608,13 +608,13 @@ const translations = {
       forBuyers: 'Kwa Wanunuzi',
       forSellers: 'Kwa Wauzaji',
       browseTitle: 'Vinjari & Gundua',
-      browseDesc: 'Tafuta orodha kutoka kwa wauzaji Kericho. Chuja kwa aghamu, bei, na eneo.',
+      browseDesc: 'Tafuta orodha kutoka kwa wauzaji nchini Kenya. Chuja kwa aghamu, bei, na eneo.',
       contactTitle: 'Wasiliana na Wauzaji',
       contactDesc: 'Wasiliana moja kwa moja kupitia simu au WhatsApp. Hakuna msaidizi, hakuna ada za ziada.',
       payTitle: 'Lipa kwa Usalama',
       payDesc: 'Kutana kwa moja kwa moja na lipa taslimu, au tumia M-Pesa kwa uhamishaji salama.',
       listTitle: 'Orodhesha Bidhaa Zako',
-      listDesc: 'Chapisha bidhaa zako na picha na maelezo. Fikia maelfu ya wanunuzi Kericho.',
+      listDesc: 'Chapisha bidhaa zako na picha na maelezo. Fikia maelfu ya wanunuzi nchini Kenya.',
       shareTitle: 'Sambaza & Tangaza',
       shareDesc: 'Sambaza orodha zako kwa WhatsApp, Facebook, na mifumo mingine kwa kubofya mara moja.',
       getPaidTitle: 'Pata Pesa',
@@ -624,7 +624,7 @@ const translations = {
       safeTransactions: 'Muamala Salama',
       safeTransactionsDesc: 'Wauzaji waliothibitishwa na chaguo za malipo salama kwa amani ya akili.',
       localCommunity: 'Jumuiya ya Ndani',
-      localCommunityDesc: 'Ungana na wanunuzi na wauzaji Kericho na maeneo ya karibu.',
+      localCommunityDesc: 'Ungana na wanunuzi na wauzaji nchini Kenya.',
     },
 
     // ── Sell / Create Listing ──
@@ -707,7 +707,7 @@ const translations = {
     // ── Events ──
     events: {
       title: 'Matukio',
-      subtitle: 'Gundua na hudhuria matukio Kericho',
+      subtitle: 'Gundua na hudhuria matukio nchini Kenya',
       createEvent: 'Unda Tukio',
       noEvents: 'Hakuna matukio yaliyopatikana. Kuwa wa kwanza kuunda!',
       ticketsLeft: 'tiketi zilizobaki',
@@ -748,12 +748,12 @@ const translations = {
       step1: 'Maelezo ya Tukio',
       step2: 'Aina za Tiketi',
       eventName: 'Jina la Tukio *',
-      eventNamePlaceholder: 'mf. Tamasha la Muziki la Kericho 2026',
+      eventNamePlaceholder: 'mf. Tamasha la Muziki la Nairobi 2026',
       description: 'Maelezo',
       descriptionPlaceholder: 'Wambie watu kuhusu tukio lako...',
       category: 'Aghamu',
       venue: 'Mahali *',
-      venuePlaceholder: 'mf. Uwanja wa Kericho Green',
+      venuePlaceholder: 'mf. Uwanja wa Kasarani',
       date: 'Tarehe *',
       time: 'Saa *',
       imageUrl: 'URL ya Picha (hiari)',
@@ -786,7 +786,7 @@ const translations = {
 
     // ── Footer ──
     footer: {
-      tagline: 'Soko safi zaidi la P2P Kericho, Kenya.',
+      tagline: 'Soko safi zaidi nchini Kenya.',
       quickLinks: 'Viungo vya Haraka',
       sell: 'Kuuza',
       events: 'Matukio',
@@ -984,9 +984,9 @@ const translations = {
       fast: 'Haraka',
       support: 'Msaada',
       omixStore: 'Duka la Omix',
-      kerichoKenya: 'Kericho, Kenya',
+      kerichoKenya: 'Kenya',
       officialStore: 'Duka Rasmi',
-      freeDeliveryInKericho: 'Usafirishaji bure Kericho',
+      freeDeliveryNationwide: 'Usafirishaji bure nchini Kenya',
       deliveryByTomorrow: 'Usafirishaji kesho',
       peopleViewing: 'wanaangalia hii',
       soldRecently: 'imeuzwa hivi karibuni',
@@ -1036,7 +1036,7 @@ const translations = {
     about: {
       title: 'Kuhusu Duka la Omix',
       whatIsOmix: 'Omix ni Nini?',
-      whatIsOmixDesc: 'Duka la mtandaoni la Kericho, Kenya. Vinjari bidhaa, ongeza kikoche, na lipa kwa M-Pesa.',
+      whatIsOmixDesc: 'Duka la mtandaoni la Kenya. Vinjari bidhaa, ongeza kikoche, na lipa kwa M-Pesa.',
       shopOnline: 'Nunua Mtandaoni',
       shopOnlineDesc: 'Vinjari bidhaa, ongeza kikoche, na malipo kwa sekunde.',
       securePayments: 'Malipo Salama',
@@ -1096,7 +1096,7 @@ const translations = {
       send: 'Tuma Ujumbe',
       sending: 'Inatuma...',
       messageSent: 'Ujumbe umetumwa!',
-      thankYouContact: 'Asante kwa kuwasiliana. Timu yetu Kericho itajibu hivi karibuni.',
+      thankYouContact: 'Asante kwa kuwasiliana. Timu yetu itajibu hivi karibuni.',
       yourName: 'Jina Lako',
       emailAddress: 'Barua Pepe',
     },

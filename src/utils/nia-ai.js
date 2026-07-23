@@ -133,7 +133,7 @@ function fallbackResponse(text) {
   }
   if (lower.match(/deliver|ship|arrive|how long/i)) {
     return {
-      text: "We deliver within Kericho and surrounding areas.\n\n- Kericho CBD: Same day\n- Kericho town areas: 1-2 days\n- Outside Kericho: 2-3 days\n\nDelivery is free within Kericho.",
+      text: "We deliver nationwide. Typical delivery times:\n\n- Major cities (Nairobi, Mombasa, Kisumu): 1-2 days\n- Other urban centres: 2-3 days\n- Rural areas: 3-5 days\n\nDelivery is free on eligible orders.",
       chips: ['Browse products', 'How it works', 'Contact support'],
     };
   }

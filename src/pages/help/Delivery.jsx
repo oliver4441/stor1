@@ -4,7 +4,7 @@ import ScreenshotGuide from '../../components/ScreenshotGuide';
 const deliverySteps = [
   {
     title: 'Delivery Process',
-    desc: 'After payment confirmation, we prepare your order within 2 hours. A rider picks up and delivers to your address in Kericho.',
+    desc: 'After payment confirmation, we prepare your order. Delivery timelines depend on your location.',
     svg: `<svg viewBox="0 0 400 100" xmlns="http://www.w3.org/2000/svg" class="w-full">
       <rect x="0" y="0" width="400" height="100" rx="8" fill="#f0f9ff"/>
       <rect x="20" y="20" width="80" height="60" rx="6" fill="#0ea5e9"/>
@@ -17,17 +17,17 @@ const deliverySteps = [
       <path d="M220 50l30 0" stroke="#cbd5e1" stroke-width="2" stroke-dasharray="4,4"/>
       <rect x="260" y="20" width="80" height="60" rx="6" fill="#10b981"/>
       <text x="300" y="45" font-size="12" fill="white" text-anchor="middle">Deliver</text>
-      <text x="300" y="62" font-size="10" fill="#d1fae5" text-anchor="middle">Kericho</text>
+      <text x="300" y="62" font-size="10" fill="#d1fae5" text-anchor="middle">Kenya</text>
     </svg>`
   },
   {
     title: 'Shipping Rates',
-    desc: 'Delivery within Kericho town is free. Upcountry locations have a flat rate of Ksh 150-300 depending on distance.',
+    desc: 'Delivery is free on eligible orders. Other locations have a flat rate depending on distance.',
     svg: `<svg viewBox="0 0 400 80" xmlns="http://www.w3.org/2000/svg" class="w-full">
       <rect x="0" y="0" width="400" height="80" rx="8" fill="#ecfdf5"/>
       <rect x="20" y="15" width="120" height="50" rx="6" fill="#10b981"/>
       <text x="80" y="40" font-size="14" fill="white" text-anchor="middle" font-weight="bold">FREE</text>
-      <text x="80" y="58" font-size="10" fill="#d1fae5" text-anchor="middle">Kericho Town</text>
+      <text x="80" y="58" font-size="10" fill="#d1fae5" text-anchor="middle">Free Delivery</text>
       <rect x="160" y="15" width="120" height="50" rx="6" fill="#3b82f6"/>
       <text x="220" y="40" font-size="14" fill="white" text-anchor="middle" font-weight="bold">Ksh 150</text>
       <text x="220" y="58" font-size="10" fill="#bfdbfe" text-anchor="middle">County</text>
@@ -42,7 +42,7 @@ export default function Delivery() {
   return (
     <HelpLayout title="Delivery and Shipping">
       <p className="mb-6 text-zinc-400">
-        We deliver across Kericho county and select upcountry locations.
+        We deliver across Kenya.
       </p>
       
       <ScreenshotGuide steps={deliverySteps} />

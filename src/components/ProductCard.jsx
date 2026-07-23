@@ -180,7 +180,7 @@ function ProductCard({ listing, compareMode, onCompareChange }) {
       ? formatKES(listing.flash_sale_price)
       : formatKES(selectedVariantObj ? effectivePrice : listing.price);
     const variantImage = selectedVariantObj?.imageUrl || listing.images?.[0] || '';
-    const message = `Check out this ${listing.title} on Omix!\n${displayPrice} - Kericho\n${variantImage ? `${variantImage}\n` : ''}${window.location.origin}/listing/${listing.id}`;
+    const message = `Check out this ${listing.title} on Omix!\\n${displayPrice} - Kenya\\n${variantImage ? `${variantImage}\\n` : ''}${window.location.origin}/listing/${listing.id}`;
     window.open(`https://wa.me/?text=${encodeURIComponent(message)}`, '_blank');
   };
 

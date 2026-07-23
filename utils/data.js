@@ -21,7 +21,7 @@ const MOCK_LISTINGS = [
     category: 'Furniture',
     condition: 'New',
     location: 'Litein',
-    sellerName: 'Kericho Furnitures',
+    sellerName: 'Heritage Furnitures',
     description: 'Brand new L-shaped sofa, gray fabric. Very comfortable and durable. Free delivery within Litein.',
     image: 'https://images.unsplash.com/photo-1555041469-a586c61ea9bc?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
     createdAt: '2026-06-02T14:30:00Z'
@@ -46,7 +46,7 @@ const MOCK_LISTINGS = [
     condition: 'N/A',
     location: 'CBD',
     sellerName: 'John The Plumber',
-    description: 'Expert plumbing services in Kericho. Base consultation fee is 500 KES. Fast response for leaks and pipe bursts.',
+    description: 'Expert plumbing services. Base consultation fee is 500 KES. Fast response for leaks and pipe bursts.',
     image: 'https://images.unsplash.com/photo-1585704032915-c3400ca199e7?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
     createdAt: '2026-06-04T08:00:00Z'
   },
