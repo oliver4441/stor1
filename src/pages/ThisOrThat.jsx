@@ -38,11 +38,11 @@ function StarRating({ rating }) {
 
 function ConditionBadge({ condition }) {
   const colors = {
-    new: 'bg-emerald-900/40 text-emerald-400 border-emerald-800',
+    new: 'bg-[#007AFF]/40 text-[#38B8EA] border-[#007AFF]',
     used: 'bg-amber-900/40 text-amber-400 border-amber-800',
     refurbished: 'bg-blue-900/40 text-blue-400 border-blue-800',
   };
-  const cls = colors[condition?.toLowerCase()] || 'bg-zinc-800 text-zinc-400 border-zinc-700';
+  const cls = colors[condition?.toLowerCase()] || 'bg-[#28303F] text-[#4A5771] border-[#353F54]';
   return (
     <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full border ${cls}`}>
       {condition?.replace(/_/g, ' ') || 'N/A'}
@@ -62,7 +62,7 @@ function DiscountBadge({ compareAtPrice, price }) {
 
 function SkeletonCard() {
   return (
-    <div className="bg-zinc-800/60 rounded-2xl overflow-hidden animate-pulse">
+    <div className="bg-[#28303F]/60 rounded-2xl overflow-hidden animate-pulse">
       <div className="aspect-square bg-zinc-700/50" />
       <div className="p-4 space-y-3">
         <div className="h-4 bg-zinc-700/50 rounded w-3/4" />
@@ -81,7 +81,7 @@ function SkeletonCard() {
 
 function SkeletonAnalysis() {
   return (
-    <div className="bg-zinc-800/60 rounded-2xl p-6 animate-pulse space-y-4 border-l-4 border-emerald-500/30">
+    <div className="bg-[#28303F]/60 rounded-2xl p-6 animate-pulse space-y-4 border-l-4 border-[#007AFF]/30">
       <div className="h-5 bg-zinc-700/50 rounded w-1/3" />
       <div className="space-y-2">
         <div className="h-3 bg-zinc-700/50 rounded w-full" />
@@ -140,12 +140,12 @@ function ProductSearchSelect({ label, onSelect, value, onClear }) {
   return (
     <div className="relative">
       {value ? (
-        <div className="flex items-center gap-2 bg-zinc-800 rounded-xl px-3 py-2.5 border border-zinc-700">
+        <div className="flex items-center gap-2 bg-[#28303F] rounded-xl px-3 py-2.5 border border-[#353F54]">
           <div className="w-8 h-8 rounded-lg bg-zinc-700 overflow-hidden flex-shrink-0">
             {value.images?.[0] ? (
               <img src={value.images[0]} alt="" className="w-full h-full object-cover" />
             ) : (
-              <div className="w-full h-full flex items-center justify-center text-zinc-500">
+              <div className="w-full h-full flex items-center justify-center text-[#4A5771]">
                 <ImageIcon className="w-4 h-4" />
               </div>
             )}
@@ -153,7 +153,7 @@ function ProductSearchSelect({ label, onSelect, value, onClear }) {
           <span className="text-sm text-white truncate flex-1">{value.title}</span>
           <button
             onClick={onClear}
-            className="text-zinc-500 hover:text-zinc-300 transition-colors flex-shrink-0"
+            className="text-[#4A5771] hover:text-[#8E9BB5] transition-colors flex-shrink-0"
             aria-label="Clear selection"
           >
             <X className="w-4 h-4" />
@@ -161,23 +161,23 @@ function ProductSearchSelect({ label, onSelect, value, onClear }) {
         </div>
       ) : (
         <div className="relative">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-zinc-500 pointer-events-none" />
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#4A5771] pointer-events-none" />
           <input
             type="text"
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             onFocus={() => results.length > 0 && setOpen(true)}
             placeholder={`Search ${label}...`}
-            className="w-full bg-zinc-800 border border-zinc-700 rounded-xl pl-10 pr-10 py-2.5 text-sm text-white placeholder-zinc-500 focus:outline-none focus:ring-2 focus:ring-emerald-500/50 focus:border-emerald-500/50 transition-all"
+            className="w-full bg-[#28303F] border border-[#353F54] rounded-xl pl-10 pr-10 py-2.5 text-sm text-white placeholder-[#4A5771] focus:outline-none focus:ring-2 focus:ring-[#007AFF]/50 focus:border-[#007AFF]/50 transition-all"
           />
           {loading && (
-            <Loader2 className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-zinc-500 animate-spin" />
+            <Loader2 className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#4A5771] animate-spin" />
           )}
         </div>
       )}
 
       {open && results.length > 0 && (
-        <div className="absolute top-full left-0 right-0 mt-1 bg-zinc-800 border border-zinc-700 rounded-xl overflow-hidden shadow-xl z-50 max-h-72 overflow-y-auto">
+        <div className="absolute top-full left-0 right-0 mt-1 bg-[#28303F] border border-[#353F54] rounded-xl overflow-hidden shadow-xl z-50 max-h-72 overflow-y-auto">
           {results.map((p) => (
             <button
               key={p.id}
@@ -188,14 +188,14 @@ function ProductSearchSelect({ label, onSelect, value, onClear }) {
                 {p.images?.[0] ? (
                   <img src={p.images[0]} alt="" className="w-full h-full object-cover" />
                 ) : (
-                  <div className="w-full h-full flex items-center justify-center text-zinc-500">
+                  <div className="w-full h-full flex items-center justify-center text-[#4A5771]">
                     <ImageIcon className="w-5 h-5" />
                   </div>
                 )}
               </div>
               <div className="flex-1 min-w-0">
                 <p className="text-sm text-white font-medium truncate">{p.title}</p>
-                <p className="text-xs text-zinc-400">{formatKES(p.price)}</p>
+                <p className="text-xs text-[#4A5771]">{formatKES(p.price)}</p>
               </div>
             </button>
           ))}
@@ -357,7 +357,7 @@ export default function ThisOrThat() {
   const renderProductCard = (product, slot) => {
     if (!product) {
       return (
-        <div className="bg-zinc-800/60 rounded-2xl p-4 flex flex-col items-center justify-center min-h-[320px] border border-dashed border-zinc-700">
+        <div className="bg-[#28303F]/60 rounded-2xl p-4 flex flex-col items-center justify-center min-h-[320px] border border-dashed border-[#353F54]">
           <div className="text-zinc-600 mb-4">
             <ImageIcon className="w-12 h-12" />
           </div>
@@ -375,9 +375,9 @@ export default function ThisOrThat() {
       product.compare_at_price && product.compare_at_price > product.price;
 
     return (
-      <div className="bg-zinc-800 rounded-2xl overflow-hidden border border-zinc-700/50 flex flex-col">
+      <div className="bg-[#28303F] rounded-2xl overflow-hidden border border-[#353F54]/50 flex flex-col">
         {/* Image */}
-        <div className="relative aspect-square bg-zinc-900">
+        <div className="relative aspect-square bg-[#28303F]">
           {product.images?.[0] ? (
             <img
               src={product.images[0]}
@@ -408,29 +408,29 @@ export default function ThisOrThat() {
           </h3>
 
           {product.brand && (
-            <p className="text-zinc-500 text-xs font-medium">{product.brand}</p>
+            <p className="text-[#4A5771] text-xs font-medium">{product.brand}</p>
           )}
 
           {product.avg_rating > 0 && (
             <div className="flex items-center gap-1.5">
               <StarRating rating={product.avg_rating} />
-              <span className="text-xs text-zinc-400 font-medium">
+              <span className="text-xs text-[#4A5771] font-medium">
                 {product.avg_rating.toFixed(1)}
               </span>
               {product.review_count > 0 && (
-                <span className="text-xs text-zinc-500">
+                <span className="text-xs text-[#4A5771]">
                   ({product.review_count})
                 </span>
               )}
             </div>
           )}
 
-          <p className="text-emerald-400 font-bold text-lg mt-auto">
+          <p className="text-[#38B8EA] font-bold text-lg mt-auto">
             {formatKES(product.price)}
           </p>
 
           {hasDiscount && (
-            <p className="text-xs text-zinc-500 line-through">
+            <p className="text-xs text-[#4A5771] line-through">
               {formatKES(product.compare_at_price)}
             </p>
           )}
@@ -441,7 +441,7 @@ export default function ThisOrThat() {
                 e.stopPropagation();
                 handleAddToCart(product);
               }}
-              className="flex-1 flex items-center justify-center gap-1.5 bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold px-3 py-2 rounded-xl transition-colors"
+              className="flex-1 flex items-center justify-center gap-1.5 bg-[#007AFF] hover:bg-[#0066CC] text-white text-xs font-bold px-3 py-2 rounded-xl transition-colors"
             >
               <ShoppingCart className="w-3.5 h-3.5" />
               Add to Cart
@@ -451,7 +451,7 @@ export default function ThisOrThat() {
                 e.stopPropagation();
                 handleClearProduct(slot)();
               }}
-              className="p-2 text-zinc-500 hover:text-zinc-300 hover:bg-zinc-700 rounded-xl transition-colors"
+              className="p-2 text-[#4A5771] hover:text-[#8E9BB5] hover:bg-zinc-700 rounded-xl transition-colors"
               aria-label={`Remove Product ${slot.toUpperCase()}`}
             >
               <X className="w-4 h-4" />
@@ -469,14 +469,14 @@ export default function ThisOrThat() {
         jsonLd={[getWebSiteSchema()]}
       />
 
-      <div className="min-h-screen bg-zinc-950 text-white" data-name="this-or-that-page">
+      <div className="min-h-screen bg-[#242C3B] text-white" data-name="this-or-that-page">
         <div className="max-w-6xl mx-auto px-4 py-8">
           {/* Header */}
           <div className="text-center mb-8">
             <h1 className="text-3xl md:text-4xl font-black tracking-tight">
               This or That?
             </h1>
-            <p className="text-zinc-400 mt-1 text-sm md:text-base">
+            <p className="text-[#4A5771] mt-1 text-sm md:text-base">
               Let AI help you choose
             </p>
           </div>
@@ -499,8 +499,8 @@ export default function ThisOrThat() {
                 disabled={!canCompare || comparing}
                 className={`inline-flex items-center gap-2 px-5 py-2.5 rounded-xl font-bold text-sm transition-all ${
                   canCompare && !comparing
-                    ? 'bg-emerald-600 hover:bg-emerald-500 text-white shadow-lg shadow-emerald-600/20 active:scale-95'
-                    : 'bg-zinc-800 text-zinc-500 cursor-not-allowed'
+                    ? 'bg-[#007AFF] hover:bg-[#0066CC] text-white shadow-lg shadow-[#007AFF]/20 active:scale-95'
+                    : 'bg-[#28303F] text-[#4A5771] cursor-not-allowed'
                 }`}
               >
                 <Sparkles className="w-4 h-4" />
@@ -515,19 +515,19 @@ export default function ThisOrThat() {
 
           {/* AI Comparison result */}
           {comparison && !comparing && (
-            <div className="bg-zinc-800/80 rounded-2xl p-5 md:p-6 border-l-4 border-emerald-500 shadow-lg">
+            <div className="bg-[#28303F]/80 rounded-2xl p-5 md:p-6 border-l-4 border-[#007AFF] shadow-lg">
               <div className="flex items-center gap-2 mb-3">
-                <Sparkles className="w-5 h-5 text-emerald-400" />
+                <Sparkles className="w-5 h-5 text-[#38B8EA]" />
                 <h3 className="text-white font-bold text-sm">
                   AI Comparison
                 </h3>
               </div>
-              <div className="text-zinc-300 text-sm leading-relaxed whitespace-pre-line">
+              <div className="text-[#8E9BB5] text-sm leading-relaxed whitespace-pre-line">
                 {comparison}
               </div>
               <div className="mt-4 pt-3 border-t border-zinc-700/50 flex items-center gap-1.5">
-                <Sparkles className="w-3.5 h-3.5 text-emerald-400" />
-                <span className="text-[11px] text-zinc-500 font-medium">
+                <Sparkles className="w-3.5 h-3.5 text-[#38B8EA]" />
+                <span className="text-[11px] text-[#4A5771] font-medium">
                   Powered by Nia AI
                 </span>
               </div>
@@ -549,8 +549,8 @@ export default function ThisOrThat() {
 
           {/* Popular Comparisons */}
           {popularProducts.length > 0 && (
-            <div className="mt-12 pt-6 border-t border-zinc-800">
-              <h3 className="text-sm font-bold text-zinc-400 mb-3 uppercase tracking-wider">
+            <div className="mt-12 pt-6 border-t border-[#353F54]">
+              <h3 className="text-sm font-bold text-[#4A5771] mb-3 uppercase tracking-wider">
                 Popular Comparisons
               </h3>
               <div className="flex flex-wrap gap-2">
@@ -567,7 +567,7 @@ export default function ThisOrThat() {
                         handlePickProduct('b')(p);
                       }
                     }}
-                    className="inline-flex items-center gap-2 bg-zinc-800 hover:bg-zinc-700 border border-zinc-700 hover:border-zinc-600 rounded-xl px-3 py-2 transition-all text-left"
+                    className="inline-flex items-center gap-2 bg-[#28303F] hover:bg-zinc-700 border border-[#353F54] hover:border-zinc-600 rounded-xl px-3 py-2 transition-all text-left"
                   >
                     <div className="w-8 h-8 rounded-lg bg-zinc-700 overflow-hidden flex-shrink-0">
                       {p.images?.[0] ? (
@@ -577,15 +577,15 @@ export default function ThisOrThat() {
                           className="w-full h-full object-cover"
                         />
                       ) : (
-                        <div className="w-full h-full flex items-center justify-center text-zinc-500">
+                        <div className="w-full h-full flex items-center justify-center text-[#4A5771]">
                           <ImageIcon className="w-4 h-4" />
                         </div>
                       )}
                     </div>
-                    <span className="text-xs text-zinc-300 font-medium truncate max-w-[140px]">
+                    <span className="text-xs text-[#8E9BB5] font-medium truncate max-w-[140px]">
                       {p.title}
                     </span>
-                    <span className="text-xs text-emerald-400 font-bold whitespace-nowrap">
+                    <span className="text-xs text-[#38B8EA] font-bold whitespace-nowrap">
                       {formatKES(p.price)}
                     </span>
                   </button>

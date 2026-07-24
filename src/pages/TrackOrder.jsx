@@ -192,18 +192,18 @@ export default function TrackOrder() {
       {/* Search */}
       <div className="flex gap-3 mb-8">
         <div className="flex-grow relative">
-          <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-zinc-400" />
+          <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-[#4A5771]" />
           <input
             type="text"
             value={orderId}
             onChange={(e) => setOrderId(e.target.value)}
             onKeyDown={(e) => e.key === 'Enter' && handleSearch()}
             placeholder="Enter order ID..."
-            className="w-full pl-12 pr-4 py-4 rounded-2xl bg-zinc-900 border border-zinc-800 focus:border-[var(--seasonal-primary,#1a5632)] focus:outline-none text-white placeholder-zinc-500"
+            className="w-full pl-12 pr-4 py-4 rounded-2xl bg-[#28303F] border border-[#353F54] focus:border-[var(--seasonal-primary,#007AFF)] focus:outline-none text-white placeholder-[#4A5771]"
           />
         </div>
         <button onClick={handleSearch} disabled={loading}
-          className="bg-[var(--seasonal-primary,#1a5632)] text-white font-bold px-8 py-4 rounded-2xl hover:bg-[var(--seasonal-secondary,#14472a)] transition-colors disabled:opacity-50">
+          className="bg-[var(--seasonal-primary,#007AFF)] text-white font-bold px-8 py-4 rounded-2xl hover:bg-[var(--seasonal-secondary,#0066CC)] transition-colors disabled:opacity-50">
           {loading ? 'Searching...' : 'Track'}
         </button>
       </div>
@@ -217,77 +217,77 @@ export default function TrackOrder() {
       {order && (
         <div className="space-y-6">
           {/* Order Details Card */}
-          <div className="bg-zinc-900 rounded-3xl border border-zinc-800 p-6">
+          <div className="bg-[#28303F] rounded-3xl border border-[#353F54] p-6">
             <div className="grid grid-cols-2 gap-4 text-sm">
               <div>
-                <p className="text-zinc-400">Order ID</p>
+                <p className="text-[#4A5771]">Order ID</p>
                 <p className="font-mono font-bold text-white">{String(order.id).slice(0, 8).toUpperCase()}</p>
               </div>
               <div>
-                <p className="text-zinc-400">Date</p>
+                <p className="text-[#4A5771]">Date</p>
                 <p className="font-bold text-white">{new Date(order.created_at).toLocaleDateString('en-KE')}</p>
               </div>
               <div>
-                <p className="text-zinc-400">Customer</p>
+                <p className="text-[#4A5771]">Customer</p>
                 <p className="font-bold text-white">{order.customer_name}</p>
               </div>
               <div>
-                <p className="text-zinc-400">Total</p>
-                <p className="font-bold text-[var(--seasonal-primary,#1a5632)]">{formatKES(order.total_amount)}</p>
+                <p className="text-[#4A5771]">Total</p>
+                <p className="font-bold text-[var(--seasonal-primary,#007AFF)]">{formatKES(order.total_amount)}</p>
               </div>
               {order.phone && (
                 <div>
-                  <p className="text-zinc-400">Phone</p>
+                  <p className="text-[#4A5771]">Phone</p>
                   <p className="font-bold text-white">{order.phone}</p>
                 </div>
               )}
               {order.alternate_phone && (
                 <div>
-                  <p className="text-zinc-400">Alt. Phone</p>
+                  <p className="text-[#4A5771]">Alt. Phone</p>
                   <p className="font-bold text-white">{order.alternate_phone}</p>
                 </div>
               )}
               {order.id_number && (
                 <div>
-                  <p className="text-zinc-400">ID Number</p>
+                  <p className="text-[#4A5771]">ID Number</p>
                   <p className="font-bold text-white">{order.id_number}</p>
                 </div>
               )}
               {order.delivery_type === 'delivery' && order.scheduled_date && (
                 <div>
-                  <p className="text-zinc-400">Scheduled Date</p>
+                  <p className="text-[#4A5771]">Scheduled Date</p>
                   <p className="font-bold text-white">{new Date(order.scheduled_date).toLocaleDateString('en-KE')}</p>
                 </div>
               )}
             </div>
             {order.address && (
               <div className="mt-4 flex items-start gap-2 text-sm">
-                <MapPin className="w-4 h-4 text-zinc-400 mt-0.5 flex-shrink-0" />
-                <p className="text-zinc-400">{order.address}{order.city ? `, ${order.city}` : ''}</p>
+                <MapPin className="w-4 h-4 text-[#4A5771] mt-0.5 flex-shrink-0" />
+                <p className="text-[#4A5771]">{order.address}{order.city ? `, ${order.city}` : ''}</p>
               </div>
             )}
             {order.street && (
               <div className="mt-1 flex items-start gap-2 text-sm">
-                <MapPin className="w-4 h-4 text-zinc-400 mt-0.5 flex-shrink-0" />
-                <p className="text-zinc-400">Street/Plot: {order.street}</p>
+                <MapPin className="w-4 h-4 text-[#4A5771] mt-0.5 flex-shrink-0" />
+                <p className="text-[#4A5771]">Street/Plot: {order.street}</p>
               </div>
             )}
             {order.delivery_instructions && (
-              <div className="mt-2 p-3 rounded-xl bg-zinc-800/50 text-sm">
-                <p className="text-xs text-zinc-500 mb-1 font-semibold">Delivery Instructions</p>
-                <p className="text-zinc-400">{order.delivery_instructions}</p>
+              <div className="mt-2 p-3 rounded-xl bg-[#28303F]/50 text-sm">
+                <p className="text-xs text-[#4A5771] mb-1 font-semibold">Delivery Instructions</p>
+                <p className="text-[#4A5771]">{order.delivery_instructions}</p>
               </div>
             )}
             {order.order_notes && (
-              <div className="mt-2 p-3 rounded-xl bg-zinc-800/50 text-sm">
-                <p className="text-xs text-zinc-500 mb-1 font-semibold">Order Notes</p>
-                <p className="text-zinc-400">{order.order_notes}</p>
+              <div className="mt-2 p-3 rounded-xl bg-[#28303F]/50 text-sm">
+                <p className="text-xs text-[#4A5771] mb-1 font-semibold">Order Notes</p>
+                <p className="text-[#4A5771]">{order.order_notes}</p>
               </div>
             )}
 
             {/* Cancel Order */}
             {['pending', 'processing'].includes(order.status) && !showCancelForm && (
-              <div className="mt-4 pt-4 border-t border-zinc-800">
+              <div className="mt-4 pt-4 border-t border-[#353F54]">
                 <button onClick={() => setShowCancelForm(true)}
                   className="text-red-400 hover:text-red-300 text-sm font-bold transition-colors">
                   Cancel Order
@@ -296,7 +296,7 @@ export default function TrackOrder() {
             )}
 
             {['pending', 'processing'].includes(order.status) && showCancelForm && (
-              <div className="mt-4 pt-4 border-t border-zinc-800">
+              <div className="mt-4 pt-4 border-t border-[#353F54]">
                 <h3 className="text-sm font-bold text-white mb-2">Cancel Order</h3>
                 {cancelError && (
                   <div className="bg-red-900/20 text-red-600 p-3 rounded-xl mb-3 text-xs font-medium border border-red-900/50">
@@ -308,11 +308,11 @@ export default function TrackOrder() {
                   onChange={(e) => setCancelReason(e.target.value)}
                   placeholder="Reason for cancellation (optional)..."
                   rows={3}
-                  className="w-full px-4 py-3 rounded-2xl bg-zinc-800 border border-zinc-700 focus:border-red-500 focus:outline-none text-white placeholder-zinc-500 text-sm resize-none mb-3"
+                  className="w-full px-4 py-3 rounded-2xl bg-[#28303F] border border-[#353F54] focus:border-red-500 focus:outline-none text-white placeholder-[#4A5771] text-sm resize-none mb-3"
                 />
                 <div className="flex gap-3">
                   <button onClick={() => { setShowCancelForm(false); setCancelError(''); }}
-                    className="flex-1 bg-zinc-800 text-zinc-300 font-bold px-4 py-2.5 rounded-xl hover:bg-zinc-700 transition-colors text-xs">
+                    className="flex-1 bg-[#28303F] text-[#8E9BB5] font-bold px-4 py-2.5 rounded-xl hover:bg-[#323B4F] transition-colors text-xs">
                     Keep Order
                   </button>
                   <button onClick={handleCancelOrder} disabled={cancelSubmitting}
@@ -328,7 +328,7 @@ export default function TrackOrder() {
           {order.payment_method === 'cod' && (
             <div className="bg-amber-900/10 border border-amber-800/30 rounded-3xl p-6">
               <h2 className="text-lg font-bold text-white mb-3">Pay on Delivery</h2>
-              <div className="space-y-3 text-sm text-zinc-300">
+              <div className="space-y-3 text-sm text-[#8E9BB5]">
                 <p>
                   This order is set to <strong>Cash on Delivery (COD)</strong>.
                   Please inspect the items thoroughly before making payment to the delivery agent.
@@ -345,16 +345,16 @@ export default function TrackOrder() {
           )}
 
           {/* Visual Timeline */}
-          <div className="bg-zinc-900 rounded-3xl border border-zinc-800 p-6">
+          <div className="bg-[#28303F] rounded-3xl border border-[#353F54] p-6">
             {eventsLoading ? (
               /* Skeleton loader */
               <div className="space-y-6 animate-pulse">
                 {[1, 2, 3, 4].map((i) => (
                   <div key={i} className="flex gap-4">
-                    <div className="w-8 h-8 rounded-full bg-zinc-800 flex-shrink-0" />
+                    <div className="w-8 h-8 rounded-full bg-[#28303F] flex-shrink-0" />
                     <div className="flex-grow space-y-2">
-                      <div className="h-4 bg-zinc-800 rounded w-32" />
-                      <div className="h-3 bg-zinc-800/50 rounded w-48" />
+                      <div className="h-4 bg-[#28303F] rounded w-32" />
+                      <div className="h-3 bg-[#28303F]/50 rounded w-48" />
                     </div>
                   </div>
                 ))}
@@ -362,7 +362,7 @@ export default function TrackOrder() {
             ) : (
               <div className="relative">
                 {/* Vertical line */}
-                <div className="absolute left-[15px] top-0 bottom-0 w-0.5 bg-zinc-800" />
+                <div className="absolute left-[15px] top-0 bottom-0 w-0.5 bg-[#28303F]" />
 
                 <div className="space-y-0">
                   {timelineSteps.map((step, index) => {
@@ -377,23 +377,23 @@ export default function TrackOrder() {
                             step.isCancelled
                               ? 'bg-red-900/30 border-2 border-red-500'
                               : step.isCompleted
-                                ? 'bg-emerald-900/30 border-2 border-emerald-500'
+                                ? 'bg-[#007AFF]/30 border-2 border-[#007AFF]'
                                 : step.isCurrent
                                   ? 'bg-blue-900/30 border-2 border-blue-500 animate-pulse'
-                                  : 'bg-zinc-800 border-2 border-zinc-700'
+                                  : 'bg-[#28303F] border-2 border-[#353F54]'
                           }`}>
                             <StepIcon className={`w-4 h-4 ${
                               step.isCancelled
                                 ? 'text-red-400'
                                 : step.isCompleted
-                                  ? 'text-emerald-400'
+                                  ? 'text-[#38B8EA]'
                                   : step.isCurrent
                                     ? 'text-blue-400'
-                                    : 'text-zinc-500'
+                                    : 'text-[#4A5771]'
                             }`} />
                           </div>
                           {!isLast && (
-                            <div className="w-0.5 h-full bg-zinc-800 mt-0" />
+                            <div className="w-0.5 h-full bg-[#28303F] mt-0" />
                           )}
                         </div>
 
@@ -404,10 +404,10 @@ export default function TrackOrder() {
                               step.isCancelled
                                 ? 'text-red-400'
                                 : step.isCompleted
-                                  ? 'text-emerald-400'
+                                  ? 'text-[#38B8EA]'
                                   : step.isCurrent
                                     ? 'text-blue-400'
-                                    : 'text-zinc-500'
+                                    : 'text-[#4A5771]'
                             }`}>
                               {step.label}
                             </span>
@@ -419,7 +419,7 @@ export default function TrackOrder() {
                           </div>
 
                           {step.timestamp && (
-                            <p className="text-xs text-zinc-500 mt-0.5">
+                            <p className="text-xs text-[#4A5771] mt-0.5">
                               {new Date(step.timestamp).toLocaleDateString('en-KE', {
                                 year: 'numeric',
                                 month: 'short',
@@ -431,7 +431,7 @@ export default function TrackOrder() {
                           )}
 
                           {step.note && (
-                            <p className="text-xs text-zinc-400 mt-1 bg-zinc-800/50 px-3 py-1.5 rounded-lg inline-block">
+                            <p className="text-xs text-[#4A5771] mt-1 bg-[#28303F]/50 px-3 py-1.5 rounded-lg inline-block">
                               {step.note}
                             </p>
                           )}
@@ -442,33 +442,33 @@ export default function TrackOrder() {
                 </div>
 
                 {timelineSteps.length === 0 && (
-                  <p className="text-zinc-500 text-sm text-center py-4">No tracking information available yet.</p>
+                  <p className="text-[#4A5771] text-sm text-center py-4">No tracking information available yet.</p>
                 )}
               </div>
             )}
           </div>
 
           {/* Order Items */}
-          <div className="bg-zinc-900 rounded-3xl border border-zinc-800 p-6">
+          <div className="bg-[#28303F] rounded-3xl border border-[#353F54] p-6">
             <h2 className="text-lg font-bold text-white mb-4">Items</h2>
             <div className="space-y-3">
               {(order.omix_order_items || []).map((item, i) => (
                 <div key={i} className="flex items-center gap-4">
-                  <div className="w-12 h-12 rounded-xl bg-zinc-800 overflow-hidden flex-shrink-0">
+                  <div className="w-12 h-12 rounded-xl bg-[#28303F] overflow-hidden flex-shrink-0">
                     {item.product_image ? (
                       <img src={item.product_image} alt={item.product_name} className="w-full h-full object-cover" />
                     ) : (
-                      <div className="w-full h-full flex items-center justify-center text-zinc-400">
+                      <div className="w-full h-full flex items-center justify-center text-[#4A5771]">
                         <Package className="w-5 h-5" />
                       </div>
                     )}
                   </div>
                   <div className="flex-grow">
                     <p className="font-bold text-white text-sm">{item.product_name}</p>
-                    <p className="text-xs text-zinc-400">Qty: {item.quantity}</p>
-                    {item.variant_size && <p className="text-xs text-zinc-400">Size: {item.variant_size}</p>}
-                    {item.variant_color && <p className="text-xs text-zinc-400">Color: {item.variant_color}</p>}
-                    {item.variant_label && <p className="text-xs text-zinc-400">{item.variant_label}</p>}
+                    <p className="text-xs text-[#4A5771]">Qty: {item.quantity}</p>
+                    {item.variant_size && <p className="text-xs text-[#4A5771]">Size: {item.variant_size}</p>}
+                    {item.variant_color && <p className="text-xs text-[#4A5771]">Color: {item.variant_color}</p>}
+                    {item.variant_label && <p className="text-xs text-[#4A5771]">{item.variant_label}</p>}
                   </div>
                   <p className="font-bold text-white text-sm">{formatKES(item.price * item.quantity)}</p>
                 </div>
@@ -478,16 +478,16 @@ export default function TrackOrder() {
 
           {/* Return Request */}
           {order.status === 'delivered' && !showReturnForm && (
-            <div className="bg-zinc-900 rounded-3xl border border-zinc-800 p-6">
+            <div className="bg-[#28303F] rounded-3xl border border-[#353F54] p-6">
               <div className="flex items-center justify-between">
                 <div>
                   <h2 className="text-lg font-bold text-white">Need to return an item?</h2>
-                  <p className="text-sm text-zinc-400 mt-1">
+                  <p className="text-sm text-[#4A5771] mt-1">
                     You can request a return within 7 days of delivery.
                   </p>
                 </div>
                 <button onClick={() => setShowReturnForm(true)}
-                  className="bg-[var(--seasonal-primary,#1a5632)] text-white font-bold px-6 py-3 rounded-2xl hover:bg-[var(--seasonal-secondary,#14472a)] transition-colors text-sm">
+                  className="bg-[var(--seasonal-primary,#007AFF)] text-white font-bold px-6 py-3 rounded-2xl hover:bg-[var(--seasonal-secondary,#0066CC)] transition-colors text-sm">
                   Request Return
                 </button>
               </div>
@@ -495,10 +495,10 @@ export default function TrackOrder() {
           )}
 
           {order.status === 'delivered' && showReturnForm && (
-            <div className="bg-zinc-900 rounded-3xl border border-zinc-800 p-6">
+            <div className="bg-[#28303F] rounded-3xl border border-[#353F54] p-6">
               <h2 className="text-lg font-bold text-white mb-3">Submit Return Request</h2>
               {returnSuccess ? (
-                <div className="bg-emerald-900/20 text-emerald-400 p-4 rounded-xl text-sm font-medium border border-emerald-900/50">
+                <div className="bg-[#007AFF]/20 text-[#38B8EA] p-4 rounded-xl text-sm font-medium border border-[#007AFF]/50">
                   {returnSuccess}
                 </div>
               ) : (
@@ -509,26 +509,26 @@ export default function TrackOrder() {
                     </div>
                   )}
                   <div className="mb-4">
-                    <p className="text-xs text-zinc-400 mb-2">Order ID</p>
+                    <p className="text-xs text-[#4A5771] mb-2">Order ID</p>
                     <p className="font-mono font-bold text-white text-sm">{String(order.id).slice(0, 8).toUpperCase()}</p>
                   </div>
                   <div className="mb-4">
-                    <label className="block text-xs text-zinc-400 mb-2">Reason for Return</label>
+                    <label className="block text-xs text-[#4A5771] mb-2">Reason for Return</label>
                     <textarea
                       value={returnReason}
                       onChange={(e) => setReturnReason(e.target.value)}
                       placeholder="Tell us why you want to return this item..."
                       rows={4}
-                      className="w-full px-4 py-3 rounded-2xl bg-zinc-800 border border-zinc-700 focus:border-[var(--seasonal-primary,#1a5632)] focus:outline-none text-white placeholder-zinc-500 text-sm resize-none"
+                      className="w-full px-4 py-3 rounded-2xl bg-[#28303F] border border-[#353F54] focus:border-[var(--seasonal-primary,#007AFF)] focus:outline-none text-white placeholder-[#4A5771] text-sm resize-none"
                     />
                   </div>
                   <div className="flex gap-3">
                     <button onClick={() => { setShowReturnForm(false); setReturnError(''); }}
-                      className="flex-1 bg-zinc-800 text-zinc-300 font-bold px-6 py-3 rounded-2xl hover:bg-zinc-700 transition-colors text-sm">
+                      className="flex-1 bg-[#28303F] text-[#8E9BB5] font-bold px-6 py-3 rounded-2xl hover:bg-[#323B4F] transition-colors text-sm">
                       Cancel
                     </button>
                     <button onClick={handleReturnRequest} disabled={returnSubmitting || !returnReason.trim()}
-                      className="flex-1 bg-[var(--seasonal-primary,#1a5632)] text-white font-bold px-6 py-3 rounded-2xl hover:bg-[var(--seasonal-secondary,#14472a)] transition-colors disabled:opacity-50 text-sm">
+                      className="flex-1 bg-[var(--seasonal-primary,#007AFF)] text-white font-bold px-6 py-3 rounded-2xl hover:bg-[var(--seasonal-secondary,#0066CC)] transition-colors disabled:opacity-50 text-sm">
                       {returnSubmitting ? 'Submitting...' : 'Submit Return Request'}
                     </button>
                   </div>
@@ -540,7 +540,7 @@ export default function TrackOrder() {
       )}
 
       {!order && !error && searched && (
-        <div className="text-center py-12 text-zinc-400">No order found with that ID.</div>
+        <div className="text-center py-12 text-[#4A5771]">No order found with that ID.</div>
       )}
     </div>
   );

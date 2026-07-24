@@ -61,9 +61,9 @@ function Refurbished() {
     setLoadingMore(false);
   };
 
-  const heroFrom = theme?.colors?.heroFrom || '#1a5632';
-  const heroVia = theme?.colors?.heroVia || '#14472a';
-  const heroTo = theme?.colors?.heroTo || '#103820';
+  const heroFrom = theme?.colors?.heroFrom || '#007AFF';
+  const heroVia = theme?.colors?.heroVia || '#0066CC';
+  const heroTo = theme?.colors?.heroTo || '#0055AA';
   const particleType = theme?.particleType || 'none';
 
   return (
@@ -76,7 +76,7 @@ function Refurbished() {
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,rgba(255,255,255,0.1),transparent_50%)]"></div>
         <div className="relative px-4 py-12 sm:py-16 text-center max-w-4xl mx-auto">
           <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/10 backdrop-blur-sm mb-4">
-            <Sparkles className="w-4 h-4 text-amber-300" />
+            <Sparkles className="w-4 h-4 text-blue-300" />
             <span className="text-xs font-bold text-white/90 uppercase tracking-wider">Quality Checked</span>
           </div>
           <h1 className="text-3xl sm:text-5xl font-black text-white mb-3">Refurbished Deals</h1>
@@ -105,8 +105,8 @@ function Refurbished() {
               onClick={() => setActiveCategory(cat)}
               className={`px-4 py-2 rounded-xl text-xs font-bold whitespace-nowrap transition-all ${
                 activeCategory === cat
-                  ? 'bg-[var(--seasonal-primary,#1a5632)] text-white shadow-lg'
-                  : 'bg-zinc-900 text-zinc-400 hover:bg-zinc-800'
+                  ? 'bg-[var(--seasonal-primary,#007AFF)] text-white shadow-lg'
+                  : 'bg-[#28303F] text-[#4A5771] hover:bg-zinc-800'
               }`}
             >
               {cat}
@@ -116,7 +116,7 @@ function Refurbished() {
 
         {/* Results count */}
         <div className="flex items-center justify-between mb-4">
-          <p className="text-sm text-zinc-400">
+          <p className="text-sm text-[#4A5771]">
             {loading ? 'Loading...' : `${totalCount} refurbished item${totalCount !== 1 ? 's' : ''} available`}
           </p>
         </div>
@@ -138,7 +138,7 @@ function Refurbished() {
             {hasMore && (
               <div className="text-center mt-8">
                 <button onClick={loadMore} disabled={loadingMore}
-                  className="px-8 py-3 rounded-xl bg-zinc-800 text-white text-sm font-bold hover:bg-zinc-700 transition-colors disabled:opacity-50">
+                  className="px-8 py-3 rounded-xl bg-[#28303F] text-white text-sm font-bold hover:bg-zinc-700 transition-colors disabled:opacity-50">
                   {loadingMore ? 'Loading...' : 'Load More'}
                 </button>
               </div>
@@ -147,8 +147,8 @@ function Refurbished() {
         ) : (
           <div className="text-center py-20">
             <ShoppingBag className="w-16 h-16 text-zinc-700 mx-auto mb-4" />
-            <h3 className="text-lg font-bold text-zinc-400 mb-2">No refurbished items yet</h3>
-            <p className="text-sm text-zinc-500">Check back soon — great deals are coming!</p>
+            <h3 className="text-lg font-bold text-[#4A5771] mb-2">No refurbished items yet</h3>
+            <p className="text-sm text-[#4A5771]">Check back soon — great deals are coming!</p>
           </div>
         )}
       </div>

@@ -229,7 +229,7 @@ function SearchPage() {
       {hasActiveFilters && (
         <button
           onClick={clearAllFilters}
-          className="text-xs text-zinc-400 hover:text-red-400 font-semibold transition-colors flex items-center gap-1"
+          className="text-xs text-[#4A5771] hover:text-red-400 font-semibold transition-colors flex items-center gap-1"
         >
           <X className="w-3 h-3" />
           Clear all filters
@@ -238,7 +238,7 @@ function SearchPage() {
 
       {/* Category */}
       <div>
-        <label className="flex items-center gap-1.5 text-xs font-bold text-zinc-400 uppercase tracking-wider mb-3">
+        <label className="flex items-center gap-1.5 text-xs font-bold text-[#4A5771] uppercase tracking-wider mb-3">
           <Layers className="w-3.5 h-3.5" />
           Category
         </label>
@@ -252,8 +252,8 @@ function SearchPage() {
                 onClick={() => handleFilterChange('category', isSelected ? '' : cat)}
                 className={`flex items-center gap-2 px-2.5 py-2 rounded-xl text-xs font-semibold transition-all ${
                   isSelected
-                    ? 'bg-[var(--seasonal-primary,#1a5632)] text-white shadow-md'
-                    : 'bg-zinc-800/60 text-zinc-300 hover:bg-zinc-700 hover:text-white'
+                    ? 'bg-[var(--seasonal-primary,#007AFF)] text-white shadow-md'
+                    : 'bg-[#28303F]/60 text-[#8E9BB5] hover:bg-[#353F54] hover:text-white'
                 }`}
               >
                 {Icon && <Icon className="w-4 h-4 shrink-0" />}
@@ -266,7 +266,7 @@ function SearchPage() {
 
       {/* Price Range */}
       <div>
-        <label className="flex items-center gap-1.5 text-xs font-bold text-zinc-400 uppercase tracking-wider mb-2">
+        <label className="flex items-center gap-1.5 text-xs font-bold text-[#4A5771] uppercase tracking-wider mb-2">
           <DollarSign className="w-3.5 h-3.5" />
           Price Range
         </label>
@@ -277,23 +277,23 @@ function SearchPage() {
             placeholder="Min"
             value={filters.min_price}
             onChange={(e) => handleFilterChange('min_price', e.target.value)}
-            className="w-full bg-zinc-900 border border-zinc-800 rounded-xl px-3 py-2.5 text-sm text-white placeholder-zinc-500 focus:border-[var(--seasonal-primary,#1a5632)] focus:outline-none"
+            className="w-full bg-[#28303F] border border-[#353F54] rounded-xl px-3 py-2.5 text-sm text-white placeholder-[#4A5771] focus:border-[var(--seasonal-primary,#007AFF)] focus:outline-none"
           />
-          <span className="text-zinc-500 text-xs">-</span>
+          <span className="text-[#4A5771] text-xs">-</span>
           <input
             type="number"
             min="0"
             placeholder="Max"
             value={filters.max_price}
             onChange={(e) => handleFilterChange('max_price', e.target.value)}
-            className="w-full bg-zinc-900 border border-zinc-800 rounded-xl px-3 py-2.5 text-sm text-white placeholder-zinc-500 focus:border-[var(--seasonal-primary,#1a5632)] focus:outline-none"
+            className="w-full bg-[#28303F] border border-[#353F54] rounded-xl px-3 py-2.5 text-sm text-white placeholder-[#4A5771] focus:border-[var(--seasonal-primary,#007AFF)] focus:outline-none"
           />
         </div>
       </div>
 
       {/* Condition */}
       <div>
-        <label className="flex items-center gap-1.5 text-xs font-bold text-zinc-400 uppercase tracking-wider mb-2">
+        <label className="flex items-center gap-1.5 text-xs font-bold text-[#4A5771] uppercase tracking-wider mb-2">
           <Tag className="w-3.5 h-3.5" />
           Condition
         </label>
@@ -307,9 +307,9 @@ function SearchPage() {
                 type="checkbox"
                 checked={selectedCondition.includes(cond)}
                 onChange={() => toggleCondition(cond)}
-                className="w-4 h-4 rounded border-zinc-700 bg-zinc-900 text-[var(--seasonal-primary,#1a5632)] focus:ring-[var(--seasonal-primary,#1a5632)] focus:ring-offset-0"
+                className="w-4 h-4 rounded border-[#353F54] bg-[#28303F] text-[var(--seasonal-primary,#007AFF)] focus:ring-[var(--seasonal-primary,#007AFF)] focus:ring-offset-0"
               />
-              <span className="text-sm text-zinc-300 group-hover:text-white transition-colors capitalize">
+              <span className="text-sm text-[#8E9BB5] group-hover:text-white transition-colors capitalize">
                 {cond === 'Refurbished' ? 'Refurbished' : cond}
               </span>
             </label>
@@ -319,7 +319,7 @@ function SearchPage() {
 
       {/* Location */}
       <div>
-        <label className="flex items-center gap-1.5 text-xs font-bold text-zinc-400 uppercase tracking-wider mb-2">
+        <label className="flex items-center gap-1.5 text-xs font-bold text-[#4A5771] uppercase tracking-wider mb-2">
           <MapPin className="w-3.5 h-3.5" />
           Location
         </label>
@@ -328,13 +328,13 @@ function SearchPage() {
           placeholder="City or area..."
           value={filters.location}
           onChange={(e) => handleFilterChange('location', e.target.value)}
-          className="w-full bg-zinc-900 border border-zinc-800 rounded-xl px-3 py-2.5 text-sm text-white placeholder-zinc-500 focus:border-[var(--seasonal-primary,#1a5632)] focus:outline-none"
+          className="w-full bg-[#28303F] border border-[#353F54] rounded-xl px-3 py-2.5 text-sm text-white placeholder-[#4A5771] focus:border-[var(--seasonal-primary,#007AFF)] focus:outline-none"
         />
       </div>
 
       {/* Brand */}
       <div>
-        <label className="flex items-center gap-1.5 text-xs font-bold text-zinc-400 uppercase tracking-wider mb-2">
+        <label className="flex items-center gap-1.5 text-xs font-bold text-[#4A5771] uppercase tracking-wider mb-2">
           <Package className="w-3.5 h-3.5" />
           Brand
         </label>
@@ -343,20 +343,20 @@ function SearchPage() {
           placeholder="Brand name..."
           value={filters.brand}
           onChange={(e) => handleFilterChange('brand', e.target.value)}
-          className="w-full bg-zinc-900 border border-zinc-800 rounded-xl px-3 py-2.5 text-sm text-white placeholder-zinc-500 focus:border-[var(--seasonal-primary,#1a5632)] focus:outline-none"
+          className="w-full bg-[#28303F] border border-[#353F54] rounded-xl px-3 py-2.5 text-sm text-white placeholder-[#4A5771] focus:border-[var(--seasonal-primary,#007AFF)] focus:outline-none"
         />
       </div>
 
       {/* Availability */}
       <div>
-        <label className="flex items-center gap-1.5 text-xs font-bold text-zinc-400 uppercase tracking-wider mb-2">
+        <label className="flex items-center gap-1.5 text-xs font-bold text-[#4A5771] uppercase tracking-wider mb-2">
           <Package className="w-3.5 h-3.5" />
           Availability
         </label>
         <select
           value={filters.availability}
           onChange={(e) => handleFilterChange('availability', e.target.value)}
-          className="w-full bg-zinc-900 border border-zinc-800 rounded-xl px-3 py-2.5 text-sm text-white focus:border-[var(--seasonal-primary,#1a5632)] focus:outline-none"
+          className="w-full bg-[#28303F] border border-[#353F54] rounded-xl px-3 py-2.5 text-sm text-white focus:border-[var(--seasonal-primary,#007AFF)] focus:outline-none"
         >
           {AVAILABILITY_OPTIONS.map((opt) => (
             <option key={opt.value} value={opt.value}>
@@ -368,7 +368,7 @@ function SearchPage() {
 
       {/* Minimum Rating */}
       <div>
-        <label className="flex items-center gap-1.5 text-xs font-bold text-zinc-400 uppercase tracking-wider mb-2">
+        <label className="flex items-center gap-1.5 text-xs font-bold text-[#4A5771] uppercase tracking-wider mb-2">
           <Star className="w-3.5 h-3.5" />
           Minimum Rating
         </label>
@@ -396,7 +396,7 @@ function SearchPage() {
           {filters.min_rating && (
             <button
               onClick={() => handleFilterChange('min_rating', '')}
-              className="text-xs text-zinc-500 hover:text-white ml-1 p-1"
+              className="text-xs text-[#4A5771] hover:text-white ml-1 p-1"
               aria-label="Clear rating filter"
             >
               <X className="w-3 h-3" />
@@ -407,7 +407,7 @@ function SearchPage() {
 
       {/* Discount */}
       <div>
-        <label className="flex items-center gap-1.5 text-xs font-bold text-zinc-400 uppercase tracking-wider mb-2">
+        <label className="flex items-center gap-1.5 text-xs font-bold text-[#4A5771] uppercase tracking-wider mb-2">
           <Tag className="w-3.5 h-3.5" />
           Discount
         </label>
@@ -416,9 +416,9 @@ function SearchPage() {
             type="checkbox"
             checked={filters.has_discount === 'true'}
             onChange={(e) => handleFilterChange('has_discount', e.target.checked ? 'true' : '')}
-            className="w-4 h-4 rounded border-zinc-700 bg-zinc-900 text-[var(--seasonal-primary,#1a5632)] focus:ring-[var(--seasonal-primary,#1a5632)] focus:ring-offset-0"
+            className="w-4 h-4 rounded border-[#353F54] bg-[#28303F] text-[var(--seasonal-primary,#007AFF)] focus:ring-[var(--seasonal-primary,#007AFF)] focus:ring-offset-0"
           />
-          <span className="text-sm text-zinc-300 group-hover:text-white transition-colors">
+          <span className="text-sm text-[#8E9BB5] group-hover:text-white transition-colors">
             Discounted items only
           </span>
         </label>
@@ -426,7 +426,7 @@ function SearchPage() {
 
       {/* Size */}
       <div>
-        <label className="flex items-center gap-1.5 text-xs font-bold text-zinc-400 uppercase tracking-wider mb-2">
+        <label className="flex items-center gap-1.5 text-xs font-bold text-[#4A5771] uppercase tracking-wider mb-2">
           <Layers className="w-3.5 h-3.5" />
           Size
         </label>
@@ -441,8 +441,8 @@ function SearchPage() {
                     onClick={() => handleFilterChange('size', filters.size === s ? '' : s)}
                     className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-colors ${
                       filters.size === s
-                        ? 'bg-[var(--seasonal-primary,#1a5632)] text-white'
-                        : 'bg-zinc-800 text-zinc-300 hover:bg-zinc-700'
+                        ? 'bg-[var(--seasonal-primary,#007AFF)] text-white'
+                        : 'bg-[#28303F] text-[#8E9BB5] hover:bg-[#353F54]'
                     }`}
                   >
                     {s}
@@ -458,7 +458,7 @@ function SearchPage() {
           placeholder="Size (e.g. M, 42, Large)..."
           value={filters.size}
           onChange={(e) => handleFilterChange('size', e.target.value)}
-          className="w-full bg-zinc-900 border border-zinc-800 rounded-xl px-3 py-2.5 text-sm text-white placeholder-zinc-500 focus:border-[var(--seasonal-primary,#1a5632)] focus:outline-none"
+          className="w-full bg-[#28303F] border border-[#353F54] rounded-xl px-3 py-2.5 text-sm text-white placeholder-[#4A5771] focus:border-[var(--seasonal-primary,#007AFF)] focus:outline-none"
         />
       </div>
     </div>
@@ -479,13 +479,13 @@ function SearchPage() {
     if (listings.length === 0) {
       return (
         <div className="text-center py-20">
-          <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-zinc-900 mb-4">
-            <SearchX className="w-8 h-8 text-zinc-500" />
+          <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-[#28303F] mb-4">
+            <SearchX className="w-8 h-8 text-[#4A5771]" />
           </div>
-          <h3 className="text-lg font-bold text-zinc-400 mb-2">
+          <h3 className="text-lg font-bold text-[#4A5771] mb-2">
             No results found
           </h3>
-          <p className="text-sm text-zinc-500 max-w-md mx-auto mb-6">
+          <p className="text-sm text-[#4A5771] max-w-md mx-auto mb-6">
             {hasActiveFilters
               ? 'Try adjusting your filters or search terms.'
               : 'Try searching for something different.'}
@@ -493,7 +493,7 @@ function SearchPage() {
           {hasActiveFilters && (
             <button
               onClick={clearAllFilters}
-              className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-zinc-800 text-white text-sm font-bold hover:bg-zinc-700 transition-colors"
+              className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-[#28303F] text-white text-sm font-bold hover:bg-[#353F54] transition-colors"
             >
               <X className="w-4 h-4" />
               Clear all filters
@@ -516,26 +516,26 @@ function SearchPage() {
   };
 
   return (
-    <div className="min-h-screen bg-zinc-950">
+    <div className="min-h-screen bg-[#242C3B]">
       <div className="max-w-7xl mx-auto px-4 py-6">
         {/* ── Search Header ── */}
         <div className="mb-6">
           <div className="flex items-center gap-3">
             <button
               onClick={() => window.history.back()}
-              className="lg:hidden p-2 -ml-2 rounded-full hover:bg-zinc-800 text-zinc-300 transition-colors"
+              className="lg:hidden p-2 -ml-2 rounded-full hover:bg-[#28303F] text-[#8E9BB5] transition-colors"
               aria-label="Go back"
             >
               <ArrowLeft className="w-5 h-5" />
             </button>
             <form onSubmit={handleSearchSubmit} className="relative flex-1 max-w-2xl">
-            <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-zinc-400" />
+            <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-[#4A5771]" />
             <input
               type="text"
               value={localQ}
               onChange={(e) => setLocalQ(e.target.value)}
               placeholder="Search products..."
-              className="w-full pl-12 pr-32 py-3.5 rounded-2xl bg-zinc-900 border border-zinc-800 focus:border-[var(--seasonal-primary,#1a5632)] focus:outline-none text-white text-sm shadow-sm"
+              className="w-full pl-12 pr-32 py-3.5 rounded-2xl bg-[#28303F] border border-[#353F54] focus:border-[var(--seasonal-primary,#007AFF)] focus:outline-none text-white text-sm shadow-sm"
             />
             {localQ && (
               <button
@@ -544,7 +544,7 @@ function SearchPage() {
                   setLocalQ('');
                   updateFilters({ ...filters, q: '', page: 1 });
                 }}
-                className="absolute right-28 top-1/2 -translate-y-1/2 p-1 rounded-full hover:bg-zinc-800 text-zinc-400"
+                className="absolute right-28 top-1/2 -translate-y-1/2 p-1 rounded-full hover:bg-[#28303F] text-[#4A5771]"
                 aria-label="Clear search"
               >
                 <X className="w-4 h-4" />
@@ -552,7 +552,7 @@ function SearchPage() {
             )}
             <button
               type="submit"
-              className="absolute right-2 top-1/2 -translate-y-1/2 bg-[var(--seasonal-primary,#1a5632)] text-white px-4 py-1.5 rounded-xl text-xs font-bold hover:bg-[var(--seasonal-secondary,#14472a)] transition-colors"
+              className="absolute right-2 top-1/2 -translate-y-1/2 bg-[var(--seasonal-primary,#007AFF)] text-white px-4 py-1.5 rounded-xl text-xs font-bold hover:bg-[var(--seasonal-secondary,#0066CC)] transition-colors"
             >
               Search
             </button>
@@ -562,14 +562,14 @@ function SearchPage() {
 
         {/* ── Mobile Filter Toggle + Sort ── */}
         <div className="flex items-center justify-between mb-3 lg:hidden">
-          <p className="text-xs text-zinc-400">
+          <p className="text-xs text-[#4A5771]">
             {loading ? 'Searching...' : `${total} result${total !== 1 ? 's' : ''}`}
           </p>
           <div className="flex items-center gap-2">
             <select
               value={filters.sort}
               onChange={(e) => handleFilterChange('sort', e.target.value)}
-              className="bg-zinc-900 border border-zinc-800 rounded-lg px-3 py-2 text-xs text-white focus:border-[var(--seasonal-primary,#1a5632)] focus:outline-none appearance-none cursor-pointer"
+              className="bg-[#28303F] border border-[#353F54] rounded-lg px-3 py-2 text-xs text-white focus:border-[var(--seasonal-primary,#007AFF)] focus:outline-none appearance-none cursor-pointer"
             >
               {SORT_OPTIONS.map((opt) => (
                 <option key={opt.value} value={opt.value}>
@@ -581,14 +581,14 @@ function SearchPage() {
               onClick={() => setSidebarOpen(!sidebarOpen)}
               className={`flex items-center gap-1.5 px-3 py-2 rounded-lg border transition-all text-xs font-semibold active:scale-95 ${
                 sidebarOpen
-                  ? 'bg-[var(--seasonal-primary,#1a5632)] border-[var(--seasonal-primary,#1a5632)] text-white'
-                  : 'bg-zinc-900 border-zinc-700 text-zinc-300 hover:bg-zinc-800'
+                  ? 'bg-[var(--seasonal-primary,#007AFF)] border-[var(--seasonal-primary,#007AFF)] text-white'
+                  : 'bg-[#28303F] border-[#353F54] text-[#8E9BB5] hover:bg-[#28303F]'
               }`}
             >
               <SlidersHorizontal className="w-3.5 h-3.5" />
               Filters
               {hasActiveFilters && (
-                <span className="w-1.5 h-1.5 rounded-full bg-emerald-400" />
+                <span className="w-1.5 h-1.5 rounded-full bg-[#38B8EA]" />
               )}
             </button>
           </div>
@@ -597,13 +597,13 @@ function SearchPage() {
         {/* ── Desktop results count ── */}
         <div className="hidden lg:flex items-center justify-between mb-4">
           <div className="flex items-center gap-4">
-            <p className="text-sm text-zinc-400">
+            <p className="text-sm text-[#4A5771]">
               {loading ? 'Searching...' : `${total} result${total !== 1 ? 's' : ''}`}
             </p>
             <select
               value={filters.sort}
               onChange={(e) => handleFilterChange('sort', e.target.value)}
-              className="bg-zinc-900 border border-zinc-800 rounded-xl px-3 py-1.5 text-xs text-white focus:border-[var(--seasonal-primary,#1a5632)] focus:outline-none"
+              className="bg-[#28303F] border border-[#353F54] rounded-xl px-3 py-1.5 text-xs text-white focus:border-[var(--seasonal-primary,#007AFF)] focus:outline-none"
             >
               {SORT_OPTIONS.map((opt) => (
                 <option key={opt.value} value={opt.value}>
@@ -615,7 +615,7 @@ function SearchPage() {
           {hasActiveFilters && (
             <button
               onClick={clearAllFilters}
-              className="text-xs text-zinc-400 hover:text-red-400 font-semibold transition-colors flex items-center gap-1"
+              className="text-xs text-[#4A5771] hover:text-red-400 font-semibold transition-colors flex items-center gap-1"
             >
               <X className="w-3 h-3" />
               Clear filters
@@ -641,15 +641,15 @@ function SearchPage() {
                 onClick={() => setSidebarOpen(false)}
               />
               {/* Panel */}
-              <div className="absolute right-0 top-0 bottom-0 w-80 max-w-[85vw] bg-zinc-900 border-l border-zinc-800 shadow-2xl overflow-y-auto">
-                <div className="sticky top-0 bg-zinc-900 border-b border-zinc-800 px-5 py-4 flex items-center justify-between z-10">
+              <div className="absolute right-0 top-0 bottom-0 w-80 max-w-[85vw] bg-[#28303F] border-l border-[#353F54] shadow-2xl overflow-y-auto">
+                <div className="sticky top-0 bg-[#28303F] border-b border-[#353F54] px-5 py-4 flex items-center justify-between z-10">
                   <span className="font-bold text-white text-sm flex items-center gap-2">
                     <SlidersHorizontal className="w-4 h-4" />
                     Filters
                   </span>
                   <button
                     onClick={() => setSidebarOpen(false)}
-                    className="p-1.5 rounded-lg hover:bg-zinc-800 text-zinc-400"
+                    className="p-1.5 rounded-lg hover:bg-[#28303F] text-[#4A5771]"
                     aria-label="Close filters"
                   >
                     <X className="w-5 h-5" />
@@ -666,32 +666,32 @@ function SearchPage() {
             {hasActiveFilters && (
               <div className="flex flex-wrap gap-2 mb-4">
                 {filters.q && (
-                  <span className="inline-flex items-center gap-1 px-3 py-1 rounded-lg bg-zinc-900 border border-zinc-800 text-xs text-zinc-300">
+                  <span className="inline-flex items-center gap-1 px-3 py-1 rounded-lg bg-[#28303F] border border-[#353F54] text-xs text-[#8E9BB5]">
                     "{filters.q}"
                     <button
                       onClick={() => {
                         setLocalQ('');
                         handleFilterChange('q', '');
                       }}
-                      className="text-zinc-500 hover:text-white ml-0.5"
+                      className="text-[#4A5771] hover:text-white ml-0.5"
                     >
                       <X className="w-3 h-3" />
                     </button>
                   </span>
                 )}
                 {filters.category && (
-                  <span className="inline-flex items-center gap-1 px-3 py-1 rounded-lg bg-zinc-900 border border-zinc-800 text-xs text-zinc-300">
+                  <span className="inline-flex items-center gap-1 px-3 py-1 rounded-lg bg-[#28303F] border border-[#353F54] text-xs text-[#8E9BB5]">
                     {filters.category}
                     <button
                       onClick={() => handleFilterChange('category', '')}
-                      className="text-zinc-500 hover:text-white ml-0.5"
+                      className="text-[#4A5771] hover:text-white ml-0.5"
                     >
                       <X className="w-3 h-3" />
                     </button>
                   </span>
                 )}
                 {(filters.min_price || filters.max_price) && (
-                  <span className="inline-flex items-center gap-1 px-3 py-1 rounded-lg bg-zinc-900 border border-zinc-800 text-xs text-zinc-300">
+                  <span className="inline-flex items-center gap-1 px-3 py-1 rounded-lg bg-[#28303F] border border-[#353F54] text-xs text-[#8E9BB5]">
                     {filters.min_price ? `KES ${Number(filters.min_price).toLocaleString()}` : 'KES 0'}
                     {' - '}
                     {filters.max_price ? `KES ${Number(filters.max_price).toLocaleString()}` : 'Any'}
@@ -700,87 +700,87 @@ function SearchPage() {
                         handleFilterChange('min_price', '');
                         handleFilterChange('max_price', '');
                       }}
-                      className="text-zinc-500 hover:text-white ml-0.5"
+                      className="text-[#4A5771] hover:text-white ml-0.5"
                     >
                       <X className="w-3 h-3" />
                     </button>
                   </span>
                 )}
                 {filters.condition && (
-                  <span className="inline-flex items-center gap-1 px-3 py-1 rounded-lg bg-zinc-900 border border-zinc-800 text-xs text-zinc-300 capitalize">
+                  <span className="inline-flex items-center gap-1 px-3 py-1 rounded-lg bg-[#28303F] border border-[#353F54] text-xs text-[#8E9BB5] capitalize">
                     {filters.condition.replace(/,/g, ', ')}
                     <button
                       onClick={() => handleFilterChange('condition', '')}
-                      className="text-zinc-500 hover:text-white ml-0.5"
+                      className="text-[#4A5771] hover:text-white ml-0.5"
                     >
                       <X className="w-3 h-3" />
                     </button>
                   </span>
                 )}
                 {filters.location && (
-                  <span className="inline-flex items-center gap-1 px-3 py-1 rounded-lg bg-zinc-900 border border-zinc-800 text-xs text-zinc-300">
+                  <span className="inline-flex items-center gap-1 px-3 py-1 rounded-lg bg-[#28303F] border border-[#353F54] text-xs text-[#8E9BB5]">
                     <MapPin className="w-3 h-3" />
                     {filters.location}
                     <button
                       onClick={() => handleFilterChange('location', '')}
-                      className="text-zinc-500 hover:text-white ml-0.5"
+                      className="text-[#4A5771] hover:text-white ml-0.5"
                     >
                       <X className="w-3 h-3" />
                     </button>
                   </span>
                 )}
                 {filters.brand && (
-                  <span className="inline-flex items-center gap-1 px-3 py-1 rounded-lg bg-zinc-900 border border-zinc-800 text-xs text-zinc-300">
+                  <span className="inline-flex items-center gap-1 px-3 py-1 rounded-lg bg-[#28303F] border border-[#353F54] text-xs text-[#8E9BB5]">
                     <Package className="w-3 h-3" />
                     {filters.brand}
                     <button
                       onClick={() => handleFilterChange('brand', '')}
-                      className="text-zinc-500 hover:text-white ml-0.5"
+                      className="text-[#4A5771] hover:text-white ml-0.5"
                     >
                       <X className="w-3 h-3" />
                     </button>
                   </span>
                 )}
                 {filters.availability && (
-                  <span className="inline-flex items-center gap-1 px-3 py-1 rounded-lg bg-zinc-900 border border-zinc-800 text-xs text-zinc-300">
+                  <span className="inline-flex items-center gap-1 px-3 py-1 rounded-lg bg-[#28303F] border border-[#353F54] text-xs text-[#8E9BB5]">
                     {AVAILABILITY_OPTIONS.find((o) => o.value === filters.availability)?.label}
                     <button
                       onClick={() => handleFilterChange('availability', '')}
-                      className="text-zinc-500 hover:text-white ml-0.5"
+                      className="text-[#4A5771] hover:text-white ml-0.5"
                     >
                       <X className="w-3 h-3" />
                     </button>
                   </span>
                 )}
                 {filters.min_rating && (
-                  <span className="inline-flex items-center gap-1 px-3 py-1 rounded-lg bg-zinc-900 border border-zinc-800 text-xs text-zinc-300">
+                  <span className="inline-flex items-center gap-1 px-3 py-1 rounded-lg bg-[#28303F] border border-[#353F54] text-xs text-[#8E9BB5]">
                     <Star className="w-3 h-3" fill="#facc15" stroke="#facc15" />
                     {filters.min_rating} stars & up
                     <button
                       onClick={() => handleFilterChange('min_rating', '')}
-                      className="text-zinc-500 hover:text-white ml-0.5"
+                      className="text-[#4A5771] hover:text-white ml-0.5"
                     >
                       <X className="w-3 h-3" />
                     </button>
                   </span>
                 )}
                 {filters.has_discount && (
-                  <span className="inline-flex items-center gap-1 px-3 py-1 rounded-lg bg-zinc-900 border border-zinc-800 text-xs text-zinc-300">
+                  <span className="inline-flex items-center gap-1 px-3 py-1 rounded-lg bg-[#28303F] border border-[#353F54] text-xs text-[#8E9BB5]">
                     Discounted
                     <button
                       onClick={() => handleFilterChange('has_discount', '')}
-                      className="text-zinc-500 hover:text-white ml-0.5"
+                      className="text-[#4A5771] hover:text-white ml-0.5"
                     >
                       <X className="w-3 h-3" />
                     </button>
                   </span>
                 )}
                 {filters.size && (
-                  <span className="inline-flex items-center gap-1 px-3 py-1 rounded-lg bg-zinc-900 border border-zinc-800 text-xs text-zinc-300">
+                  <span className="inline-flex items-center gap-1 px-3 py-1 rounded-lg bg-[#28303F] border border-[#353F54] text-xs text-[#8E9BB5]">
                     Size: {filters.size}
                     <button
                       onClick={() => handleFilterChange('size', '')}
-                      className="text-zinc-500 hover:text-white ml-0.5"
+                      className="text-[#4A5771] hover:text-white ml-0.5"
                     >
                       <X className="w-3 h-3" />
                     </button>

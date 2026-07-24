@@ -30,7 +30,7 @@ function CountdownTimer({ endAt, label }) {
     <div className="flex items-center gap-1.5 text-sm">
       <Clock className="w-4 h-4" />
       <span className="font-mono font-bold tabular-nums tracking-wide">{timeLeft}</span>
-      {label && <span className="text-xs text-zinc-400">{label}</span>}
+      {label && <span className="text-xs text-[#4A5771]">{label}</span>}
     </div>
   );
 }
@@ -76,16 +76,16 @@ export default function FlashDeals() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-zinc-950 flex items-center justify-center">
+      <div className="min-h-screen bg-[#242C3B] flex items-center justify-center">
         <GooeyLoader />
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-zinc-950">
+    <div className="min-h-screen bg-[#242C3B]">
       {/* Header Banner */}
-      <div className="relative overflow-hidden" style={{ backgroundColor: 'var(--seasonal-primary, #1a5632)' }}>
+      <div className="relative overflow-hidden" style={{ backgroundColor: 'var(--seasonal-primary, #007AFF)' }}>
         <div className="absolute inset-0 opacity-10"
           style={{ backgroundImage: 'radial-gradient(circle at 30% 50%, rgba(255,255,255,0.3) 0%, transparent 50%)' }}
         />
@@ -111,11 +111,11 @@ export default function FlashDeals() {
           <div className="text-center py-20">
             <Zap className="w-16 h-16 mx-auto mb-4 text-zinc-700" />
             <h2 className="text-xl font-bold text-white mb-2">No Active Deals</h2>
-            <p className="text-zinc-400 mb-6">There are no flash deals running right now. Check back later!</p>
+            <p className="text-[#4A5771] mb-6">There are no flash deals running right now. Check back later!</p>
             <Link
               to="/"
               className="inline-flex items-center gap-2 px-6 py-3 rounded-xl text-white font-bold text-sm transition-all hover:opacity-90"
-              style={{ backgroundColor: '#1a5632' }}
+              style={{ backgroundColor: '#007AFF' }}
             >
               <ShoppingBag className="w-4 h-4" />
               Browse Products
@@ -126,7 +126,7 @@ export default function FlashDeals() {
             {deals.map((deal) => (
               <div key={deal.id} className="fusion-recessed-card overflow-hidden">
                 {/* Deal Header */}
-                <div className="p-5 border-b border-zinc-800">
+                <div className="p-5 border-b border-[#353F54]">
                   <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                     <div className="flex items-center gap-3">
                       {deal.banner_url && (
@@ -135,13 +135,13 @@ export default function FlashDeals() {
                       <div>
                         <h2 className="text-lg font-bold text-white">{deal.title}</h2>
                         {deal.description && (
-                          <p className="text-sm text-zinc-400">{deal.description}</p>
+                          <p className="text-sm text-[#4A5771]">{deal.description}</p>
                         )}
                       </div>
                     </div>
                     <CountdownTimer endAt={deal.end_at} label="remaining" />
                   </div>
-                  <div className="flex items-center gap-4 mt-3 text-xs text-zinc-500">
+                  <div className="flex items-center gap-4 mt-3 text-xs text-[#4A5771]">
                     <span>{deal.items?.length || 0} items</span>
                     <span>Started {new Date(deal.start_at).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' })}</span>
                   </div>
@@ -163,10 +163,10 @@ export default function FlashDeals() {
                           <Link
                             key={item.id}
                             to={`/listing/${item.listing_id}`}
-                            className="group rounded-xl bg-zinc-800/50 border border-zinc-800 overflow-hidden hover:border-primary/30 transition-all hover:shadow-lg hover:shadow-primary/5"
+                            className="group rounded-xl bg-[#28303F]/50 border border-[#353F54] overflow-hidden hover:border-primary/30 transition-all hover:shadow-lg hover:shadow-primary/5"
                           >
                             {/* Image */}
-                            <div className="aspect-square bg-zinc-800 relative overflow-hidden">
+                            <div className="aspect-square bg-[#28303F] relative overflow-hidden">
                               {listing.images?.[0] ? (
                                 <img
                                   src={listing.images[0]}
@@ -192,7 +192,7 @@ export default function FlashDeals() {
 
                             {/* Info */}
                             <div className="p-3">
-                              <h3 className="text-xs font-semibold text-zinc-300 line-clamp-2 group-hover:text-primary transition-colors min-h-[2rem]">
+                              <h3 className="text-xs font-semibold text-[#8E9BB5] line-clamp-2 group-hover:text-primary transition-colors min-h-[2rem]">
                                 {listing.title}
                               </h3>
                               <div className="mt-2 flex items-center gap-2">
@@ -202,7 +202,7 @@ export default function FlashDeals() {
                                       KES {Number(dealPrice).toLocaleString()}
                                     </span>
                                     {originalPrice && originalPrice > dealPrice && (
-                                      <span className="text-[10px] text-zinc-500 line-through">
+                                      <span className="text-[10px] text-[#4A5771] line-through">
                                         KES {Number(originalPrice).toLocaleString()}
                                       </span>
                                     )}
@@ -212,7 +212,7 @@ export default function FlashDeals() {
                                     <span className="text-sm font-bold text-white">
                                       KES {Number(originalPrice * (1 - discountPct / 100)).toLocaleString()}
                                     </span>
-                                    <span className="text-[10px] text-zinc-500 line-through">
+                                    <span className="text-[10px] text-[#4A5771] line-through">
                                       KES {Number(originalPrice).toLocaleString()}
                                     </span>
                                   </>
@@ -229,11 +229,11 @@ export default function FlashDeals() {
                                       className="h-full rounded-full transition-all"
                                       style={{
                                         width: `${Math.min(100, (item.sold_quantity / item.max_quantity) * 100)}%`,
-                                        backgroundColor: '#1a5632',
+                                        backgroundColor: '#007AFF',
                                       }}
                                     />
                                   </div>
-                                  <p className="text-[10px] text-zinc-500 mt-0.5">
+                                  <p className="text-[10px] text-[#4A5771] mt-0.5">
                                     {item.max_quantity - item.sold_quantity} left
                                   </p>
                                 </div>
@@ -246,7 +246,7 @@ export default function FlashDeals() {
                   </div>
                 ) : (
                   <div className="p-8 text-center">
-                    <p className="text-sm text-zinc-500">No items in this deal yet</p>
+                    <p className="text-sm text-[#4A5771]">No items in this deal yet</p>
                   </div>
                 )}
               </div>
