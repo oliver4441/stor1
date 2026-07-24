@@ -13,7 +13,7 @@ const PAYOUT_METHODS = [
 
 function MethodBadge({ method }) {
   const m = PAYOUT_METHODS.find(p => p.id === method);
-  if (!m) return <span className="text-xs text-zinc-400">{method}</span>;
+  if (!m) return <span className="text-xs text-[#4A5771]">{method}</span>;
   return (
     <span className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[10px] font-bold ${m.bg} ${m.color}`}>
       <m.icon className="w-3 h-3" /> {m.label}
@@ -98,7 +98,7 @@ export default function AffiliateWithdrawals() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-zinc-950 flex items-center justify-center">
+      <div className="min-h-screen bg-[#242C3B] flex items-center justify-center">
         <Loader2 className="w-8 h-8 animate-spin text-primary" />
       </div>
     );
@@ -106,32 +106,32 @@ export default function AffiliateWithdrawals() {
 
   if (error) {
     return (
-      <div className="min-h-screen bg-zinc-950 flex items-center justify-center px-4">
+      <div className="min-h-screen bg-[#242C3B] flex items-center justify-center px-4">
         <div className="text-center max-w-md">
-          <Wallet className="w-16 h-16 text-zinc-700 mx-auto mb-4" />
+          <Wallet className="w-16 h-16 text-[#4A5771] mx-auto mb-4" />
           <h2 className="text-xl font-bold text-white mb-2">Withdrawals</h2>
-          <p className="text-zinc-400 mb-6">{error}</p>
+          <p className="text-[#4A5771] mb-6">{error}</p>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-zinc-950">
+    <div className="min-h-screen bg-[#242C3B]">
       {/* Hero */}
-      <div className="bg-gradient-to-br from-green-500/20 via-blue-500/10 to-zinc-950 px-4 py-8">
+      <div className="bg-gradient-to-br from-[#007AFF]/20 via-blue-500/10 to-[#242C3B] px-4 py-8">
         <div className="max-w-4xl mx-auto">
           <div className="flex items-center gap-2 mb-1">
-            <Wallet className="w-5 h-5 text-green-400" />
+            <Wallet className="w-5 h-5 text-[#007AFF]" />
             <h1 className="text-xl font-black text-white">Withdrawals</h1>
           </div>
-          <p className="text-zinc-400 text-sm mt-1">Request payouts and view history</p>
+          <p className="text-[#4A5771] text-sm mt-1">Request payouts and view history</p>
         </div>
       </div>
 
       {/* Nav tabs */}
       <div className="max-w-4xl mx-auto px-4 mt-6">
-        <div className="flex gap-1 bg-zinc-900 rounded-xl p-1 overflow-x-auto">
+        <div className="flex gap-1 bg-[#28303F] rounded-xl p-1 overflow-x-auto">
           {[
             { path: '/affiliate-dashboard', label: 'Dashboard', icon: Award },
             { path: '/affiliate-referrals', label: 'Referrals', icon: Share2 },
@@ -143,7 +143,7 @@ export default function AffiliateWithdrawals() {
               className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-bold whitespace-nowrap transition-colors ${
                 location.pathname === tab.path
                   ? 'bg-primary text-white'
-                  : 'text-zinc-400 hover:text-white'
+                  : 'text-[#4A5771] hover:text-white'
               }`}>
               <tab.icon className="w-4 h-4" />
               {tab.label}
@@ -156,27 +156,27 @@ export default function AffiliateWithdrawals() {
         {/* Balance cards */}
         <div className="grid grid-cols-2 gap-3">
           <div className="fusion-recessed-card p-5 text-center">
-            <p className="text-xs text-zinc-400 uppercase tracking-wider mb-1">Pending</p>
+            <p className="text-xs text-[#4A5771] uppercase tracking-wider mb-1">Pending</p>
             <p className="text-2xl font-black text-amber-400">{formatKES(balances.pending)}</p>
           </div>
           <div className="fusion-recessed-card p-5 text-center">
-            <p className="text-xs text-zinc-400 uppercase tracking-wider mb-1">Paid</p>
-            <p className="text-2xl font-black text-green-400">{formatKES(balances.paid)}</p>
+            <p className="text-xs text-[#4A5771] uppercase tracking-wider mb-1">Paid</p>
+            <p className="text-2xl font-black text-[#007AFF]">{formatKES(balances.paid)}</p>
           </div>
         </div>
 
         {/* Request Payout Form */}
         <div className="fusion-recessed-card p-5">
-          <h3 className="text-sm font-bold text-zinc-300 mb-4 flex items-center gap-2">
+          <h3 className="text-sm font-bold text-[#8E9BB5] mb-4 flex items-center gap-2">
             <Send className="w-4 h-4 text-primary" /> Request Payout
           </h3>
 
           {result ? (
             <div className="text-center py-6">
-              <CheckCircle className="w-12 h-12 text-green-400 mx-auto mb-3" />
+              <CheckCircle className="w-12 h-12 text-[#007AFF] mx-auto mb-3" />
               <h4 className="text-lg font-bold text-white mb-1">Payout Requested</h4>
-              <p className="text-sm text-zinc-400 mb-2">{formatKES(amount)} via {method}</p>
-              <p className="text-xs text-zinc-500 mb-4">Status: {result.status || 'pending'}</p>
+              <p className="text-sm text-[#4A5771] mb-2">{formatKES(amount)} via {method}</p>
+              <p className="text-xs text-[#4A5771] mb-4">Status: {result.status || 'pending'}</p>
               <button onClick={() => { setResult(null); setAmount(AFFILIATE_CONFIG.MIN_PAYOUT); }}
                 className="px-5 py-2.5 bg-primary text-white rounded-xl font-bold text-sm hover:bg-primary-hover">
                 Request Another
@@ -186,24 +186,24 @@ export default function AffiliateWithdrawals() {
             <form onSubmit={handleSubmit} className="space-y-4">
               {/* Amount */}
               <div>
-                <label className="block text-sm font-bold mb-1.5 text-zinc-300">Amount (KES)</label>
+                <label className="block text-sm font-bold mb-1.5 text-[#8E9BB5]">Amount (KES)</label>
                 <input type="number" value={amount}
                   onChange={e => setAmount(parseInt(e.target.value) || 0)}
                   min={AFFILIATE_CONFIG.MIN_PAYOUT}
-                  className="w-full px-4 py-2.5 rounded-xl bg-zinc-800 border border-zinc-700 text-white text-sm font-bold" />
-                <p className="text-xs text-zinc-500 mt-1">Minimum: {formatKES(AFFILIATE_CONFIG.MIN_PAYOUT)}</p>
+                  className="w-full px-4 py-2.5 rounded-xl bg-[#28303F] border border-[#353F54] text-white text-sm font-bold" />
+                <p className="text-xs text-[#4A5771] mt-1">Minimum: {formatKES(AFFILIATE_CONFIG.MIN_PAYOUT)}</p>
               </div>
 
               {/* Method selector */}
               <div>
-                <label className="block text-sm font-bold mb-2 text-zinc-300">Payment Method</label>
+                <label className="block text-sm font-bold mb-2 text-[#8E9BB5]">Payment Method</label>
                 <div className="grid grid-cols-3 gap-2">
                   {PAYOUT_METHODS.map(m => (
                     <button key={m.id} type="button" onClick={() => setMethod(m.id)}
                       className={`flex flex-col items-center gap-1.5 p-3 rounded-xl border transition-all text-center ${
                         method === m.id
                           ? `${m.border} ${m.bg} ${m.color}`
-                          : 'border-zinc-800 text-zinc-500 hover:border-zinc-600'
+                          : 'border-[#353F54] text-[#4A5771] hover:border-zinc-600'
                       }`}>
                       <m.icon className="w-5 h-5" />
                       <span className="text-[10px] font-bold">{m.label}</span>
@@ -214,32 +214,32 @@ export default function AffiliateWithdrawals() {
 
               {/* Account details depend on method */}
               <div>
-                <label className="block text-sm font-bold mb-1.5 text-zinc-300">
+                <label className="block text-sm font-bold mb-1.5 text-[#8E9BB5]">
                   {method === 'bank' ? 'Account Number' : 'M-Pesa / Airtel Number'}
                 </label>
                 <input type="text" value={accountNumber}
                   onChange={e => setAccountNumber(e.target.value)}
                   placeholder={PAYOUT_METHODS.find(m => m.id === method)?.placeholder}
                   required
-                  className="w-full px-4 py-2.5 rounded-xl bg-zinc-800 border border-zinc-700 text-white text-sm" />
+                  className="w-full px-4 py-2.5 rounded-xl bg-[#28303F] border border-[#353F54] text-white text-sm" />
               </div>
 
               {method === 'bank' && (
                 <div>
-                  <label className="block text-sm font-bold mb-1.5 text-zinc-300">Bank Name</label>
+                  <label className="block text-sm font-bold mb-1.5 text-[#8E9BB5]">Bank Name</label>
                   <input type="text" value={bankName}
                     onChange={e => setBankName(e.target.value)}
                     placeholder="e.g. Equity Bank"
-                    className="w-full px-4 py-2.5 rounded-xl bg-zinc-800 border border-zinc-700 text-white text-sm" />
+                    className="w-full px-4 py-2.5 rounded-xl bg-[#28303F] border border-[#353F54] text-white text-sm" />
                 </div>
               )}
 
               <div>
-                <label className="block text-sm font-bold mb-1.5 text-zinc-300">Account Name (optional)</label>
+                <label className="block text-sm font-bold mb-1.5 text-[#8E9BB5]">Account Name (optional)</label>
                 <input type="text" value={accountName}
                   onChange={e => setAccountName(e.target.value)}
                   placeholder="Your full name"
-                  className="w-full px-4 py-2.5 rounded-xl bg-zinc-800 border border-zinc-700 text-white text-sm" />
+                  className="w-full px-4 py-2.5 rounded-xl bg-[#28303F] border border-[#353F54] text-white text-sm" />
               </div>
 
               {formError && <p className="text-sm text-red-400">{formError}</p>}
@@ -257,20 +257,20 @@ export default function AffiliateWithdrawals() {
         <div className="fusion-recessed-card overflow-hidden">
           <button onClick={() => setShowHistory(!showHistory)}
             className="w-full flex items-center justify-between px-5 py-4 text-left">
-            <h3 className="text-sm font-bold text-zinc-300 flex items-center gap-2">
+            <h3 className="text-sm font-bold text-[#8E9BB5] flex items-center gap-2">
               <Wallet className="w-4 h-4" /> Payout History
             </h3>
             <div className="flex items-center gap-2">
-              <span className="text-xs text-zinc-500">{payouts.length} total</span>
-              {showHistory ? <ChevronUp className="w-4 h-4 text-zinc-400" /> : <ChevronDown className="w-4 h-4 text-zinc-400" />}
+              <span className="text-xs text-[#4A5771]">{payouts.length} total</span>
+              {showHistory ? <ChevronUp className="w-4 h-4 text-[#4A5771]" /> : <ChevronDown className="w-4 h-4 text-[#4A5771]" />}
             </div>
           </button>
           {showHistory && (
-            <div className="border-t border-zinc-800">
+            <div className="border-t border-[#353F54]">
               {payouts.length === 0 ? (
-                <p className="text-sm text-zinc-500 text-center py-6">No payouts yet</p>
+                <p className="text-sm text-[#4A5771] text-center py-6">No payouts yet</p>
               ) : (
-                <div className="divide-y divide-zinc-800">
+                <div className="divide-y divide-[#353F54]">
                   {payouts.map((p, i) => (
                     <div key={p.id || i} className="flex items-center justify-between px-5 py-3">
                       <div className="min-w-0 flex-1">
@@ -278,11 +278,11 @@ export default function AffiliateWithdrawals() {
                           <p className="text-sm font-bold text-white">{formatKES(p.amount)}</p>
                           {p.payment_method && <MethodBadge method={p.payment_method} />}
                         </div>
-                        <p className="text-xs text-zinc-400">{p.mpesa_number || p.account_number}</p>
-                        <p className="text-[10px] text-zinc-500">{new Date(p.created_at).toLocaleDateString()}</p>
+                        <p className="text-xs text-[#4A5771]">{p.mpesa_number || p.account_number}</p>
+                        <p className="text-[10px] text-[#4A5771]">{new Date(p.created_at).toLocaleDateString()}</p>
                       </div>
                       <span className={`text-xs font-bold shrink-0 ${
-                        p.status === 'paid' ? 'text-green-400' :
+                        p.status === 'paid' ? 'text-[#007AFF]' :
                         p.status === 'processing' ? 'text-blue-400' :
                         p.status === 'rejected' ? 'text-red-400' :
                         'text-amber-400'

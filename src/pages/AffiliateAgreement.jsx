@@ -145,13 +145,13 @@ export default function AffiliateAgreement() {
   };
 
   return (
-    <div className="min-h-screen bg-zinc-950 py-12">
+    <div className="min-h-screen bg-[#242C3B] py-12">
       <div className="max-w-4xl mx-auto px-4">
         {/* Navigation */}
         <div className="mb-8 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
           <Link
             to="/affiliate"
-            className="inline-flex items-center gap-1.5 text-sm text-zinc-400 hover:text-zinc-200 transition-colors"
+            className="inline-flex items-center gap-1.5 text-sm text-[#4A5771] hover:text-zinc-200 transition-colors"
           >
             <ArrowLeft size={14} />
             Back to Affiliate Program
@@ -159,7 +159,7 @@ export default function AffiliateAgreement() {
           <div className="flex gap-3">
             <button
               onClick={handlePrint}
-              className="inline-flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium text-zinc-300 border border-zinc-700 hover:bg-zinc-800 transition-colors"
+              className="inline-flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium text-[#8E9BB5] border border-zinc-700 hover:bg-[#28303F] transition-colors"
             >
               <Printer size={16} />
               Print
@@ -175,7 +175,7 @@ export default function AffiliateAgreement() {
         </div>
 
         {/* Document Header */}
-        <div className="text-center mb-10 pb-8 border-b border-zinc-800">
+        <div className="text-center mb-10 pb-8 border-b border-[#353F54]">
           <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-blue-500/10 border border-blue-500/20 text-blue-400 text-xs font-medium mb-4">
             <FileText size={14} />
             Document Version 1.0 | July 2026
@@ -183,7 +183,7 @@ export default function AffiliateAgreement() {
           <h1 className="text-3xl md:text-4xl font-bold text-white mb-3">
             Omix Store Affiliate Partner Agreement
           </h1>
-          <p className="text-zinc-400 text-sm">
+          <p className="text-[#4A5771] text-sm">
             This Agreement governs the relationship between Omix Store and its affiliate partners.
           </p>
         </div>
@@ -194,7 +194,7 @@ export default function AffiliateAgreement() {
             <div
               key={section.number}
               id={`section-${section.number}`}
-              className="py-8 border-b border-zinc-800/50 last:border-b-0"
+              className="py-8 border-b border-[#353F54]/50 last:border-b-0"
             >
               <div className="flex items-start gap-4">
                 <div className="w-10 h-10 rounded-lg bg-blue-500/10 border border-blue-500/20 flex items-center justify-center shrink-0 text-blue-400 font-bold text-sm">
@@ -205,7 +205,7 @@ export default function AffiliateAgreement() {
                     {section.title}
                   </h2>
                   {section.content && (
-                    <p className="text-zinc-300 leading-relaxed mb-3">
+                    <p className="text-[#8E9BB5] leading-relaxed mb-3">
                       {section.content}
                     </p>
                   )}
@@ -214,7 +214,7 @@ export default function AffiliateAgreement() {
                       {section.subsections.map((sub) => (
                         <li key={sub.label} className="flex items-start gap-3">
                           <span className="w-1.5 h-1.5 rounded-full bg-blue-400 shrink-0 mt-2.5" />
-                          <span className="text-zinc-300 leading-relaxed">
+                          <span className="text-[#8E9BB5] leading-relaxed">
                             <strong className="text-zinc-200">{sub.label}:</strong>{' '}
                             {sub.text}
                           </span>
@@ -229,22 +229,22 @@ export default function AffiliateAgreement() {
         </div>
 
         {/* Signature Section (reference only) */}
-        <div className="mt-12 p-8 rounded-xl bg-zinc-900/50 border border-zinc-800">
+        <div className="mt-12 p-8 rounded-xl bg-[#28303F]/50 border border-[#353F54]">
           <h2 className="text-lg font-bold text-white mb-6">Signature Section</h2>
-          <p className="text-zinc-400 text-sm mb-6">
+          <p className="text-[#4A5771] text-sm mb-6">
             This section is for reference purposes. By submitting the affiliate application, you digitally agree to the terms of this Agreement.
           </p>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             <div>
-              <label className="block text-xs font-medium text-zinc-500 mb-2">Affiliate Full Name</label>
+              <label className="block text-xs font-medium text-[#4A5771] mb-2">Affiliate Full Name</label>
               <div className="h-10 border-b border-zinc-700" />
             </div>
             <div>
-              <label className="block text-xs font-medium text-zinc-500 mb-2">Signature</label>
+              <label className="block text-xs font-medium text-[#4A5771] mb-2">Signature</label>
               <div className="h-10 border-b border-zinc-700" />
             </div>
             <div>
-              <label className="block text-xs font-medium text-zinc-500 mb-2">Date</label>
+              <label className="block text-xs font-medium text-[#4A5771] mb-2">Date</label>
               <div className="h-10 border-b border-zinc-700" />
             </div>
           </div>
@@ -258,7 +258,7 @@ export default function AffiliateAgreement() {
           >
             Apply Now
           </Link>
-          <p className="mt-4 text-xs text-zinc-600">
+          <p className="mt-4 text-xs text-[#4A5771]">
             By applying, you agree to the terms outlined in this agreement.
           </p>
         </div>

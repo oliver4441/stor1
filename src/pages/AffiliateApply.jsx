@@ -80,7 +80,7 @@ export default function AffiliateApply() {
 
   if (authLoading) {
     return (
-      <div className="min-h-screen bg-zinc-950 flex items-center justify-center">
+      <div className="min-h-screen bg-[#242C3B] flex items-center justify-center">
         <GooeyLoader />
       </div>
     );
@@ -175,18 +175,18 @@ export default function AffiliateApply() {
   // Success view
   if (success) {
     return (
-      <div className="min-h-screen bg-zinc-950 flex items-center justify-center px-4 py-20">
+      <div className="min-h-screen bg-[#242C3B] flex items-center justify-center px-4 py-20">
         <div className="max-w-lg w-full text-center">
-          <div className="w-20 h-20 rounded-full bg-green-500/10 flex items-center justify-center mx-auto mb-6">
-            <CheckCircle size={40} className="text-green-400" />
+          <div className="w-20 h-20 rounded-full bg-[#007AFF]/10 flex items-center justify-center mx-auto mb-6">
+            <CheckCircle size={40} className="text-[#007AFF]" />
           </div>
           <h1 className="text-2xl font-bold text-white mb-4">Application Submitted</h1>
           {accountCreated ? (
             <>
-              <p className="text-zinc-400 mb-2 leading-relaxed">
+              <p className="text-[#4A5771] mb-2 leading-relaxed">
                 Your account and affiliate application have been created successfully.
               </p>
-              <p className="text-zinc-400 mb-8 leading-relaxed">
+              <p className="text-[#4A5771] mb-8 leading-relaxed">
                 You can now sign in with your email and password to track your application status.
               </p>
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
@@ -198,7 +198,7 @@ export default function AffiliateApply() {
                 </Link>
                 <Link
                   to="/"
-                  className="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-xl font-medium text-zinc-300 border border-zinc-700 hover:bg-zinc-800 transition-colors"
+                  className="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-xl font-medium text-[#8E9BB5] border border-[#353F54] hover:bg-[#28303F] transition-colors"
                 >
                   Browse Store
                 </Link>
@@ -206,7 +206,7 @@ export default function AffiliateApply() {
             </>
           ) : (
             <>
-              <p className="text-zinc-400 mb-8 leading-relaxed">
+              <p className="text-[#4A5771] mb-8 leading-relaxed">
                 Application submitted successfully. We will review your application and get back to you.
               </p>
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
@@ -219,7 +219,7 @@ export default function AffiliateApply() {
                 </Link>
                 <Link
                   to="/"
-                  className="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-xl font-medium text-zinc-300 border border-zinc-700 hover:bg-zinc-800 transition-colors"
+                  className="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-xl font-medium text-[#8E9BB5] border border-[#353F54] hover:bg-[#28303F] transition-colors"
                 >
                   Browse Store
                 </Link>
@@ -232,24 +232,24 @@ export default function AffiliateApply() {
   }
 
   const inputClass = (name) =>
-    `w-full px-4 py-3 rounded-lg bg-zinc-800/50 border ${
-      fieldErrors[name] ? 'border-red-500/50' : 'border-zinc-700'
+    `w-full px-4 py-3 rounded-lg bg-[#28303F]/50 border ${
+      fieldErrors[name] ? 'border-red-500/50' : 'border-[#353F54]'
     } text-white placeholder-zinc-500 focus:outline-none focus:border-blue-500 transition-colors`;
 
   return (
-    <div className="min-h-screen bg-zinc-950 py-12">
+    <div className="min-h-screen bg-[#242C3B] py-12">
       <div className="max-w-3xl mx-auto px-4">
         {/* Header */}
         <div className="mb-8">
           <Link
             to="/affiliate"
-            className="inline-flex items-center gap-1.5 text-sm text-zinc-400 hover:text-zinc-200 transition-colors mb-4"
+            className="inline-flex items-center gap-1.5 text-sm text-[#4A5771] hover:text-zinc-200 transition-colors mb-4"
           >
             <ArrowLeft size={14} />
             Back to Affiliate Program
           </Link>
           <h1 className="text-3xl font-bold text-white mb-2">Affiliate Application</h1>
-          <p className="text-zinc-400">
+          <p className="text-[#4A5771]">
             {user
               ? 'Complete the form below to apply for the Omix Store Affiliate Program. Fields marked with an asterisk are required.'
               : 'Create your affiliate account by completing the form below. You will set a password to access your dashboard after submission.'}
@@ -260,7 +260,7 @@ export default function AffiliateApply() {
         <div className="mb-6 p-4 rounded-lg bg-blue-500/5 border border-blue-500/20 flex items-center justify-between">
           <div>
             <p className="text-sm font-medium text-zinc-200">Already an affiliate?</p>
-            <p className="text-xs text-zinc-400">Sign in to access your dashboard, view commissions, and manage referrals.</p>
+            <p className="text-xs text-[#4A5771]">Sign in to access your dashboard, view commissions, and manage referrals.</p>
           </div>
           <Link
             to="/login"
@@ -280,13 +280,13 @@ export default function AffiliateApply() {
 
         <form onSubmit={handleSubmit} className="space-y-8">
           {/* ── Personal Information ── */}
-          <div className="p-6 rounded-xl bg-zinc-900/50 border border-zinc-800">
+          <div className="p-6 rounded-xl bg-[#28303F]/50 border border-[#353F54]">
             <h2 className="text-lg font-semibold text-white mb-1">Personal Information</h2>
-            <p className="text-zinc-500 text-sm mb-6">As per your national ID</p>
+            <p className="text-[#4A5771] text-sm mb-6">As per your national ID</p>
 
             <div className="space-y-4">
               <div>
-                <label className="block text-sm font-medium text-zinc-300 mb-1.5">
+                <label className="block text-sm font-medium text-[#8E9BB5] mb-1.5">
                   Full Name <span className="text-red-400">*</span>
                 </label>
                 <input
@@ -301,7 +301,7 @@ export default function AffiliateApply() {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-zinc-300 mb-1.5">
+                <label className="block text-sm font-medium text-[#8E9BB5] mb-1.5">
                   ID / Passport Number
                 </label>
                 <input
@@ -315,7 +315,7 @@ export default function AffiliateApply() {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-zinc-300 mb-1.5">
+                <label className="block text-sm font-medium text-[#8E9BB5] mb-1.5">
                   Date of Birth
                 </label>
                 <input
@@ -330,13 +330,13 @@ export default function AffiliateApply() {
           </div>
 
           {/* ── Contact Information ── */}
-          <div className="p-6 rounded-xl bg-zinc-900/50 border border-zinc-800">
+          <div className="p-6 rounded-xl bg-[#28303F]/50 border border-[#353F54]">
             <h2 className="text-lg font-semibold text-white mb-1">Contact Information</h2>
-            <p className="text-zinc-500 text-sm mb-6">How we can reach you</p>
+            <p className="text-[#4A5771] text-sm mb-6">How we can reach you</p>
 
             <div className="space-y-4">
               <div>
-                <label className="block text-sm font-medium text-zinc-300 mb-1.5">
+                <label className="block text-sm font-medium text-[#8E9BB5] mb-1.5">
                   Phone Number <span className="text-red-400">*</span>
                 </label>
                 <input
@@ -351,7 +351,7 @@ export default function AffiliateApply() {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-zinc-300 mb-1.5">
+                <label className="block text-sm font-medium text-[#8E9BB5] mb-1.5">
                   Alternative Phone
                 </label>
                 <input
@@ -365,7 +365,7 @@ export default function AffiliateApply() {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-zinc-300 mb-1.5">
+                <label className="block text-sm font-medium text-[#8E9BB5] mb-1.5">
                   Email Address <span className="text-red-400">*</span>
                 </label>
                 <input
@@ -382,7 +382,7 @@ export default function AffiliateApply() {
 
               {!user && (
                 <div>
-                  <label className="block text-sm font-medium text-zinc-300 mb-1.5">
+                  <label className="block text-sm font-medium text-[#8E9BB5] mb-1.5">
                     Create Password <span className="text-red-400">*</span>
                   </label>
                   <input
@@ -394,14 +394,14 @@ export default function AffiliateApply() {
                     className={inputClass('password')}
                   />
                   {fieldErrors.password && <p className="text-red-400 text-xs mt-1">{fieldErrors.password}</p>}
-                  <p className="text-zinc-500 text-xs mt-1.5">
+                  <p className="text-[#4A5771] text-xs mt-1.5">
                     Set a password for your account. You will use this to sign in and access your affiliate dashboard.
                   </p>
                 </div>
               )}
 
               <div>
-                <label className="block text-sm font-medium text-zinc-300 mb-1.5">
+                <label className="block text-sm font-medium text-[#8E9BB5] mb-1.5">
                   Physical Address (Town / Estate)
                 </label>
                 <input
@@ -417,13 +417,13 @@ export default function AffiliateApply() {
           </div>
 
           {/* ── M-Pesa Payout ── */}
-          <div className="p-6 rounded-xl bg-zinc-900/50 border border-zinc-800">
+          <div className="p-6 rounded-xl bg-[#28303F]/50 border border-[#353F54]">
             <h2 className="text-lg font-semibold text-white mb-1">M-Pesa Payout Details</h2>
-            <p className="text-zinc-500 text-sm mb-6">Where your commissions will be paid</p>
+            <p className="text-[#4A5771] text-sm mb-6">Where your commissions will be paid</p>
 
             <div className="space-y-4">
               <div>
-                <label className="block text-sm font-medium text-zinc-300 mb-1.5">
+                <label className="block text-sm font-medium text-[#8E9BB5] mb-1.5">
                   M-Pesa Payout Number <span className="text-red-400">*</span>
                 </label>
                 <input
@@ -438,7 +438,7 @@ export default function AffiliateApply() {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-zinc-300 mb-1.5">
+                <label className="block text-sm font-medium text-[#8E9BB5] mb-1.5">
                   M-Pesa Account Name
                 </label>
                 <input
@@ -454,9 +454,9 @@ export default function AffiliateApply() {
           </div>
 
           {/* ── Promotional Methods ── */}
-          <div className="p-6 rounded-xl bg-zinc-900/50 border border-zinc-800">
+          <div className="p-6 rounded-xl bg-[#28303F]/50 border border-[#353F54]">
             <h2 className="text-lg font-semibold text-white mb-1">Promotional Methods</h2>
-            <p className="text-zinc-500 text-sm mb-6">How do you plan to promote Omix Store?</p>
+            <p className="text-[#4A5771] text-sm mb-6">How do you plan to promote Omix Store?</p>
 
             <div className="space-y-3">
               {PROMO_OPTIONS.map((method) => (
@@ -465,14 +465,14 @@ export default function AffiliateApply() {
                   className={`flex items-center gap-3 p-3 rounded-lg border cursor-pointer transition-colors ${
                     formData.promotional_methods.includes(method)
                       ? 'border-blue-500/30 bg-blue-500/5'
-                      : 'border-zinc-700 bg-zinc-800/30 hover:bg-zinc-800/50'
+                      : 'border-[#353F54] bg-[#28303F]/30 hover:bg-[#28303F]/50'
                   }`}
                 >
                   <input
                     type="checkbox"
                     checked={formData.promotional_methods.includes(method)}
                     onChange={() => handlePromoMethod(method)}
-                    className="w-4 h-4 rounded border-zinc-600 bg-zinc-800 text-blue-500 focus:ring-blue-500"
+                    className="w-4 h-4 rounded border-zinc-600 bg-[#28303F] text-blue-500 focus:ring-blue-500"
                   />
                   <span className="text-sm text-zinc-200">{method}</span>
                 </label>
@@ -493,13 +493,13 @@ export default function AffiliateApply() {
           </div>
 
           {/* ── Social Media & How Heard ── */}
-          <div className="p-6 rounded-xl bg-zinc-900/50 border border-zinc-800">
+          <div className="p-6 rounded-xl bg-[#28303F]/50 border border-[#353F54]">
             <h2 className="text-lg font-semibold text-white mb-1">Additional Information</h2>
-            <p className="text-zinc-500 text-sm mb-6">Help us understand your reach</p>
+            <p className="text-[#4A5771] text-sm mb-6">Help us understand your reach</p>
 
             <div className="space-y-4">
               <div>
-                <label className="block text-sm font-medium text-zinc-300 mb-1.5">
+                <label className="block text-sm font-medium text-[#8E9BB5] mb-1.5">
                   Social Media Handles / Website URLs
                 </label>
                 <input
@@ -513,7 +513,7 @@ export default function AffiliateApply() {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-zinc-300 mb-1.5">
+                <label className="block text-sm font-medium text-[#8E9BB5] mb-1.5">
                   How did you hear about the program?
                 </label>
                 <select
@@ -532,17 +532,17 @@ export default function AffiliateApply() {
           </div>
 
           {/* ── Agreement ── */}
-          <div className="p-6 rounded-xl bg-zinc-900/50 border border-zinc-800">
+          <div className="p-6 rounded-xl bg-[#28303F]/50 border border-[#353F54]">
             <label className={`flex items-start gap-3 cursor-pointer ${fieldErrors.agreed ? 'border-red-500/30' : ''}`}>
               <input
                 type="checkbox"
                 name="agreed"
                 checked={formData.agreed}
                 onChange={handleChange}
-                className="w-5 h-5 mt-0.5 rounded border-zinc-600 bg-zinc-800 text-blue-500 focus:ring-blue-500"
+                className="w-5 h-5 mt-0.5 rounded border-zinc-600 bg-[#28303F] text-blue-500 focus:ring-blue-500"
               />
               <div>
-                <span className="text-sm text-zinc-300">
+                <span className="text-sm text-[#8E9BB5]">
                   I have read and agree to the{' '}
                   <Link to="/affiliate/agreement" target="_blank" className="text-blue-400 hover:text-blue-300 underline">
                     Omix Store Affiliate Partner Agreement
@@ -555,7 +555,7 @@ export default function AffiliateApply() {
 
           {/* ── Submit ── */}
           <div className="flex flex-col sm:flex-row gap-4 items-center justify-between pt-2">
-            <p className="text-xs text-zinc-500">
+            <p className="text-xs text-[#4A5771]">
               By submitting this application, you confirm that all information provided is accurate and complete.
             </p>
             <button
@@ -582,7 +582,7 @@ export default function AffiliateApply() {
         <div className="mt-8 text-center">
           <Link
             to="/affiliate/agreement"
-            className="inline-flex items-center gap-1.5 text-sm text-zinc-500 hover:text-zinc-300 transition-colors"
+            className="inline-flex items-center gap-1.5 text-sm text-[#4A5771] hover:text-[#8E9BB5] transition-colors"
           >
             <FileText size={14} />
             View Full Affiliate Partner Agreement

@@ -37,7 +37,7 @@ const wishlistSteps = [
 export default function WishlistHelp() {
   return (
     <HelpLayout title="Wishlist">
-      <p className="mb-6 text-zinc-400">
+      <p className="mb-6 text-[#4A5771]">
         Save products you love to your wishlist and buy them later. Your wishlist syncs across devices when logged in.
       </p>
       

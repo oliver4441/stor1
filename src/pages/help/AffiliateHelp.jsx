@@ -47,7 +47,7 @@ const affiliateSteps = [
     desc: 'Request payouts via M-Pesa once you reach KES 2,000 minimum. Payments processed within 48 hours.',
     svg: `<svg viewBox="0 0 400 60" xmlns="http://www.w3.org/2000/svg" class="w-full">
       <rect x="0" y="0" width="400" height="60" rx="8" fill="#ecfdf5"/>
-      <rect x="20" y="10" width="120" height="40" rx="6" fill="#10b981"/>
+      <rect x="20" y="10" width="120" height="40" rx="6" fill="#007AFF"/>
       <text x="80" y="35" font-size="12" fill="white" text-anchor="middle" font-weight="bold">M-Pesa</text>
       <text x="160" y="35" font-size="11" fill="#065f46">Min KES 2,000</text>
     </svg>`
@@ -57,7 +57,7 @@ const affiliateSteps = [
 export default function AffiliateHelp() {
   return (
     <HelpLayout title="Affiliate Program">
-      <p className="mb-6 text-zinc-400">
+      <p className="mb-6 text-[#4A5771]">
         Earn commissions by promoting Omix Store products. Share your unique link and get paid for every sale you refer.
       </p>
       

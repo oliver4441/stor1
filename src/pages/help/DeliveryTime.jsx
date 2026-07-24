@@ -35,7 +35,7 @@ const deliveryTimeSteps = [
       <text x="80" y="40" font-size="12" fill="white" text-anchor="middle" font-weight="bold">Preparing</text>
       <rect x="140" y="15" width="120" height="60" rx="6" fill="#3b82f6"/>
       <text x="200" y="40" font-size="12" fill="white" text-anchor="middle" font-weight="bold">In Transit</text>
-      <rect x="260" y="15" width="120" height="60" rx="6" fill="#10b981"/>
+      <rect x="260" y="15" width="120" height="60" rx="6" fill="#007AFF"/>
       <text x="320" y="40" font-size="12" fill="white" text-anchor="middle" font-weight="bold">Delivered</text>
     </svg>`
   }
@@ -44,7 +44,7 @@ const deliveryTimeSteps = [
 export default function DeliveryTime() {
   return (
     <HelpLayout title="How Long Does My Order Arrive">
-      <p className="mb-6 text-zinc-400">
+      <p className="mb-6 text-[#4A5771]">
         Delivery times depend on your location and order time.
       </p>
       

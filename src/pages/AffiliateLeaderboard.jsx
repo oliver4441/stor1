@@ -106,7 +106,7 @@ export default function AffiliateLeaderboard() {
                 onClick={() => handlePeriodChange(key)}
                 className={`flex-1 px-3 py-2 rounded-lg text-sm font-medium transition-all ${
                   period === key
-                    ? 'bg-[#ff385c] text-white shadow-sm'
+                    ? 'bg-[#1a3a5c] text-white shadow-sm'
                     : 'text-zinc-400 hover:text-zinc-200'
                 }`}
               >
@@ -165,7 +165,7 @@ export default function AffiliateLeaderboard() {
                     key={entry.id}
                     className={`rounded-xl p-4 transition-colors ${
                       isMe
-                        ? 'bg-[#ff385c]/5 border border-[#ff385c]/20'
+                        ? 'bg-[#1a3a5c]/5 border border-[#1a3a5c]/20'
                         : 'bg-zinc-900/50 border border-zinc-800/30 hover:border-zinc-700/50'
                     }`}
                   >
@@ -183,7 +183,7 @@ export default function AffiliateLeaderboard() {
                             {entry.full_name || 'Anonymous Affiliate'}
                           </span>
                           {isMe && (
-                            <span className="text-[10px] px-1.5 py-0.5 rounded bg-[#ff385c]/10 text-[#ff385c] font-medium">You</span>
+                            <span className="text-[10px] px-1.5 py-0.5 rounded bg-[#1a3a5c]/10 text-[#1a3a5c] font-medium">You</span>
                           )}
                           <span className={`px-1.5 py-0.5 rounded text-[10px] font-medium ${TIER_BADGE[entry.tier] || TIER_BADGE.silver}`}>
                             {entry.tier?.charAt(0).toUpperCase() + entry.tier?.slice(1) || 'Silver'}

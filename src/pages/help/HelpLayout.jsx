@@ -6,12 +6,12 @@ export default function HelpLayout({ title, children, backLabel = 'Back to Help 
     <div className="min-h-screen bg-zinc-950">
       <div className="max-w-3xl mx-auto px-4 py-10">
         {/* Breadcrumb */}
-        <div className="flex items-center gap-2 text-sm text-zinc-400 mb-8">
+        <div className="flex items-center gap-2 text-sm text-[#4A5771] mb-8">
           <Link to="/help" className="hover:text-primary transition-colors">
             Help Center
           </Link>
           <ChevronRight className="w-3 h-3" />
-          <span className="text-zinc-300 font-medium">{title}</span>
+          <span className="text-[#8E9BB5] font-medium">{title}</span>
         </div>
 
         {/* Content card */}
@@ -19,7 +19,7 @@ export default function HelpLayout({ title, children, backLabel = 'Back to Help 
           <h1 className="text-2xl md:text-3xl font-black text-white mb-6">
             {title}
           </h1>
-          <div className="prose prose-invert max-w-none text-sm leading-relaxed text-zinc-400 space-y-4">
+          <div className="prose prose-invert max-w-none text-sm leading-relaxed text-[#4A5771] space-y-4">
             {children}
           </div>
         </div>
@@ -28,7 +28,7 @@ export default function HelpLayout({ title, children, backLabel = 'Back to Help 
         <div className="mt-6 text-center">
           <Link
             to="/help"
-            className="inline-flex items-center gap-1 text-sm text-zinc-400 hover:text-primary transition-colors font-medium"
+            className="inline-flex items-center gap-1 text-sm text-[#4A5771] hover:text-primary transition-colors font-medium"
           >
             <ChevronRight className="w-3 h-3 rotate-180" />
             {backLabel}

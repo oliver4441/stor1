@@ -15,7 +15,7 @@ const deliverySteps = [
       <text x="180" y="45" font-size="12" fill="white" text-anchor="middle">Pick Up</text>
       <text x="180" y="62" font-size="10" fill="#bfdbfe" text-anchor="middle">Rider</text>
       <path d="M220 50l30 0" stroke="#cbd5e1" stroke-width="2" stroke-dasharray="4,4"/>
-      <rect x="260" y="20" width="80" height="60" rx="6" fill="#10b981"/>
+      <rect x="260" y="20" width="80" height="60" rx="6" fill="#007AFF"/>
       <text x="300" y="45" font-size="12" fill="white" text-anchor="middle">Deliver</text>
       <text x="300" y="62" font-size="10" fill="#d1fae5" text-anchor="middle">Kenya</text>
     </svg>`
@@ -25,7 +25,7 @@ const deliverySteps = [
     desc: 'Delivery is free on eligible orders. Other locations have a flat rate depending on distance.',
     svg: `<svg viewBox="0 0 400 80" xmlns="http://www.w3.org/2000/svg" class="w-full">
       <rect x="0" y="0" width="400" height="80" rx="8" fill="#ecfdf5"/>
-      <rect x="20" y="15" width="120" height="50" rx="6" fill="#10b981"/>
+      <rect x="20" y="15" width="120" height="50" rx="6" fill="#007AFF"/>
       <text x="80" y="40" font-size="14" fill="white" text-anchor="middle" font-weight="bold">FREE</text>
       <text x="80" y="58" font-size="10" fill="#d1fae5" text-anchor="middle">Free Delivery</text>
       <rect x="160" y="15" width="120" height="50" rx="6" fill="#3b82f6"/>
@@ -41,7 +41,7 @@ const deliverySteps = [
 export default function Delivery() {
   return (
     <HelpLayout title="Delivery and Shipping">
-      <p className="mb-6 text-zinc-400">
+      <p className="mb-6 text-[#4A5771]">
         We deliver across Kenya.
       </p>
       

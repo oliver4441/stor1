@@ -42,7 +42,7 @@ const trackSteps = [
 export default function TrackOrderHelp() {
   return (
     <HelpLayout title="Track Your Order">
-      <p className="mb-6 text-zinc-400">
+      <p className="mb-6 text-[#4A5771]">
         Track your order status in real-time from placement to delivery.
       </p>
       

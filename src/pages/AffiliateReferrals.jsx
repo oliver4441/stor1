@@ -107,7 +107,7 @@ export default function AffiliateReferrals() {
         <div className="text-center max-w-md">
           <Share2 className="w-16 h-16 text-zinc-700 mx-auto mb-4" />
           <h2 className="text-xl font-bold text-white mb-2">Referral Center</h2>
-          <p className="text-zinc-400 mb-6">{error}</p>
+          <p className="text-[#4A5771] mb-6">{error}</p>
         </div>
       </div>
     );
@@ -116,19 +116,19 @@ export default function AffiliateReferrals() {
   return (
     <div className="min-h-screen bg-zinc-950">
       {/* Hero */}
-      <div className="bg-gradient-to-br from-violet-500/20 via-purple-500/10 to-zinc-950 px-4 py-8">
+      <div className="bg-gradient-to-br from-blue-500/20 via-blue-600/10 to-zinc-950 px-4 py-8">
         <div className="max-w-4xl mx-auto">
           <div className="flex items-center gap-2 mb-1">
-            <Share2 className="w-5 h-5 text-violet-400" />
+            <Share2 className="w-5 h-5 text-blue-400" />
             <h1 className="text-xl font-black text-white">Referral Center</h1>
           </div>
-          <p className="text-zinc-400 text-sm mt-1">Share your link and earn commissions</p>
+          <p className="text-[#4A5771] text-sm mt-1">Share your link and earn commissions</p>
         </div>
       </div>
 
       {/* Nav tabs */}
       <div className="max-w-4xl mx-auto px-4 mt-6">
-        <div className="flex gap-1 bg-zinc-900 rounded-xl p-1 overflow-x-auto">
+        <div className="flex gap-1 bg-[#28303F] rounded-xl p-1 overflow-x-auto">
           {[
             { path: '/affiliate-dashboard', label: 'Dashboard', icon: Award },
             { path: '/affiliate-referrals', label: 'Referrals', icon: Share2 },
@@ -140,7 +140,7 @@ export default function AffiliateReferrals() {
               className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-bold whitespace-nowrap transition-colors ${
                 location.pathname === tab.path
                   ? 'bg-primary text-white'
-                  : 'text-zinc-400 hover:text-white'
+                  : 'text-[#4A5771] hover:text-white'
               }`}>
               <tab.icon className="w-4 h-4" />
               {tab.label}
@@ -152,11 +152,11 @@ export default function AffiliateReferrals() {
       <div className="max-w-4xl mx-auto px-4 space-y-6 mt-6">
         {/* Referral Code Card */}
         <div className="fusion-recessed-card p-5 text-center">
-          <p className="text-xs text-zinc-400 uppercase tracking-wider mb-2">Your Referral Code</p>
+          <p className="text-xs text-[#4A5771] uppercase tracking-wider mb-2">Your Referral Code</p>
           <p className="text-3xl font-mono font-black text-primary tracking-widest">{referralCode}</p>
           <button onClick={copyCode}
-            className="mt-2 px-4 py-1.5 rounded-lg bg-zinc-800 text-xs text-zinc-400 hover:text-white hover:bg-zinc-700 transition-colors inline-flex items-center gap-1.5">
-            {copiedCode ? <><CheckCircle className="w-3 h-3 text-green-400" /> Copied!</> : <><Copy className="w-3 h-3" /> Copy Code</>}
+            className="mt-2 px-4 py-1.5 rounded-lg bg-[#28303F] text-xs text-[#4A5771] hover:text-white hover:bg-zinc-700 transition-colors inline-flex items-center gap-1.5">
+            {copiedCode ? <><CheckCircle className="w-3 h-3 text-[#38B8EA]" /> Copied!</> : <><Copy className="w-3 h-3" /> Copy Code</>}
           </button>
         </div>
 
@@ -164,26 +164,26 @@ export default function AffiliateReferrals() {
         <div className="grid grid-cols-3 gap-3">
           <div className="fusion-recessed-card p-4 text-center">
             <p className="text-2xl font-black text-white">{referrals.length}</p>
-            <p className="text-[10px] text-zinc-400 uppercase tracking-wider">Total</p>
+            <p className="text-[10px] text-[#4A5771] uppercase tracking-wider">Total</p>
           </div>
           <div className="fusion-recessed-card p-4 text-center">
-            <p className="text-2xl font-black text-green-400">{convertedCount}</p>
-            <p className="text-[10px] text-zinc-400 uppercase tracking-wider">Converted</p>
+            <p className="text-2xl font-black text-[#38B8EA]">{convertedCount}</p>
+            <p className="text-[10px] text-[#4A5771] uppercase tracking-wider">Converted</p>
           </div>
           <div className="fusion-recessed-card p-4 text-center">
             <p className="text-2xl font-black text-amber-400">{pendingCount}</p>
-            <p className="text-[10px] text-zinc-400 uppercase tracking-wider">Pending</p>
+            <p className="text-[10px] text-[#4A5771] uppercase tracking-wider">Pending</p>
           </div>
         </div>
 
         {/* Referral Link */}
         <div className="fusion-recessed-card p-5">
-          <h3 className="text-sm font-bold text-zinc-300 mb-3 flex items-center gap-2">
+          <h3 className="text-sm font-bold text-[#8E9BB5] mb-3 flex items-center gap-2">
             <ExternalLink className="w-4 h-4" /> Your Referral Link
           </h3>
           <div className="flex gap-2">
             <input readOnly value={referralLink}
-              className="flex-1 bg-zinc-800 border border-zinc-700 rounded-xl px-4 py-2.5 text-sm text-white font-mono truncate" />
+              className="flex-1 bg-[#28303F] border border-zinc-700 rounded-xl px-4 py-2.5 text-sm text-white font-mono truncate" />
             <button onClick={copyLink}
               className="px-4 py-2.5 bg-primary text-white rounded-xl font-bold text-sm hover:bg-primary-hover flex items-center gap-2 transition-colors shrink-0">
               {copied ? <><CheckCircle className="w-4 h-4" /> Copied</> : <><Copy className="w-4 h-4" /> Copy</>}
@@ -193,7 +193,7 @@ export default function AffiliateReferrals() {
 
         {/* Share buttons */}
         <div className="fusion-recessed-card p-5">
-          <h3 className="text-sm font-bold text-zinc-300 mb-3 flex items-center gap-2">
+          <h3 className="text-sm font-bold text-[#8E9BB5] mb-3 flex items-center gap-2">
             <Send className="w-4 h-4" /> Share Via
           </h3>
           <button onClick={nativeShare}
@@ -201,13 +201,13 @@ export default function AffiliateReferrals() {
             <Share2 className="w-5 h-5 text-primary shrink-0" />
             <div>
               <p className="text-sm font-bold text-white">Share with anyone</p>
-              <p className="text-xs text-zinc-400">One-tap share via apps</p>
+              <p className="text-xs text-[#4A5771]">One-tap share via apps</p>
             </div>
           </button>
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
             <button onClick={() => shareVia('whatsapp')}
-              className="flex items-center gap-2.5 p-3 rounded-xl bg-green-500/10 border border-green-500/20 hover:bg-green-500/20 transition-colors text-left">
-              <MessageCircle className="w-5 h-5 text-green-400 shrink-0" />
+              className="flex items-center gap-2.5 p-3 rounded-xl bg-[#007AFF]/10 border border-[#007AFF]/20 hover:bg-[#007AFF]/20 transition-colors text-left">
+              <MessageCircle className="w-5 h-5 text-[#38B8EA] shrink-0" />
               <span className="text-sm font-bold text-white">WhatsApp</span>
             </button>
             <button onClick={() => shareVia('telegram')}
@@ -221,8 +221,8 @@ export default function AffiliateReferrals() {
               <span className="text-sm font-bold text-white">Facebook</span>
             </button>
             <button onClick={downloadQR}
-              className="flex items-center gap-2.5 p-3 rounded-xl bg-zinc-800 border border-zinc-700 hover:bg-zinc-700 transition-colors text-left">
-              <Download className="w-5 h-5 text-zinc-400 shrink-0" />
+              className="flex items-center gap-2.5 p-3 rounded-xl bg-[#28303F] border border-zinc-700 hover:bg-zinc-700 transition-colors text-left">
+              <Download className="w-5 h-5 text-[#4A5771] shrink-0" />
               <span className="text-sm font-bold text-white">QR Code</span>
             </button>
           </div>
@@ -230,13 +230,13 @@ export default function AffiliateReferrals() {
 
         {/* Referred Users */}
         <div className="fusion-recessed-card overflow-hidden">
-          <div className="px-5 py-4 border-b border-zinc-800">
-            <h3 className="text-sm font-bold text-zinc-300 flex items-center gap-2">
+          <div className="px-5 py-4 border-b border-[#353F54]">
+            <h3 className="text-sm font-bold text-[#8E9BB5] flex items-center gap-2">
               <Users className="w-4 h-4" /> People You Referred
             </h3>
           </div>
           {referrals.length === 0 ? (
-            <p className="text-sm text-zinc-500 text-center py-8 px-4">
+            <p className="text-sm text-[#4A5771] text-center py-8 px-4">
               Share your referral link to start earning. Anyone who signs up through it appears here.
             </p>
           ) : (
@@ -245,16 +245,16 @@ export default function AffiliateReferrals() {
                 const initials = (r.full_name || r.email || 'C').split(/[\s@]+/).map(s => s[0]).slice(0, 2).join('').toUpperCase();
                 return (
                   <div key={r.id || i} className="flex items-center gap-3 px-5 py-3">
-                    <div className="w-10 h-10 rounded-full bg-gradient-to-br from-primary/30 to-violet-500/30 flex items-center justify-center text-sm font-bold text-white shrink-0">
+                    <div className="w-10 h-10 rounded-full bg-gradient-to-br from-primary/30 to-blue-500/30 flex items-center justify-center text-sm font-bold text-white shrink-0">
                       {initials}
                     </div>
                     <div className="min-w-0 flex-1">
                       <p className="text-sm font-bold text-white truncate">{r.full_name || 'Customer'}</p>
-                      <p className="text-xs text-zinc-400 truncate">{r.email}</p>
-                      <p className="text-[10px] text-zinc-500">{new Date(r.created_at).toLocaleDateString()}</p>
+                      <p className="text-xs text-[#4A5771] truncate">{r.email}</p>
+                      <p className="text-[10px] text-[#4A5771]">{new Date(r.created_at).toLocaleDateString()}</p>
                     </div>
                     <span className={`text-[10px] uppercase font-bold px-2 py-0.5 rounded-full shrink-0 ${
-                      r.status === 'converted' ? 'bg-green-900/30 text-green-400' : 
+                      r.status === 'converted' ? 'bg-[#007AFF]/30 text-[#38B8EA]' : 
                       r.status === 'expired' ? 'bg-red-900/30 text-red-400' :
                       'bg-amber-900/30 text-amber-400'
                     }`}>

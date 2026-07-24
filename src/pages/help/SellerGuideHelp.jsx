@@ -47,7 +47,7 @@ const sellerSteps = [
     desc: 'Receive payouts for completed orders. Payments processed weekly via M-Pesa.',
     svg: `<svg viewBox="0 0 400 60" xmlns="http://www.w3.org/2000/svg" class="w-full">
       <rect x="0" y="0" width="400" height="60" rx="8" fill="#ecfdf5"/>
-      <rect x="20" y="10" width="100" height="40" rx="6" fill="#10b981"/>
+      <rect x="20" y="10" width="100" height="40" rx="6" fill="#007AFF"/>
       <text x="70" y="35" font-size="12" fill="white" text-anchor="middle" font-weight="bold">Payout</text>
       <text x="140" y="35" font-size="11" fill="#065f46">Weekly via M-Pesa</text>
     </svg>`
@@ -57,7 +57,7 @@ const sellerSteps = [
 export default function SellerGuideHelp() {
   return (
     <HelpLayout title="Seller Guide">
-      <p className="mb-6 text-zinc-400">
+      <p className="mb-6 text-[#4A5771]">
         Sell your products on Omix Store and reach customers across Kenya.
       </p>
       
