@@ -1,23 +1,23 @@
 /**
  * Omix Design System Tokens
  * Dark-mode design constants for the Omix PWA.
- * This app uses Tailwind CSS with darkMode: 'class' (html has class='dark' permanently).
+ * Dark navy/blue theme — inspired by Figma bike app design.
  */
 
 // ─── Colors ────────────────────────────────────────────────────────────────
 export const colors = {
-  primary: '#1a5632',
-  primaryHover: '#14472a',
-  accent: '#d4a017',
+  primary: '#007AFF',
+  primaryHover: '#0066CC',
+  accent: '#007AFF',
   danger: '#dc2626',
-  surface: '#09090b',
-  surfaceAlt: '#18181b',
-  border: '#27272a',
-  textPrimary: '#fafafa',
-  textSecondary: '#a1a1aa',
-  textMuted: '#71717a',
+  surface: '#242C3B',
+  surfaceAlt: '#28303F',
+  border: '#353F54',
+  textPrimary: '#FAFAFA',
+  textSecondary: '#4A5771',
+  textMuted: '#4A5771',
   success: '#4ade80',
-  priceColor: '#4ade80',
+  priceColor: '#38B8EA',
 };
 
 // ─── Typography ────────────────────────────────────────────────────────────
@@ -34,8 +34,8 @@ export const typography = {
 
 // ─── Font Families ─────────────────────────────────────────────────────────
 export const fonts = {
-  sans: "'Inter', system-ui, -apple-system, sans-serif",
-  display: "'Poppins', 'Inter', system-ui, sans-serif",
+  sans: "'Poppins', system-ui, -apple-system, sans-serif",
+  display: "'Poppins', system-ui, sans-serif",
 };
 
 // ─── Spacing Scale ─────────────────────────────────────────────────────────
@@ -74,9 +74,9 @@ export const shadows = {
 
 // ─── Button Variants ───────────────────────────────────────────────────────
 export const buttonVariants = {
-  primary: 'bg-[#1a5632] text-white hover:bg-[#14472a] transition-colors duration-150',
-  secondary: 'bg-zinc-800 text-white border border-zinc-700 hover:bg-zinc-700 transition-colors duration-150',
-  ghost: 'bg-transparent text-[#a1a1aa] hover:text-white transition-colors duration-150',
+  primary: 'bg-[#007AFF] text-white hover:bg-[#0066CC] transition-colors duration-150',
+  secondary: 'bg-[#28303F] text-white border border-[#353F54] hover:bg-[#323B4F] transition-colors duration-150',
+  ghost: 'bg-transparent text-[#4A5771] hover:text-white transition-colors duration-150',
   danger: 'bg-red-600 text-white hover:bg-red-700 transition-colors duration-150',
 };
 
