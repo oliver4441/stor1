@@ -10,10 +10,10 @@ function AccordionSection({ title, children, defaultOpen, icon: Icon }) {
     <div>
       <button
         onClick={() => setOpen(!open)}
-        className="w-full flex items-center justify-between px-6 py-4 text-sm font-bold text-zinc-300 hover:text-white hover:bg-zinc-800/30 transition-colors text-left"
+        className="w-full flex items-center justify-between px-6 py-4 text-sm font-bold text-[#8E9BB5] hover:text-white hover:bg-[#28303F]/30 transition-colors text-left"
       >
         <span>{title}</span>
-        {open ? <ChevronUp className="w-4 h-4 text-zinc-500" /> : <ChevronDown className="w-4 h-4 text-zinc-500" />}
+        {open ? <ChevronUp className="w-4 h-4 text-[#4A5771]" /> : <ChevronDown className="w-4 h-4 text-[#4A5771]" />}
       </button>
       {open && children}
     </div>
@@ -194,11 +194,11 @@ function ListingDetails() {
     return (
       <div className="max-w-7xl mx-auto px-4 py-8 animate-pulse">
         <div className="flex flex-col md:flex-row gap-8 lg:gap-12">
-          <div className="w-full md:w-1/2 lg:w-3/5 aspect-[4/3] bg-zinc-200 dark:bg-zinc-800 rounded-3xl"></div>
+          <div className="w-full md:w-1/2 lg:w-3/5 aspect-[4/3] bg-zinc-200 dark:bg-[#28303F] rounded-3xl"></div>
           <div className="w-full md:w-1/2 lg:w-2/5 space-y-4">
-            <div className="h-8 bg-zinc-200 dark:bg-zinc-800 rounded w-3/4"></div>
-            <div className="h-8 bg-zinc-200 dark:bg-zinc-800 rounded w-1/4"></div>
-            <div className="h-20 bg-zinc-200 dark:bg-zinc-800 rounded w-full"></div>
+            <div className="h-8 bg-zinc-200 dark:bg-[#28303F] rounded w-3/4"></div>
+            <div className="h-8 bg-zinc-200 dark:bg-[#28303F] rounded w-1/4"></div>
+            <div className="h-20 bg-zinc-200 dark:bg-[#28303F] rounded w-full"></div>
           </div>
         </div>
       </div>
@@ -209,7 +209,7 @@ function ListingDetails() {
     return (
       <div className="max-w-7xl mx-auto px-4 py-20 text-center">
         <h2 className="text-3xl font-bold mb-4 text-white">{error || t('listing.listingNotFound')}</h2>
-        <Link to="/" className="text-[var(--seasonal-primary,#1a5632)] font-bold hover:underline">{t('listing.goBackHome')}</Link>
+        <Link to="/" className="text-[var(--seasonal-primary,#007AFF)] font-bold hover:underline">{t('listing.goBackHome')}</Link>
       </div>
     );
   }
@@ -395,11 +395,11 @@ function ListingDetails() {
                   : formatKES(listing.price)}
               </p>
               {hasVariants && selectedVariantObj && selectedVariantObj.priceAdjustment !== 0 && (
-                <p className="text-sm text-zinc-400 line-through">{formatKES(listing.price)}</p>
+                <p className="text-sm text-[#4A5771] line-through">{formatKES(listing.price)}</p>
               )}
               {listing.compare_at_price && listing.compare_at_price > listing.price && (
                 <>
-                  <p className="text-lg font-bold text-zinc-400 line-through">{formatKES(listing.compare_at_price)}</p>
+                  <p className="text-lg font-bold text-[#4A5771] line-through">{formatKES(listing.compare_at_price)}</p>
                   <span className="bg-red-900/30 text-red-400 text-xs font-bold px-2 py-1 rounded-full">
                     -{Math.round((1 - listing.price / listing.compare_at_price) * 100)}%
                   </span>
@@ -441,10 +441,10 @@ function ListingDetails() {
                 {keySpecs.map((spec, i) => {
                   const Icon = spec.icon;
                   return (
-                    <div key={i} className="flex items-center gap-2 bg-zinc-900/60 border border-zinc-800 rounded-xl px-3 py-2.5 flex-shrink-0">
-                      <Icon className="w-4 h-4 text-[var(--seasonal-primary,#1a5632)]" />
+                    <div key={i} className="flex items-center gap-2 bg-[#28303F]/60 border border-[#353F54] rounded-xl px-3 py-2.5 flex-shrink-0">
+                      <Icon className="w-4 h-4 text-[var(--seasonal-primary,#007AFF)]" />
                       <div className="leading-tight">
-                        <p className="text-[10px] text-zinc-400 uppercase tracking-wider">{spec.label}</p>
+                        <p className="text-[10px] text-[#4A5771] uppercase tracking-wider">{spec.label}</p>
                         <p className="text-xs font-bold text-white">{spec.value}</p>
                       </div>
                     </div>
@@ -456,35 +456,35 @@ function ListingDetails() {
 
           {/* Trust badges — Jumia-style "Why Buy" row */}
           <div className="flex flex-wrap gap-2 mb-4">
-            <div className="flex items-center gap-1.5 bg-zinc-900/60 border border-zinc-800 rounded-xl px-3 py-2 text-xs text-zinc-300 font-medium">
-              <Truck className="w-3.5 h-3.5 text-emerald-400" /> Free Delivery
+            <div className="flex items-center gap-1.5 bg-[#28303F]/60 border border-[#353F54] rounded-xl px-3 py-2 text-xs text-[#8E9BB5] font-medium">
+              <Truck className="w-3.5 h-3.5 text-[#38B8EA]" /> Free Delivery
             </div>
-            <div className="flex items-center gap-1.5 bg-zinc-900/60 border border-zinc-800 rounded-xl px-3 py-2 text-xs text-zinc-300 font-medium">
-              <Shield className="w-3.5 h-3.5 text-emerald-400" /> Secure Payment
+            <div className="flex items-center gap-1.5 bg-[#28303F]/60 border border-[#353F54] rounded-xl px-3 py-2 text-xs text-[#8E9BB5] font-medium">
+              <Shield className="w-3.5 h-3.5 text-[#38B8EA]" /> Secure Payment
             </div>
-            <div className="flex items-center gap-1.5 bg-zinc-900/60 border border-zinc-800 rounded-xl px-3 py-2 text-xs text-zinc-300 font-medium">
-              <RefreshCw className="w-3.5 h-3.5 text-emerald-400" /> Easy Returns
+            <div className="flex items-center gap-1.5 bg-[#28303F]/60 border border-[#353F54] rounded-xl px-3 py-2 text-xs text-[#8E9BB5] font-medium">
+              <RefreshCw className="w-3.5 h-3.5 text-[#38B8EA]" /> Easy Returns
             </div>
           </div>
 
           {/* Seller info — compact inline */}
           <div className="mb-4">
             {sellerProfile ? (
-              <Link to={`/seller/${sellerProfile.slug || sellerProfile.id}`} className="inline-flex items-center gap-2 text-xs text-zinc-400 hover:text-zinc-200 transition-colors bg-zinc-900/40 border border-zinc-800 rounded-xl px-3 py-2">
+              <Link to={`/seller/${sellerProfile.slug || sellerProfile.id}`} className="inline-flex items-center gap-2 text-xs text-[#4A5771] hover:text-[#FAFAFA] transition-colors bg-[#28303F]/40 border border-[#353F54] rounded-xl px-3 py-2">
                 <Store className="w-3.5 h-3.5" />
                 <span className="font-medium">Sold by:</span>
                 <span className="font-bold text-white">{sellerProfile.shop_name || 'Shop'}</span>
                 <span className="w-1 h-1 rounded-full bg-zinc-600" />
-                <span className="text-emerald-400 font-semibold">{sellerProfile.rating > 0 ? `★ ${sellerProfile.rating.toFixed(1)}` : 'New'}</span>
+                <span className="text-[#38B8EA] font-semibold">{sellerProfile.rating > 0 ? `★ ${sellerProfile.rating.toFixed(1)}` : 'New'}</span>
                 <ChevronRight className="w-3 h-3" />
               </Link>
             ) : (
-              <div className="inline-flex items-center gap-2 text-xs text-zinc-400 bg-zinc-900/40 border border-zinc-800 rounded-xl px-3 py-2">
+              <div className="inline-flex items-center gap-2 text-xs text-[#4A5771] bg-[#28303F]/40 border border-[#353F54] rounded-xl px-3 py-2">
                 <Store className="w-3.5 h-3.5" />
                 <span className="font-medium">Sold by:</span>
                 <span className="font-bold text-white">{t('listing.omixStore')}</span>
                 <span className="w-1 h-1 rounded-full bg-zinc-600" />
-                <span className="text-emerald-400 font-semibold">Official Store</span>
+                <span className="text-[#38B8EA] font-semibold">Official Store</span>
               </div>
             )}
           </div>
@@ -505,11 +505,11 @@ function ListingDetails() {
                 return (
                   <div key={type.id + '-' + idx} id={`variant-${type.id}-section`}>
                     <div className="flex items-center justify-between mb-2">
-                      <label className="text-xs font-bold text-zinc-400 uppercase tracking-wider">
-                        {type.name} {selectedVal && <span className="text-zinc-300 normal-case">— {selectedLabel}</span>}
+                      <label className="text-xs font-bold text-[#4A5771] uppercase tracking-wider">
+                        {type.name} {selectedVal && <span className="text-[#8E9BB5] normal-case">— {selectedLabel}</span>}
                       </label>
                       {type.id === 'size' && listing.size_guide && (
-                        <button type="button" className="text-[10px] text-[var(--seasonal-primary,#1a5632)] font-bold hover:underline">
+                        <button type="button" className="text-[10px] text-[var(--seasonal-primary,#007AFF)] font-bold hover:underline">
                           Size Guide
                         </button>
                       )}
@@ -529,14 +529,14 @@ function ListingDetails() {
                             }}
                             className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl border-2 text-xs font-bold transition-all ${
                               isSelected
-                                ? 'border-[var(--seasonal-primary,#1a5632)] bg-[var(--seasonal-primary,#1a5632)]/5'
+                                ? 'border-[var(--seasonal-primary,#007AFF)] bg-[var(--seasonal-primary,#007AFF)]/5'
                                 : disabled
-                                  ? 'border-zinc-700 opacity-40 cursor-not-allowed'
-                                  : 'border-zinc-700 hover:border-[var(--seasonal-primary,#1a5632)]'
+                                  ? 'border-[#353F54] opacity-40 cursor-not-allowed'
+                                  : 'border-[#353F54] hover:border-[var(--seasonal-primary,#007AFF)]'
                             }`}
                           >
                             <div className="w-4 h-4 rounded-full border border-zinc-300 dark:border-zinc-600 flex-shrink-0" style={{ backgroundColor: v.value?.startsWith('#') ? v.value : '#ccc' }} />
-                            <span className="text-zinc-300">{v.label}</span>
+                            <span className="text-[#8E9BB5]">{v.label}</span>
                           </button>
                         );
                       })}
@@ -554,10 +554,10 @@ function ListingDetails() {
                             }}
                             className={`min-w-[36px] px-2.5 py-1.5 rounded-xl border-2 text-xs font-bold text-center transition-all ${
                               isSelected
-                                ? 'border-[var(--seasonal-primary,#1a5632)] bg-[var(--seasonal-primary,#1a5632)] text-white'
+                                ? 'border-[var(--seasonal-primary,#007AFF)] bg-[var(--seasonal-primary,#007AFF)] text-white'
                                 : disabled
-                                  ? 'border-zinc-700 opacity-40 cursor-not-allowed line-through'
-                                  : 'border-zinc-700 text-zinc-300 hover:border-[var(--seasonal-primary,#1a5632)]'
+                                  ? 'border-[#353F54] opacity-40 cursor-not-allowed line-through'
+                                  : 'border-[#353F54] text-[#8E9BB5] hover:border-[var(--seasonal-primary,#007AFF)]'
                             }`}
                           >
                             {v.label}
@@ -578,10 +578,10 @@ function ListingDetails() {
                             }}
                             className={`px-3 py-1.5 rounded-xl border-2 text-xs font-bold transition-all ${
                               isSelected
-                                ? 'border-[var(--seasonal-primary,#1a5632)] bg-[var(--seasonal-primary,#1a5632)]/10 text-[var(--seasonal-primary,#1a5632)]'
+                                ? 'border-[var(--seasonal-primary,#007AFF)] bg-[var(--seasonal-primary,#007AFF)]/10 text-[var(--seasonal-primary,#007AFF)]'
                                 : disabled
-                                  ? 'border-zinc-700 opacity-40 cursor-not-allowed'
-                                  : 'border-zinc-700 text-zinc-300 hover:border-[var(--seasonal-primary,#1a5632)]'
+                                  ? 'border-[#353F54] opacity-40 cursor-not-allowed'
+                                  : 'border-[#353F54] text-[#8E9BB5] hover:border-[var(--seasonal-primary,#007AFF)]'
                             }`}
                           >
                             {v.label}
@@ -603,7 +603,7 @@ function ListingDetails() {
                     <span className="text-red-500 font-bold">Out of stock</span>
                   )}
                   {selectedVariantObj.priceAdjustment !== 0 && (
-                    <span className="text-zinc-400">
+                    <span className="text-[#4A5771]">
                       {selectedVariantObj.priceAdjustment > 0 ? '+' : ''}{formatKES(selectedVariantObj.priceAdjustment)} from base
                     </span>
                   )}
@@ -622,7 +622,7 @@ function ListingDetails() {
                 className={`flex items-center gap-2 px-4 py-2.5 rounded-xl font-bold text-sm transition-all ${
                   wishlisted
                     ? 'bg-red-900/30 text-red-400 border border-red-800'
-                    : 'bg-zinc-800 text-zinc-300 border border-zinc-700 hover:border-[var(--seasonal-primary,#1a5632)] hover:text-[var(--seasonal-primary,#1a5632)]'
+                    : 'bg-[#28303F] text-[#8E9BB5] border border-[#353F54] hover:border-[var(--seasonal-primary,#007AFF)] hover:text-[var(--seasonal-primary,#007AFF)]'
                 }`}
                 aria-label={wishlisted ? 'Remove from wishlist' : 'Save to wishlist'}
               >
@@ -631,19 +631,19 @@ function ListingDetails() {
               </button>
             </div>
             {inCart && user && (
-              <div className="flex items-center gap-2 text-sm text-emerald-400 bg-emerald-900/20 px-4 py-2 rounded-xl font-bold border border-emerald-200 dark:border-emerald-800">
+              <div className="flex items-center gap-2 text-sm text-[#38B8EA] bg-[#007AFF]/20 px-4 py-2 rounded-xl font-bold border border-[#38B8EA]/30 dark:border-[#007AFF]/50">
                 <ShoppingCart className="w-4 h-4" /> {inCart.quantity} {t('cart.title').toLowerCase()}
               </div>
             )}
             <div className="flex items-center gap-3">
               <button type="button" onClick={() => setQuantity(Math.max(1, quantity - 1))}
-                className="w-12 h-12 rounded-2xl bg-zinc-800 flex items-center justify-center hover:bg-zinc-700 transition-colors"
+                className="w-12 h-12 rounded-2xl bg-[#28303F] flex items-center justify-center hover:bg-zinc-700 transition-colors"
                 aria-label="Decrease quantity">
                 <Minus className="w-5 h-5" />
               </button>
               <span className="text-2xl font-black text-white w-12 text-center">{quantity}</span>
               <button type="button" onClick={() => setQuantity(quantity + 1)}
-                className="w-12 h-12 rounded-2xl bg-zinc-800 flex items-center justify-center hover:bg-zinc-700 transition-colors"
+                className="w-12 h-12 rounded-2xl bg-[#28303F] flex items-center justify-center hover:bg-zinc-700 transition-colors"
                 aria-label="Increase quantity">
                 <Plus className="w-5 h-5" />
               </button>
@@ -659,13 +659,13 @@ function ListingDetails() {
                   <>
                     <button
                       disabled
-                      className="w-full flex items-center justify-center gap-2 bg-zinc-700 text-zinc-400 font-black py-4 rounded-2xl cursor-not-allowed opacity-50 text-lg"
+                      className="w-full flex items-center justify-center gap-2 bg-zinc-700 text-[#4A5771] font-black py-4 rounded-2xl cursor-not-allowed opacity-50 text-lg"
                     >
                       <ShoppingCart className="w-5 h-5" /> Select {firstUnselectedType?.name || 'options'} — {formatKES(effectivePrice * quantity)}
                     </button>
                     <button
                       disabled
-                      className="w-full flex items-center justify-center gap-2 bg-zinc-800 text-zinc-500 font-bold py-4 rounded-2xl cursor-not-allowed opacity-50"
+                      className="w-full flex items-center justify-center gap-2 bg-[#28303F] text-[#4A5771] font-bold py-4 rounded-2xl cursor-not-allowed opacity-50"
                     >
                       Select {firstUnselectedType?.name || 'options'} &mdash; {formatKES(effectivePrice * quantity)}
                     </button>
@@ -674,13 +674,13 @@ function ListingDetails() {
                   <>
                     <button
                       onClick={handleAddToCart}
-                      className="w-full flex items-center justify-center gap-2 bg-[var(--seasonal-primary,#1a5632)] text-white font-black py-4 rounded-2xl hover:bg-[var(--seasonal-secondary,#14472a)] transition-all shadow-lg shadow-[var(--seasonal-primary,#1a5632)]/20 text-lg"
+                      className="w-full flex items-center justify-center gap-2 bg-[var(--seasonal-primary,#007AFF)] text-white font-black py-4 rounded-2xl hover:bg-[var(--seasonal-secondary,#0066CC)] transition-all shadow-lg shadow-[var(--seasonal-primary,#007AFF)]/20 text-lg"
                     >
                       <ShoppingCart className="w-5 h-5" /> {inCart ? t('cart.title') : t('productCard.addToCart')} — {formatKES(effectivePrice * quantity)}
                     </button>
                     <button
                       onClick={handleBuyNow}
-                      className="w-full flex items-center justify-center gap-2 bg-zinc-900 dark:bg-white text-white dark:text-zinc-900 font-bold py-4 rounded-2xl hover:opacity-90 transition-all"
+                      className="w-full flex items-center justify-center gap-2 bg-[#28303F] dark:bg-white text-white dark:text-zinc-900 font-bold py-4 rounded-2xl hover:opacity-90 transition-all"
                     >
                       {t('listing.buyNow')} &mdash; {formatKES(effectivePrice * quantity)}
                     </button>
@@ -695,10 +695,10 @@ function ListingDetails() {
                   </div>
                 ) : (
                   <>
-                    <Link to={`/signup?redirect=/listing/${listing.id}`} className="w-full flex items-center justify-center gap-2 bg-[var(--seasonal-primary,#1a5632)] text-white font-black py-4 rounded-2xl hover:bg-[var(--seasonal-secondary,#14472a)] transition-all shadow-lg shadow-[var(--seasonal-primary,#1a5632)]/20 text-lg">
+                    <Link to={`/signup?redirect=/listing/${listing.id}`} className="w-full flex items-center justify-center gap-2 bg-[var(--seasonal-primary,#007AFF)] text-white font-black py-4 rounded-2xl hover:bg-[var(--seasonal-secondary,#0066CC)] transition-all shadow-lg shadow-[var(--seasonal-primary,#007AFF)]/20 text-lg">
                       <ShoppingCart className="w-5 h-5" /> {t('listing.signUpToAddToCart')}
                     </Link>
-                    <Link to={`/login?redirect=/listing/${listing.id}`} className="w-full flex items-center justify-center gap-2 bg-zinc-900 dark:bg-white text-white dark:text-zinc-900 font-bold py-4 rounded-2xl hover:opacity-90 transition-all">
+                    <Link to={`/login?redirect=/listing/${listing.id}`} className="w-full flex items-center justify-center gap-2 bg-[#28303F] dark:bg-white text-white dark:text-zinc-900 font-bold py-4 rounded-2xl hover:opacity-90 transition-all">
                       {t('listing.loginToBuyNow')}
                     </Link>
                   </>
@@ -712,14 +712,14 @@ function ListingDetails() {
           {listing.wholesale_enabled && wholesalePrices.length > 0 && (
             <div className="mt-6 fusion-recessed-card p-4">
               <div className="flex items-center gap-2 mb-3">
-                <Package className="w-4 h-4 text-[var(--seasonal-primary,#1a5632)]" />
+                <Package className="w-4 h-4 text-[var(--seasonal-primary,#007AFF)]" />
                 <span className="font-bold text-sm text-white">Wholesale / Bulk Purchase Available</span>
               </div>
               <div className="space-y-2">
                 {wholesalePrices.map((tier, i) => (
-                  <div key={i} className="flex items-center justify-between bg-zinc-800/60 rounded-xl px-3 py-2.5">
-                    <span className="text-xs font-bold text-zinc-300">{tier.min_qty}+ units</span>
-                    <span className="text-sm font-black text-[var(--seasonal-primary,#1a5632)]">{formatKES(tier.price_per_unit)} / unit</span>
+                  <div key={i} className="flex items-center justify-between bg-[#28303F]/60 rounded-xl px-3 py-2.5">
+                    <span className="text-xs font-bold text-[#8E9BB5]">{tier.min_qty}+ units</span>
+                    <span className="text-sm font-black text-[var(--seasonal-primary,#007AFF)]">{formatKES(tier.price_per_unit)} / unit</span>
                   </div>
                 ))}
               </div>
@@ -740,7 +740,7 @@ function ListingDetails() {
                   await watchPriceDrop(user.id, listing.id);
                   storeNotification({ type: 'default', title: 'Price Watch Set', body: `You'll be notified when "${listing.title}" drops in price.`, tag: 'price-watch' });
                 }}
-                className="w-full flex items-center justify-center gap-2 border-2 border-[var(--seasonal-primary,#1a5632)] text-[var(--seasonal-primary,#1a5632)] font-bold py-3 rounded-xl hover:bg-[var(--seasonal-primary,#1a5632)]/5 transition-all"
+                className="w-full flex items-center justify-center gap-2 border-2 border-[var(--seasonal-primary,#007AFF)] text-[var(--seasonal-primary,#007AFF)] font-bold py-3 rounded-xl hover:bg-[var(--seasonal-primary,#007AFF)]/5 transition-all"
               >
                 <Bell className="w-4 h-4" /> Notify me when price drops
               </button>
@@ -749,7 +749,7 @@ function ListingDetails() {
                   await watchBackInStock(user.id, listing.id);
                   storeNotification({ type: 'default', title: 'Back-in-Stock Watch Set', body: `You'll be notified when "${listing.title}" is back in stock.`, tag: 'stock-watch' });
                 }}
-                className="w-full flex items-center justify-center gap-2 border-2 border-[var(--seasonal-primary,#1a5632)] text-[var(--seasonal-primary,#1a5632)] font-bold py-3 rounded-xl hover:bg-[var(--seasonal-primary,#1a5632)]/5 transition-all"
+                className="w-full flex items-center justify-center gap-2 border-2 border-[var(--seasonal-primary,#007AFF)] text-[var(--seasonal-primary,#007AFF)] font-bold py-3 rounded-xl hover:bg-[var(--seasonal-primary,#007AFF)]/5 transition-all"
               >
                 <Bell className="w-4 h-4" /> Notify when back in stock
               </button>
@@ -760,12 +760,12 @@ function ListingDetails() {
 
       {/* ── Product Details Accordion (Jumia-style) ── */}
       <div className="mt-12 max-w-5xl mx-auto">
-        <div className="bg-zinc-900/30 rounded-3xl border border-zinc-800 overflow-hidden divide-y divide-zinc-800">
+        <div className="bg-[#28303F]/30 rounded-3xl border border-[#353F54] overflow-hidden divide-y divide-zinc-800">
           {/* Description */}
           {listing.description && (
             <AccordionSection title="Description" icon={ChevronDown} defaultOpen>
               <div className="px-6 pb-6">
-                <p className="text-zinc-300 whitespace-pre-line leading-relaxed text-sm">{listing.description}</p>
+                <p className="text-[#8E9BB5] whitespace-pre-line leading-relaxed text-sm">{listing.description}</p>
               </div>
             </AccordionSection>
           )}
@@ -776,11 +776,11 @@ function ListingDetails() {
               <div className="px-6 pb-6 space-y-4">
                 {specCategories.map((cat, ci) => (
                   <div key={ci}>
-                    <h4 className="font-bold text-xs text-zinc-400 uppercase tracking-wider mb-2">{cat.title}</h4>
+                    <h4 className="font-bold text-xs text-[#4A5771] uppercase tracking-wider mb-2">{cat.title}</h4>
                     <div className="fusion-recessed-card divide-y divide-zinc-800">
                       {cat.specs.map((spec, si) => (
                         <div key={si} className="flex items-center gap-3 px-4 py-2.5">
-                          <span className="text-xs text-zinc-500 w-32 flex-shrink-0 font-medium">{spec.label}</span>
+                          <span className="text-xs text-[#4A5771] w-32 flex-shrink-0 font-medium">{spec.label}</span>
                           <span className="text-xs font-bold text-white">{spec.value}</span>
                         </div>
                       ))}
@@ -797,25 +797,25 @@ function ListingDetails() {
               <div className="px-6 pb-6 space-y-4">
                 {listing.return_policy && (
                   <div>
-                    <h4 className="font-bold text-xs text-zinc-400 uppercase tracking-wider mb-2">Return Policy</h4>
-                    <p className="text-zinc-300 text-sm whitespace-pre-line bg-zinc-900/50 rounded-xl p-4 border border-zinc-800">{listing.return_policy}</p>
+                    <h4 className="font-bold text-xs text-[#4A5771] uppercase tracking-wider mb-2">Return Policy</h4>
+                    <p className="text-[#8E9BB5] text-sm whitespace-pre-line bg-[#28303F]/50 rounded-xl p-4 border border-[#353F54]">{listing.return_policy}</p>
                   </div>
                 )}
                 {listing.warranty_period && (
                   <div>
-                    <h4 className="font-bold text-xs text-zinc-400 uppercase tracking-wider mb-2">Warranty</h4>
+                    <h4 className="font-bold text-xs text-[#4A5771] uppercase tracking-wider mb-2">Warranty</h4>
                     <div className="fusion-recessed-card divide-y divide-zinc-800">
                       {listing.warranty_period && (
                         <div className="flex items-center gap-3 px-4 py-2.5">
-                          <Shield className="w-4 h-4 text-zinc-400" />
-                          <span className="text-xs text-zinc-500 w-32 flex-shrink-0 font-medium">Warranty Period</span>
+                          <Shield className="w-4 h-4 text-[#4A5771]" />
+                          <span className="text-xs text-[#4A5771] w-32 flex-shrink-0 font-medium">Warranty Period</span>
                           <span className="text-xs font-bold text-white">{listing.warranty_period}</span>
                         </div>
                       )}
                       {listing.warranty_type && (
                         <div className="flex items-center gap-3 px-4 py-2.5">
-                          <Tag className="w-4 h-4 text-zinc-400" />
-                          <span className="text-xs text-zinc-500 w-32 flex-shrink-0 font-medium">Warranty Type</span>
+                          <Tag className="w-4 h-4 text-[#4A5771]" />
+                          <span className="text-xs text-[#4A5771] w-32 flex-shrink-0 font-medium">Warranty Type</span>
                           <span className="text-xs font-bold text-white">{listing.warranty_type}</span>
                         </div>
                       )}
@@ -832,25 +832,25 @@ function ListingDetails() {
               <div className="fusion-recessed-card divide-y divide-zinc-800">
                 {deliveryZones.length > 0 && (
                   <div className="px-4 py-3 flex items-center gap-3">
-                    <Truck className="w-4 h-4 text-emerald-400" />
-                    <span className="text-xs text-zinc-500 w-32 flex-shrink-0 font-medium">Delivery</span>
+                    <Truck className="w-4 h-4 text-[#38B8EA]" />
+                    <span className="text-xs text-[#4A5771] w-32 flex-shrink-0 font-medium">Delivery</span>
                     <div>
                       <p className="text-xs font-bold text-white">Free delivery in {deliveryZones[0].name || 'Kenya'}</p>
-                      <p className="text-[10px] text-zinc-400">Delivered in {deliveryZones[0].delivery_days || '1-2'} days</p>
+                      <p className="text-[10px] text-[#4A5771]">Delivered in {deliveryZones[0].delivery_days || '1-2'} days</p>
                     </div>
                   </div>
                 )}
                 {listing.shipping_dimensions && (
                   <div className="px-4 py-3 flex items-center gap-3">
-                    <Package className="w-4 h-4 text-zinc-400" />
-                    <span className="text-xs text-zinc-500 w-32 flex-shrink-0 font-medium">Package Size</span>
+                    <Package className="w-4 h-4 text-[#4A5771]" />
+                    <span className="text-xs text-[#4A5771] w-32 flex-shrink-0 font-medium">Package Size</span>
                     <span className="text-xs font-bold text-white">{formatDimensions(listing.shipping_dimensions)}</span>
                   </div>
                 )}
                 {listing.shipping_weight && (
                   <div className="px-4 py-3 flex items-center gap-3">
-                    <Package className="w-4 h-4 text-zinc-400" />
-                    <span className="text-xs text-zinc-500 w-32 flex-shrink-0 font-medium">Weight</span>
+                    <Package className="w-4 h-4 text-[#4A5771]" />
+                    <span className="text-xs text-[#4A5771] w-32 flex-shrink-0 font-medium">Weight</span>
                     <span className="text-xs font-bold text-white">{listing.shipping_weight}</span>
                   </div>
                 )}
@@ -861,13 +861,13 @@ function ListingDetails() {
       </div>
 
       {/* Reviews */}
-      <div className="mt-16 pt-8 border-t border-zinc-800">
+      <div className="mt-16 pt-8 border-t border-[#353F54]">
         <ReviewList listingId={listingId} />
         <ReviewForm listingId={listingId} onSubmitted={() => {}} />
       </div>
 
       {/* Product Q&A */}
-      <div className="mt-16 pt-8 border-t border-zinc-800">
+      <div className="mt-16 pt-8 border-t border-[#353F54]">
         <h3 className="text-2xl font-bold mb-6 flex items-center gap-2">
           <MessageCircle className="w-5 h-5" />
           Questions &amp; Answers
@@ -875,20 +875,20 @@ function ListingDetails() {
         {questions.length > 0 ? (
           <div className="space-y-4 mb-6">
             {questions.map((q) => (
-              <div key={q.id} className="bg-zinc-900/50 rounded-2xl p-4 border border-zinc-800">
+              <div key={q.id} className="bg-[#28303F]/50 rounded-2xl p-4 border border-[#353F54]">
                 <div className="flex items-start gap-3">
-                  <div className="w-8 h-8 rounded-full bg-zinc-800 flex items-center justify-center flex-shrink-0 mt-0.5">
-                    <MessageCircle className="w-4 h-4 text-zinc-400" />
+                  <div className="w-8 h-8 rounded-full bg-[#28303F] flex items-center justify-center flex-shrink-0 mt-0.5">
+                    <MessageCircle className="w-4 h-4 text-[#4A5771]" />
                   </div>
                   <div className="flex-1 min-w-0">
                     <p className="text-sm font-bold text-white">{q.question}</p>
-                    <p className="text-[10px] text-zinc-500 mt-1">
+                    <p className="text-[10px] text-[#4A5771] mt-1">
                       {q.user_name || 'Anonymous'} — {new Date(q.created_at).toLocaleDateString()}
                     </p>
                     {q.answer && (
-                      <div className="mt-3 bg-zinc-800/60 rounded-xl p-3 border-l-2 border-[var(--seasonal-primary,#1a5632)]">
-                        <p className="text-xs font-bold text-[var(--seasonal-primary,#1a5632)] mb-1">Seller Response</p>
-                        <p className="text-xs text-zinc-300">{q.answer}</p>
+                      <div className="mt-3 bg-[#28303F]/60 rounded-xl p-3 border-l-2 border-[var(--seasonal-primary,#007AFF)]">
+                        <p className="text-xs font-bold text-[var(--seasonal-primary,#007AFF)] mb-1">Seller Response</p>
+                        <p className="text-xs text-[#8E9BB5]">{q.answer}</p>
                       </div>
                     )}
                   </div>
@@ -897,7 +897,7 @@ function ListingDetails() {
             ))}
           </div>
         ) : (
-          <p className="text-zinc-500 text-sm mb-6">No questions yet. Be the first to ask!</p>
+          <p className="text-[#4A5771] text-sm mb-6">No questions yet. Be the first to ask!</p>
         )}
         {user ? (
           <div className="flex gap-3">
@@ -906,7 +906,7 @@ function ListingDetails() {
               value={newQuestion}
               onChange={(e) => setNewQuestion(e.target.value)}
               placeholder="Ask a question about this product..."
-              className="flex-1 bg-zinc-900 border border-zinc-700 rounded-xl px-4 py-3 text-sm text-white placeholder-zinc-500 focus:outline-none focus:border-[var(--seasonal-primary,#1a5632)]"
+              className="flex-1 bg-[#28303F] border border-[#353F54] rounded-xl px-4 py-3 text-sm text-white placeholder-zinc-500 focus:outline-none focus:border-[var(--seasonal-primary,#007AFF)]"
               disabled={submittingQuestion}
             />
             <button
@@ -921,13 +921,13 @@ function ListingDetails() {
                 setSubmittingQuestion(false);
               }}
               disabled={submittingQuestion || !newQuestion.trim()}
-              className="bg-[var(--seasonal-primary,#1a5632)] text-white font-bold px-5 py-3 rounded-xl text-sm hover:bg-[var(--seasonal-secondary,#14472a)] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+              className="bg-[var(--seasonal-primary,#007AFF)] text-white font-bold px-5 py-3 rounded-xl text-sm hover:bg-[var(--seasonal-secondary,#0066CC)] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {submittingQuestion ? 'Submitting...' : 'Ask'}
             </button>
           </div>
         ) : (
-          <Link to={`/login?redirect=/listing/${listingId}`} className="inline-flex items-center gap-2 text-sm text-[var(--seasonal-primary,#1a5632)] font-bold hover:underline">
+          <Link to={`/login?redirect=/listing/${listingId}`} className="inline-flex items-center gap-2 text-sm text-[var(--seasonal-primary,#007AFF)] font-bold hover:underline">
             <MessageCircle className="w-4 h-4" />
             Log in to ask a question
           </Link>
@@ -941,7 +941,7 @@ function ListingDetails() {
 
       {/* Related */}
       {related.length > 0 && (
-        <div className="mt-16 pt-8 border-t border-zinc-800">
+        <div className="mt-16 pt-8 border-t border-[#353F54]">
           <h2 className="text-2xl font-bold mb-6">{t('listing.youMayAlsoLike')}</h2>
           <AutoScrollCarousel itemMinWidth={260} gap={16} speed={40}>
             {related.map(l => (

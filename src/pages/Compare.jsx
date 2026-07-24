@@ -129,10 +129,10 @@ export default function Compare() {
   if (error) {
     return (
       <div className="max-w-4xl mx-auto px-4 py-16 text-center">
-        <Scale className="w-16 h-16 text-zinc-300 mx-auto mb-4" />
+        <Scale className="w-16 h-16 text-[#8E9BB5] mx-auto mb-4" />
         <h1 className="text-2xl font-black mb-2">Compare Products</h1>
-        <p className="text-zinc-400 mb-8">{error}</p>
-        <Link to="/" className="inline-flex items-center gap-2 bg-[var(--seasonal-primary,#1a5632)] text-white font-bold px-6 py-3 rounded-xl">
+        <p className="text-[#4A5771] mb-8">{error}</p>
+        <Link to="/" className="inline-flex items-center gap-2 bg-[var(--seasonal-primary,#007AFF)] text-white font-bold px-6 py-3 rounded-xl">
           <ArrowLeft className="w-4 h-4" /> Browse Products
         </Link>
       </div>
@@ -142,10 +142,10 @@ export default function Compare() {
   if (listings.length === 0) {
     return (
       <div className="max-w-4xl mx-auto px-4 py-16 text-center">
-        <Scale className="w-16 h-16 text-zinc-300 mx-auto mb-4" />
+        <Scale className="w-16 h-16 text-[#8E9BB5] mx-auto mb-4" />
         <h1 className="text-2xl font-black mb-2">No Results</h1>
-        <p className="text-zinc-400 mb-8">Could not find the selected listings.</p>
-        <Link to="/" className="inline-flex items-center gap-2 bg-[var(--seasonal-primary,#1a5632)] text-white font-bold px-6 py-3 rounded-xl">
+        <p className="text-[#4A5771] mb-8">Could not find the selected listings.</p>
+        <Link to="/" className="inline-flex items-center gap-2 bg-[var(--seasonal-primary,#007AFF)] text-white font-bold px-6 py-3 rounded-xl">
           <ArrowLeft className="w-4 h-4" /> Back to Home
         </Link>
       </div>
@@ -158,9 +158,9 @@ export default function Compare() {
       <div className="flex items-center justify-between mb-8">
         <div>
           <h1 className="text-2xl font-black flex items-center gap-2">
-            <Scale className="w-6 h-6 text-[var(--seasonal-primary,#1a5632)]" /> Compare Products
+            <Scale className="w-6 h-6 text-[var(--seasonal-primary,#007AFF)]" /> Compare Products
           </h1>
-          <p className="text-zinc-400 text-sm">Comparing {listings.length} product{listings.length !== 1 ? 's' : ''}</p>
+          <p className="text-[#4A5771] text-sm">Comparing {listings.length} product{listings.length !== 1 ? 's' : ''}</p>
         </div>
         <div className="flex items-center gap-2">
           {/* Difference highlight toggle */}
@@ -169,8 +169,8 @@ export default function Compare() {
               onClick={() => setDiffMode(!diffMode)}
               className={`flex items-center gap-1.5 px-3 py-2 rounded-xl font-bold text-xs transition-all ${
                 diffMode
-                  ? 'bg-[var(--seasonal-primary,#1a5632)] text-white'
-                  : 'bg-zinc-800 text-zinc-300 hover:bg-zinc-700'
+                  ? 'bg-[var(--seasonal-primary,#007AFF)] text-white'
+                  : 'bg-[#28303F] text-[#8E9BB5] hover:bg-zinc-700'
               }`}
             >
               <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -191,7 +191,7 @@ export default function Compare() {
           </button>
           <Link
             to="/"
-            className="flex items-center gap-2 bg-zinc-900 text-zinc-300 px-4 py-2 rounded-xl font-bold text-sm hover:bg-zinc-800 transition-all"
+            className="flex items-center gap-2 bg-[#28303F] text-[#8E9BB5] px-4 py-2 rounded-xl font-bold text-sm hover:bg-[#28303F] transition-all"
           >
             <ArrowLeft className="w-4 h-4" /> Back
           </Link>
@@ -199,7 +199,7 @@ export default function Compare() {
       </div>
 
       {shared && (
-        <div className="mb-4 text-center text-sm font-medium text-emerald-400 bg-emerald-900/20 px-4 py-2 rounded-xl animate-fade-in">
+        <div className="mb-4 text-center text-sm font-medium text-[#38B8EA] bg-[#007AFF]/20 px-4 py-2 rounded-xl animate-fade-in">
           Comparison shared to WhatsApp!
         </div>
       )}
@@ -209,11 +209,11 @@ export default function Compare() {
         <table className="w-full border-collapse">
           <thead>
             <tr>
-              <th className="sticky left-0 bg-zinc-950 z-10 p-3 text-left text-xs font-bold text-zinc-400 uppercase tracking-wider min-w-[120px] border-b border-zinc-800">
+              <th className="sticky left-0 bg-[#242C3B] z-10 p-3 text-left text-xs font-bold text-[#4A5771] uppercase tracking-wider min-w-[120px] border-b border-[#353F54]">
                 Feature
               </th>
               {listings.map(listing => (
-                <th key={listing.id} className="p-3 text-center border-b border-zinc-800 min-w-[200px]">
+                <th key={listing.id} className="p-3 text-center border-b border-[#353F54] min-w-[200px]">
                   <div className="relative">
                     <button
                       onClick={() => removeFromCompare(listing.id)}
@@ -224,24 +224,24 @@ export default function Compare() {
                     </button>
                     <Link to={`/listing/${listing.id}`}>
                       {/* Image */}
-                      <div className="aspect-square bg-zinc-800 rounded-xl overflow-hidden mb-3 max-w-[180px] mx-auto">
+                      <div className="aspect-square bg-[#28303F] rounded-xl overflow-hidden mb-3 max-w-[180px] mx-auto">
                         {listing.images?.[0] ? (
                           <img src={listing.images[0]} alt={listing.title} className="w-full h-full object-cover hover:scale-105 transition-transform" />
                         ) : (
-                          <div className="w-full h-full flex items-center justify-center text-zinc-400">
+                          <div className="w-full h-full flex items-center justify-center text-[#4A5771]">
                             <ImageIcon className="w-8 h-8" />
                           </div>
                         )}
                       </div>
-                      <h3 className="font-bold text-sm text-white truncate hover:text-[var(--seasonal-primary,#1a5632)] transition-colors">
+                      <h3 className="font-bold text-sm text-white truncate hover:text-[var(--seasonal-primary,#007AFF)] transition-colors">
                         {listing.title}
                       </h3>
                     </Link>
-                    <p className="text-[var(--seasonal-primary,#1a5632)] font-bold text-sm mt-1">
+                    <p className="text-[var(--seasonal-primary,#007AFF)] font-bold text-sm mt-1">
                       {listing.flash_sale_price ? formatKES(listing.flash_sale_price) : formatKES(listing.price)}
                     </p>
                     {listing.compare_at_price && listing.compare_at_price > listing.price && (
-                      <p className="text-xs text-zinc-400 line-through">{formatKES(listing.compare_at_price)}</p>
+                      <p className="text-xs text-[#4A5771] line-through">{formatKES(listing.compare_at_price)}</p>
                     )}
                   </div>
                 </th>
@@ -254,11 +254,11 @@ export default function Compare() {
               const isHighlighted = diffMode && hasDiff;
               const isDimmed = diffMode && !hasDiff;
               return (
-                <tr key={row.label} className={`border-b border-zinc-100 dark:border-zinc-800 ${
+                <tr key={row.label} className={`border-b border-zinc-100 dark:border-[#353F54] ${
                   isHighlighted ? 'bg-yellow-900/10' : ''
                 }`}>
-                  <td className={`sticky left-0 bg-zinc-950 z-10 p-3 text-sm font-bold ${
-                    isHighlighted ? 'text-yellow-400' : 'text-zinc-300'
+                  <td className={`sticky left-0 bg-[#242C3B] z-10 p-3 text-sm font-bold ${
+                    isHighlighted ? 'text-yellow-400' : 'text-[#8E9BB5]'
                   }`}>
                     {row.label}
                     {isHighlighted && (
@@ -275,7 +275,7 @@ export default function Compare() {
                       <td key={listing.id} className={`p-3 text-center text-sm ${
                         isDimmed ? 'text-zinc-600' :
                         isDifferent ? 'text-yellow-400 font-bold bg-yellow-900/20' :
-                        'text-zinc-400'
+                        'text-[#4A5771]'
                       }`}>
                         {row.label === 'Description' ? (
                           <p className="line-clamp-4">{value}</p>
@@ -296,7 +296,7 @@ export default function Compare() {
       <div className="mt-8 flex items-center justify-center gap-4">
         <Link
           to="/"
-          className="inline-flex items-center gap-2 bg-[var(--seasonal-primary,#1a5632)] text-white font-bold px-8 py-3 rounded-xl hover:bg-[var(--seasonal-secondary,#14472a)] transition-all shadow-lg shadow-[var(--seasonal-primary,#1a5632)]/20"
+          className="inline-flex items-center gap-2 bg-[var(--seasonal-primary,#007AFF)] text-white font-bold px-8 py-3 rounded-xl hover:bg-[var(--seasonal-secondary,#0066CC)] transition-all shadow-lg shadow-[var(--seasonal-primary,#007AFF)]/20"
         >
           <ArrowLeft className="w-4 h-4" /> Continue Browsing
         </Link>

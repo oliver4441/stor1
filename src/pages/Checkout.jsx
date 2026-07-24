@@ -16,8 +16,8 @@ import { trackBeginCheckout, trackError } from '../utils/analytics';
 
 // ── Design Tokens (matching Nia chat) ──────────────────────────────
 const C = {
-  accent: 'var(--seasonal-primary,#1a5632)',
-  accentDark: '#14472a',
+  accent: '#007AFF',
+  accentDark: '#0066CC',
   bg: '#ffffff',
   bgDark: '#18181b',
   bgGray: '#f9fafb',
@@ -28,7 +28,7 @@ const C = {
   textMutedDark: '#a1a1aa',
   border: '#e4e4e7',
   borderDark: '#3f3f46',
-  success: '#10b981',
+  success: '#38B8EA',
   warning: '#f59e0b',
 };
 
@@ -635,15 +635,15 @@ export default function CheckoutPage() {
   if (isMaintenance) {
     return (
       <div className="max-w-lg mx-auto px-4 py-16">
-        <div className="text-center py-12 rounded-2xl border border-amber-300 dark:border-amber-800" style={{ backgroundColor: '#fffbeb' }}>
-          <div className="w-20 h-20 mx-auto mb-5 rounded-full flex items-center justify-center bg-amber-100">
-            <Wrench className="w-10 h-10 text-amber-600 animate-pulse" />
+        <div className="text-center py-12 rounded-2xl border border-[#007AFF] dark:border-[#0066CC]" style={{ backgroundColor: '#e8f4ff' }}>
+          <div className="w-20 h-20 mx-auto mb-5 rounded-full flex items-center justify-center bg-[#007AFF]/10">
+            <Wrench className="w-10 h-10 text-[#007AFF] animate-pulse" />
           </div>
-          <h1 className="text-2xl font-black mb-2 text-amber-800">Under Maintenance</h1>
-          <p className="text-sm mb-2 text-amber-700">
+          <h1 className="text-2xl font-black mb-2 text-[#0066CC]">Under Maintenance</h1>
+          <p className="text-sm mb-2 text-[#007AFF]">
             We're currently performing scheduled maintenance on our store.
           </p>
-          <p className="text-xs mb-8 text-amber-600">
+          <p className="text-xs mb-8 text-[#007AFF]">
             You can still browse products, but checkout and payments are temporarily disabled. Please check back shortly!
           </p>
           <div className="flex flex-col sm:flex-row gap-3 justify-center">
@@ -655,7 +655,7 @@ export default function CheckoutPage() {
               Continue Browsing <ArrowRight className="w-4 h-4" />
             </Link>
           </div>
-          <p className="text-[11px] mt-6 text-amber-500">
+          <p className="text-[11px] mt-6 text-[#007AFF]">
             Need help? Contact us at omixsystems@gmail.com or +254 768 213 649
           </p>
         </div>
@@ -760,7 +760,7 @@ export default function CheckoutPage() {
                             )}
                             {item.variant.color && item.variant.colorName && (
                               <span className="flex items-center gap-0.5 text-[9px] font-bold px-1.5 py-0.5 rounded" style={{ backgroundColor: C.bgGray, color: C.textMuted }}>
-                                <span className="w-2 h-2 rounded-full inline-block" style={{ backgroundColor: item.variant.color?.startsWith('#') ? item.variant.color : '#ccc', border: '1px solid #d4d4d8' }} />
+                                <span className="w-2 h-2 rounded-full inline-block" style={{ backgroundColor: item.variant.color?.startsWith('#') ? item.variant.color : '#ccc', border: '1px solid #353F54' }} />
                                 {item.variant.colorName}
                               </span>
                             )}
@@ -797,17 +797,17 @@ export default function CheckoutPage() {
             {/* Promo Code */}
             <div className="px-5 py-4 border-t" style={{ borderColor: C.border }}>
               {promoApplied ? (
-                <div className="flex items-center justify-between p-3 rounded-xl" style={{ backgroundColor: '#f0fdf4', border: '1px solid #bbf7d0' }}>
+                <div className="flex items-center justify-between p-3 rounded-xl" style={{ backgroundColor: '#e8f4ff', border: '1px solid #99d6ff' }}>
                   <div className="flex items-center gap-2">
-                    <CheckCircle className="w-4 h-4 text-green-600" />
+                    <CheckCircle className="w-4 h-4 text-[#007AFF]" />
                     <div>
-                      <span className="text-sm font-bold text-green-700">{promoApplied.code}</span>
-                      <p className="text-[11px] text-green-600">
+                      <span className="text-sm font-bold text-[#0066CC]">{promoApplied.code}</span>
+                      <p className="text-[11px] text-[#007AFF]">
                         {promoApplied.discount_type === 'free_delivery' ? 'Free delivery applied' : 'Discount applied'}
                       </p>
                     </div>
                   </div>
-                  <button onClick={removePromo} className="text-xs font-semibold text-green-700 hover:text-green-900 underline">
+                  <button onClick={removePromo} className="text-xs font-semibold text-[#0066CC] hover:text-[#004499] underline">
                     Remove
                   </button>
                 </div>
@@ -848,10 +848,10 @@ export default function CheckoutPage() {
                     type="checkbox"
                     checked={redeemPoints}
                     onChange={(e) => setRedeemPoints(e.target.checked)}
-                    className="w-4 h-4 rounded border-zinc-300 text-[var(--seasonal-primary,#1a5632)] focus:ring-[var(--seasonal-primary,#1a5632)]"
+                    className="w-4 h-4 rounded border-[#8E9BB5] text-[#007AFF] focus:ring-[#007AFF]"
                   />
                   <span className="text-sm" style={{ color: C.textMuted }}>
-                    Use loyalty points <strong className="text-amber-500">({userPoints} pts)</strong>
+                    Use loyalty points <strong className="text-[#007AFF]">({userPoints} pts)</strong>
                     <span className="text-xs block">100 pts = KES 50 • Max 50% of order</span>
                   </span>
                 </label>
@@ -1392,7 +1392,7 @@ function MpesaPaymentDialog({ pending, onDone }) {
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm">
       <div className="bg-white rounded-2xl p-6 max-w-sm w-full mx-4 text-center shadow-2xl">
         {status === 'paid' ? (
-          <CheckCircle className="w-14 h-14 mx-auto mb-3 text-green-500" />
+          <CheckCircle className="w-14 h-14 mx-auto mb-3 text-[#38B8EA]" />
         ) : (
           <Smartphone className="w-14 h-14 mx-auto mb-3 text-primary" />
         )}
