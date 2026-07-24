@@ -83,7 +83,7 @@ function Home() {
 
   const featuredProducts = listings.slice(0, 8);
 
-const heroFrom = theme?.colors?.heroFrom || '#1E2A3D';
+  const heroFrom = theme?.colors?.heroFrom || '#1E2A3D';
   const heroVia = theme?.colors?.heroVia || '#242C3B';
   const heroTo = theme?.colors?.heroTo || '#2A3548';
   const heroText = theme?.colors?.heroText || '#ffffff';
@@ -92,6 +92,7 @@ const heroFrom = theme?.colors?.heroFrom || '#1E2A3D';
   const heroOverlay = theme?.colors?.heroOverlay || 'rgba(0,122,255,0.2)';
   const ctaBg = theme?.colors?.ctaBg || '#007AFF';
   const ctaText = theme?.colors?.ctaText || '#ffffff';
+  const heroTitle = heroOverride?.title || theme?.heroTitle || "Kenya's #1 Online Store";
   const heroSubtitle = heroOverride?.subtitle || theme?.heroSubtitle || 'M-Pesa Payments · Free Delivery · 7-Day Returns · Shop from anywhere in Kenya';
   const heroImageUrl = heroOverride?.imageUrl || '';
   const hasHeroImage = !!heroImageUrl;
