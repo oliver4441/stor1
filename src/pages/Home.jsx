@@ -10,6 +10,7 @@ import RecentlyViewed from '../components/RecentlyViewed';
 import QuickViewModal from '../components/QuickViewModal';
 import SeasonalParticles from '../components/SeasonalParticles';
 import { useSeasonalTheme } from '../context/SeasonalContext';
+import { CATEGORIES } from '../utils/constants';
 import FlashDealsBar from '../components/FlashDealsBar';
 
 const ITEMS_PER_PAGE = 24;
