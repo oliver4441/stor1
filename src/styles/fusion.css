@@ -12,12 +12,12 @@
   --fusion-charcoal-850: #121216;
   --fusion-charcoal-800: #18181b;
   --fusion-charcoal-700: #27272a;
-  --fusion-vibe-primary: #4ade80;
-  --fusion-vibe-accent: #d4a017;
+  --fusion-vibe-primary: #007AFF;
+  --fusion-vibe-accent: #007AFF;
   --fusion-vibe-info: #38bdf8;
   --fusion-vibe-danger: #f87171;
-  --fusion-glass-bg: rgba(24, 24, 27, 0.55);
-  --fusion-glass-bg-strong: rgba(24, 24, 27, 0.72);
+  --fusion-glass-bg: rgba(36, 44, 59, 0.55);
+  --fusion-glass-bg-strong: rgba(36, 44, 59, 0.72);
   --fusion-glass-border: rgba(255, 255, 255, 0.10);
   --fusion-glass-blur: 18px;
   --fusion-clay-bg: #1c1c20;
@@ -106,7 +106,7 @@
   font-weight: 700;
   border: 1px solid transparent;
   background-clip: padding-box;
-  box-shadow: 0 0 12px rgba(212,160,23,0.35);
+  box-shadow: 0 0 12px rgba(0,122,255,0.35);
   position: relative;
 }
 .fusion-chrome::after {

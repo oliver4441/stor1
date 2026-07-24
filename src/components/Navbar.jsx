@@ -29,13 +29,13 @@ function CategoryIcon({ iconName, className }) {
 }
 
 const FEATURE_LINKS = [
-  { to: '/refurbished', label: 'Refurbished', icon: RefreshCw, color: 'from-orange-500 to-amber-600', glow: 'shadow-orange-500/40' },
+  { to: '/refurbished', label: 'Refurbished', icon: RefreshCw, color: 'from-blue-500 to-blue-600', glow: 'shadow-blue-500/40' },
   { to: '/wholesale', label: 'Wholesale', icon: Package, color: 'from-blue-500 to-indigo-600', glow: 'shadow-blue-500/40' },
-  { to: 'https://omixsystems.store', label: 'Blog', icon: Globe, color: 'from-violet-500 to-purple-600', glow: 'shadow-violet-500/40', external: true },
-  { to: '/how-it-works', label: 'How It Works', icon: HelpCircle, color: 'from-amber-500 to-orange-600', glow: 'shadow-amber-500/40' },
-  { to: '/help', label: 'Help', icon: Package, color: 'from-emerald-500 to-green-600', glow: 'shadow-emerald-500/40' },
-  { to: '/about', label: 'About', icon: Info, color: 'from-cyan-500 to-teal-600', glow: 'shadow-cyan-500/40' },
-  { to: '/install', label: 'Install App', icon: Download, color: 'from-[var(--seasonal-primary,#1a5632)] to-[var(--seasonal-secondary,#14472a)]', glow: 'shadow-[var(--seasonal-primary,#1a5632)]/40' },
+  { to: 'https://omixsystems.store', label: 'Blog', icon: Globe, color: 'from-blue-400 to-blue-600', glow: 'shadow-blue-500/40', external: true },
+  { to: '/how-it-works', label: 'How It Works', icon: HelpCircle, color: 'from-blue-500 to-cyan-600', glow: 'shadow-blue-500/40' },
+  { to: '/help', label: 'Help', icon: Package, color: 'from-blue-500 to-blue-700', glow: 'shadow-blue-500/40' },
+  { to: '/about', label: 'About', icon: Info, color: 'from-cyan-500 to-blue-600', glow: 'shadow-blue-500/40' },
+  { to: '/install', label: 'Install App', icon: Download, color: 'from-[var(--seasonal-primary,#007AFF)] to-[var(--seasonal-secondary,#0066CC)]', glow: 'shadow-[var(--seasonal-primary,#007AFF)]/40' },
   { to: '/affiliate', label: 'Earn', icon: DollarSign, color: 'from-blue-500 to-cyan-600', glow: 'shadow-blue-500/40' },
 ];
 
@@ -54,13 +54,13 @@ function Navbar() {
   const cartCount = getItemCount();
   const theme = useActiveTheme();
 
-  const navAccentColor = theme?.colors?.navAccent || '#1a5632';
+  const navAccentColor = theme?.colors?.navAccent || '#007AFF';
   const navAccentText = theme?.colors?.navAccentText || '#ffffff';
   const badgeText = theme?.badgeText;
-  const badgeBg = theme?.colors?.badgeBg || '#1a5632';
+  const badgeBg = theme?.colors?.badgeBg || '#007AFF';
   const badgeTextColor = theme?.colors?.badgeText || '#ffffff';
   const sticker = theme?.sticker || '';
-  const secondaryColor = theme?.colors?.secondary || '#14472a';
+  const secondaryColor = theme?.colors?.secondary || '#0066CC';
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
@@ -140,7 +140,7 @@ function Navbar() {
 
   return (
     <>
-      <nav className={`border-b border-zinc-800/50 bg-white/80 dark:bg-zinc-950/80 backdrop-blur-xl sticky top-0 z-50 transition-transform duration-200 ease-out ${navVisible ? 'translate-y-0' : '-translate-y-full'}`} style={{ paddingTop: 'env(safe-area-inset-top)' }}>
+      <nav className={`border-b border-[#353F54]/50 bg-[#1E2A3D]/80 backdrop-blur-xl sticky top-0 z-50 transition-transform duration-200 ease-out ${navVisible ? 'translate-y-0' : '-translate-y-full'}`} style={{ paddingTop: 'env(safe-area-inset-top)' }}>
         <div className="max-w-7xl mx-auto px-4 h-14 flex items-center justify-between">
           {/* Logo */}
           <Link to="/" className="flex items-center gap-2 shrink-0">
@@ -154,12 +154,12 @@ function Navbar() {
 
           {/* Desktop (lg+): Right side */}
           <div className="hidden lg:flex items-center gap-2">
-            <Link to="/search" className="p-2 rounded-full hover:bg-zinc-800 text-zinc-300 transition-colors" aria-label="Search">
+            <Link to="/search" className="p-2 rounded-full hover:bg-[#28303F] text-[#8E9BB5] transition-colors" aria-label="Search">
               <Search className="w-5 h-5" />
             </Link>
             <WhatsAppNavButton />
             <NotificationBell />
-            <Link to="/cart" className="relative p-2 rounded-full hover:bg-zinc-800 text-zinc-300 transition-colors" aria-label={`Shopping cart, ${cartCount} items`}>
+            <Link to="/cart" className="relative p-2 rounded-full hover:bg-[#28303F] text-[#8E9BB5] transition-colors" aria-label={`Shopping cart, ${cartCount} items`}>
               <ShoppingCart className="w-5 h-5" />
               {cartCount > 0 && (
                 <span className="absolute -top-1 -right-1 w-5 h-5 text-zinc-900 text-[10px] font-bold rounded-full flex items-center justify-center"
@@ -183,22 +183,22 @@ function Navbar() {
 
             {user ? (
               <>
-                <Link to="/account" className="flex items-center gap-2 p-2 rounded-full hover:bg-zinc-800 text-zinc-300 transition-colors">
+                <Link to="/account" className="flex items-center gap-2 p-2 rounded-full hover:bg-[#28303F] text-[#8E9BB5] transition-colors">
                   <User className="w-5 h-5" />
                   <span className="text-sm font-medium">{t('nav.account') || 'Account'}</span>
                 </Link>
                 {isUserAffiliate && (
-                  <Link to="/affiliate-dashboard" className="flex items-center gap-2 p-2 rounded-full hover:bg-zinc-800 text-zinc-300 transition-colors">
+                  <Link to="/affiliate-dashboard" className="flex items-center gap-2 p-2 rounded-full hover:bg-[#28303F] text-[#8E9BB5] transition-colors">
                     <span className="text-sm font-medium">Affiliate Dashboard</span>
                   </Link>
                 )}
                 {isUserSeller ? (
-                  <Link to="/seller/dashboard" className="flex items-center gap-2 p-2 rounded-full bg-gradient-to-r from-emerald-600/20 to-green-600/20 text-emerald-400 hover:from-emerald-600/30 hover:to-green-600/30 transition-all">
+                  <Link to="/seller/dashboard" className="flex items-center gap-2 p-2 rounded-full bg-gradient-to-r from-blue-600/20 to-blue-700/20 text-blue-400 hover:from-blue-600/30 hover:to-blue-700/30 transition-all">
                     <Store className="w-4 h-4" />
                     <span className="text-sm font-medium">Dashboard</span>
                   </Link>
                 ) : (
-                  <Link to="/seller/register" className="flex items-center gap-2 p-2 rounded-full hover:bg-zinc-800 text-zinc-300 transition-colors">
+                  <Link to="/seller/register" className="flex items-center gap-2 p-2 rounded-full hover:bg-[#28303F] text-[#8E9BB5] transition-colors">
                     <Store className="w-4 h-4" />
                     <span className="text-sm font-medium">Become a Seller</span>
                   </Link>
@@ -206,7 +206,7 @@ function Navbar() {
               </>
             ) : (
               <>
-                <Link to="/login" className="flex items-center gap-1.5 text-sm font-medium text-zinc-300 hover:text-white px-3 py-2 rounded-full hover:bg-zinc-800 transition-all">
+                <Link to="/login" className="flex items-center gap-1.5 text-sm font-medium text-[#8E9BB5] hover:text-white px-3 py-2 rounded-full hover:bg-[#28303F] transition-all">
                   <LogIn className="w-4 h-4" />
                   Log In
                 </Link>
@@ -228,7 +228,7 @@ function Navbar() {
             <div className="relative">
               <button
                 onClick={() => setDesktopMenuOpen(!desktopMenuOpen)}
-                className="p-2 rounded-full hover:bg-zinc-800 text-zinc-300 transition-colors"
+                className="p-2 rounded-full hover:bg-[#28303F] text-[#8E9BB5] transition-colors"
                 aria-label={desktopMenuOpen ? 'Close navigation menu' : 'Open navigation menu'}
               >
                 {desktopMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
@@ -239,7 +239,7 @@ function Navbar() {
                   {/* Backdrop */}
                   <div className="fixed inset-0 z-40" onClick={() => setDesktopMenuOpen(false)} />
                   {/* Dropdown */}
-                  <div className="absolute right-0 top-full mt-2 w-56 bg-zinc-950 border border-zinc-800 rounded-2xl shadow-2xl z-50 py-2 overflow-hidden">
+                  <div className="absolute right-0 top-full mt-2 w-56 bg-[#1E2A3D] border border-[#353F54] rounded-2xl shadow-2xl z-50 py-2 overflow-hidden">
                     {visibleLinks.map(link => {
                       const Icon = link.icon;
                       const isActive = !link.external && location.pathname === link.to;
@@ -273,7 +273,7 @@ function Navbar() {
           <div className="flex lg:hidden items-center gap-1">
             <WhatsAppNavButton />
             {/* Mobile search icon */}
-            <Link to="/search" className="p-2 rounded-full hover:bg-zinc-800 text-zinc-300 transition-colors" aria-label="Search">
+            <Link to="/search" className="p-2 rounded-full hover:bg-[#28303F] text-[#8E9BB5] transition-colors" aria-label="Search">
               <Search className="w-5 h-5" />
             </Link>
 
@@ -281,7 +281,7 @@ function Navbar() {
             <NotificationBell />
 
             {/* Cart icon always visible on mobile */}
-            <Link to="/cart" className="relative p-2 rounded-full hover:bg-zinc-800 text-zinc-300 transition-colors" aria-label={`Shopping cart, ${cartCount} items`}>
+            <Link to="/cart" className="relative p-2 rounded-full hover:bg-[#28303F] text-[#8E9BB5] transition-colors" aria-label={`Shopping cart, ${cartCount} items`}>
               <ShoppingCart className="w-5 h-5" />
               {cartCount > 0 && (
                 <span className="absolute -top-1 -right-1 w-5 h-5 text-zinc-900 text-[10px] font-bold rounded-full flex items-center justify-center"
@@ -295,7 +295,7 @@ function Navbar() {
             {/* Hamburger */}
             <button
               onClick={() => setMenuOpen(!menuOpen)}
-              className="p-2 rounded-full hover:bg-zinc-800 text-zinc-300 transition-colors"
+              className="p-2 rounded-full hover:bg-[#28303F] text-[#8E9BB5] transition-colors"
               aria-label={menuOpen ? 'Close menu' : 'Open menu'}
             >
               {menuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
@@ -307,7 +307,7 @@ function Navbar() {
       {/* ── Offline banner removed ── */}
 
       {/* ── Category Bar (Jumia-style mega menu) ── */}
-      <div className={`border-b border-zinc-800/50 bg-zinc-950/60 backdrop-blur-sm sticky z-40 transition-all duration-200 ease-out ${navVisible ? 'top-[56px]' : 'top-0'}`}>
+      <div className={`border-b border-[#353F54]/50 bg-[#1E2A3D]/60 backdrop-blur-sm sticky z-40 transition-all duration-200 ease-out ${navVisible ? 'top-[56px]' : 'top-0'}`}>
         <div className="max-w-7xl mx-auto px-4">
           <div className="flex items-center overflow-x-auto scrollbar-hide gap-0.5 py-1.5 -mx-2 px-2">
             {CATEGORIES.filter(c => c !== 'All').slice(0, 12).map(cat => {
@@ -320,7 +320,7 @@ function Navbar() {
                   className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-[11px] font-bold whitespace-nowrap transition-all flex-shrink-0 ${
                     isActive
                       ? `bg-gradient-to-r ${info.color} text-white shadow-sm ${info.glow}`
-                      : 'text-zinc-300 hover:text-white hover:bg-zinc-800 border border-transparent hover:border-zinc-700'
+                      : 'text-[#8E9BB5] hover:text-white hover:bg-[#28303F] border border-transparent hover:border-[#353F54]'
                   }`}
                 >
                   <CategoryIcon iconName={info.icon} className="w-3.5 h-3.5" />
@@ -330,7 +330,7 @@ function Navbar() {
             })}
             <Link
               to="/search"
-              className="flex items-center gap-1 px-3 py-1.5 rounded-xl text-[11px] font-bold whitespace-nowrap text-zinc-500 hover:text-zinc-300 hover:bg-zinc-800 transition-all flex-shrink-0"
+              className="flex items-center gap-1 px-3 py-1.5 rounded-xl text-[11px] font-bold whitespace-nowrap text-[#4A5771] hover:text-[#8E9BB5] hover:bg-[#28303F] transition-all flex-shrink-0"
             >
               <ChevronRight className="w-3 h-3" />
               All
@@ -361,11 +361,11 @@ function Navbar() {
         aria-label="Navigation menu"
       >
         {/* Header */}
-        <div className="flex items-center justify-between px-5 h-14 border-b border-zinc-800 shrink-0">
-          <span className="text-sm font-bold tracking-wide text-zinc-400 uppercase">Menu</span>
+        <div className="flex items-center justify-between px-5 h-14 border-b border-[#353F54] shrink-0">
+          <span className="text-sm font-bold tracking-wide text-[#4A5771] uppercase">Menu</span>
           <button
             onClick={() => setMenuOpen(false)}
-            className="p-2 rounded-full hover:bg-zinc-800 text-zinc-300 transition-colors"
+            className="p-2 rounded-full hover:bg-[#28303F] text-[#8E9BB5] transition-colors"
             aria-label="Close menu"
           >
             <X className="w-5 h-5" />
@@ -412,7 +412,7 @@ function Navbar() {
                   <Link
                     key={cat}
                     to={`/search?category=${encodeURIComponent(cat)}`}
-                    className="flex items-center gap-2.5 px-3 py-2.5 rounded-xl text-sm font-medium text-zinc-300 hover:bg-zinc-800 transition-colors"
+                    className="flex items-center gap-2.5 px-3 py-2.5 rounded-xl text-sm font-medium text-[#8E9BB5] hover:bg-[#28303F] transition-colors"
                     onClick={() => setMenuOpen(false)}
                   >
                     <span className={`w-7 h-7 rounded-lg bg-gradient-to-br ${info.color} flex items-center justify-center flex-shrink-0`}>
@@ -442,7 +442,7 @@ function Navbar() {
                 </Link>
               )}
               {isUserSeller ? (
-                <Link to="/seller/dashboard" className="flex items-center gap-3 px-4 py-3 rounded-2xl text-sm font-bold bg-gradient-to-r from-emerald-600/20 to-green-600/20 text-emerald-400 hover:from-emerald-600/30 hover:to-green-600/30" onClick={() => setMenuOpen(false)}>
+                <Link to="/seller/dashboard" className="flex items-center gap-3 px-4 py-3 rounded-2xl text-sm font-bold bg-gradient-to-r from-blue-600/20 to-blue-700/20 text-blue-400 hover:from-blue-600/30 hover:to-blue-700/30" onClick={() => setMenuOpen(false)}>
                   <Store className="w-5 h-5" />
                   Dashboard
                 </Link>
@@ -453,7 +453,7 @@ function Navbar() {
                 </Link>
               )}
               {isUserAdmin && (
-                <Link to="/admin" className="flex items-center gap-3 px-4 py-3 rounded-2xl text-sm font-bold text-[var(--seasonal-primary,#1a5632)] hover:bg-[var(--seasonal-primary,#1a5632)]/10" onClick={() => setMenuOpen(false)}>
+                <Link to="/admin" className="flex items-center gap-3 px-4 py-3 rounded-2xl text-sm font-bold text-[var(--seasonal-primary,#007AFF)] hover:bg-[var(--seasonal-primary,#007AFF)]/10" onClick={() => setMenuOpen(false)}>
                   <Shield className="w-5 h-5" />
                   Admin Dashboard
                 </Link>
