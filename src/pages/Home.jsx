@@ -13,6 +13,7 @@ import { useSeasonalTheme } from '../context/SeasonalContext';
 import { CATEGORIES } from '../utils/constants';
 import FlashDealsBar from '../components/FlashDealsBar';
 import AutoScrollCarousel from '../components/AutoScrollCarousel';
+import ProductCard from '../components/ProductCard';
 
 const ITEMS_PER_PAGE = 24;
 
