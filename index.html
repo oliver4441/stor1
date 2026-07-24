@@ -80,12 +80,15 @@
     <script>
       window.OneSignalDeferred = window.OneSignalDeferred || [];
       OneSignalDeferred.push(async function(OneSignal) {
-        await OneSignal.init({
-          appId: "%VITE_ONESIGNAL_APP_ID%",
-          safari_web_id: "",
-          notifyButton: { enable: false },
-          persistNotification: false,
-        });
+        var appId = "%VITE_ONESIGNAL_APP_ID%";
+        if (appId && appId !== "%VITE_ONESIGNAL_APP_ID%") {
+          await OneSignal.init({
+            appId: appId,
+            safari_web_id: "",
+            notifyButton: { enable: false },
+            persistNotification: false,
+          });
+        }
       });
     </script>
     <script>
