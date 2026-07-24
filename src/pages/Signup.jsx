@@ -92,10 +92,10 @@ function Signup() {
         <div className="bg-blue-900/20 text-blue-600 p-8 rounded-3xl mb-6">
           <div className="w-16 h-16 bg-blue-900/40 rounded-full flex items-center justify-center mx-auto mb-4"><span className="text-2xl font-black text-blue-500">@</span></div>
           <h2 className="text-2xl font-black mb-2">Check Your Email</h2>
-          <p className="text-zinc-400 mb-2">We sent a verification link to <strong className="text-zinc-300">{registeredEmail}</strong></p>
-          <p className="text-sm text-zinc-400">Click the link to activate your account.</p>
+          <p className="text-[#4A5771] mb-2">We sent a verification link to <strong className="text-[#8E9BB5]">{registeredEmail}</strong></p>
+          <p className="text-sm text-[#4A5771]">Click the link to activate your account.</p>
         </div>
-        <Link to={`/login${window.location.search}`} className="text-[var(--seasonal-primary,#1a5632)] font-bold hover:underline">Go to Login</Link>
+        <Link to={`/login${window.location.search}`} className="text-[var(--seasonal-primary,#007AFF)] font-bold hover:underline">Go to Login</Link>
       </div>
     );
   }
@@ -103,9 +103,9 @@ function Signup() {
   if (success) {
     return (
       <div className="max-w-md mx-auto px-4 py-20 text-center">
-        <div className="bg-green-900/20 text-green-600 p-8 rounded-3xl inline-block mb-4">
+        <div className="bg-[#007AFF]/20 text-[#38B8EA] p-8 rounded-3xl inline-block mb-4">
           <h2 className="text-3xl font-black mb-2">Account Created!</h2>
-          <p className="text-zinc-400">Redirecting to your account...</p>
+          <p className="text-[#4A5771]">Redirecting to your account...</p>
         </div>
       </div>
     );
@@ -146,49 +146,49 @@ function Signup() {
   return (
     <div className="max-w-md mx-auto px-4 py-12 w-full" data-name="signup-page">
       <div className="text-center mb-10">
-        <div className="w-16 h-16 bg-[var(--seasonal-primary,#1a5632)]/10 rounded-2xl flex items-center justify-center mx-auto mb-4"><ShoppingBag className="w-8 h-8 text-[var(--seasonal-primary,#1a5632)]" /></div>
+        <div className="w-16 h-16 bg-[var(--seasonal-primary,#007AFF)]/10 rounded-2xl flex items-center justify-center mx-auto mb-4"><ShoppingBag className="w-8 h-8 text-[var(--seasonal-primary,#007AFF)]" /></div>
         <h1 className="text-3xl font-black mb-2 text-white">Create Your Account</h1>
-        <p className="text-zinc-400">Sign up to start shopping on Omix.</p>
+        <p className="text-[#4A5771]">Sign up to start shopping on Omix.</p>
       </div>
 
       {error && <div className="bg-red-900/20 text-red-600 p-4 rounded-xl mb-6 text-sm font-medium border border-red-100 dark:border-red-900/50">{error}</div>}
 
       <form onSubmit={handleSignup} className="space-y-5">
         <div>
-          <label className="block text-sm font-bold mb-2 text-zinc-300">Full Name</label>
+          <label className="block text-sm font-bold mb-2 text-[#8E9BB5]">Full Name</label>
           <div className="relative">
-            <User className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-zinc-400" />
-            <input type="text" value={formData.fullName} onChange={e => updateField('fullName', e.target.value)} placeholder="e.g. Kiprono Yegon" required minLength={2} className="w-full pl-12 pr-4 py-3.5 rounded-xl bg-zinc-900 border border-transparent focus:border-[var(--seasonal-primary,#1a5632)] focus:bg-white dark:focus:bg-zinc-950 focus:outline-none text-white transition-all shadow-sm" />
+            <User className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-[#4A5771]" />
+            <input type="text" value={formData.fullName} onChange={e => updateField('fullName', e.target.value)} placeholder="e.g. Kiprono Yegon" required minLength={2} className="w-full pl-12 pr-4 py-3.5 rounded-xl bg-[#28303F] border border-transparent focus:border-[var(--seasonal-primary,#007AFF)] focus:bg-white dark:focus:bg-[#242C3B] focus:outline-none text-white transition-all shadow-sm" />
           </div>
         </div>
         <div>
-          <label className="block text-sm font-bold mb-2 text-zinc-300">Email Address</label>
+          <label className="block text-sm font-bold mb-2 text-[#8E9BB5]">Email Address</label>
           <div className="relative">
-            <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-zinc-400" />
-            <input type="email" value={formData.email} onChange={e => updateField('email', e.target.value)} placeholder="you@example.com" required className="w-full pl-12 pr-4 py-3.5 rounded-xl bg-zinc-900 border border-transparent focus:border-[var(--seasonal-primary,#1a5632)] focus:bg-white dark:focus:bg-zinc-950 focus:outline-none text-white transition-all shadow-sm" />
+            <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-[#4A5771]" />
+            <input type="email" value={formData.email} onChange={e => updateField('email', e.target.value)} placeholder="you@example.com" required className="w-full pl-12 pr-4 py-3.5 rounded-xl bg-[#28303F] border border-transparent focus:border-[var(--seasonal-primary,#007AFF)] focus:bg-white dark:focus:bg-[#242C3B] focus:outline-none text-white transition-all shadow-sm" />
           </div>
         </div>
         <div>
-          <label className="block text-sm font-bold mb-2 text-zinc-300">Password</label>
+          <label className="block text-sm font-bold mb-2 text-[#8E9BB5]">Password</label>
           <div className="relative">
-            <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-zinc-400" />
-            <input required name="password" type="password" value={formData.password} onChange={e => updateField('password', e.target.value)} placeholder="Minimum 6 characters" minLength={6} className="w-full pl-12 pr-4 py-3.5 rounded-xl bg-zinc-900 border border-transparent focus:border-[var(--seasonal-primary,#1a5632)] focus:bg-white dark:focus:bg-zinc-950 focus:outline-none text-white transition-all shadow-sm" />
+            <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-[#4A5771]" />
+            <input required name="password" type="password" value={formData.password} onChange={e => updateField('password', e.target.value)} placeholder="Minimum 6 characters" minLength={6} className="w-full pl-12 pr-4 py-3.5 rounded-xl bg-[#28303F] border border-transparent focus:border-[var(--seasonal-primary,#007AFF)] focus:bg-white dark:focus:bg-[#242C3B] focus:outline-none text-white transition-all shadow-sm" />
           </div>
         </div>
         <div>
-          <label className="block text-sm font-bold mb-2 text-zinc-300">Confirm Password</label>
+          <label className="block text-sm font-bold mb-2 text-[#8E9BB5]">Confirm Password</label>
           <div className="relative">
-            <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-zinc-400" />
-            <input required name="confirmPassword" type="password" value={formData.confirmPassword} onChange={e => updateField('confirmPassword', e.target.value)} placeholder="Repeat your password" minLength={6} className="w-full pl-12 pr-4 py-3.5 rounded-xl bg-zinc-900 border border-transparent focus:border-[var(--seasonal-primary,#1a5632)] focus:bg-white dark:focus:bg-zinc-950 focus:outline-none text-white transition-all shadow-sm" />
+            <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-[#4A5771]" />
+            <input required name="confirmPassword" type="password" value={formData.confirmPassword} onChange={e => updateField('confirmPassword', e.target.value)} placeholder="Repeat your password" minLength={6} className="w-full pl-12 pr-4 py-3.5 rounded-xl bg-[#28303F] border border-transparent focus:border-[var(--seasonal-primary,#007AFF)] focus:bg-white dark:focus:bg-[#242C3B] focus:outline-none text-white transition-all shadow-sm" />
           </div>
         </div>
         <div>
-          <label className="flex items-center gap-2 text-sm font-bold mb-2 text-zinc-300">
+          <label className="flex items-center gap-2 text-sm font-bold mb-2 text-[#8E9BB5]">
             Referral Code
             <button
               type="button"
               onClick={() => setShowReferralInput(prev => !prev)}
-              className="text-[var(--seasonal-primary,#1a5632)] text-xs font-semibold hover:underline"
+              className="text-[var(--seasonal-primary,#007AFF)] text-xs font-semibold hover:underline"
             >
               {showReferralInput ? '(hide)' : '(optional)'}
             </button>
@@ -202,7 +202,7 @@ function Signup() {
                 onChange={e => updateField('referralCode', e.target.value.toUpperCase())}
                 placeholder="Enter referral code (e.g. ABC12345)"
                 maxLength={12}
-                className="w-full pl-10 pr-4 py-3.5 rounded-xl bg-zinc-900 border border-transparent focus:border-[var(--seasonal-primary,#1a5632)] focus:bg-white dark:focus:bg-zinc-950 focus:outline-none text-white transition-all shadow-sm font-mono uppercase tracking-wider"
+                className="w-full pl-10 pr-4 py-3.5 rounded-xl bg-[#28303F] border border-transparent focus:border-[var(--seasonal-primary,#007AFF)] focus:bg-white dark:focus:bg-[#242C3B] focus:outline-none text-white transition-all shadow-sm font-mono uppercase tracking-wider"
               />
             </div>
           )}
@@ -211,22 +211,22 @@ function Signup() {
         <label className="flex items-start gap-3 cursor-pointer group pt-2">
           <div className="relative mt-0.5">
             <input type="checkbox" checked={agreed} onChange={(e) => setAgreed(e.target.checked)} className="sr-only peer" />
-            <div className="w-5 h-5 rounded-md border-2 border-zinc-300 dark:border-zinc-600 peer-checked:border-[var(--seasonal-primary,#1a5632)] peer-checked:bg-[var(--seasonal-primary,#1a5632)] transition-all flex items-center justify-center">
+            <div className="w-5 h-5 rounded-md border-2 border-zinc-300 dark:border-zinc-600 peer-checked:border-[var(--seasonal-primary,#007AFF)] peer-checked:bg-[var(--seasonal-primary,#007AFF)] transition-all flex items-center justify-center">
               {agreed && <CheckCircle2 className="w-3.5 h-3.5 text-white" />}
             </div>
           </div>
-          <span className="text-sm text-zinc-400 leading-relaxed">
-            I agree to the <Link to="/terms" className="text-[var(--seasonal-primary,#1a5632)] font-semibold hover:underline" target="_blank" rel="noopener noreferrer">Terms of Service</Link> and <Link to="/privacy" className="text-[var(--seasonal-primary,#1a5632)] font-semibold hover:underline" target="_blank" rel="noopener noreferrer">Privacy Policy</Link>.
+          <span className="text-sm text-[#4A5771] leading-relaxed">
+            I agree to the <Link to="/terms" className="text-[var(--seasonal-primary,#007AFF)] font-semibold hover:underline" target="_blank" rel="noopener noreferrer">Terms of Service</Link> and <Link to="/privacy" className="text-[var(--seasonal-primary,#007AFF)] font-semibold hover:underline" target="_blank" rel="noopener noreferrer">Privacy Policy</Link>.
           </span>
         </label>
 
-        <button type="submit" disabled={loading} className="w-full bg-[var(--seasonal-primary,#1a5632)] text-white font-black py-4 rounded-2xl hover:bg-[var(--seasonal-secondary,#14472a)] transition-all disabled:opacity-50 shadow-lg shadow-[var(--seasonal-primary,#1a5632)]/20">
+        <button type="submit" disabled={loading} className="w-full bg-[var(--seasonal-primary,#007AFF)] text-white font-black py-4 rounded-2xl hover:bg-[var(--seasonal-secondary,#0066CC)] transition-all disabled:opacity-50 shadow-lg shadow-[var(--seasonal-primary,#007AFF)]/20">
           {loading ? 'Creating Account...' : 'Create Account'}
         </button>
 
         <div className="relative my-6">
-          <div className="absolute inset-0 flex items-center"><div className="w-full border-t border-zinc-700"></div></div>
-          <div className="relative flex justify-center text-sm"><span className="px-2 bg-zinc-950 text-zinc-400">{t('auth.or') || 'or'}</span></div>
+          <div className="absolute inset-0 flex items-center"><div className="w-full border-t border-[#353F54]"></div></div>
+          <div className="relative flex justify-center text-sm"><span className="px-2 bg-[#242C3B] text-[#4A5771]">{t('auth.or') || 'or'}</span></div>
         </div>
 
         <button
@@ -257,8 +257,8 @@ function Signup() {
         </button>
       </form>
 
-      <p className="mt-8 text-center text-zinc-400 text-sm">
-        Already have an account? <Link to={`/login${window.location.search}`} className="text-[var(--seasonal-primary,#1a5632)] font-bold hover:underline">Log In</Link>
+      <p className="mt-8 text-center text-[#4A5771] text-sm">
+        Already have an account? <Link to={`/login${window.location.search}`} className="text-[var(--seasonal-primary,#007AFF)] font-bold hover:underline">Log In</Link>
       </p>
     </div>
   );
