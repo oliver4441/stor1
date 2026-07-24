@@ -106,7 +106,7 @@ function Refurbished() {
               className={`px-4 py-2 rounded-xl text-xs font-bold whitespace-nowrap transition-all ${
                 activeCategory === cat
                   ? 'bg-[var(--seasonal-primary,#007AFF)] text-white shadow-lg'
-                  : 'bg-[#28303F] text-[#4A5771] hover:bg-zinc-800'
+                  : 'bg-[#28303F] text-[#4A5771] hover:bg-[#28303F]'
               }`}
             >
               {cat}

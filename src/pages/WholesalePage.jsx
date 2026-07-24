@@ -157,7 +157,7 @@ function WholesalePage() {
               className={`px-4 py-2 rounded-xl text-xs font-bold whitespace-nowrap transition-all ${
                 activeCategory === cat
                   ? 'bg-[var(--seasonal-primary,#007AFF)] text-white shadow-lg'
-                  : 'bg-[#28303F] text-[#4A5771] hover:bg-zinc-800'
+                  : 'bg-[#28303F] text-[#4A5771] hover:bg-[#28303F]'
               }`}
             >
               {cat}
@@ -201,7 +201,7 @@ function WholesalePage() {
             {hasMore && (
               <div className="text-center mt-8">
                 <button onClick={loadMore} disabled={loadingMore}
-                  className="px-8 py-3 rounded-xl bg-[#28303F] text-white text-sm font-bold hover:bg-zinc-700 transition-colors disabled:opacity-50">
+                  className="px-8 py-3 rounded-xl bg-[#28303F] text-white text-sm font-bold hover:bg-[#353F54] transition-colors disabled:opacity-50">
                   {loadingMore ? 'Loading...' : 'Load More'}
                 </button>
               </div>
@@ -209,7 +209,7 @@ function WholesalePage() {
           </>
         ) : (
           <div className="text-center py-20">
-            <ShoppingBag className="w-16 h-16 text-zinc-700 mx-auto mb-4" />
+            <ShoppingBag className="w-16 h-16 text-[#353F54] mx-auto mb-4" />
             <h3 className="text-lg font-bold text-[#4A5771] mb-2">No wholesale items yet</h3>
             <p className="text-sm text-[#4A5771]">Check back soon -- new bulk deals are added regularly!</p>
           </div>

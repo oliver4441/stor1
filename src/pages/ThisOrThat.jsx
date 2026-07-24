@@ -24,7 +24,7 @@ function StarRating({ rating }) {
         <svg
           key={star}
           className={`w-3.5 h-3.5 ${
-            star <= rounded ? 'text-yellow-400' : 'text-zinc-700'
+            star <= rounded ? 'text-yellow-400' : 'text-[#4A5771]'
           }`}
           fill="currentColor"
           viewBox="0 0 20 20"
@@ -63,17 +63,17 @@ function DiscountBadge({ compareAtPrice, price }) {
 function SkeletonCard() {
   return (
     <div className="bg-[#28303F]/60 rounded-2xl overflow-hidden animate-pulse">
-      <div className="aspect-square bg-zinc-700/50" />
+      <div className="aspect-square bg-[#353F54]/50" />
       <div className="p-4 space-y-3">
-        <div className="h-4 bg-zinc-700/50 rounded w-3/4" />
-        <div className="h-3 bg-zinc-700/50 rounded w-1/2" />
+        <div className="h-4 bg-[#353F54]/50 rounded w-3/4" />
+        <div className="h-3 bg-[#353F54]/50 rounded w-1/2" />
         <div className="flex items-center gap-1">
           {[1, 2, 3, 4, 5].map((s) => (
-            <div key={s} className="w-3.5 h-3.5 bg-zinc-700/50 rounded" />
+            <div key={s} className="w-3.5 h-3.5 bg-[#353F54]/50 rounded" />
           ))}
         </div>
-        <div className="h-5 bg-zinc-700/50 rounded w-1/3" />
-        <div className="h-9 bg-zinc-700/50 rounded w-full" />
+        <div className="h-5 bg-[#353F54]/50 rounded w-1/3" />
+        <div className="h-9 bg-[#353F54]/50 rounded w-full" />
       </div>
     </div>
   );
@@ -82,21 +82,21 @@ function SkeletonCard() {
 function SkeletonAnalysis() {
   return (
     <div className="bg-[#28303F]/60 rounded-2xl p-6 animate-pulse space-y-4 border-l-4 border-[#007AFF]/30">
-      <div className="h-5 bg-zinc-700/50 rounded w-1/3" />
+      <div className="h-5 bg-[#353F54]/50 rounded w-1/3" />
       <div className="space-y-2">
-        <div className="h-3 bg-zinc-700/50 rounded w-full" />
-        <div className="h-3 bg-zinc-700/50 rounded w-5/6" />
-        <div className="h-3 bg-zinc-700/50 rounded w-4/5" />
-        <div className="h-3 bg-zinc-700/50 rounded w-3/4" />
+        <div className="h-3 bg-[#353F54]/50 rounded w-full" />
+        <div className="h-3 bg-[#353F54]/50 rounded w-5/6" />
+        <div className="h-3 bg-[#353F54]/50 rounded w-4/5" />
+        <div className="h-3 bg-[#353F54]/50 rounded w-3/4" />
       </div>
       <div className="space-y-2 pt-2">
-        <div className="h-3 bg-zinc-700/50 rounded w-2/3" />
-        <div className="h-3 bg-zinc-700/50 rounded w-1/2" />
-        <div className="h-3 bg-zinc-700/50 rounded w-3/5" />
+        <div className="h-3 bg-[#353F54]/50 rounded w-2/3" />
+        <div className="h-3 bg-[#353F54]/50 rounded w-1/2" />
+        <div className="h-3 bg-[#353F54]/50 rounded w-3/5" />
       </div>
       <div className="flex items-center gap-2 pt-2">
-        <div className="w-5 h-5 bg-zinc-700/50 rounded-full" />
-        <div className="h-3 bg-zinc-700/50 rounded w-28" />
+        <div className="w-5 h-5 bg-[#353F54]/50 rounded-full" />
+        <div className="h-3 bg-[#353F54]/50 rounded w-28" />
       </div>
     </div>
   );
@@ -141,7 +141,7 @@ function ProductSearchSelect({ label, onSelect, value, onClear }) {
     <div className="relative">
       {value ? (
         <div className="flex items-center gap-2 bg-[#28303F] rounded-xl px-3 py-2.5 border border-[#353F54]">
-          <div className="w-8 h-8 rounded-lg bg-zinc-700 overflow-hidden flex-shrink-0">
+          <div className="w-8 h-8 rounded-lg bg-[#353F54] overflow-hidden flex-shrink-0">
             {value.images?.[0] ? (
               <img src={value.images[0]} alt="" className="w-full h-full object-cover" />
             ) : (
@@ -182,9 +182,9 @@ function ProductSearchSelect({ label, onSelect, value, onClear }) {
             <button
               key={p.id}
               onClick={() => handleSelect(p)}
-              className="w-full flex items-center gap-3 px-3 py-2.5 hover:bg-zinc-700 transition-colors text-left"
+              className="w-full flex items-center gap-3 px-3 py-2.5 hover:bg-[#353F54] transition-colors text-left"
             >
-              <div className="w-10 h-10 rounded-lg bg-zinc-700 overflow-hidden flex-shrink-0">
+              <div className="w-10 h-10 rounded-lg bg-[#353F54] overflow-hidden flex-shrink-0">
                 {p.images?.[0] ? (
                   <img src={p.images[0]} alt="" className="w-full h-full object-cover" />
                 ) : (
@@ -358,7 +358,7 @@ export default function ThisOrThat() {
     if (!product) {
       return (
         <div className="bg-[#28303F]/60 rounded-2xl p-4 flex flex-col items-center justify-center min-h-[320px] border border-dashed border-[#353F54]">
-          <div className="text-zinc-600 mb-4">
+          <div className="text-[#4A5771] mb-4">
             <ImageIcon className="w-12 h-12" />
           </div>
           <ProductSearchSelect
@@ -386,7 +386,7 @@ export default function ThisOrThat() {
               loading="lazy"
             />
           ) : (
-            <div className="w-full h-full flex items-center justify-center text-zinc-600">
+            <div className="w-full h-full flex items-center justify-center text-[#4A5771]">
               <ImageIcon className="w-14 h-14" />
             </div>
           )}
@@ -451,7 +451,7 @@ export default function ThisOrThat() {
                 e.stopPropagation();
                 handleClearProduct(slot)();
               }}
-              className="p-2 text-[#4A5771] hover:text-[#8E9BB5] hover:bg-zinc-700 rounded-xl transition-colors"
+              className="p-2 text-[#4A5771] hover:text-[#8E9BB5] hover:bg-[#353F54] rounded-xl transition-colors"
               aria-label={`Remove Product ${slot.toUpperCase()}`}
             >
               <X className="w-4 h-4" />
@@ -489,9 +489,9 @@ export default function ThisOrThat() {
 
           {/* VS divider + Compare button */}
           <div className="flex items-center justify-center my-6 md:my-8 gap-4">
-            <div className="h-px flex-1 bg-gradient-to-r from-transparent via-zinc-700 to-transparent max-w-[120px]" />
+            <div className="h-px flex-1 bg-gradient-to-r from-transparent via-[#353F54] to-transparent max-w-[120px]" />
             <div className="flex flex-col items-center gap-2">
-              <span className="text-zinc-600 text-xs font-bold tracking-widest uppercase">
+              <span className="text-[#4A5771] text-xs font-bold tracking-widest uppercase">
                 VS
               </span>
               <button
@@ -507,7 +507,7 @@ export default function ThisOrThat() {
                 {comparing ? 'Analyzing...' : 'Compare with AI'}
               </button>
             </div>
-            <div className="h-px flex-1 bg-gradient-to-r from-transparent via-zinc-700 to-transparent max-w-[120px]" />
+            <div className="h-px flex-1 bg-gradient-to-r from-transparent via-[#353F54] to-transparent max-w-[120px]" />
           </div>
 
           {/* Loading skeleton */}
@@ -525,7 +525,7 @@ export default function ThisOrThat() {
               <div className="text-[#8E9BB5] text-sm leading-relaxed whitespace-pre-line">
                 {comparison}
               </div>
-              <div className="mt-4 pt-3 border-t border-zinc-700/50 flex items-center gap-1.5">
+              <div className="mt-4 pt-3 border-t border-[#353F54]/50 flex items-center gap-1.5">
                 <Sparkles className="w-3.5 h-3.5 text-[#38B8EA]" />
                 <span className="text-[11px] text-[#4A5771] font-medium">
                   Powered by Nia AI
@@ -567,9 +567,9 @@ export default function ThisOrThat() {
                         handlePickProduct('b')(p);
                       }
                     }}
-                    className="inline-flex items-center gap-2 bg-[#28303F] hover:bg-zinc-700 border border-[#353F54] hover:border-zinc-600 rounded-xl px-3 py-2 transition-all text-left"
+                    className="inline-flex items-center gap-2 bg-[#28303F] hover:bg-[#353F54] border border-[#353F54] hover:border-[#353F54] rounded-xl px-3 py-2 transition-all text-left"
                   >
-                    <div className="w-8 h-8 rounded-lg bg-zinc-700 overflow-hidden flex-shrink-0">
+                    <div className="w-8 h-8 rounded-lg bg-[#353F54] overflow-hidden flex-shrink-0">
                       {p.images?.[0] ? (
                         <img
                           src={p.images[0]}

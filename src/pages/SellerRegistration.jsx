@@ -145,7 +145,7 @@ export default function SellerRegistration() {
   // Loading state while checking auth / seller status
   if (authLoading || checkingSeller) {
     return (
-      <div className="min-h-screen bg-zinc-950 flex items-center justify-center">
+      <div className="min-h-screen bg-[#1B2333] flex items-center justify-center">
         <GooeyLoader />
       </div>
     );
@@ -154,18 +154,18 @@ export default function SellerRegistration() {
   // Success state — show pending approval
   if (success) {
     return (
-      <div className="min-h-screen bg-zinc-950 flex items-center justify-center px-4">
-        <div className="max-w-md w-full bg-zinc-900/60 border border-zinc-800 rounded-3xl p-8 text-center">
-          <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-amber-500/20 mb-5">
-            <Clock className="w-8 h-8 text-amber-400" />
+      <div className="min-h-screen bg-[#1B2333] flex items-center justify-center px-4">
+        <div className="max-w-md w-full bg-[#28303F]/60 border border-[#353F54] rounded-3xl p-8 text-center">
+          <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-[#007AFF]/20 mb-5">
+            <Clock className="w-8 h-8 text-[#38B8EA]" />
           </div>
           <h1 className="text-2xl font-bold text-white mb-2">Pending Approval</h1>
-          <p className="text-zinc-400 text-sm mb-6">
+          <p className="text-[#4A5771] text-sm mb-6">
             Your seller account is under review. You will be notified once approved.
           </p>
           <Link
             to="/seller/dashboard"
-            className="inline-flex items-center gap-2 bg-zinc-800 hover:bg-zinc-700 text-zinc-300 px-6 py-3 rounded-xl font-bold transition-colors"
+            className="inline-flex items-center gap-2 bg-[#28303F] hover:bg-[#353F54] text-[#8E9BB5] px-6 py-3 rounded-xl font-bold transition-colors"
           >
             Go to Seller Dashboard
             <ArrowRight className="w-4 h-4" />
@@ -180,18 +180,18 @@ export default function SellerRegistration() {
     const s = existingSeller;
     if (s.status === 'pending') {
       return (
-        <div className="min-h-screen bg-zinc-950 flex items-center justify-center px-4">
-          <div className="max-w-md w-full bg-zinc-900/60 border border-zinc-800 rounded-3xl p-8 text-center">
-            <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-amber-500/20 mb-5">
-              <Clock className="w-8 h-8 text-amber-400" />
+        <div className="min-h-screen bg-[#1B2333] flex items-center justify-center px-4">
+          <div className="max-w-md w-full bg-[#28303F]/60 border border-[#353F54] rounded-3xl p-8 text-center">
+            <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-[#007AFF]/20 mb-5">
+              <Clock className="w-8 h-8 text-[#38B8EA]" />
             </div>
             <h1 className="text-2xl font-bold text-white mb-2">Application Pending</h1>
-            <p className="text-zinc-400 text-sm mb-6">
+            <p className="text-[#4A5771] text-sm mb-6">
               Your seller account is under review. You will be notified once approved.
             </p>
             <Link
               to="/seller/dashboard"
-              className="inline-flex items-center gap-2 bg-zinc-800 hover:bg-zinc-700 text-zinc-300 px-6 py-3 rounded-xl font-bold transition-colors"
+              className="inline-flex items-center gap-2 bg-[#28303F] hover:bg-[#353F54] text-[#8E9BB5] px-6 py-3 rounded-xl font-bold transition-colors"
             >
               Go to Seller Dashboard
               <ArrowRight className="w-4 h-4" />
@@ -202,24 +202,24 @@ export default function SellerRegistration() {
     }
     if (s.status === 'rejected') {
       return (
-        <div className="min-h-screen bg-zinc-950 flex items-center justify-center px-4">
-          <div className="max-w-md w-full bg-zinc-900/60 border border-zinc-800 rounded-3xl p-8 text-center">
+        <div className="min-h-screen bg-[#1B2333] flex items-center justify-center px-4">
+          <div className="max-w-md w-full bg-[#28303F]/60 border border-[#353F54] rounded-3xl p-8 text-center">
             <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-red-500/20 mb-5">
               <AlertTriangle className="w-8 h-8 text-red-400" />
             </div>
             <h1 className="text-2xl font-bold text-white mb-2">Application Not Approved</h1>
-            <p className="text-zinc-400 text-sm mb-4">
+            <p className="text-[#4A5771] text-sm mb-4">
               Your application was not approved.
             </p>
             {s.rejection_reason && (
               <div className="bg-red-900/10 border border-red-800/30 rounded-xl px-4 py-3 mb-6 text-left">
                 <p className="text-xs font-semibold text-red-400 mb-1">Reason:</p>
-                <p className="text-sm text-zinc-300">{s.rejection_reason}</p>
+                <p className="text-sm text-[#8E9BB5]">{s.rejection_reason}</p>
               </div>
             )}
             <Link
               to="/seller/dashboard"
-              className="inline-flex items-center gap-2 bg-zinc-800 hover:bg-zinc-700 text-zinc-300 px-6 py-3 rounded-xl font-bold transition-colors"
+              className="inline-flex items-center gap-2 bg-[#28303F] hover:bg-[#353F54] text-[#8E9BB5] px-6 py-3 rounded-xl font-bold transition-colors"
             >
               Go to Seller Dashboard
               <ArrowRight className="w-4 h-4" />
@@ -230,16 +230,16 @@ export default function SellerRegistration() {
     }
     // Fallback — show generic
     return (
-      <div className="min-h-screen bg-zinc-950 flex items-center justify-center px-4">
-        <div className="max-w-md w-full bg-zinc-900/60 border border-zinc-800 rounded-3xl p-8 text-center">
-          <Store className="w-12 h-12 text-zinc-600 mx-auto mb-4" />
+      <div className="min-h-screen bg-[#1B2333] flex items-center justify-center px-4">
+        <div className="max-w-md w-full bg-[#28303F]/60 border border-[#353F54] rounded-3xl p-8 text-center">
+          <Store className="w-12 h-12 text-[#4A5771] mx-auto mb-4" />
           <h1 className="text-xl font-bold text-white mb-2">Seller Account</h1>
-          <p className="text-zinc-400 text-sm mb-6">
+          <p className="text-[#4A5771] text-sm mb-6">
             Your account status: {s.status || 'unknown'}
           </p>
           <Link
             to="/seller/dashboard"
-            className="inline-flex items-center gap-2 bg-zinc-800 hover:bg-zinc-700 text-zinc-300 px-6 py-3 rounded-xl font-bold transition-colors"
+            className="inline-flex items-center gap-2 bg-[#28303F] hover:bg-[#353F54] text-[#8E9BB5] px-6 py-3 rounded-xl font-bold transition-colors"
           >
             Go to Seller Dashboard
             <ArrowRight className="w-4 h-4" />
@@ -250,25 +250,25 @@ export default function SellerRegistration() {
   }
 
   return (
-    <div className="min-h-screen bg-zinc-950 flex items-center justify-center px-4 py-12">
+    <div className="min-h-screen bg-[#1B2333] flex items-center justify-center px-4 py-12">
       <div className="max-w-lg w-full">
         {/* Header */}
         <div className="text-center mb-8">
-          <div className="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-gradient-to-br from-emerald-500 to-green-600 shadow-lg shadow-emerald-500/30 mb-4">
+          <div className="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-gradient-to-br from-[#007AFF] to-[#0066CC] shadow-lg shadow-[#007AFF]/30 mb-4">
             <Store className="w-7 h-7 text-white" />
           </div>
           <h1 className="text-2xl font-bold text-white">Become a Seller</h1>
-          <p className="text-zinc-400 text-sm mt-1">Set up your shop on Omix Store</p>
+          <p className="text-[#4A5771] text-sm mt-1">Set up your shop on Omix Store</p>
         </div>
 
         {/* Form */}
         <form
           onSubmit={handleSubmit}
-          className="bg-zinc-900/60 border border-zinc-800 rounded-3xl p-6 space-y-5"
+          className="bg-[#28303F]/60 border border-[#353F54] rounded-3xl p-6 space-y-5"
         >
           {/* Shop Name */}
           <div>
-            <label className="block text-sm font-medium text-zinc-300 mb-1.5">
+            <label className="block text-sm font-medium text-[#8E9BB5] mb-1.5">
               Shop Name <span className="text-red-400">*</span>
             </label>
             <input
@@ -276,17 +276,17 @@ export default function SellerRegistration() {
               value={form.shopName}
               onChange={(e) => updateField('shopName', e.target.value)}
               placeholder="My Awesome Shop"
-              className="w-full bg-zinc-800/80 border border-zinc-700 rounded-xl px-4 py-2.5 text-white placeholder-zinc-500 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500/50 focus:border-emerald-500 transition-colors"
+              className="w-full bg-[#28303F]/80 border border-[#2A3448] rounded-xl px-4 py-2.5 text-white placeholder-[#4A5771] text-sm focus:outline-none focus:ring-2 focus:ring-[#007AFF]/50 focus:border-[#007AFF] transition-colors"
             />
           </div>
 
           {/* Shop Slug */}
           <div>
-            <label className="block text-sm font-medium text-zinc-300 mb-1.5">
+            <label className="block text-sm font-medium text-[#8E9BB5] mb-1.5">
               Shop Slug <span className="text-red-400">*</span>
             </label>
             <div className="relative">
-              <span className="absolute left-4 top-1/2 -translate-y-1/2 text-zinc-500 text-sm pointer-events-none">
+              <span className="absolute left-4 top-1/2 -translate-y-1/2 text-[#4A5771] text-sm pointer-events-none">
                 /store/
               </span>
               <input
@@ -294,17 +294,17 @@ export default function SellerRegistration() {
                 value={form.shopSlug}
                 onChange={(e) => handleSlugChange(e.target.value)}
                 placeholder="my-awesome-shop"
-                className="w-full bg-zinc-800/80 border border-zinc-700 rounded-xl pl-16 pr-4 py-2.5 text-white placeholder-zinc-500 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500/50 focus:border-emerald-500 transition-colors"
+                className="w-full bg-[#28303F]/80 border border-[#2A3448] rounded-xl pl-16 pr-4 py-2.5 text-white placeholder-[#4A5771] text-sm focus:outline-none focus:ring-2 focus:ring-[#007AFF]/50 focus:border-[#007AFF] transition-colors"
               />
             </div>
-            <p className="text-xs text-zinc-500 mt-1">
+            <p className="text-xs text-[#4A5771] mt-1">
               URL-friendly name. Auto-generated from shop name, but you can edit it.
             </p>
           </div>
 
           {/* Short Description */}
           <div>
-            <label className="block text-sm font-medium text-zinc-300 mb-1.5">
+            <label className="block text-sm font-medium text-[#8E9BB5] mb-1.5">
               Short Description
             </label>
             <textarea
@@ -312,13 +312,13 @@ export default function SellerRegistration() {
               onChange={(e) => updateField('description', e.target.value)}
               placeholder="Tell customers about your shop..."
               rows={3}
-              className="w-full bg-zinc-800/80 border border-zinc-700 rounded-xl px-4 py-2.5 text-white placeholder-zinc-500 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500/50 focus:border-emerald-500 transition-colors resize-none"
+              className="w-full bg-[#28303F]/80 border border-[#2A3448] rounded-xl px-4 py-2.5 text-white placeholder-[#4A5771] text-sm focus:outline-none focus:ring-2 focus:ring-[#007AFF]/50 focus:border-[#007AFF] transition-colors resize-none"
             />
           </div>
 
           {/* Phone */}
           <div>
-            <label className="block text-sm font-medium text-zinc-300 mb-1.5">
+            <label className="block text-sm font-medium text-[#8E9BB5] mb-1.5">
               Phone
             </label>
             <input
@@ -326,13 +326,13 @@ export default function SellerRegistration() {
               value={form.phone}
               onChange={(e) => updateField('phone', e.target.value)}
               placeholder="+254 7XX XXX XXX"
-              className="w-full bg-zinc-800/80 border border-zinc-700 rounded-xl px-4 py-2.5 text-white placeholder-zinc-500 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500/50 focus:border-emerald-500 transition-colors"
+              className="w-full bg-[#28303F]/80 border border-[#2A3448] rounded-xl px-4 py-2.5 text-white placeholder-[#4A5771] text-sm focus:outline-none focus:ring-2 focus:ring-[#007AFF]/50 focus:border-[#007AFF] transition-colors"
             />
           </div>
 
           {/* Email */}
           <div>
-            <label className="block text-sm font-medium text-zinc-300 mb-1.5">
+            <label className="block text-sm font-medium text-[#8E9BB5] mb-1.5">
               Email
             </label>
             <input
@@ -340,13 +340,13 @@ export default function SellerRegistration() {
               value={form.email}
               onChange={(e) => updateField('email', e.target.value)}
               placeholder="shop@example.com"
-              className="w-full bg-zinc-800/80 border border-zinc-700 rounded-xl px-4 py-2.5 text-white placeholder-zinc-500 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500/50 focus:border-emerald-500 transition-colors"
+              className="w-full bg-[#28303F]/80 border border-[#2A3448] rounded-xl px-4 py-2.5 text-white placeholder-[#4A5771] text-sm focus:outline-none focus:ring-2 focus:ring-[#007AFF]/50 focus:border-[#007AFF] transition-colors"
             />
           </div>
 
           {/* Physical Address */}
           <div>
-            <label className="block text-sm font-medium text-zinc-300 mb-1.5">
+            <label className="block text-sm font-medium text-[#8E9BB5] mb-1.5">
               Physical Address
             </label>
             <input
@@ -354,18 +354,18 @@ export default function SellerRegistration() {
               value={form.address}
               onChange={(e) => updateField('address', e.target.value)}
               placeholder="Nairobi, Kenya"
-              className="w-full bg-zinc-800/80 border border-zinc-700 rounded-xl px-4 py-2.5 text-white placeholder-zinc-500 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500/50 focus:border-emerald-500 transition-colors"
+              className="w-full bg-[#28303F]/80 border border-[#2A3448] rounded-xl px-4 py-2.5 text-white placeholder-[#4A5771] text-sm focus:outline-none focus:ring-2 focus:ring-[#007AFF]/50 focus:border-[#007AFF] transition-colors"
             />
           </div>
 
           {/* Business Details Header */}
-          <div className="pt-2 border-t border-zinc-800">
-            <h3 className="text-sm font-semibold text-zinc-400 uppercase tracking-wider">Business Details</h3>
+          <div className="pt-2 border-t border-[#353F54]">
+            <h3 className="text-sm font-semibold text-[#4A5771] uppercase tracking-wider">Business Details</h3>
           </div>
 
           {/* Business Registration */}
           <div>
-            <label className="block text-sm font-medium text-zinc-300 mb-1.5">
+            <label className="block text-sm font-medium text-[#8E9BB5] mb-1.5">
               Business Registration Number
             </label>
             <input
@@ -373,14 +373,14 @@ export default function SellerRegistration() {
               value={form.businessRegistration}
               onChange={(e) => updateField('businessRegistration', e.target.value)}
               placeholder="e.g. BRN-2024-12345"
-              className="w-full bg-zinc-800/80 border border-zinc-700 rounded-xl px-4 py-2.5 text-white placeholder-zinc-500 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500/50 focus:border-emerald-500 transition-colors"
+              className="w-full bg-[#28303F]/80 border border-[#2A3448] rounded-xl px-4 py-2.5 text-white placeholder-[#4A5771] text-sm focus:outline-none focus:ring-2 focus:ring-[#007AFF]/50 focus:border-[#007AFF] transition-colors"
             />
           </div>
 
           {/* KRA PIN */}
           <div>
-            <label className="block text-sm font-medium text-zinc-300 mb-1.5">
-              KRA PIN <span className="text-zinc-500 font-normal">(tax ID)</span>
+            <label className="block text-sm font-medium text-[#8E9BB5] mb-1.5">
+              KRA PIN <span className="text-[#4A5771] font-normal">(tax ID)</span>
             </label>
             <input
               type="text"
@@ -388,13 +388,13 @@ export default function SellerRegistration() {
               onChange={(e) => updateField('kraPin', e.target.value.toUpperCase())}
               placeholder="e.g. P051234567Z"
               maxLength={11}
-              className="w-full bg-zinc-800/80 border border-zinc-700 rounded-xl px-4 py-2.5 text-white placeholder-zinc-500 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500/50 focus:border-emerald-500 transition-colors font-mono uppercase"
+              className="w-full bg-[#28303F]/80 border border-[#2A3448] rounded-xl px-4 py-2.5 text-white placeholder-[#4A5771] text-sm focus:outline-none focus:ring-2 focus:ring-[#007AFF]/50 focus:border-[#007AFF] transition-colors font-mono uppercase"
             />
           </div>
 
           {/* National ID */}
           <div>
-            <label className="block text-sm font-medium text-zinc-300 mb-1.5">
+            <label className="block text-sm font-medium text-[#8E9BB5] mb-1.5">
               National ID Number
             </label>
             <input
@@ -402,21 +402,21 @@ export default function SellerRegistration() {
               value={form.idNumber}
               onChange={(e) => updateField('idNumber', e.target.value)}
               placeholder="e.g. 12345678"
-              className="w-full bg-zinc-800/80 border border-zinc-700 rounded-xl px-4 py-2.5 text-white placeholder-zinc-500 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500/50 focus:border-emerald-500 transition-colors"
+              className="w-full bg-[#28303F]/80 border border-[#2A3448] rounded-xl px-4 py-2.5 text-white placeholder-[#4A5771] text-sm focus:outline-none focus:ring-2 focus:ring-[#007AFF]/50 focus:border-[#007AFF] transition-colors"
             />
           </div>
 
           {/* M-Pesa Phone */}
           <div>
-            <label className="block text-sm font-medium text-zinc-300 mb-1.5">
-              M-Pesa Phone Number <span className="text-zinc-500 font-normal">(for payouts)</span>
+            <label className="block text-sm font-medium text-[#8E9BB5] mb-1.5">
+              M-Pesa Phone Number <span className="text-[#4A5771] font-normal">(for payouts)</span>
             </label>
             <input
               type="tel"
               value={form.mpesaPhone}
               onChange={(e) => updateField('mpesaPhone', e.target.value)}
               placeholder="+254 7XX XXX XXX"
-              className="w-full bg-zinc-800/80 border border-zinc-700 rounded-xl px-4 py-2.5 text-white placeholder-zinc-500 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500/50 focus:border-emerald-500 transition-colors"
+              className="w-full bg-[#28303F]/80 border border-[#2A3448] rounded-xl px-4 py-2.5 text-white placeholder-[#4A5771] text-sm focus:outline-none focus:ring-2 focus:ring-[#007AFF]/50 focus:border-[#007AFF] transition-colors"
             />
           </div>
 
@@ -432,7 +432,7 @@ export default function SellerRegistration() {
           <button
             type="submit"
             disabled={submitting}
-            className="w-full flex items-center justify-center gap-2 bg-gradient-to-r from-emerald-500 to-green-600 hover:from-emerald-400 hover:to-green-500 text-white font-bold py-3 rounded-xl transition-all disabled:opacity-50 disabled:cursor-not-allowed shadow-lg shadow-emerald-500/30"
+            className="w-full flex items-center justify-center gap-2 bg-gradient-to-r from-[#007AFF] to-[#0066CC] hover:from-[#0056CC] hover:to-[#004D99] text-white font-bold py-3 rounded-xl transition-all disabled:opacity-50 disabled:cursor-not-allowed shadow-lg shadow-[#007AFF]/30"
           >
             {submitting ? (
               <>
@@ -449,9 +449,9 @@ export default function SellerRegistration() {
         </form>
 
         {/* Footer link */}
-        <p className="text-center text-xs text-zinc-500 mt-6">
+        <p className="text-center text-xs text-[#4A5771] mt-6">
           Already a seller?{' '}
-          <Link to="/seller/dashboard" className="text-emerald-400 hover:text-emerald-300 underline underline-offset-2">
+          <Link to="/seller/dashboard" className="text-[#38B8EA] hover:text-[#5CC8F0] underline underline-offset-2">
             Go to your dashboard
           </Link>
         </p>

@@ -33,8 +33,8 @@ function ToggleSwitch({ checked, onChange, disabled }) {
       aria-checked={checked}
       disabled={disabled}
       onClick={() => onChange(!checked)}
-      className={`relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-[var(--seasonal-primary,#1a5632)] focus:ring-offset-2 focus:ring-offset-zinc-900 ${
-        checked ? 'bg-emerald-500' : 'bg-zinc-600'
+      className={`relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-[var(--seasonal-primary,#007AFF)] focus:ring-offset-2 focus:ring-offset-[#28303F] ${
+        checked ? 'bg-[#007AFF]' : 'bg-[#4A5771]'
       } ${disabled ? 'opacity-50 cursor-not-allowed' : ''}`}
     >
       <span
@@ -61,7 +61,7 @@ const ORDER_STATUS = {
   pending:    { color: 'text-amber-500', bg: 'bg-amber-900/30',     label: 'Pending',    icon: Clock },
   processing: { color: 'text-blue-500',  bg: 'bg-blue-900/30',       label: 'Processing', icon: Package },
   shipped:    { color: 'text-purple-500',bg: 'bg-purple-900/30',   label: 'Shipped',    icon: ShoppingBag },
-  delivered:  { color: 'text-emerald-500',bg: 'bg-emerald-900/30',label: 'Delivered',  icon: CheckCircle2 },
+  delivered:  { color: 'text-[#38B8EA]',bg: 'bg-[#007AFF]/30',label: 'Delivered',  icon: CheckCircle2 },
   cancelled:  { color: 'text-red-500',   bg: 'bg-red-900/30',         label: 'Cancelled',  icon: AlertTriangle },
 };
 
@@ -83,7 +83,7 @@ function CancelModal({ order, onClose, onConfirm, busy }) {
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm" onClick={onClose}>
       <div
-        className="bg-zinc-900 rounded-3xl max-w-md w-full p-6 shadow-2xl border border-zinc-800"
+        className="bg-[#28303F] rounded-3xl max-w-md w-full p-6 shadow-2xl border border-[#353F54]"
         onClick={e => e.stopPropagation()}
       >
         <div className="flex items-center gap-3 mb-5">
@@ -92,16 +92,16 @@ function CancelModal({ order, onClose, onConfirm, busy }) {
           </div>
           <div>
             <h3 className="text-lg font-bold text-white">Cancel Order</h3>
-            <p className="text-xs text-zinc-400">#{String(order.id).slice(0, 8).toUpperCase()}</p>
+            <p className="text-xs text-[#4A5771]">#{String(order.id).slice(0, 8).toUpperCase()}</p>
           </div>
         </div>
 
-        <p className="text-sm text-zinc-400 mb-4">
+        <p className="text-sm text-[#4A5771] mb-4">
           Are you sure you want to cancel this order? This action cannot be undone.
         </p>
 
         <div className="mb-4">
-          <label className="text-xs font-bold text-zinc-400 uppercase tracking-wider mb-2 block">
+          <label className="text-xs font-bold text-[#4A5771] uppercase tracking-wider mb-2 block">
             Reason (optional)
           </label>
           <div className="space-y-1.5">
@@ -112,7 +112,7 @@ function CancelModal({ order, onClose, onConfirm, busy }) {
                 className={`w-full text-left px-3 py-2 rounded-xl text-sm transition-all ${
                   reason === r
                     ? 'bg-red-900/20 text-red-400 font-semibold border border-red-800'
-                    : 'bg-zinc-800/50 text-zinc-400 hover:bg-zinc-800 border border-transparent'
+                    : 'bg-[#28303F]/50 text-[#4A5771] hover:bg-[#28303F] border border-transparent'
                 }`}
               >
                 {r}
@@ -124,7 +124,7 @@ function CancelModal({ order, onClose, onConfirm, busy }) {
               value={customReason}
               onChange={e => setCustomReason(e.target.value)}
               placeholder="Tell us why..."
-              className="w-full mt-2 px-3 py-2 rounded-xl bg-zinc-800/50 border border-zinc-700 text-sm text-white resize-none h-20 focus:outline-none focus:border-red-400"
+              className="w-full mt-2 px-3 py-2 rounded-xl bg-[#28303F]/50 border border-[#353F54] text-sm text-white resize-none h-20 focus:outline-none focus:border-red-400"
             />
           )}
         </div>
@@ -132,7 +132,7 @@ function CancelModal({ order, onClose, onConfirm, busy }) {
         <div className="flex gap-3">
           <button
             onClick={onClose}
-            className="flex-1 py-3 rounded-xl bg-zinc-800 text-zinc-300 font-bold text-sm hover:bg-zinc-700 transition-colors"
+            className="flex-1 py-3 rounded-xl bg-[#28303F] text-[#8E9BB5] font-bold text-sm hover:bg-[#353F54] transition-colors"
           >
             Keep Order
           </button>
@@ -161,17 +161,17 @@ function OrderCard({ order, onCancel, isExpanded, onToggle }) {
       {/* Header */}
       <button
         onClick={onToggle}
-        className="w-full flex items-center justify-between p-4 hover:bg-zinc-50 dark:hover:bg-zinc-800/50 transition-colors text-left"
+        className="w-full flex items-center justify-between p-4 hover:bg-[#8E9BB5]/10 dark:hover:bg-[#28303F]/50 transition-colors text-left"
       >
         <div className="flex items-center gap-3 min-w-0">
           <div className={`w-10 h-10 rounded-xl flex items-center justify-center ${status.bg} flex-shrink-0`}>
             <StatusIcon className={`w-5 h-5 ${status.color}`} />
           </div>
           <div className="min-w-0">
-            <span className="font-mono text-xs text-zinc-400">#{String(order.id).slice(0, 8).toUpperCase()}</span>
+            <span className="font-mono text-xs text-[#4A5771]">#{String(order.id).slice(0, 8).toUpperCase()}</span>
             <div className="flex items-center gap-2 mt-0.5">
-              <Clock className="w-3 h-3 text-zinc-400 flex-shrink-0" />
-              <p className="text-xs text-zinc-400 truncate">
+              <Clock className="w-3 h-3 text-[#4A5771] flex-shrink-0" />
+              <p className="text-xs text-[#4A5771] truncate">
                 {new Date(order.created_at).toLocaleDateString('en-KE', { month: 'short', day: 'numeric', year: 'numeric' })}
               </p>
             </div>
@@ -182,28 +182,28 @@ function OrderCard({ order, onCancel, isExpanded, onToggle }) {
             {status.label}
           </span>
           <span className="fusion-price font-bold text-sm">{formatKES(order.total_amount)}</span>
-          {isExpanded ? <ChevronUp className="w-4 h-4 text-zinc-400" /> : <ChevronDown className="w-4 h-4 text-zinc-400" />}
+          {isExpanded ? <ChevronUp className="w-4 h-4 text-[#4A5771]" /> : <ChevronDown className="w-4 h-4 text-[#4A5771]" />}
         </div>
       </button>
 
       {/* Expanded */}
       {isExpanded && (
-        <div className="border-t border-zinc-100 dark:border-zinc-800 px-4 py-3 space-y-3 animate-slide-down">
+        <div className="border-t border-[#4A5771]/20 dark:border-[#353F54] px-4 py-3 space-y-3 animate-slide-down">
           {order.omix_order_items?.length > 0 && (
             <div className="space-y-2">
-              <p className="text-xs font-bold text-zinc-400 uppercase tracking-wider">Items</p>
+              <p className="text-xs font-bold text-[#4A5771] uppercase tracking-wider">Items</p>
               {order.omix_order_items.map((item, i) => (
-                <div key={i} className="flex items-center gap-3 bg-zinc-800/50 rounded-xl p-2.5">
+                <div key={i} className="flex items-center gap-3 bg-[#28303F]/50 rounded-xl p-2.5">
                   {item.product_image ? (
-                    <img src={item.product_image} alt={item.product_name} className="w-10 h-10 rounded-lg object-cover bg-zinc-200 dark:bg-zinc-700 flex-shrink-0" />
+                    <img src={item.product_image} alt={item.product_name} className="w-10 h-10 rounded-lg object-cover bg-[#8E9BB5]/20 dark:bg-[#353F54] flex-shrink-0" />
                   ) : (
-                    <div className="w-10 h-10 rounded-lg bg-zinc-200 dark:bg-zinc-700 flex items-center justify-center flex-shrink-0">
-                      <Package className="w-4 h-4 text-zinc-400" />
+                    <div className="w-10 h-10 rounded-lg bg-[#8E9BB5]/20 dark:bg-[#353F54] flex items-center justify-center flex-shrink-0">
+                      <Package className="w-4 h-4 text-[#4A5771]" />
                     </div>
                   )}
                   <div className="flex-1 min-w-0">
                     <p className="text-sm font-bold text-white truncate">{item.product_name}</p>
-                    <p className="text-xs text-zinc-400">Qty: {item.quantity}</p>
+                    <p className="text-xs text-[#4A5771]">Qty: {item.quantity}</p>
                   </div>
                   <span className="text-sm font-bold text-white flex-shrink-0">{formatKES(item.price * item.quantity)}</span>
                 </div>
@@ -213,14 +213,14 @@ function OrderCard({ order, onCancel, isExpanded, onToggle }) {
 
           <div className="grid grid-cols-2 gap-2 text-xs">
             {order.customer_name && (
-              <div className="bg-zinc-800/50 rounded-xl p-2.5">
-                <span className="text-zinc-400 block">Customer</span>
+              <div className="bg-[#28303F]/50 rounded-xl p-2.5">
+                <span className="text-[#4A5771] block">Customer</span>
                 <span className="font-bold text-white">{order.customer_name}</span>
               </div>
             )}
             {order.phone && (
-              <div className="bg-zinc-800/50 rounded-xl p-2.5">
-                <span className="text-zinc-400 block">Phone</span>
+              <div className="bg-[#28303F]/50 rounded-xl p-2.5">
+                <span className="text-[#4A5771] block">Phone</span>
                 <span className="font-bold text-white">{order.phone}</span>
               </div>
             )}
@@ -236,7 +236,7 @@ function OrderCard({ order, onCancel, isExpanded, onToggle }) {
           <div className="flex gap-2">
             <Link
               to={`/track-order?orderId=${order.id}`}
-              className="flex items-center justify-center gap-2 flex-1 py-2.5 rounded-xl bg-[var(--seasonal-primary,#1a5632)]/10 text-[var(--seasonal-primary,#1a5632)] font-bold text-sm hover:bg-[var(--seasonal-primary,#1a5632)]/20 transition-colors"
+              className="flex items-center justify-center gap-2 flex-1 py-2.5 rounded-xl bg-[var(--seasonal-primary,#007AFF)]/10 text-[var(--seasonal-primary,#007AFF)] font-bold text-sm hover:bg-[var(--seasonal-primary,#007AFF)]/20 transition-colors"
             >
               Track <ArrowRight className="w-4 h-4" />
             </Link>
@@ -283,14 +283,14 @@ function AvatarUpload({ currentUrl, userName, onUpload, busy }) {
   return (
     <div className="relative group">
       <div
-        className="w-20 h-20 rounded-full overflow-hidden bg-zinc-800 border-2 border-zinc-700 cursor-pointer relative"
+        className="w-20 h-20 rounded-full overflow-hidden bg-[#28303F] border-2 border-[#353F54] cursor-pointer relative"
         onClick={handleSelect}
       >
         {src ? (
           <img src={src} alt={userName} className="w-full h-full object-cover" />
         ) : (
           <div className="w-full h-full flex items-center justify-center">
-            <User className="w-8 h-8 text-zinc-400" />
+            <User className="w-8 h-8 text-[#4A5771]" />
           </div>
         )}
         <div className="absolute inset-0 bg-black/0 group-hover:bg-black/40 transition-colors rounded-full flex items-center justify-center">
@@ -305,7 +305,7 @@ function AvatarUpload({ currentUrl, userName, onUpload, busy }) {
       <input ref={fileRef} type="file" accept="image/*" className="hidden" onChange={handleFile} />
       <button
         onClick={handleSelect}
-        className="absolute -bottom-1 -right-1 w-7 h-7 rounded-full bg-[var(--seasonal-primary,#1a5632)] text-white flex items-center justify-center shadow-lg hover:scale-110 transition-transform"
+        className="absolute -bottom-1 -right-1 w-7 h-7 rounded-full bg-[var(--seasonal-primary,#007AFF)] text-white flex items-center justify-center shadow-lg hover:scale-110 transition-transform"
       >
         <Camera className="w-3.5 h-3.5" />
       </button>
@@ -721,20 +721,20 @@ function UserDashboard() {
                 />
                 <div className="flex-1 text-center sm:text-left">
                   <h2 className="text-xl font-bold text-white">{userName}</h2>
-                  <p className="text-sm text-zinc-400">{user?.email}</p>
-                  <p className="text-xs text-zinc-400 mt-1 capitalize">{profile?.role || 'Customer'}</p>
+                  <p className="text-sm text-[#4A5771]">{user?.email}</p>
+                  <p className="text-xs text-[#4A5771] mt-1 capitalize">{profile?.role || 'Customer'}</p>
                 </div>
                 {!editing ? (
                   <button
                     onClick={() => setEditing(true)}
-                    className="flex items-center gap-2 px-4 py-2 rounded-xl bg-zinc-800 text-zinc-300 text-sm font-bold hover:bg-zinc-700 transition-colors"
+                    className="flex items-center gap-2 px-4 py-2 rounded-xl bg-[#28303F] text-[#8E9BB5] text-sm font-bold hover:bg-[#353F54] transition-colors"
                   >
                     <Edit2 className="w-4 h-4" /> Edit
                   </button>
                 ) : (
                   <button
                     onClick={() => { setEditing(false); setEditForm({ full_name: profile?.full_name || '', phone: profile?.phone || '' }); }}
-                    className="flex items-center gap-2 px-4 py-2 rounded-xl bg-zinc-800 text-zinc-300 text-sm font-bold hover:bg-zinc-700 transition-colors"
+                    className="flex items-center gap-2 px-4 py-2 rounded-xl bg-[#28303F] text-[#8E9BB5] text-sm font-bold hover:bg-[#353F54] transition-colors"
                   >
                     <X className="w-4 h-4" /> Cancel
                   </button>
@@ -743,39 +743,39 @@ function UserDashboard() {
 
               {/* Inline Edit Form */}
               {editing && (
-                <div className="mt-6 border-t border-zinc-100 dark:border-zinc-800 pt-6 space-y-4">
+                <div className="mt-6 border-t border-[#4A5771]/20 dark:border-[#353F54] pt-6 space-y-4">
                   <div>
-                    <label className="block text-xs font-bold text-zinc-400 uppercase tracking-wider mb-1.5">Full Name</label>
+                    <label className="block text-xs font-bold text-[#4A5771] uppercase tracking-wider mb-1.5">Full Name</label>
                     <input
                       type="text"
                       value={editForm.full_name}
                       onChange={e => setEditForm({ ...editForm, full_name: e.target.value })}
-                      className="w-full px-4 py-3 rounded-xl bg-zinc-800/50 border border-zinc-700 text-white text-sm focus:outline-none focus:border-[var(--seasonal-primary,#1a5632)]"
+                      className="w-full px-4 py-3 rounded-xl bg-[#28303F]/50 border border-[#353F54] text-white text-sm focus:outline-none focus:border-[var(--seasonal-primary,#007AFF)]"
                     />
                   </div>
                   <div>
-                    <label className="block text-xs font-bold text-zinc-400 uppercase tracking-wider mb-1.5">Phone</label>
+                    <label className="block text-xs font-bold text-[#4A5771] uppercase tracking-wider mb-1.5">Phone</label>
                     <input
                       type="tel"
                       value={editForm.phone}
                       onChange={e => setEditForm({ ...editForm, phone: e.target.value })}
-                      className="w-full px-4 py-3 rounded-xl bg-zinc-800/50 border border-zinc-700 text-white text-sm focus:outline-none focus:border-[var(--seasonal-primary,#1a5632)]"
+                      className="w-full px-4 py-3 rounded-xl bg-[#28303F]/50 border border-[#353F54] text-white text-sm focus:outline-none focus:border-[var(--seasonal-primary,#007AFF)]"
                     />
                   </div>
                   <div>
-                    <label className="block text-xs font-bold text-zinc-400 uppercase tracking-wider mb-1.5">Email</label>
+                    <label className="block text-xs font-bold text-[#4A5771] uppercase tracking-wider mb-1.5">Email</label>
                     <input
                       type="email"
                       value={user?.email || ''}
                       disabled
-                      className="w-full px-4 py-3 rounded-xl bg-zinc-800 border border-zinc-700 text-zinc-400 text-sm cursor-not-allowed"
+                      className="w-full px-4 py-3 rounded-xl bg-[#28303F] border border-[#353F54] text-[#4A5771] text-sm cursor-not-allowed"
                     />
-                    <p className="text-xs text-zinc-400 mt-1">Email cannot be changed here.</p>
+                    <p className="text-xs text-[#4A5771] mt-1">Email cannot be changed here.</p>
                   </div>
                   <button
                     onClick={handleSaveProfile}
                     disabled={savingProfile}
-                    className="w-full py-3 rounded-xl bg-[var(--seasonal-primary,#1a5632)] text-white font-bold text-sm hover:bg-[var(--seasonal-secondary,#14472a)] transition-colors disabled:opacity-50 flex items-center justify-center gap-2"
+                    className="w-full py-3 rounded-xl bg-[var(--seasonal-primary,#007AFF)] text-white font-bold text-sm hover:bg-[var(--seasonal-secondary,#0066CC)] transition-colors disabled:opacity-50 flex items-center justify-center gap-2"
                   >
                     {savingProfile ? <Loader2 className="w-4 h-4 animate-spin" /> : null}
                     {savingProfile ? 'Saving...' : 'Save Changes'}
@@ -787,42 +787,42 @@ function UserDashboard() {
             {/* Quick Stats */}
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
               <div className="fusion-recessed-card p-4 text-center">
-                <ShoppingBag className="w-5 h-5 text-[var(--seasonal-primary,#1a5632)] mx-auto mb-1" />
+                <ShoppingBag className="w-5 h-5 text-[var(--seasonal-primary,#007AFF)] mx-auto mb-1" />
                 <p className="text-2xl font-black text-white">{orders.length}</p>
-                <p className="text-xs text-zinc-400">Orders</p>
+                <p className="text-xs text-[#4A5771]">Orders</p>
               </div>
               <div className="fusion-recessed-card p-4 text-center">
                 <Star className="w-5 h-5 text-amber-500 mx-auto mb-1" />
                 <p className="text-2xl font-black text-white">{loyaltyPoints}</p>
-                <p className="text-xs text-zinc-400">Points</p>
+                <p className="text-xs text-[#4A5771]">Points</p>
               </div>
               <div className="fusion-recessed-card p-4 text-center">
-                <MapPin className="w-5 h-5 text-emerald-500 mx-auto mb-1" />
+                <MapPin className="w-5 h-5 text-[#38B8EA] mx-auto mb-1" />
                 <p className="text-2xl font-black text-white">{addresses.length}</p>
-                <p className="text-xs text-zinc-400">Addresses</p>
+                <p className="text-xs text-[#4A5771]">Addresses</p>
               </div>
               <div className="fusion-recessed-card p-4 text-center">
                 <Gift className="w-5 h-5 text-purple-500 mx-auto mb-1" />
                 <p className="text-2xl font-black text-white">{referralCount}</p>
-                <p className="text-xs text-zinc-400">Referrals</p>
+                <p className="text-xs text-[#4A5771]">Referrals</p>
               </div>
             </div>
 
             {/* Quick Links */}
             <div className="grid grid-cols-2 gap-3">
-              <Link to="/track-order" className="fusion-recessed-card p-4 flex items-center justify-between group hover:border-[var(--seasonal-primary,#1a5632)]/30 transition-colors">
+              <Link to="/track-order" className="fusion-recessed-card p-4 flex items-center justify-between group hover:border-[var(--seasonal-primary,#007AFF)]/30 transition-colors">
                 <div>
                   <p className="font-bold text-white text-sm">Track Order</p>
-                  <p className="text-xs text-zinc-400">Check delivery status</p>
+                  <p className="text-xs text-[#4A5771]">Check delivery status</p>
                 </div>
-                <Package className="w-6 h-6 text-[var(--seasonal-primary,#1a5632)] group-hover:scale-110 transition-transform" />
+                <Package className="w-6 h-6 text-[var(--seasonal-primary,#007AFF)] group-hover:scale-110 transition-transform" />
               </Link>
-              <Link to="/wishlist" className="fusion-recessed-card p-4 flex items-center justify-between group hover:border-[var(--seasonal-primary,#1a5632)]/30 transition-colors">
+              <Link to="/wishlist" className="fusion-recessed-card p-4 flex items-center justify-between group hover:border-[var(--seasonal-primary,#007AFF)]/30 transition-colors">
                 <div>
                   <p className="font-bold text-white text-sm">Wishlist</p>
-                  <p className="text-xs text-zinc-400">Saved items</p>
+                  <p className="text-xs text-[#4A5771]">Saved items</p>
                 </div>
-                <Bookmark className="w-6 h-6 text-[var(--seasonal-primary,#1a5632)] group-hover:scale-110 transition-transform" />
+                <Bookmark className="w-6 h-6 text-[var(--seasonal-primary,#007AFF)] group-hover:scale-110 transition-transform" />
               </Link>
             </div>
           </div>
@@ -837,7 +837,7 @@ function UserDashboard() {
             <div className="flex items-center justify-between">
               <div>
                 <h2 className="text-lg font-bold text-white">Order History</h2>
-                <p className="text-xs text-zinc-400">{visibleOrders.length} order{visibleOrders.length !== 1 ? 's' : ''}</p>
+                <p className="text-xs text-[#4A5771]">{visibleOrders.length} order{visibleOrders.length !== 1 ? 's' : ''}</p>
               </div>
               <div className="flex items-center gap-2">
                 {visibleOrders.length > 3 && (
@@ -846,7 +846,7 @@ function UserDashboard() {
                       Object.keys(expandedOrders).length === visibleOrders.length ? {} :
                       Object.fromEntries(visibleOrders.map(o => [o.id, true]))
                     )}
-                    className="text-xs font-bold text-[var(--seasonal-primary,#1a5632)] hover:underline"
+                    className="text-xs font-bold text-[var(--seasonal-primary,#007AFF)] hover:underline"
                   >
                     {Object.keys(expandedOrders).length === visibleOrders.length ? 'Collapse all' : 'Expand all'}
                   </button>
@@ -881,10 +881,10 @@ function UserDashboard() {
               </div>
             ) : (
               <div className="text-center py-12 fusion-recessed-card">
-                <Package className="w-12 h-12 text-zinc-300 mx-auto mb-3" />
+                <Package className="w-12 h-12 text-[#8E9BB5] mx-auto mb-3" />
                 <h3 className="font-bold text-white mb-1">No orders yet</h3>
-                <p className="text-sm text-zinc-400 mb-4">{hiddenOrders.length > 0 ? 'All orders cleared. New orders will appear here.' : 'When you place an order, it will appear here.'}</p>
-                <Link to="/" className="inline-flex items-center gap-2 bg-[var(--seasonal-primary,#1a5632)] text-white font-bold px-6 py-3 rounded-xl text-sm hover:bg-[var(--seasonal-secondary,#14472a)] transition-colors">
+                <p className="text-sm text-[#4A5771] mb-4">{hiddenOrders.length > 0 ? 'All orders cleared. New orders will appear here.' : 'When you place an order, it will appear here.'}</p>
+                <Link to="/" className="inline-flex items-center gap-2 bg-[var(--seasonal-primary,#007AFF)] text-white font-bold px-6 py-3 rounded-xl text-sm hover:bg-[var(--seasonal-secondary,#0066CC)] transition-colors">
                   Start Shopping <ArrowRight className="w-4 h-4" />
                 </Link>
               </div>
@@ -900,7 +900,7 @@ function UserDashboard() {
               <h2 className="text-lg font-bold text-white">Saved Addresses</h2>
               <button
                 onClick={() => setShowAddressForm(true)}
-                className="flex items-center gap-2 px-4 py-2 rounded-xl bg-[var(--seasonal-primary,#1a5632)] text-white text-xs font-bold hover:bg-[var(--seasonal-secondary,#14472a)] transition-colors"
+                className="flex items-center gap-2 px-4 py-2 rounded-xl bg-[var(--seasonal-primary,#007AFF)] text-white text-xs font-bold hover:bg-[var(--seasonal-secondary,#0066CC)] transition-colors"
               >
                 <Plus className="w-3.5 h-3.5" /> Add
               </button>
@@ -920,7 +920,7 @@ function UserDashboard() {
                     <div className="flex items-start justify-between">
                       <div className="flex items-start gap-3">
                         <div className={`w-8 h-8 rounded-xl flex items-center justify-center flex-shrink-0 ${
-                          addr.is_default ? 'bg-[var(--seasonal-primary,#1a5632)]/10 text-[var(--seasonal-primary,#1a5632)]' : 'bg-zinc-800 text-zinc-400'
+                          addr.is_default ? 'bg-[var(--seasonal-primary,#007AFF)]/10 text-[var(--seasonal-primary,#007AFF)]' : 'bg-[#28303F] text-[#4A5771]'
                         }`}>
                           <MapPin className="w-4 h-4" />
                         </div>
@@ -928,20 +928,20 @@ function UserDashboard() {
                           <div className="flex items-center gap-2">
                             <span className="font-bold text-white text-sm">{addr.label || 'Address'}</span>
                             {addr.is_default && (
-                              <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-[var(--seasonal-primary,#1a5632)]/10 text-[var(--seasonal-primary,#1a5632)]">Default</span>
+                              <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-[var(--seasonal-primary,#007AFF)]/10 text-[var(--seasonal-primary,#007AFF)]">Default</span>
                             )}
                           </div>
-                          <p className="text-xs text-zinc-400 mt-0.5">{addr.area}{addr.landmark ? `, ${addr.landmark}` : ''}</p>
-                          {addr.phone && <p className="text-xs text-zinc-400 mt-0.5">{addr.phone}</p>}
+                          <p className="text-xs text-[#4A5771] mt-0.5">{addr.area}{addr.landmark ? `, ${addr.landmark}` : ''}</p>
+                          {addr.phone && <p className="text-xs text-[#4A5771] mt-0.5">{addr.phone}</p>}
                         </div>
                       </div>
                       <div className="flex gap-1">
                         {!addr.is_default && (
-                          <button onClick={() => handleSetDefault(addr.id)} className="p-1.5 rounded-lg text-zinc-400 hover:text-emerald-500 hover:bg-emerald-50 dark:hover:bg-emerald-900/20 transition-all" title="Set as default">
+                          <button onClick={() => handleSetDefault(addr.id)} className="p-1.5 rounded-lg text-[#4A5771] hover:text-[#38B8EA] hover:bg-[#38B8EA]/10 dark:hover:bg-[#007AFF]/20 transition-all" title="Set as default">
                             <Check className="w-3.5 h-3.5" />
                           </button>
                         )}
-                        <button onClick={() => handleDeleteAddress(addr.id)} className="p-1.5 rounded-lg text-zinc-400 hover:text-red-500 hover:bg-red-900/20 transition-all" title="Delete">
+                        <button onClick={() => handleDeleteAddress(addr.id)} className="p-1.5 rounded-lg text-[#4A5771] hover:text-red-500 hover:bg-red-900/20 transition-all" title="Delete">
                           <Trash2 className="w-3.5 h-3.5" />
                         </button>
                       </div>
@@ -951,9 +951,9 @@ function UserDashboard() {
               </div>
             ) : (
               <div className="text-center py-12 fusion-recessed-card">
-                <MapPin className="w-10 h-10 text-zinc-300 mx-auto mb-3" />
+                <MapPin className="w-10 h-10 text-[#8E9BB5] mx-auto mb-3" />
                 <h3 className="font-bold text-white mb-1">No addresses saved</h3>
-                <p className="text-sm text-zinc-400">Save your delivery addresses for faster checkout.</p>
+                <p className="text-sm text-[#4A5771]">Save your delivery addresses for faster checkout.</p>
               </div>
             )}
           </div>
@@ -966,31 +966,31 @@ function UserDashboard() {
             {/* Referral */}
             <div className="fusion-recessed-card p-6">
               <div className="flex items-center gap-3 mb-5">
-                <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[var(--seasonal-primary,#1a5632)] to-[var(--seasonal-secondary,#14472a)] flex items-center justify-center">
+                <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[var(--seasonal-primary,#007AFF)] to-[var(--seasonal-secondary,#0066CC)] flex items-center justify-center">
                   <Users className="w-5 h-5 text-white" />
                 </div>
                 <div>
                   <h2 className="text-lg font-bold text-white">Refer a Friend</h2>
-                  <p className="text-xs text-zinc-400">Share your code and earn KES 100 per referral</p>
+                  <p className="text-xs text-[#4A5771]">Share your code and earn KES 100 per referral</p>
                 </div>
               </div>
               <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center">
                 <div className="flex-1 w-full">
-                  <label className="text-xs font-medium text-zinc-400 mb-1.5 block">Your referral code</label>
-                  <div className="flex items-center gap-2 bg-zinc-800/50 rounded-xl px-4 py-3 border border-zinc-700">
+                  <label className="text-xs font-medium text-[#4A5771] mb-1.5 block">Your referral code</label>
+                  <div className="flex items-center gap-2 bg-[#28303F]/50 rounded-xl px-4 py-3 border border-[#353F54]">
                     <span className="font-mono font-bold text-lg text-white tracking-wider">{referralCode}</span>
                     <button
                       onClick={() => { navigator.clipboard.writeText(referralCode); setCopied(true); setTimeout(() => setCopied(false), 2000); }}
-                      className="ml-auto p-2 rounded-lg bg-zinc-200 dark:bg-zinc-700 hover:bg-zinc-300 dark:hover:bg-zinc-600 transition-colors"
+                      className="ml-auto p-2 rounded-lg bg-[#8E9BB5]/20 dark:bg-[#353F54] hover:bg-[#8E9BB5]/30 dark:hover:bg-[#4A5771] transition-colors"
                     >
-                      {copied ? <Check className="w-4 h-4 text-green-500" /> : <Copy className="w-4 h-4 text-zinc-400" />}
+                      {copied ? <Check className="w-4 h-4 text-[#38B8EA]" /> : <Copy className="w-4 h-4 text-[#4A5771]" />}
                     </button>
                   </div>
                 </div>
                 <div className="text-center sm:text-left">
-                  <label className="text-xs font-medium text-zinc-400 mb-1.5 block">People referred</label>
-                  <div className="flex items-center gap-2 bg-zinc-800/50 rounded-xl px-5 py-3 border border-zinc-700">
-                    <Users className="w-5 h-5 text-[var(--seasonal-primary,#1a5632)]" />
+                  <label className="text-xs font-medium text-[#4A5771] mb-1.5 block">People referred</label>
+                  <div className="flex items-center gap-2 bg-[#28303F]/50 rounded-xl px-5 py-3 border border-[#353F54]">
+                    <Users className="w-5 h-5 text-[var(--seasonal-primary,#007AFF)]" />
                     <span className="font-bold text-xl text-white">{referralCount}</span>
                   </div>
                 </div>
@@ -1005,7 +1005,7 @@ function UserDashboard() {
                 </div>
                 <div>
                   <h2 className="text-lg font-bold text-white">Loyalty Points</h2>
-                  <p className="text-xs text-zinc-400">Earn 1 point per KES 100 spent</p>
+                  <p className="text-xs text-[#4A5771]">Earn 1 point per KES 100 spent</p>
                 </div>
               </div>
               <div className="flex items-center gap-3 mb-5">
@@ -1014,31 +1014,31 @@ function UserDashboard() {
                 </div>
                 <div>
                   <span className="text-3xl font-black text-white">{loyaltyPoints}</span>
-                  <p className="text-xs text-zinc-400">Available points</p>
+                  <p className="text-xs text-[#4A5771]">Available points</p>
                 </div>
               </div>
               {pointsHistory.length > 0 && (
                 <div>
-                  <h4 className="text-xs font-bold text-zinc-400 uppercase tracking-wider mb-3">Recent Activity</h4>
+                  <h4 className="text-xs font-bold text-[#4A5771] uppercase tracking-wider mb-3">Recent Activity</h4>
                   <div className="space-y-2">
                     {pointsHistory.slice(0, 5).map((entry, i) => (
-                      <div key={i} className="flex items-center justify-between bg-zinc-800/50 rounded-xl px-4 py-2.5">
+                      <div key={i} className="flex items-center justify-between bg-[#28303F]/50 rounded-xl px-4 py-2.5">
                         <div className="flex items-center gap-3">
                           <div className={`w-8 h-8 rounded-lg flex items-center justify-center ${
-                            entry.points > 0 ? 'bg-green-900/30' : 'bg-red-900/30'
+                            entry.points > 0 ? 'bg-[#007AFF]/30' : 'bg-red-900/30'
                           }`}>
                             {entry.points > 0 ? (
-                              <Star className="w-4 h-4 text-green-400" />
+                              <Star className="w-4 h-4 text-[#38B8EA]" />
                             ) : (
                               <ExternalLink className="w-4 h-4 text-red-400" />
                             )}
                           </div>
                           <div>
                             <p className="text-sm font-bold text-white">{entry.description || 'Points update'}</p>
-                            <p className="text-xs text-zinc-400">{new Date(entry.created_at).toLocaleDateString('en-KE', { month: 'short', day: 'numeric' })}</p>
+                            <p className="text-xs text-[#4A5771]">{new Date(entry.created_at).toLocaleDateString('en-KE', { month: 'short', day: 'numeric' })}</p>
                           </div>
                         </div>
-                        <span className={`font-bold text-sm ${entry.points > 0 ? 'text-green-400' : 'text-red-400'}`}>
+                        <span className={`font-bold text-sm ${entry.points > 0 ? 'text-[#38B8EA]' : 'text-red-400'}`}>
                           {entry.points > 0 ? '+' : ''}{entry.points}
                         </span>
                       </div>
@@ -1063,7 +1063,7 @@ function UserDashboard() {
                   </div>
                   <div>
                     <h2 className="text-lg font-bold text-white">Notifications</h2>
-                    <p className="text-xs text-zinc-400">
+                    <p className="text-xs text-[#4A5771]">
                       {inAppNotifs.length > 0
                         ? `${unreadCount} unread of ${inAppNotifs.length} total`
                         : 'No notifications yet'}
@@ -1074,7 +1074,7 @@ function UserDashboard() {
                   {unreadCount > 0 && (
                     <button
                       onClick={markAllRead}
-                      className="flex items-center gap-1 px-3 py-1.5 rounded-xl bg-emerald-900/20 text-emerald-400 text-xs font-bold hover:bg-emerald-900/30 transition-colors"
+                      className="flex items-center gap-1 px-3 py-1.5 rounded-xl bg-[#007AFF]/20 text-[#38B8EA] text-xs font-bold hover:bg-[#007AFF]/30 transition-colors"
                     >
                       <CheckCheck className="w-3.5 h-3.5" />
                       Mark all read
@@ -1091,7 +1091,7 @@ function UserDashboard() {
                   )}
                   <button
                     onClick={refreshNotifs}
-                    className="p-1.5 rounded-lg text-zinc-400 hover:text-white hover:bg-zinc-800 transition-colors"
+                    className="p-1.5 rounded-lg text-[#4A5771] hover:text-white hover:bg-[#28303F] transition-colors"
                     aria-label="Refresh"
                   >
                     <Loader2 className="w-4 h-4" />
@@ -1101,9 +1101,9 @@ function UserDashboard() {
 
               {inAppNotifs.length === 0 ? (
                 <div className="text-center py-10">
-                  <Bell className="w-12 h-12 text-zinc-600 mx-auto mb-3" />
-                  <p className="text-sm font-medium text-zinc-400">No notifications yet</p>
-                  <p className="text-xs text-zinc-500 mt-1">
+                  <Bell className="w-12 h-12 text-[#4A5771] mx-auto mb-3" />
+                  <p className="text-sm font-medium text-[#4A5771]">No notifications yet</p>
+                  <p className="text-xs text-[#4A5771] mt-1">
                     Updates about orders, deals, price drops, and more will appear here.
                   </p>
                 </div>
@@ -1112,16 +1112,16 @@ function UserDashboard() {
                   {inAppNotifs.map((notif) => (
                     <div
                       key={notif.id}
-                      className={`flex items-start gap-3 px-4 py-3 rounded-xl cursor-pointer transition-colors hover:bg-zinc-800/50 ${
+                      className={`flex items-start gap-3 px-4 py-3 rounded-xl cursor-pointer transition-colors hover:bg-[#28303F]/50 ${
                         !notif.read ? 'bg-amber-500/5 border border-amber-500/10' : ''
                       }`}
                       onClick={() => { if (!notif.read) { markRead(notif.id); } }}
                     >
                       {/* Type indicator */}
                       <div className={`w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0 ${
-                        !notif.read ? 'bg-amber-500/10' : 'bg-zinc-800'
+                        !notif.read ? 'bg-amber-500/10' : 'bg-[#28303F]'
                       }`}>
-                        <svg className={`w-5 h-5 ${!notif.read ? 'text-amber-400' : 'text-zinc-400'}`}
+                        <svg className={`w-5 h-5 ${!notif.read ? 'text-amber-400' : 'text-[#4A5771]'}`}
                           fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                           <path strokeLinecap="round" strokeLinejoin="round" d={
                             notif.type === 'ORDER_CONFIRMED' || notif.type === 'ORDER_SHIPPED' || notif.type === 'ORDER_DELIVERED'
@@ -1141,14 +1141,14 @@ function UserDashboard() {
 
                       <div className="flex-1 min-w-0">
                         <div className="flex items-start justify-between gap-2">
-                          <p className={`text-sm ${!notif.read ? 'font-bold text-white' : 'font-medium text-zinc-300'}`}>
+                          <p className={`text-sm ${!notif.read ? 'font-bold text-white' : 'font-medium text-[#8E9BB5]'}`}>
                             {notif.title}
                           </p>
-                          <span className="text-[10px] text-zinc-500 whitespace-nowrap flex-shrink-0">
+                          <span className="text-[10px] text-[#4A5771] whitespace-nowrap flex-shrink-0">
                             {notif.created_at ? new Date(notif.created_at).toLocaleDateString('en-KE', { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' }) : ''}
                           </span>
                         </div>
-                        <p className="text-xs text-zinc-400 mt-0.5">{notif.body}</p>
+                        <p className="text-xs text-[#4A5771] mt-0.5">{notif.body}</p>
                       </div>
 
                       {!notif.read && (
@@ -1174,7 +1174,7 @@ function UserDashboard() {
                 </div>
                 <div>
                   <h2 className="text-lg font-bold text-white">Notification Preferences</h2>
-                  <p className="text-xs text-zinc-400">Manage push notification settings</p>
+                  <p className="text-xs text-[#4A5771]">Manage push notification settings</p>
                 </div>
               </div>
 
@@ -1183,7 +1183,7 @@ function UserDashboard() {
                 <div className="flex items-center justify-between">
                   <div className="flex-1 min-w-0 mr-4">
                     <p className="text-sm font-semibold text-white">Push Notifications</p>
-                    <p className="text-xs text-zinc-400 mt-0.5">
+                    <p className="text-xs text-[#4A5771] mt-0.5">
                       {notifStatus === 'loading'
                         ? 'Checking support...'
                         : notifStatus === 'on'
@@ -1197,11 +1197,11 @@ function UserDashboard() {
                   </div>
 
                   {notifStatus === 'loading' ? (
-                    <div className="w-5 h-5 border-2 border-zinc-300 border-t-transparent rounded-full animate-spin flex-shrink-0" />
+                    <div className="w-5 h-5 border-2 border-[#8E9BB5] border-t-transparent rounded-full animate-spin flex-shrink-0" />
                   ) : notifStatus === 'blocked' ? (
-                    <span className="text-xs text-zinc-400 flex-shrink-0">Blocked</span>
+                    <span className="text-xs text-[#4A5771] flex-shrink-0">Blocked</span>
                   ) : notifStatus === 'unsupported' ? (
-                    <span className="text-xs text-zinc-400 flex-shrink-0">Unsupported</span>
+                    <span className="text-xs text-[#4A5771] flex-shrink-0">Unsupported</span>
                   ) : (
                     <ToggleSwitch
                       checked={notifStatus === 'on'}
@@ -1214,7 +1214,7 @@ function UserDashboard() {
                 {notifMsg && (
                   <div className={`p-3 rounded-xl text-xs font-semibold ${
                     notifMsg.type === 'success'
-                      ? 'bg-green-900/20 text-green-400 border border-green-800'
+                      ? 'bg-[#007AFF]/20 text-[#38B8EA] border border-[#007AFF]'
                       : 'bg-red-900/20 text-red-400 border border-red-800'
                   }`}>
                     {notifMsg.text}
@@ -1222,16 +1222,16 @@ function UserDashboard() {
                 )}
 
                 {/* Divider */}
-                <div className="border-t border-zinc-800" />
+                <div className="border-t border-[#353F54]" />
 
                 {/* Individual Preference Toggles */}
                 <div className="space-y-1">
-                  <p className="text-xs font-bold text-zinc-400 uppercase tracking-wider mb-3">Notify me about</p>
+                  <p className="text-xs font-bold text-[#4A5771] uppercase tracking-wider mb-3">Notify me about</p>
 
                   <div className="flex items-center justify-between py-2">
                     <div className="flex-1 min-w-0 mr-4">
                       <p className="text-sm font-medium text-white">Order Updates</p>
-                      <p className="text-xs text-zinc-400">Status changes, shipping, delivery</p>
+                      <p className="text-xs text-[#4A5771]">Status changes, shipping, delivery</p>
                     </div>
                     <ToggleSwitch
                       checked={notifPrefs.order_updates}
@@ -1243,7 +1243,7 @@ function UserDashboard() {
                   <div className="flex items-center justify-between py-2">
                     <div className="flex-1 min-w-0 mr-4">
                       <p className="text-sm font-medium text-white">Price Drops</p>
-                      <p className="text-xs text-zinc-400">Items you viewed or saved go on sale</p>
+                      <p className="text-xs text-[#4A5771]">Items you viewed or saved go on sale</p>
                     </div>
                     <ToggleSwitch
                       checked={notifPrefs.price_drops}
@@ -1255,7 +1255,7 @@ function UserDashboard() {
                   <div className="flex items-center justify-between py-2">
                     <div className="flex-1 min-w-0 mr-4">
                       <p className="text-sm font-medium text-white">Back in Stock</p>
-                      <p className="text-xs text-zinc-400">Out-of-stock items become available</p>
+                      <p className="text-xs text-[#4A5771]">Out-of-stock items become available</p>
                     </div>
                     <ToggleSwitch
                       checked={notifPrefs.back_in_stock}
@@ -1267,7 +1267,7 @@ function UserDashboard() {
                   <div className="flex items-center justify-between py-2">
                     <div className="flex-1 min-w-0 mr-4">
                       <p className="text-sm font-medium text-white">Promotions</p>
-                      <p className="text-xs text-zinc-400">Deals, discounts, and special offers</p>
+                      <p className="text-xs text-[#4A5771]">Deals, discounts, and special offers</p>
                     </div>
                     <ToggleSwitch
                       checked={notifPrefs.promotions}
@@ -1280,7 +1280,7 @@ function UserDashboard() {
                 {notifPrefsMsg && (
                   <div className={`p-3 rounded-xl text-xs font-semibold ${
                     notifPrefsMsg.type === 'success'
-                      ? 'bg-green-900/20 text-green-400 border border-green-800'
+                      ? 'bg-[#007AFF]/20 text-[#38B8EA] border border-[#007AFF]'
                       : 'bg-red-900/20 text-red-400 border border-red-800'
                   }`}>
                     {notifPrefsMsg.text}
@@ -1299,7 +1299,7 @@ function UserDashboard() {
                 </div>
                 <div>
                   <h2 className="text-lg font-bold text-white">Sound & Vibration</h2>
-                  <p className="text-xs text-zinc-400">Audio feedback and haptic settings (Android)</p>
+                  <p className="text-xs text-[#4A5771]">Audio feedback and haptic settings (Android)</p>
                 </div>
               </div>
 
@@ -1307,7 +1307,7 @@ function UserDashboard() {
                 <div className="flex items-center justify-between">
                   <div className="flex-1 min-w-0 mr-4">
                     <p className="text-sm font-semibold text-white">App Sounds</p>
-                    <p className="text-xs text-zinc-400 mt-0.5">
+                    <p className="text-xs text-[#4A5771] mt-0.5">
                       {soundMuted
                         ? 'Sounds are muted — no audio feedback on actions'
                         : 'Play sounds on checkout, cart, notifications, and other actions'}
@@ -1319,10 +1319,10 @@ function UserDashboard() {
                   />
                 </div>
 
-                <div className="border-t border-zinc-800" />
+                <div className="border-t border-[#353F54]" />
 
                 <div>
-                  <p className="text-xs font-bold text-zinc-400 uppercase tracking-wider mb-3">Available Sounds</p>
+                  <p className="text-xs font-bold text-[#4A5771] uppercase tracking-wider mb-3">Available Sounds</p>
                   <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
                     {[
                       { key: 'checkout', label: 'Checkout' },
@@ -1338,10 +1338,10 @@ function UserDashboard() {
                       <button
                         key={s.key}
                         onClick={() => { sounds[s.key]?.(); }}
-                        className="flex items-center gap-1.5 px-3 py-2 rounded-xl bg-zinc-800/50 hover:bg-zinc-800 transition-colors text-xs font-medium text-zinc-300 hover:text-white"
+                        className="flex items-center gap-1.5 px-3 py-2 rounded-xl bg-[#28303F]/50 hover:bg-[#28303F] transition-colors text-xs font-medium text-[#8E9BB5] hover:text-white"
                         disabled={soundMuted}
                       >
-                        <svg className="w-3.5 h-3.5 text-zinc-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                        <svg className="w-3.5 h-3.5 text-[#4A5771]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                           <path strokeLinecap="round" strokeLinejoin="round" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" />
                           <path strokeLinecap="round" strokeLinejoin="round" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                         </svg>
@@ -1349,7 +1349,7 @@ function UserDashboard() {
                       </button>
                     ))}
                   </div>
-                  <p className="text-[10px] text-zinc-500 mt-2">
+                  <p className="text-[10px] text-[#4A5771] mt-2">
                     Tap a sound to preview it
                   </p>
                 </div>
@@ -1357,7 +1357,7 @@ function UserDashboard() {
                 {soundMutedMsg && (
                   <div className={`p-3 rounded-xl text-xs font-semibold ${
                     soundMutedMsg.type === 'success'
-                      ? 'bg-green-900/20 text-green-400 border border-green-800'
+                      ? 'bg-[#007AFF]/20 text-[#38B8EA] border border-[#007AFF]'
                       : 'bg-red-900/20 text-red-400 border border-red-800'
                   }`}>
                     {soundMutedMsg.text}
@@ -1369,25 +1369,25 @@ function UserDashboard() {
             {/* Saved Searches */}
             <div className="fusion-recessed-card p-6">
               <div className="flex items-center gap-3 mb-5">
-                <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[var(--seasonal-primary,#1a5632)] to-[var(--seasonal-secondary,#14472a)] flex items-center justify-center">
+                <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[var(--seasonal-primary,#007AFF)] to-[var(--seasonal-secondary,#0066CC)] flex items-center justify-center">
                   <Bookmark className="w-5 h-5 text-white" />
                 </div>
                 <div>
                   <h2 className="text-lg font-bold text-white">Saved Searches</h2>
-                  <p className="text-xs text-zinc-400">Quick access to your recent searches</p>
+                  <p className="text-xs text-[#4A5771]">Quick access to your recent searches</p>
                 </div>
               </div>
               {savedSearches.length > 0 ? (
                 <div className="space-y-2">
                   {savedSearches.map(search => (
-                    <div key={search.id} className="flex items-center justify-between bg-zinc-800/50 rounded-xl px-4 py-2.5 group hover:bg-zinc-800 transition-colors">
+                    <div key={search.id} className="flex items-center justify-between bg-[#28303F]/50 rounded-xl px-4 py-2.5 group hover:bg-[#28303F] transition-colors">
                       <Link to={`/?search=${encodeURIComponent(search.search_term)}`} className="flex items-center gap-3 flex-1 min-w-0">
-                        <Search className="w-4 h-4 text-zinc-400 flex-shrink-0" />
+                        <Search className="w-4 h-4 text-[#4A5771] flex-shrink-0" />
                         <span className="text-sm font-medium text-white truncate">{search.search_term}</span>
                       </Link>
                       <button
                         onClick={async () => { await removeSavedSearch(search.id); setSavedSearches(prev => prev.filter(s => s.id !== search.id)); }}
-                        className="p-1.5 rounded-lg text-zinc-400 hover:text-red-500 hover:bg-red-900/20 opacity-0 group-hover:opacity-100 transition-all flex-shrink-0"
+                        className="p-1.5 rounded-lg text-[#4A5771] hover:text-red-500 hover:bg-red-900/20 opacity-0 group-hover:opacity-100 transition-all flex-shrink-0"
                       >
                         <X className="w-4 h-4" />
                       </button>
@@ -1396,8 +1396,8 @@ function UserDashboard() {
                 </div>
               ) : (
                 <div className="text-center py-6">
-                  <Search className="w-8 h-8 text-zinc-300 mx-auto mb-2" />
-                  <p className="text-sm text-zinc-400">No saved searches yet</p>
+                  <Search className="w-8 h-8 text-[#8E9BB5] mx-auto mb-2" />
+                  <p className="text-sm text-[#4A5771]">No saved searches yet</p>
                 </div>
               )}
             </div>
@@ -1411,7 +1411,7 @@ function UserDashboard() {
                   </div>
                   <h2 className="text-lg font-bold text-white">Affiliate Dashboard</h2>
                 </div>
-                <p className="text-sm text-zinc-400 mb-4">You're an affiliate. Track your link clicks, referrals, and commissions.</p>
+                <p className="text-sm text-[#4A5771] mb-4">You're an affiliate. Track your link clicks, referrals, and commissions.</p>
                 <button
                   onClick={() => navigate('/affiliate-dashboard')}
                   className="w-full sm:w-auto px-5 py-3 bg-primary text-white rounded-xl font-bold text-sm hover:bg-primary-hover transition-colors flex items-center justify-center gap-2 min-h-[44px]"
@@ -1431,7 +1431,7 @@ function UserDashboard() {
               </div>
               <form onSubmit={handleChangePassword} className="space-y-3">
                 <div>
-                  <label className="text-xs font-bold text-zinc-400 uppercase tracking-wider mb-1.5 block">
+                  <label className="text-xs font-bold text-[#4A5771] uppercase tracking-wider mb-1.5 block">
                     Current Password
                   </label>
                   <input
@@ -1439,11 +1439,11 @@ function UserDashboard() {
                     value={pwForm.current}
                     onChange={e => setPwForm(f => ({ ...f, current: e.target.value }))}
                     placeholder="Enter current password"
-                    className="w-full px-3 py-2.5 rounded-xl bg-zinc-800/50 border border-zinc-700 text-sm text-white placeholder:text-zinc-400 focus:outline-none focus:border-blue-400 transition-colors"
+                    className="w-full px-3 py-2.5 rounded-xl bg-[#28303F]/50 border border-[#353F54] text-sm text-white placeholder:text-[#4A5771] focus:outline-none focus:border-blue-400 transition-colors"
                   />
                 </div>
                 <div>
-                  <label className="text-xs font-bold text-zinc-400 uppercase tracking-wider mb-1.5 block">
+                  <label className="text-xs font-bold text-[#4A5771] uppercase tracking-wider mb-1.5 block">
                     New Password
                   </label>
                   <input
@@ -1451,11 +1451,11 @@ function UserDashboard() {
                     value={pwForm.newPw}
                     onChange={e => setPwForm(f => ({ ...f, newPw: e.target.value }))}
                     placeholder="Min 6 characters"
-                    className="w-full px-3 py-2.5 rounded-xl bg-zinc-800/50 border border-zinc-700 text-sm text-white placeholder:text-zinc-400 focus:outline-none focus:border-blue-400 transition-colors"
+                    className="w-full px-3 py-2.5 rounded-xl bg-[#28303F]/50 border border-[#353F54] text-sm text-white placeholder:text-[#4A5771] focus:outline-none focus:border-blue-400 transition-colors"
                   />
                 </div>
                 <div>
-                  <label className="text-xs font-bold text-zinc-400 uppercase tracking-wider mb-1.5 block">
+                  <label className="text-xs font-bold text-[#4A5771] uppercase tracking-wider mb-1.5 block">
                     Confirm New Password
                   </label>
                   <input
@@ -1463,13 +1463,13 @@ function UserDashboard() {
                     value={pwForm.confirm}
                     onChange={e => setPwForm(f => ({ ...f, confirm: e.target.value }))}
                     placeholder="Re-enter new password"
-                    className="w-full px-3 py-2.5 rounded-xl bg-zinc-800/50 border border-zinc-700 text-sm text-white placeholder:text-zinc-400 focus:outline-none focus:border-blue-400 transition-colors"
+                    className="w-full px-3 py-2.5 rounded-xl bg-[#28303F]/50 border border-[#353F54] text-sm text-white placeholder:text-[#4A5771] focus:outline-none focus:border-blue-400 transition-colors"
                   />
                 </div>
                 {pwMsg.text && (
                   <div className={`text-xs font-semibold px-3 py-2 rounded-xl ${
                     pwMsg.type === 'success'
-                      ? 'bg-green-900/20 text-green-400'
+                      ? 'bg-[#007AFF]/20 text-[#38B8EA]'
                       : 'bg-red-900/20 text-red-400'
                   }`}>
                     {pwMsg.text}
@@ -1490,19 +1490,19 @@ function UserDashboard() {
             <div className="fusion-recessed-card p-6">
               <h2 className="text-lg font-bold text-white mb-4">Account</h2>
               <div className="space-y-2">
-                <Link to="/track-order" className="flex items-center justify-between w-full p-3 rounded-xl bg-zinc-800/50 hover:bg-zinc-800 transition-colors">
+                <Link to="/track-order" className="flex items-center justify-between w-full p-3 rounded-xl bg-[#28303F]/50 hover:bg-[#28303F] transition-colors">
                   <div className="flex items-center gap-3">
-                    <Package className="w-4 h-4 text-zinc-400" />
+                    <Package className="w-4 h-4 text-[#4A5771]" />
                     <span className="text-sm font-medium text-white">Track Order</span>
                   </div>
-                  <ChevronRight className="w-4 h-4 text-zinc-400" />
+                  <ChevronRight className="w-4 h-4 text-[#4A5771]" />
                 </Link>
-                <Link to="/wishlist" className="flex items-center justify-between w-full p-3 rounded-xl bg-zinc-800/50 hover:bg-zinc-800 transition-colors">
+                <Link to="/wishlist" className="flex items-center justify-between w-full p-3 rounded-xl bg-[#28303F]/50 hover:bg-[#28303F] transition-colors">
                   <div className="flex items-center gap-3">
-                    <Bookmark className="w-4 h-4 text-zinc-400" />
+                    <Bookmark className="w-4 h-4 text-[#4A5771]" />
                     <span className="text-sm font-medium text-white">Wishlist</span>
                   </div>
-                  <ChevronRight className="w-4 h-4 text-zinc-400" />
+                  <ChevronRight className="w-4 h-4 text-[#4A5771]" />
                 </Link>
                 <button
                   onClick={handleLogout}
@@ -1522,10 +1522,10 @@ function UserDashboard() {
                 </div>
                 <div>
                   <h2 className="text-lg font-bold text-red-400">Danger Zone</h2>
-                  <p className="text-xs text-zinc-400">Permanently delete your account</p>
+                  <p className="text-xs text-[#4A5771]">Permanently delete your account</p>
                 </div>
               </div>
-              <p className="text-xs text-zinc-400 mb-4">
+              <p className="text-xs text-[#4A5771] mb-4">
                 This permanently removes your profile, order history, addresses, and affiliate records.
                 This action cannot be undone. The last admin cannot delete their own account.
               </p>
@@ -1544,13 +1544,13 @@ function UserDashboard() {
             {showDelete && (
               <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
                 <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" onClick={() => !deleting && setShowDelete(false)} />
-                <div className="relative bg-zinc-900 rounded-2xl border border-red-900/40 p-6 w-full max-w-sm shadow-2xl text-center">
+                <div className="relative bg-[#28303F] rounded-2xl border border-red-900/40 p-6 w-full max-w-sm shadow-2xl text-center">
                   <AlertTriangle className="w-12 h-12 text-red-400 mx-auto mb-3" />
                   <h3 className="text-lg font-bold text-white mb-1">Delete Account Permanently?</h3>
-                  <p className="text-sm text-zinc-400 mb-6">All your data will be erased and you will be signed out. This cannot be undone.</p>
+                  <p className="text-sm text-[#4A5771] mb-6">All your data will be erased and you will be signed out. This cannot be undone.</p>
                   <div className="flex gap-3">
                     <button onClick={() => setShowDelete(false)} disabled={deleting}
-                      className="flex-1 py-2.5 rounded-xl bg-zinc-800 text-zinc-300 font-bold text-sm hover:bg-zinc-700">Cancel</button>
+                      className="flex-1 py-2.5 rounded-xl bg-[#28303F] text-[#8E9BB5] font-bold text-sm hover:bg-[#353F54]">Cancel</button>
                     <button onClick={handleDeleteAccount} disabled={deleting}
                       className="flex-1 py-2.5 rounded-xl bg-red-600 text-white font-bold text-sm hover:bg-red-700 flex items-center justify-center gap-2 disabled:opacity-50">
                       {deleting ? <Loader2 className="w-4 h-4 animate-spin" /> : <Trash2 className="w-4 h-4" />}
@@ -1575,7 +1575,7 @@ function UserDashboard() {
       <div className="flex items-center justify-between mb-6">
         <div>
           <h1 className="text-2xl sm:text-3xl font-black text-white">My Account</h1>
-          <p className="text-sm text-zinc-400">Welcome back, {userName}</p>
+          <p className="text-sm text-[#4A5771]">Welcome back, {userName}</p>
         </div>
       </div>
 
@@ -1583,7 +1583,7 @@ function UserDashboard() {
       {profileMsg && (
         <div className={`mb-4 p-3 rounded-xl text-sm font-semibold flex items-center gap-2 ${
           profileMsg.type === 'success'
-            ? 'bg-green-900/20 text-green-400 border border-green-800'
+            ? 'bg-[#007AFF]/20 text-[#38B8EA] border border-[#007AFF]'
             : 'bg-red-900/20 text-red-400 border border-red-800'
         }`}>
           {profileMsg.type === 'success' ? <Check className="w-4 h-4" /> : <AlertTriangle className="w-4 h-4" />}
@@ -1602,8 +1602,8 @@ function UserDashboard() {
               onClick={() => setActiveTab(tab.id)}
               className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-bold whitespace-nowrap transition-all ${
                 isActive
-                  ? 'bg-[var(--seasonal-primary,#1a5632)] text-white shadow-lg shadow-[var(--seasonal-primary,#1a5632)]/20'
-                  : 'text-zinc-400 hover:bg-zinc-800'
+                  ? 'bg-[var(--seasonal-primary,#007AFF)] text-white shadow-lg shadow-[var(--seasonal-primary,#007AFF)]/20'
+                  : 'text-[#4A5771] hover:bg-[#28303F]'
               }`}
             >
               <Icon className="w-4 h-4" />
@@ -1786,12 +1786,12 @@ function AddressForm({ onSave, onClose }) {
   return (
     <form onSubmit={handleSubmit} className="fusion-recessed-card p-4 space-y-3">
       <div>
-        <label className="text-xs font-bold text-zinc-400 uppercase tracking-wider mb-1 block">Label</label>
+        <label className="text-xs font-bold text-[#4A5771] uppercase tracking-wider mb-1 block">Label</label>
         <div className="flex gap-2">
           {['Home', 'Work', 'Other'].map(l => (
             <button key={l} type="button" onClick={() => setForm({ ...form, label: l })}
               className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all ${
-                form.label === l ? 'bg-zinc-900 text-white dark:bg-white dark:text-zinc-900' : 'bg-zinc-800 text-zinc-400'
+                form.label === l ? 'bg-[#28303F] text-white dark:bg-white dark:text-[#28303F]' : 'bg-[#28303F] text-[#4A5771]'
               }`}>{l}</button>
           ))}
         </div>
@@ -1806,7 +1806,7 @@ function AddressForm({ onSave, onClose }) {
 
       {locationStatus && (
         <div className={`text-xs px-3 py-2 rounded-lg font-semibold ${
-          locationStatus.type === 'success' ? 'bg-green-900/30 text-green-400' :
+          locationStatus.type === 'success' ? 'bg-[#007AFF]/30 text-[#38B8EA]' :
           locationStatus.type === 'warning' ? 'bg-yellow-900/30 text-yellow-400' :
           'bg-red-900/30 text-red-400'
         }`}>
@@ -1817,48 +1817,48 @@ function AddressForm({ onSave, onClose }) {
       {/* Mini map */}
       {form.latitude && form.longitude && (
         <div>
-          <label className="text-xs font-bold text-zinc-400 uppercase tracking-wider mb-1 block">Pin your exact location</label>
-          <div ref={mapRef} className="w-full h-48 rounded-xl border border-zinc-700 overflow-hidden" />
-          <p className="text-[10px] text-zinc-500 mt-1">Drag the marker to adjust your exact delivery spot</p>
+          <label className="text-xs font-bold text-[#4A5771] uppercase tracking-wider mb-1 block">Pin your exact location</label>
+          <div ref={mapRef} className="w-full h-48 rounded-xl border border-[#353F54] overflow-hidden" />
+          <p className="text-[10px] text-[#4A5771] mt-1">Drag the marker to adjust your exact delivery spot</p>
         </div>
       )}
 
       <div>
-        <label className="text-xs font-bold text-zinc-400 uppercase tracking-wider mb-1 block">Area</label>
+        <label className="text-xs font-bold text-[#4A5771] uppercase tracking-wider mb-1 block">Area</label>
         <input type="text" value={form.area} onChange={e => setForm({ ...form, area: e.target.value })}
           placeholder="Area / Estate / Neighbourhood"
-          className="w-full px-3 py-2.5 rounded-xl bg-zinc-800/50 border border-zinc-700 text-sm text-white focus:outline-none focus:border-[var(--seasonal-primary,#1a5632)]" />
+          className="w-full px-3 py-2.5 rounded-xl bg-[#28303F]/50 border border-[#353F54] text-sm text-white focus:outline-none focus:border-[var(--seasonal-primary,#007AFF)]" />
       </div>
       <div>
-        <label className="text-xs font-bold text-zinc-400 uppercase tracking-wider mb-1 block">Landmark</label>
+        <label className="text-xs font-bold text-[#4A5771] uppercase tracking-wider mb-1 block">Landmark</label>
         <input type="text" value={form.landmark} onChange={e => setForm({ ...form, landmark: e.target.value })}
           placeholder="Nearby landmark"
-          className="w-full px-3 py-2.5 rounded-xl bg-zinc-800/50 border border-zinc-700 text-sm text-white focus:outline-none focus:border-[var(--seasonal-primary,#1a5632)]" />
+          className="w-full px-3 py-2.5 rounded-xl bg-[#28303F]/50 border border-[#353F54] text-sm text-white focus:outline-none focus:border-[var(--seasonal-primary,#007AFF)]" />
       </div>
       <div>
-        <label className="text-xs font-bold text-zinc-400 uppercase tracking-wider mb-1 block">Full Address</label>
+        <label className="text-xs font-bold text-[#4A5771] uppercase tracking-wider mb-1 block">Full Address</label>
         <input type="text" value={form.address_line} onChange={e => setForm({ ...form, address_line: e.target.value })}
           placeholder="Street/Building address"
-          className="w-full px-3 py-2.5 rounded-xl bg-zinc-800/50 border border-zinc-700 text-sm text-white focus:outline-none focus:border-[var(--seasonal-primary,#1a5632)]" />
+          className="w-full px-3 py-2.5 rounded-xl bg-[#28303F]/50 border border-[#353F54] text-sm text-white focus:outline-none focus:border-[var(--seasonal-primary,#007AFF)]" />
       </div>
       <div>
-        <label className="text-xs font-bold text-zinc-400 uppercase tracking-wider mb-1 block">Phone</label>
+        <label className="text-xs font-bold text-[#4A5771] uppercase tracking-wider mb-1 block">Phone</label>
         <input type="tel" value={form.phone} onChange={e => setForm({ ...form, phone: e.target.value })}
           placeholder="07XX XXX XXX"
-          className="w-full px-3 py-2.5 rounded-xl bg-zinc-800/50 border border-zinc-700 text-sm text-white focus:outline-none focus:border-[var(--seasonal-primary,#1a5632)]" />
+          className="w-full px-3 py-2.5 rounded-xl bg-[#28303F]/50 border border-[#353F54] text-sm text-white focus:outline-none focus:border-[var(--seasonal-primary,#007AFF)]" />
       </div>
-      <label className="flex items-center gap-2 text-sm text-zinc-400 cursor-pointer">
+      <label className="flex items-center gap-2 text-sm text-[#4A5771] cursor-pointer">
         <input type="checkbox" checked={form.is_default} onChange={e => setForm({ ...form, is_default: e.target.checked })}
-          className="rounded text-[var(--seasonal-primary,#1a5632)] focus:ring-[var(--seasonal-primary,#1a5632)]" />
+          className="rounded text-[var(--seasonal-primary,#007AFF)] focus:ring-[var(--seasonal-primary,#007AFF)]" />
         Set as default address
       </label>
       <div className="flex gap-2 pt-1">
         <button type="button" onClick={onClose}
-          className="flex-1 py-2.5 rounded-xl bg-zinc-800 text-zinc-300 text-sm font-bold hover:bg-zinc-700 transition-colors">
+          className="flex-1 py-2.5 rounded-xl bg-[#28303F] text-[#8E9BB5] text-sm font-bold hover:bg-[#353F54] transition-colors">
           Cancel
         </button>
         <button type="submit"
-          className="flex-1 py-2.5 rounded-xl bg-[var(--seasonal-primary,#1a5632)] text-white text-sm font-bold hover:bg-[var(--seasonal-secondary,#14472a)] transition-colors">
+          className="flex-1 py-2.5 rounded-xl bg-[var(--seasonal-primary,#007AFF)] text-white text-sm font-bold hover:bg-[var(--seasonal-secondary,#0066CC)] transition-colors">
           Save Address
         </button>
       </div>

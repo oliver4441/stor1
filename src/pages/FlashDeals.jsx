@@ -109,7 +109,7 @@ export default function FlashDeals() {
       <div className="max-w-7xl mx-auto px-4 py-8">
         {deals.length === 0 ? (
           <div className="text-center py-20">
-            <Zap className="w-16 h-16 mx-auto mb-4 text-zinc-700" />
+            <Zap className="w-16 h-16 mx-auto mb-4 text-[#4A5771]" />
             <h2 className="text-xl font-bold text-white mb-2">No Active Deals</h2>
             <p className="text-[#4A5771] mb-6">There are no flash deals running right now. Check back later!</p>
             <Link
@@ -175,7 +175,7 @@ export default function FlashDeals() {
                                 />
                               ) : (
                                 <div className="w-full h-full flex items-center justify-center">
-                                  <Package className="w-8 h-8 text-zinc-600" />
+                                  <Package className="w-8 h-8 text-[#4A5771]" />
                                 </div>
                               )}
                               {discountPct && (
@@ -224,7 +224,7 @@ export default function FlashDeals() {
                               </div>
                               {item.max_quantity > 0 && (
                                 <div className="mt-2">
-                                  <div className="w-full h-1.5 bg-zinc-700 rounded-full overflow-hidden">
+                                  <div className="w-full h-1.5 bg-[#353F54] rounded-full overflow-hidden">
                                     <div
                                       className="h-full rounded-full transition-all"
                                       style={{

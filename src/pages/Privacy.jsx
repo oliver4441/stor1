@@ -240,9 +240,9 @@ function Privacy() {
           <div className="fusion-recessed-card p-6 my-4">
             <p className="mb-2"><strong>Omix Marketplace — Data Protection Officer</strong></p>
             <p className="mb-2">Kericho, Kenya</p>
-            <p className="mb-2">Email: <a href="mailto:omixsystems@gmail.com" className="text-[var(--seasonal-primary,#1a5632)] hover:underline">omixsystems@gmail.com</a></p>
-            <p className="mb-2">General Inquiries: <a href="mailto:omixsystems@gmail.com" className="text-[var(--seasonal-primary,#1a5632)] hover:underline">omixsystems@gmail.com</a></p>
-            <p>Website: <a href="https://omixsystems.store" className="text-[var(--seasonal-primary,#1a5632)] hover:underline">www.omixsystems.store</a></p>
+            <p className="mb-2">Email: <a href="mailto:omixsystems@gmail.com" className="text-[var(--seasonal-primary,#007AFF)] hover:underline">omixsystems@gmail.com</a></p>
+            <p className="mb-2">General Inquiries: <a href="mailto:omixsystems@gmail.com" className="text-[var(--seasonal-primary,#007AFF)] hover:underline">omixsystems@gmail.com</a></p>
+            <p>Website: <a href="https://omixsystems.store" className="text-[var(--seasonal-primary,#007AFF)] hover:underline">www.omixsystems.store</a></p>
           </div>
           <p>
             We will respond to all privacy-related inquiries within 30 days of receipt. If you are not satisfied with our response, you have the right to lodge a complaint with the relevant data protection authority in Kenya.
@@ -258,7 +258,7 @@ function Privacy() {
       <div className="mb-10">
         <Link
           to="/"
-          className="inline-flex items-center gap-2 text-sm text-zinc-400 hover:text-[var(--seasonal-primary,#1a5632)] mb-6 transition-colors"
+          className="inline-flex items-center gap-2 text-sm text-[#4A5771] hover:text-[var(--seasonal-primary,#007AFF)] mb-6 transition-colors"
         >
           <ArrowLeft className="w-4 h-4" />
           Back to Home
@@ -266,7 +266,7 @@ function Privacy() {
         <h1 className="text-4xl font-black text-white tracking-tight mb-3">
           Privacy Policy
         </h1>
-        <p className="text-zinc-400 text-lg">
+        <p className="text-[#4A5771] text-lg">
           Last updated: June 7, 2026
         </p>
         <div className="mt-4 p-4 bg-blue-900/20 border border-blue-800/50 rounded-2xl">
@@ -284,7 +284,7 @@ function Privacy() {
             <a
               key={section.id}
               href={`#${section.id}`}
-              className="text-sm text-zinc-400 hover:text-[var(--seasonal-primary,#1a5632)] transition-colors py-1"
+              className="text-sm text-[#4A5771] hover:text-[var(--seasonal-primary,#007AFF)] transition-colors py-1"
             >
               {section.title}
             </a>
@@ -297,14 +297,14 @@ function Privacy() {
         {sections.map((section) => (
           <section key={section.id} id={section.id} className="scroll-mt-24">
             <div className="flex items-center gap-3 mb-4">
-              <div className="w-10 h-10 rounded-xl bg-[var(--seasonal-primary,#1a5632)]/10 text-[var(--seasonal-primary,#1a5632)] flex items-center justify-center flex-shrink-0">
+              <div className="w-10 h-10 rounded-xl bg-[var(--seasonal-primary,#007AFF)]/10 text-[var(--seasonal-primary,#007AFF)] flex items-center justify-center flex-shrink-0">
                 {section.icon}
               </div>
               <h2 className="text-2xl font-bold text-white">
                 {section.title}
               </h2>
             </div>
-            <div className="pl-0 md:pl-13 space-y-4 text-zinc-300 leading-relaxed">
+            <div className="pl-0 md:pl-13 space-y-4 text-[#8E9BB5] leading-relaxed">
               {section.content}
             </div>
           </section>
@@ -312,11 +312,11 @@ function Privacy() {
       </div>
 
       {/* Footer note */}
-      <div className="mt-16 pt-8 border-t border-zinc-800 text-center">
-        <p className="text-sm text-zinc-400">
+      <div className="mt-16 pt-8 border-t border-[#353F54] text-center">
+        <p className="text-sm text-[#4A5771]">
           &copy; 2026 Omix Marketplace. All rights reserved. Kericho, Kenya.
         </p>
-        <p className="text-sm text-zinc-400 mt-2">
+        <p className="text-sm text-[#4A5771] mt-2">
           This Privacy Policy is effective as of June 7, 2026.
         </p>
       </div>
