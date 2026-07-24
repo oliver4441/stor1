@@ -141,8 +141,8 @@ function ProductCard({ listing, compareMode, onCompareChange }) {
 
   const inCart = cart.find(item => item.id === listing.id);
   const theme = useActiveTheme();
-  const priceColor = theme?.colors?.priceColor || '#1a5632';
-  const accentColor = theme?.colors?.accent || '#1a5632';
+  const priceColor = theme?.colors?.priceColor || '#38B8EA';
+  const accentColor = theme?.colors?.accent || '#007AFF';
   const sticker = theme?.sticker || '';
   const socialBadge = theme?.socialBadge || '';
 
@@ -260,19 +260,19 @@ function ProductCard({ listing, compareMode, onCompareChange }) {
           <img key={mainImage} src={mainImage} alt={listing.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" loading="lazy" onError={() => setImgError(true)} />
           </div>
         ) : (
-          <div className="w-full h-full flex items-center justify-center text-zinc-400 fusion-aurora">
+          <div className="w-full h-full flex items-center justify-center text-[#4A5771] fusion-aurora">
             <ImageIcon className="w-10 h-10" />
           </div>
         )}
 
         {sticker && socialBadge && false && (
-          <div className="absolute bottom-2 left-2 bg-white/90 dark:bg-black/80 text-white px-2 py-1 rounded-lg text-[10px] font-bold shadow-sm flex items-center gap-1">
+          <div className="absolute bottom-2 left-2 bg-white/90 bg-[#28303F]/80 text-white px-2 py-1 rounded-lg text-[10px] font-bold shadow-sm flex items-center gap-1">
             <span>{sticker}</span>
             <span className="truncate max-w-[80px]">{socialBadge}</span>
           </div>
         )}
 
-        <div className="absolute top-2 left-2 bg-white/90 dark:bg-black/90 text-white px-2 py-1 rounded-lg text-[10px] font-bold shadow-sm capitalize">
+        <div className="absolute top-2 left-2 bg-white/90 bg-[#28303F]/90 text-white px-2 py-1 rounded-lg text-[10px] font-bold shadow-sm capitalize">
           {listing.condition?.replace('_', ' ')}
         </div>
 
@@ -317,8 +317,8 @@ function ProductCard({ listing, compareMode, onCompareChange }) {
             onClick={toggleCompare}
             className={`absolute top-2 left-2 p-1.5 rounded-full shadow-sm transition-all z-10 ${
               isCompared
-                ? 'bg-[var(--seasonal-primary,#1a5632)] text-white'
-                : 'bg-white/90 dark:bg-black/90 text-zinc-400 hover:text-[var(--seasonal-primary,#1a5632)]'
+                ? 'bg-[var(--seasonal-primary,#007AFF)] text-white'
+                : 'bg-white/90 bg-[#28303F]/90 text-[#4A5771] hover:text-[var(--seasonal-primary,#007AFF)]'
             }`}
             aria-label={isCompared ? 'Remove from comparison' : 'Add to comparison'}
           >
@@ -329,8 +329,8 @@ function ProductCard({ listing, compareMode, onCompareChange }) {
         <button onClick={handleWishlist}
           className={`absolute top-2 left-2 p-1.5 rounded-full shadow-sm transition-all z-10 ${
             wishlisted
-              ? 'bg-[var(--seasonal-primary,#1a5632)] text-white scale-110'
-              : 'bg-black/60 text-white/80 hover:text-[var(--seasonal-primary,#1a5632)] hover:bg-black/80 md:opacity-0 md:group-hover:opacity-100'
+              ? 'bg-[var(--seasonal-primary,#007AFF)] text-white scale-110'
+              : 'bg-black/60 text-white/80 hover:text-[var(--seasonal-primary,#007AFF)] hover:bg-black/80 md:opacity-0 md:group-hover:opacity-100'
           }`}
           aria-label={wishlisted ? 'Remove from wishlist' : 'Add to wishlist'}
         >
@@ -338,7 +338,7 @@ function ProductCard({ listing, compareMode, onCompareChange }) {
         </button>
 
         <button onClick={handleWebShare}
-          className="absolute top-2 right-12 bg-white/90 dark:bg-black/90 text-zinc-300 p-1.5 rounded-full shadow-sm hover:bg-[var(--seasonal-primary,#1a5632)] hover:text-white transition-all opacity-0 group-hover:opacity-100"
+          className="absolute top-2 right-12 bg-white/90 bg-[#28303F]/90 text-[#8E9BB5] p-1.5 rounded-full shadow-sm hover:bg-[var(--seasonal-primary,#007AFF)] hover:text-white transition-all opacity-0 group-hover:opacity-100"
           aria-label="Share">
           <Share2 className="w-3 h-3" />
         </button>
@@ -351,7 +351,7 @@ function ProductCard({ listing, compareMode, onCompareChange }) {
 
         <button
           onClick={(e) => { e.preventDefault(); e.stopPropagation(); }}
-          className="absolute top-10 right-2 bg-white/90 dark:bg-black/90 text-white p-1.5 rounded-full shadow-sm hover:bg-[var(--seasonal-primary,#1a5632)] hover:text-white transition-all opacity-0 group-hover:opacity-100"
+          className="absolute top-10 right-2 bg-white/90 bg-[#28303F]/90 text-white p-1.5 rounded-full shadow-sm hover:bg-[var(--seasonal-primary,#007AFF)] hover:text-white transition-all opacity-0 group-hover:opacity-100"
           aria-label="Quick view"
         >
           <Eye className="w-3 h-3" />
@@ -363,14 +363,14 @@ function ProductCard({ listing, compareMode, onCompareChange }) {
           disabled={hasVariants && !allSelected}
           className={`absolute bottom-2 right-2 flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-[10px] font-bold shadow-sm transition-all opacity-0 group-hover:opacity-100 ${
             isMaintenanceCached()
-              ? 'bg-amber-500 text-white'
+              ? 'bg-[#007AFF] text-white'
               : justAdded
-                ? 'bg-green-500 text-white'
+                ? 'bg-[#007AFF] text-white'
                 : inCart
-                  ? 'bg-[var(--seasonal-primary,#1a5632)]/90 text-white'
+                  ? 'bg-[var(--seasonal-primary,#007AFF)]/90 text-white'
                   : hasVariants && !allSelected
-                    ? 'bg-zinc-700 text-zinc-400 cursor-not-allowed'
-                    : 'bg-white/90 dark:bg-black/90 text-white hover:bg-[var(--seasonal-primary,#1a5632)] hover:text-white'
+                    ? 'bg-[#353F54] text-[#4A5771] cursor-not-allowed'
+                    : 'bg-white/90 bg-[#28303F]/90 text-white hover:bg-[var(--seasonal-primary,#007AFF)] hover:text-white'
           }`}
           aria-label={
             isMaintenanceCached()
@@ -396,15 +396,15 @@ function ProductCard({ listing, compareMode, onCompareChange }) {
           <h3 className="font-bold text-white text-sm truncate flex-1">{listing.title}</h3>
           <ProductSocialBadge listing={listing} />
         </div>
-        <p className="text-zinc-400 text-xs">{listing.category}{listing.brand ? ` - ${listing.brand}` : ''}</p>
+        <p className="text-[#4A5771] text-xs">{listing.category}{listing.brand ? ` - ${listing.brand}` : ''}</p>
 
         {listing.avg_rating !== undefined && listing.avg_rating > 0 && (
-          <div className="flex items-center gap-1.5 mt-1 text-[11px] text-zinc-400">
+          <div className="flex items-center gap-1.5 mt-1 text-[11px] text-[#4A5771]">
             <span className="flex items-center gap-[1px]">
               {[1, 2, 3, 4, 5].map(star => (
                 <svg
                   key={star}
-                  className={`w-3 h-3 ${star <= Math.round(listing.avg_rating) ? 'text-yellow-400' : 'text-zinc-700'}`}
+                  className={`w-3 h-3 ${star <= Math.round(listing.avg_rating) ? 'text-yellow-400' : 'text-[#353F54]'}`}
                   fill="currentColor"
                   viewBox="0 0 20 20"
                 >
@@ -422,7 +422,7 @@ function ProductCard({ listing, compareMode, onCompareChange }) {
         {/* Dynamic variant selectors based on normalized types */}
         {hasVariants && variantData.types.map((type) => (
           <div key={type.id} className="mt-1.5">
-            <span className="text-[8px] text-zinc-500 uppercase tracking-wider font-bold">{type.name}</span>
+            <span className="text-[8px] text-[#4A5771] uppercase tracking-wider font-bold">{type.name}</span>
             {type.style === 'button' ? (
               <>
                 <div className="mt-0.5 grid grid-cols-2 gap-1">
@@ -446,10 +446,10 @@ function ProductCard({ listing, compareMode, onCompareChange }) {
                         }}
                         className={`text-xs font-bold px-3 py-1.5 rounded-lg border transition-all w-full ${
                           isSelected
-                            ? 'bg-[var(--seasonal-primary,#1a5632)] text-white border-[var(--seasonal-primary,#1a5632)]'
+                            ? 'bg-[var(--seasonal-primary,#007AFF)] text-white border-[var(--seasonal-primary,#007AFF)]'
                             : disabled
-                              ? 'bg-zinc-900 text-zinc-600 border-zinc-800 line-through cursor-not-allowed'
-                              : 'bg-zinc-800 text-zinc-300 border-zinc-700 hover:border-[var(--seasonal-primary,#1a5632)]'
+                              ? 'bg-[#1E2A3D] text-[#4A5771] border-[#353F54] line-through cursor-not-allowed'
+                              : 'bg-[#28303F] text-[#8E9BB5] border-[#353F54] hover:border-[var(--seasonal-primary,#007AFF)]'
                         }`}
                         title={disabled ? 'Out of stock' : label}
                       >
@@ -467,7 +467,7 @@ function ProductCard({ listing, compareMode, onCompareChange }) {
                         e.stopPropagation();
                         setSelections(prev => ({...prev, [type.id]: null}));
                       }}
-                      className="text-[8px] text-zinc-500 hover:text-white font-bold"
+                      className="text-[8px] text-[#4A5771] hover:text-white font-bold"
                       title={`Clear ${type.name}`}
                     >
                       x
@@ -499,15 +499,15 @@ function ProductCard({ listing, compareMode, onCompareChange }) {
                           }}
                           className={`w-6 h-6 rounded-full border-2 flex-shrink-0 transition-all ${
                             isSelected
-                              ? 'border-[var(--seasonal-primary,#1a5632)] scale-125 shadow-sm shadow-[var(--seasonal-primary,#1a5632)]/30'
+                              ? 'border-[var(--seasonal-primary,#007AFF)] scale-125 shadow-sm shadow-[var(--seasonal-primary,#007AFF)]/30'
                               : disabled
-                                ? 'border-zinc-700 opacity-25 cursor-not-allowed'
-                                : 'border-zinc-400 dark:border-zinc-600 hover:border-[var(--seasonal-primary,#1a5632)] hover:scale-110'
+                                ? 'border-[#353F54] opacity-25 cursor-not-allowed'
+                                : 'border-[#4A5771] hover:border-[var(--seasonal-primary,#007AFF)] hover:scale-110'
                           }`}
                           style={{ backgroundColor: value?.startsWith('#') ? value : '#ccc' }}
                           title={`${label}${disabled ? ' (out of stock)' : ''}`}
                         />
-                        <span className={`text-[7px] leading-tight ${isSelected ? 'text-zinc-300 font-medium' : 'text-zinc-500'}`}>{label}</span>
+                        <span className={`text-[7px] leading-tight ${isSelected ? 'text-[#8E9BB5] font-medium' : 'text-[#4A5771]'}`}>{label}</span>
                       </div>
                     );
                   } else {
@@ -527,10 +527,10 @@ function ProductCard({ listing, compareMode, onCompareChange }) {
                         }}
                         className={`text-[9px] font-bold px-2 py-0.5 rounded-full border transition-all ${
                           isSelected
-                            ? 'bg-[var(--seasonal-primary,#1a5632)] text-white border-[var(--seasonal-primary,#1a5632)]'
+                            ? 'bg-[var(--seasonal-primary,#007AFF)] text-white border-[var(--seasonal-primary,#007AFF)]'
                             : disabled
-                              ? 'bg-zinc-900 text-zinc-600 border-zinc-800 line-through cursor-not-allowed'
-                              : 'bg-zinc-800 text-zinc-300 border-zinc-700 hover:border-[var(--seasonal-primary,#1a5632)]'
+                              ? 'bg-[#1E2A3D] text-[#4A5771] border-[#353F54] line-through cursor-not-allowed'
+                              : 'bg-[#28303F] text-[#8E9BB5] border-[#353F54] hover:border-[var(--seasonal-primary,#007AFF)]'
                         }`}
                         title={disabled ? 'Out of stock' : label}
                       >
@@ -548,7 +548,7 @@ function ProductCard({ listing, compareMode, onCompareChange }) {
                       e.stopPropagation();
                       setSelections(prev => ({...prev, [type.id]: null}));
                     }}
-                    className="text-[8px] text-zinc-500 hover:text-white ml-0.5 font-bold"
+                    className="text-[8px] text-[#4A5771] hover:text-white ml-0.5 font-bold"
                     title={`Clear ${type.name}`}
                   >
                     x
@@ -562,7 +562,7 @@ function ProductCard({ listing, compareMode, onCompareChange }) {
         {/* Active variants chip */}
         {hasVariants && Object.values(selections).some(v => v != null) && (
           <div className="flex items-center gap-1.5 mt-2">
-            <div className="bg-zinc-800 text-[10px] text-zinc-300 font-medium px-2 py-0.5 rounded-full border border-zinc-700">
+            <div className="bg-[#28303F] text-[10px] text-[#8E9BB5] font-medium px-2 py-0.5 rounded-full border border-[#353F54]">
               {variantData.types
                 .filter(t => selections[t.id] != null)
                 .map(t => {
@@ -586,7 +586,7 @@ function ProductCard({ listing, compareMode, onCompareChange }) {
               {selectedVariantObj ? formatKES(effectivePrice) : displayPrice}
             </p>
             {(listing.compare_at_price && listing.compare_at_price > listing.price) || listing.flash_sale_price ? (
-              <p className="text-xs text-zinc-400 line-through">
+              <p className="text-xs text-[#4A5771] line-through">
                 {selectedVariantObj && selectedVariantObj.priceAdjustment !== 0
                   ? formatKES(listing.price)
                   : formatKES(listing.compare_at_price || listing.price)
@@ -595,13 +595,13 @@ function ProductCard({ listing, compareMode, onCompareChange }) {
             ) : null}
           </div>
           {listing.location && (
-            <span className="text-zinc-400 text-[10px] flex items-center gap-0.5">
+            <span className="text-[#4A5771] text-[10px] flex items-center gap-0.5">
               <MapPin className="w-2.5 h-2.5" />{listing.location}
             </span>
           )}
         </div>
         {(listing.delivery_estimate || listing.location) && (
-          <div className="mt-1 text-[10px] text-emerald-400 font-medium flex items-center gap-1">
+          <div className="mt-1 text-[10px] text-[#38B8EA] font-medium flex items-center gap-1">
             <svg className="w-3 h-3 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4" />
             </svg>

@@ -83,16 +83,15 @@ function Home() {
 
   const featuredProducts = listings.slice(0, 8);
 
-  // Theme-aware hero colors
-  const heroFrom = theme?.colors?.heroFrom || '#1a5632';
-  const heroVia = theme?.colors?.heroVia || '#14472a';
-  const heroTo = theme?.colors?.heroTo || '#103820';
+const heroFrom = theme?.colors?.heroFrom || '#1E2A3D';
+  const heroVia = theme?.colors?.heroVia || '#242C3B';
+  const heroTo = theme?.colors?.heroTo || '#2A3548';
   const heroText = theme?.colors?.heroText || '#ffffff';
-  const heroSubtext = theme?.colors?.heroSubtext || '#e0e0e0';
-  const heroAccent = theme?.colors?.heroAccent || '#ffffff';
-  const ctaBg = theme?.colors?.ctaBg || '#ffffff';
-  const ctaText = theme?.colors?.ctaText || '#1a5632';
-  const heroTitle = heroOverride?.title || theme?.heroTitle || "Kenya's #1 Online Store";
+  const heroSubtext = theme?.colors?.heroSubtext || '#8E9BB5';
+  const heroAccent = theme?.colors?.heroAccent || '#007AFF';
+  const heroOverlay = theme?.colors?.heroOverlay || 'rgba(0,122,255,0.2)';
+  const ctaBg = theme?.colors?.ctaBg || '#007AFF';
+  const ctaText = theme?.colors?.ctaText || '#ffffff';
   const heroSubtitle = heroOverride?.subtitle || theme?.heroSubtitle || 'M-Pesa Payments · Free Delivery · 7-Day Returns · Shop from anywhere in Kenya';
   const heroImageUrl = heroOverride?.imageUrl || '';
   const hasHeroImage = !!heroImageUrl;
@@ -225,25 +224,25 @@ function Home() {
       {/* Trust Strip */}
       <div className="max-w-7xl mx-auto px-4 mb-8">
         <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-          <div className="flex items-center gap-3 bg-zinc-900 border border-zinc-800 rounded-xl p-4">
-            <div className="w-10 h-10 rounded-lg bg-green-600/20 flex items-center justify-center flex-shrink-0">
-              <svg className="w-5 h-5 text-green-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" /></svg>
+          <div className="flex items-center gap-3 bg-[#28303F] border border-[#353F54] rounded-xl p-4">
+<div className="w-10 h-10 rounded-lg bg-blue-600/20 flex items-center justify-center flex-shrink-0">
+              <svg className="w-5 h-5 text-[#007AFF]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" /></svg>
             </div>
             <div>
-              <p className="text-sm font-bold text-white">M-Pesa Payments</p>
-              <p className="text-xs text-zinc-400">Secure checkout</p>
+              <p className="text-sm text-[#FAFAFA] font-bold">M-Pesa Payments</p>
+              <p className="text-xs text-[#4A5771]">Secure checkout</p>
             </div>
           </div>
-          <div className="flex items-center gap-3 bg-zinc-900 border border-zinc-800 rounded-xl p-4">
+          <div className="flex items-center gap-3 bg-[#28303F] border border-[#353F54] rounded-xl p-4">
             <div className="w-10 h-10 rounded-lg bg-accent/20 flex items-center justify-center flex-shrink-0">
               <svg className="w-5 h-5 text-accent" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4" /></svg>
             </div>
             <div>
               <p className="text-sm font-bold text-white">Free Delivery</p>
-              <p className="text-xs text-zinc-400">Nationwide delivery</p>
+              <p className="text-xs text-[#4A5771]">Nationwide delivery</p>
             </div>
           </div>
-          <div className="flex items-center gap-3 bg-zinc-900 border border-zinc-800 rounded-xl p-4">
+          <div className="flex items-center gap-3 bg-[#28303F] border border-[#353F54] rounded-xl p-4">
             <div className="w-10 h-10 rounded-lg bg-primary/20 flex items-center justify-center flex-shrink-0">
               <svg className="w-5 h-5 text-primary-200" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
             </div>
@@ -252,19 +251,110 @@ function Home() {
               <p className="text-xs text-zinc-400">Hassle-free</p>
             </div>
           </div>
-          <div className="flex items-center gap-3 bg-zinc-900 border border-zinc-800 rounded-xl p-4">
+          <div className="flex items-center gap-3 bg-[#28303F] border border-[#353F54] rounded-xl p-4">
             <div className="w-10 h-10 rounded-lg bg-blue-500/20 flex items-center justify-center flex-shrink-0">
               <svg className="w-5 h-5 text-blue-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.062-.382-3.016z" /></svg>
             </div>
             <div>
               <p className="text-sm font-bold text-white">Verified Seller</p>
-              <p className="text-xs text-zinc-400">Trusted & local</p>
+              <p className="text-xs text-[#4A5771]">Trusted & local</p>
             </div>
           </div>
         </div>
       </div>
 
+      {/* Video Preview */}
+      <div className="max-w-4xl mx-auto px-4 mb-12">
+        <div className="fusion-recessed-card overflow-hidden shadow-2xl">
+          <video
+            autoPlay
+            muted
+            loop
+            playsInline
+            className="w-full aspect-video"
+            poster="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='1920' height='1080'%3E%3Crect fill='%230f0f10' width='1920' height='1080'/%3E%3C/svg%3E"
+          >
+            <source src="/videos/buy_sell_kericho.mp4" type="video/mp4" />
+          </video>
+        </div>
+        <p className="text-center text-sm text-zinc-400 mt-3">
+          {!user && <Link to="/how-it-works" className="text-[var(--seasonal-primary,#007AFF)] font-bold hover:underline">{t('home.howItWorks')}</Link>}
+        </p>
+      </div>
+
       <div className="max-w-7xl mx-auto px-4" id="products-section">
+        {/* Featured Products - Auto Scroll Carousel */}
+        {featuredProducts.length > 0 && activeCategory === 'All' && !searchQuery && (
+          <div className="mb-10">
+            <div className="flex items-center justify-between mb-4">
+              <h2 className="text-xl font-bold text-white">{t('home.featuredListings')}</h2>
+            </div>
+            <AutoScrollCarousel itemMinWidth={260} gap={16} speed={35}>
+              {featuredProducts.map((product) => (
+                <ProductCard key={product.id} listing={product} />
+              ))}
+            </AutoScrollCarousel>
+          </div>
+        )}
+
+        {/* Popular Products - Auto Scroll Carousel */}
+        {popularProducts.length > 0 && activeCategory === 'All' && !searchQuery && (
+          <div className="mb-10">
+            <div className="flex items-center justify-between mb-4">
+              <h2 className="text-xl font-bold text-white">Popular Right Now</h2>
+            </div>
+            <AutoScrollCarousel itemMinWidth={260} gap={16} speed={30}>
+              {popularProducts.map((product) => (
+                <ProductCard key={product.id} listing={product} />
+              ))}
+            </AutoScrollCarousel>
+          </div>
+        )}
+
+        {/* Categories */}
+        <div className="flex gap-2 overflow-x-auto pb-4 mb-6 scrollbar-hide">
+          {CATEGORIES.map(cat => (
+            <button
+              key={cat}
+              onClick={() => setActiveCategory(cat)}
+              className={`px-4 py-2 rounded-[14px] text-sm font-medium whitespace-nowrap border transition-all ${
+                activeCategory === cat 
+                  ? 'bg-[#007AFF] text-white border-[#007AFF]' 
+                  : 'bg-[#28303F]/60 text-[#8E9BB5] border-[#353F54] hover:border-[#007AFF] hover:text-white'
+              }`}
+            >
+              {cat}
+            </button>
+          ))}
+        </div>
+
+        {/* Grid */}
+        {loading ? (
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6 animate-pulse">
+            {[...Array(8)].map((_, i) => (
+              <div key={i} className="space-y-3">
+                <div className="aspect-square bg-[#28303F] rounded-[14px]"></div>
+                <div className="h-4 bg-[#28303F] rounded w-3/4"></div>
+                <div className="h-4 bg-[#28303F] rounded w-1/2"></div>
+              </div>
+            ))}
+          </div>
+        ) : (
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
+            {listings.map(listing => (
+              <ProductCard key={listing.id} listing={listing} />
+            ))}
+          </div>
+        )}
+
+        {/* Pagination */}
+        {!loading && listings.length > 0 && totalPages > 1 && (
+          <div className="flex flex-col items-center gap-3 mt-8">
+            <p className="text-xs text-[#4A5771]">Page {page} of {totalPages}</p>
+            <Pagination currentPage={page} totalPages={totalPages} onPageChange={handlePageChange} />
+          </div>
+        )}
+
         {/* Empty state */}
         {!loading && listings.length === 0 && (
           <div className="text-center py-20">
