@@ -22,7 +22,7 @@ function HowItWorks() {
       title: 'Browse or Search',
       description: 'Explore products by category or search for exactly what you need. Use filters to narrow down by price or condition.',
       color: 'from-blue-500 to-blue-600',
-      bg: 'bg-blue-900/20',
+      bg: 'bg-zinc-900/20',
     },
     {
       icon: <ShoppingCart className="w-7 h-7" />,
@@ -52,7 +52,7 @@ function HowItWorks() {
       description: 'Share any product on WhatsApp with one tap. Perfect for showing friends and family.',
     },
     {
-      icon: <Shield className="w-6 h-6 text-blue-500" />,
+      icon: <Shield className="w-6 h-6 text-zinc-600" />,
       title: 'Secure & Simple',
       description: 'No complicated checkout. Just browse, add to cart, pay via M-Pesa, and get delivered.',
     },

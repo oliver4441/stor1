@@ -26,13 +26,13 @@ export default function AffiliatePage() {
         <div className="absolute inset-0 bg-gradient-to-r from-zinc-950/95 via-zinc-950/80 to-zinc-950/60" />
         <div className="relative max-w-6xl mx-auto px-4 py-24 md:py-32 w-full">
           <div className="max-w-3xl">
-            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-blue-500/10 border border-blue-500/20 text-blue-400 text-sm font-medium mb-6">
+            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-zinc-500/10 border border-zinc-500/20 text-zinc-500 text-sm font-medium mb-6">
               <Award size={16} />
               <span>Earn commissions on every sale you refer</span>
             </div>
             <h1 className="text-4xl md:text-6xl font-bold leading-tight mb-6">
               Earn with{' '}
-              <span className="bg-gradient-to-r from-blue-400 to-blue-600 bg-clip-text text-transparent">
+              <span className="bg-gradient-to-r from-zinc-400 to-zinc-600 bg-clip-text text-transparent">
                 Omix Store
               </span>{' '}
               Affiliate Program
@@ -44,7 +44,7 @@ export default function AffiliatePage() {
             <div className="flex flex-col sm:flex-row gap-4">
               <Link
                 to="/affiliate/apply"
-                className="inline-flex items-center justify-center gap-2 px-8 py-3.5 rounded-xl font-semibold text-white bg-gradient-to-r from-blue-600 to-blue-500 hover:from-blue-500 hover:to-blue-400 transition-all duration-200 shadow-lg shadow-blue-500/20"
+                className="inline-flex items-center justify-center gap-2 px-8 py-3.5 rounded-xl font-semibold text-white bg-gradient-to-r from-zinc-600 to-zinc-500 hover:from-blue-500 hover:to-zinc-400 transition-all duration-200 shadow-lg shadow-zinc-500/20"
               >
                 Join the Affiliates
                 <ChevronRight size={18} />
@@ -59,7 +59,7 @@ export default function AffiliatePage() {
             <div className="mt-6 pt-6 border-t border-[#353F54]/50 text-center">
               <p className="text-sm text-[#4A5771]">
                 Already an affiliate?{' '}
-                <Link to="/login" className="text-blue-400 hover:text-blue-300 font-medium transition-colors">
+                <Link to="/login" className="text-zinc-500 hover:text-zinc-400 font-medium transition-colors">
                   Sign in to your dashboard
                 </Link>
               </p>
@@ -80,13 +80,13 @@ export default function AffiliatePage() {
           {STEPS.map((step, idx) => (
             <div
               key={step.title}
-              className="group relative p-6 rounded-xl bg-[#28303F]/50 border border-[#353F54] hover:border-blue-500/30 transition-all duration-300"
+              className="group relative p-6 rounded-xl bg-[#28303F]/50 border border-[#353F54] hover:border-zinc-500/30 transition-all duration-300"
             >
-              <div className="absolute -top-3 -left-3 w-8 h-8 rounded-full bg-blue-600 flex items-center justify-center text-sm font-bold text-white shadow-lg">
+              <div className="absolute -top-3 -left-3 w-8 h-8 rounded-full bg-zinc-600 flex items-center justify-center text-sm font-bold text-white shadow-lg">
                 {idx + 1}
               </div>
-              <div className="w-12 h-12 rounded-lg bg-blue-500/10 border border-blue-500/20 flex items-center justify-center mb-4 group-hover:bg-blue-500/20 transition-colors">
-                <step.icon size={24} className="text-blue-400" />
+              <div className="w-12 h-12 rounded-lg bg-zinc-500/10 border border-zinc-500/20 flex items-center justify-center mb-4 group-hover:bg-zinc-500/20 transition-colors">
+                <step.icon size={24} className="text-zinc-500" />
               </div>
               <h3 className="text-lg font-semibold mb-2">{step.title}</h3>
               <p className="text-[#4A5771] text-sm leading-relaxed">{step.desc}</p>
@@ -145,8 +145,8 @@ export default function AffiliatePage() {
         </div>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           <div className="p-6 rounded-xl bg-gradient-to-br from-blue-500/5 to-transparent border border-blue-500/10">
-            <div className="w-12 h-12 rounded-lg bg-blue-500/10 flex items-center justify-center mb-4">
-              <Share2 className="text-blue-400" />
+            <div className="w-12 h-12 rounded-lg bg-zinc-500/10 flex items-center justify-center mb-4">
+              <Share2 className="text-zinc-500" />
             </div>
             <h3 className="text-lg font-semibold mb-2">Share Your Link Everywhere</h3>
             <p className="text-[#4A5771] text-sm leading-relaxed">
@@ -176,8 +176,8 @@ export default function AffiliatePage() {
         {/* Pro Tip Callout */}
         <div className="mt-8 p-6 rounded-xl bg-gradient-to-r from-blue-600/5 via-blue-500/5 to-transparent border border-blue-500/10">
           <div className="flex items-start gap-4">
-            <div className="w-10 h-10 rounded-lg bg-blue-500/10 flex items-center justify-center shrink-0 mt-0.5">
-              <Shield size={20} className="text-blue-400" />
+            <div className="w-10 h-10 rounded-lg bg-zinc-500/10 flex items-center justify-center shrink-0 mt-0.5">
+              <Shield size={20} className="text-zinc-500" />
             </div>
             <div>
               <h3 className="text-base font-semibold mb-1">10-Year Cookie Tracking</h3>
@@ -200,11 +200,11 @@ export default function AffiliatePage() {
           </div>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             <div className="p-6 rounded-xl bg-[#28303F] border border-[#353F54] text-center">
-              <div className="w-14 h-14 rounded-full bg-blue-500/10 flex items-center justify-center mx-auto mb-4">
-                <DollarSign size={28} className="text-blue-400" />
+              <div className="w-14 h-14 rounded-full bg-zinc-500/10 flex items-center justify-center mx-auto mb-4">
+                <DollarSign size={28} className="text-zinc-500" />
               </div>
               <h3 className="text-lg font-semibold mb-1">Minimum Payout</h3>
-              <p className="text-2xl font-bold text-blue-400">KES 2,000</p>
+              <p className="text-2xl font-bold text-zinc-500">KES 2,000</p>
               <p className="text-[#4A5771] text-sm mt-2">Earn this minimum before requesting a payout</p>
             </div>
             <div className="p-6 rounded-xl bg-[#28303F] border border-[#353F54] text-center">
@@ -236,7 +236,7 @@ export default function AffiliatePage() {
         <div className="flex flex-col sm:flex-row gap-4 justify-center">
           <Link
             to="/affiliate/apply"
-            className="inline-flex items-center justify-center gap-2 px-8 py-3.5 rounded-xl font-semibold text-white bg-gradient-to-r from-blue-600 to-blue-500 hover:from-blue-500 hover:to-blue-400 transition-all duration-200 shadow-lg shadow-blue-500/20"
+            className="inline-flex items-center justify-center gap-2 px-8 py-3.5 rounded-xl font-semibold text-white bg-gradient-to-r from-zinc-600 to-zinc-500 hover:from-blue-500 hover:to-zinc-400 transition-all duration-200 shadow-lg shadow-zinc-500/20"
           >
             Join the Affiliates
             <ChevronRight size={18} />

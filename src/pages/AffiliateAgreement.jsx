@@ -176,7 +176,7 @@ export default function AffiliateAgreement() {
 
         {/* Document Header */}
         <div className="text-center mb-10 pb-8 border-b border-[#353F54]">
-          <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-blue-500/10 border border-blue-500/20 text-blue-400 text-xs font-medium mb-4">
+          <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-zinc-500/10 border border-blue-500/20 text-zinc-500 text-xs font-medium mb-4">
             <FileText size={14} />
             Document Version 1.0 | July 2026
           </div>
@@ -197,7 +197,7 @@ export default function AffiliateAgreement() {
               className="py-8 border-b border-[#353F54]/50 last:border-b-0"
             >
               <div className="flex items-start gap-4">
-                <div className="w-10 h-10 rounded-lg bg-blue-500/10 border border-blue-500/20 flex items-center justify-center shrink-0 text-blue-400 font-bold text-sm">
+                <div className="w-10 h-10 rounded-lg bg-zinc-500/10 border border-blue-500/20 flex items-center justify-center shrink-0 text-zinc-500 font-bold text-sm">
                   {section.number.padStart(2, '0')}
                 </div>
                 <div className="flex-1 min-w-0">

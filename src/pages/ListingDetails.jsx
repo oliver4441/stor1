@@ -412,7 +412,7 @@ function ListingDetails() {
           <div className="flex flex-wrap gap-2 mb-6">
             {deliveryZones.length > 0 ? (
               <>
-                <span className="flex items-center gap-1.5 bg-blue-900/20 text-blue-700 dark:text-blue-400 px-3 py-1.5 rounded-xl text-xs font-bold border border-blue-800">
+                <span className="flex items-center gap-1.5 bg-zinc-900/20 text-zinc-600 dark:text-zinc-500 px-3 py-1.5 rounded-xl text-xs font-bold border border-blue-800">
                   <Truck className="w-3.5 h-3.5" /> Free delivery in {deliveryZones[0].name || 'Kenya'}
                 </span>
                 <span className="flex items-center gap-1.5 bg-purple-900/20 text-purple-700 dark:text-purple-400 px-3 py-1.5 rounded-xl text-xs font-bold border border-purple-200 dark:border-purple-800">
@@ -421,7 +421,7 @@ function ListingDetails() {
               </>
             ) : (
               <>
-                <span className="flex items-center gap-1.5 bg-blue-900/20 text-blue-700 dark:text-blue-400 px-3 py-1.5 rounded-xl text-xs font-bold border border-blue-800">
+                <span className="flex items-center gap-1.5 bg-zinc-900/20 text-zinc-600 dark:text-zinc-500 px-3 py-1.5 rounded-xl text-xs font-bold border border-blue-800">
                   <Truck className="w-3.5 h-3.5" /> Free delivery nationwide
                 </span>
                 <span className="flex items-center gap-1.5 bg-purple-900/20 text-purple-700 dark:text-purple-400 px-3 py-1.5 rounded-xl text-xs font-bold border border-purple-200 dark:border-purple-800">

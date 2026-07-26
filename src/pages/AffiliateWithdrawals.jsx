@@ -7,7 +7,7 @@ import { Link, useLocation } from 'react-router-dom';
 
 const PAYOUT_METHODS = [
   { id: 'mpesa', label: 'M-Pesa', icon: Smartphone, color: 'text-green-400', bg: 'bg-green-500/10', border: 'border-green-500/30', placeholder: '254712345678' },
-  { id: 'bank', label: 'Bank Transfer', icon: Building2, color: 'text-blue-400', bg: 'bg-blue-500/10', border: 'border-blue-500/30', placeholder: 'Account number' },
+  { id: 'bank', label: 'Bank Transfer', icon: Building2, color: 'text-zinc-500', bg: 'bg-zinc-500/10', border: 'border-zinc-500/30', placeholder: 'Account number' },
   { id: 'airtel', label: 'Airtel Money', icon: CreditCard, color: 'text-red-400', bg: 'bg-red-500/10', border: 'border-red-500/30', placeholder: '254712345678' },
 ];
 
@@ -119,10 +119,10 @@ export default function AffiliateWithdrawals() {
   return (
     <div className="min-h-screen bg-[#242C3B]">
       {/* Hero */}
-      <div className="bg-gradient-to-br from-[#007AFF]/20 via-blue-500/10 to-[#242C3B] px-4 py-8">
+      <div className="bg-gradient-to-br from-[#71717a]/20 via-zinc-500/10 to-[#242C3B] px-4 py-8">
         <div className="max-w-4xl mx-auto">
           <div className="flex items-center gap-2 mb-1">
-            <Wallet className="w-5 h-5 text-[#007AFF]" />
+            <Wallet className="w-5 h-5 text-[#71717a]" />
             <h1 className="text-xl font-black text-white">Withdrawals</h1>
           </div>
           <p className="text-[#4A5771] text-sm mt-1">Request payouts and view history</p>
@@ -161,7 +161,7 @@ export default function AffiliateWithdrawals() {
           </div>
           <div className="fusion-recessed-card p-5 text-center">
             <p className="text-xs text-[#4A5771] uppercase tracking-wider mb-1">Paid</p>
-            <p className="text-2xl font-black text-[#007AFF]">{formatKES(balances.paid)}</p>
+            <p className="text-2xl font-black text-[#71717a]">{formatKES(balances.paid)}</p>
           </div>
         </div>
 
@@ -173,7 +173,7 @@ export default function AffiliateWithdrawals() {
 
           {result ? (
             <div className="text-center py-6">
-              <CheckCircle className="w-12 h-12 text-[#007AFF] mx-auto mb-3" />
+              <CheckCircle className="w-12 h-12 text-[#71717a] mx-auto mb-3" />
               <h4 className="text-lg font-bold text-white mb-1">Payout Requested</h4>
               <p className="text-sm text-[#4A5771] mb-2">{formatKES(amount)} via {method}</p>
               <p className="text-xs text-[#4A5771] mb-4">Status: {result.status || 'pending'}</p>
@@ -282,8 +282,8 @@ export default function AffiliateWithdrawals() {
                         <p className="text-[10px] text-[#4A5771]">{new Date(p.created_at).toLocaleDateString()}</p>
                       </div>
                       <span className={`text-xs font-bold shrink-0 ${
-                        p.status === 'paid' ? 'text-[#007AFF]' :
-                        p.status === 'processing' ? 'text-blue-400' :
+                        p.status === 'paid' ? 'text-[#71717a]' :
+                        p.status === 'processing' ? 'text-zinc-500' :
                         p.status === 'rejected' ? 'text-red-400' :
                         'text-amber-400'
                       }`}>

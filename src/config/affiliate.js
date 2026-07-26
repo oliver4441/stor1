@@ -13,7 +13,7 @@ export const AFFILIATE_CONFIG = {
       { id: 'bronze',  label: 'Bronze',  min_orders: 0,   min_sales: 0,  rate: 0.03, color: 'text-amber-700',  badge: 'bg-amber-700/20 text-amber-700'  },
       { id: 'silver',  label: 'Silver',  min_orders: 10,  min_sales: 0,  rate: 0.05, color: 'text-zinc-300',   badge: 'bg-zinc-600/20 text-zinc-300'   },
       { id: 'gold',    label: 'Gold',    min_orders: 30,  min_sales: 0,  rate: 0.08, color: 'text-amber-400',  badge: 'bg-amber-500/20 text-amber-400' },
-      { id: 'platinum',label: 'Platinum',min_orders: 100, min_sales: 0,  rate: 0.10, color: 'text-blue-300',   badge: 'bg-blue-500/20 text-blue-300'   },
+      { id: 'platinum',label: 'Platinum',min_orders: 100, min_sales: 0,  rate: 0.10, color: 'text-zinc-400',   badge: 'bg-zinc-500/20 text-zinc-400'   },
     ],
 
   // Default referral reward points (not used — purely monetary)

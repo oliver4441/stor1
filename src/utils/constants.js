@@ -56,7 +56,7 @@ export const VARIANT_REQUIRED_CATEGORIES = [
 
 // Category display info: icons (lucide names) and gradient colors for nav/filter
 export const CATEGORY_INFO = {
-  'Electronics':      { icon: 'Smartphone',    color: 'from-cyan-500 to-blue-600',     glow: 'shadow-cyan-500/40' },
+  'Electronics':      { icon: 'Smartphone',    color: 'from-zinc-500 to-zinc-600',     glow: 'shadow-cyan-500/40' },
   'Furniture':        { icon: 'Sofa',           color: 'from-amber-600 to-orange-600',  glow: 'shadow-amber-600/40' },
   'Clothing':         { icon: 'Shirt',          color: 'from-pink-500 to-rose-600',     glow: 'shadow-pink-500/40' },
   'Services':         { icon: 'Wrench',         color: 'from-slate-500 to-zinc-600',    glow: 'shadow-slate-500/40' },

@@ -25,7 +25,7 @@ function TrustBadge({ icon: Icon, label, value, subtext, color = 'text-[#38B8EA]
   );
 }
 
-function StatCard({ icon: Icon, label, value, color = 'text-blue-400' }) {
+function StatCard({ icon: Icon, label, value, color = 'text-zinc-500' }) {
   return (
     <div className="flex flex-col items-center justify-center p-5 bg-[#28303F]/30 border border-zinc-700/40 rounded-xl text-center">
       <div className={`p-2.5 rounded-full bg-[#28303F]/60 mb-2 ${color}`}>
@@ -156,7 +156,7 @@ export default function SellerProfile() {
             onError={(e) => { e.target.style.display = 'none'; }}
           />
         ) : (
-          <div className="absolute inset-0 bg-gradient-to-br from-blue-600/20 via-purple-600/10 to-transparent" />
+          <div className="absolute inset-0 bg-gradient-to-br from-zinc-600/20 via-purple-600/10 to-transparent" />
         )}
         <div className="absolute inset-0 bg-gradient-to-t from-zinc-950 via-transparent to-transparent" />
       </div>
@@ -185,7 +185,7 @@ export default function SellerProfile() {
                 {store_name}
               </h1>
               {is_verified && (
-                <span className="inline-flex items-center gap-1 text-xs bg-blue-500/20 text-blue-400 px-2.5 py-1 rounded-full border border-blue-500/30">
+                <span className="inline-flex items-center gap-1 text-xs bg-zinc-500/20 text-zinc-500 px-2.5 py-1 rounded-full border border-blue-500/30">
                   <CheckCircle className="w-3.5 h-3.5" />
                   Verified
                 </span>
@@ -206,7 +206,7 @@ export default function SellerProfile() {
             icon={Package}
             label="Total Orders"
             value={formatOrders(total_orders)}
-            color="text-blue-400"
+            color="text-zinc-500"
           />
           <StatCard
             icon={Star}
@@ -254,7 +254,7 @@ export default function SellerProfile() {
               label="Happy Customers"
               value={formatOrders(total_orders)}
               subtext="Across Kenya"
-              color="text-blue-400"
+              color="text-zinc-500"
             />
             <TrustBadge
               icon={HeadphonesIcon}
@@ -276,7 +276,7 @@ export default function SellerProfile() {
                   href={`tel:${phone}`}
                   className="flex items-center gap-3 p-3 rounded-lg hover:bg-[#28303F]/50 transition-colors group"
                 >
-                  <div className="p-2 rounded-lg bg-[#28303F] border border-zinc-700/60 text-blue-400 group-hover:text-blue-300 transition-colors">
+                  <div className="p-2 rounded-lg bg-[#28303F] border border-zinc-700/60 text-zinc-500 group-hover:text-zinc-400 transition-colors">
                     <Phone className="w-4 h-4" />
                   </div>
                   <div className="min-w-0">

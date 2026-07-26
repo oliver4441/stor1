@@ -158,7 +158,7 @@ export default function AdminAnalytics() {
           <p className="text-xs text-zinc-400 mt-1">Revenue</p>
         </div>
         <div className="fusion-recessed-card p-5">
-          <ShoppingBag className="w-5 h-5 text-blue-500 mb-2" />
+          <ShoppingBag className="w-5 h-5 text-zinc-600 mb-2" />
           <p className="text-2xl font-black text-white">{filteredOrders.length}</p>
           <p className="text-xs text-zinc-400 mt-1">Orders</p>
         </div>

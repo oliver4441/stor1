@@ -116,10 +116,10 @@ export default function AffiliateReferrals() {
   return (
     <div className="min-h-screen bg-zinc-950">
       {/* Hero */}
-      <div className="bg-gradient-to-br from-blue-500/20 via-blue-600/10 to-zinc-950 px-4 py-8">
+      <div className="bg-gradient-to-br from-zinc-500/20 via-blue-600/10 to-zinc-950 px-4 py-8">
         <div className="max-w-4xl mx-auto">
           <div className="flex items-center gap-2 mb-1">
-            <Share2 className="w-5 h-5 text-blue-400" />
+            <Share2 className="w-5 h-5 text-zinc-500" />
             <h1 className="text-xl font-black text-white">Referral Center</h1>
           </div>
           <p className="text-[#4A5771] text-sm mt-1">Share your link and earn commissions</p>
@@ -211,8 +211,8 @@ export default function AffiliateReferrals() {
               <span className="text-sm font-bold text-white">WhatsApp</span>
             </button>
             <button onClick={() => shareVia('telegram')}
-              className="flex items-center gap-2.5 p-3 rounded-xl bg-blue-500/10 border border-blue-500/20 hover:bg-blue-500/20 transition-colors text-left">
-              <Send className="w-5 h-5 text-blue-400 shrink-0" />
+              className="flex items-center gap-2.5 p-3 rounded-xl bg-zinc-500/10 border border-blue-500/20 hover:bg-zinc-500/20 transition-colors text-left">
+              <Send className="w-5 h-5 text-zinc-500 shrink-0" />
               <span className="text-sm font-bold text-white">Telegram</span>
             </button>
             <button onClick={() => shareVia('facebook')}

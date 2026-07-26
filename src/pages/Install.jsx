@@ -5,11 +5,11 @@ import { useLang } from '../utils/lang';
 const STEPS = {
   android: {
     title: 'Android (Chrome)',
-    color: 'from-[#007AFF] to-[#0066CC]',
+    color: 'from-[#71717a] to-[#71717a]',
     iconLabel: 'Android',
-    accent: 'text-[#007AFF]',
-    border: 'border-[#007AFF]/20',
-    glow: 'shadow-[#007AFF]/20',
+    accent: 'text-[#71717a]',
+    border: 'border-[#71717a]/20',
+    glow: 'shadow-[#71717a]/20',
     steps: [
       { text: 'Tap the menu button (...) in the top-right corner', hint: 'Three vertical dots' },
       { text: 'Tap "Install app" or "Add to Home Screen"', hint: 'Look for the download icon' },
@@ -18,11 +18,11 @@ const STEPS = {
   },
   ios: {
     title: 'iPhone / iPad (Safari)',
-    color: 'from-blue-500 to-indigo-600',
+    color: 'from-zinc-500 to-zinc-600',
     iconLabel: 'iOS',
-    accent: 'text-blue-500',
-    border: 'border-blue-500/20',
-    glow: 'shadow-blue-500/20',
+    accent: 'text-zinc-600',
+    border: 'border-zinc-500/20',
+    glow: 'shadow-zinc-500/20',
     steps: [
       { text: 'Tap the Share button at the bottom of the screen', hint: 'Square with an arrow pointing up' },
       { text: 'Scroll down and tap "Add to Home Screen"', hint: 'Icon with a plus sign' },
@@ -46,8 +46,8 @@ const STEPS = {
 
 const FEATURES = [
   { icon: Zap, title: 'Lightning Fast', desc: 'Native app performance, loads instantly', color: 'text-amber-500', bg: 'from-amber-500/10 to-amber-600/5', gradient: 'from-amber-500 to-orange-600' },
-  { icon: Wifi, title: 'Works Offline', desc: 'Browse listings even without internet', color: 'text-blue-500', bg: 'from-blue-500/10 to-blue-600/5', gradient: 'from-blue-500 to-indigo-600' },
-  { icon: Shield, title: 'Secure', desc: 'Your data stays safe on your device', color: 'text-[#007AFF]', bg: 'from-[#007AFF]/10 to-[#0066CC]/5', gradient: 'from-[#007AFF] to-[#0066CC]' },
+  { icon: Wifi, title: 'Works Offline', desc: 'Browse listings even without internet', color: 'text-zinc-600', bg: 'from-zinc-500/10 to-zinc-600/5', gradient: 'from-zinc-500 to-zinc-600' },
+  { icon: Shield, title: 'Secure', desc: 'Your data stays safe on your device', color: 'text-[#71717a]', bg: 'from-[#71717a]/10 to-[#71717a]/5', gradient: 'from-[#71717a] to-[#71717a]' },
   { icon: Smartphone, title: 'Full Screen', desc: 'No browser bar, just pure Omix', color: 'text-purple-500', bg: 'from-purple-500/10 to-purple-600/5', gradient: 'from-purple-500 to-violet-600' },
 ];
 
@@ -59,7 +59,7 @@ function IOSInstallModal({ onClose }) {
         className="bg-white/95 dark:bg-[#28303F]/95 backdrop-blur-xl rounded-3xl max-w-sm w-full shadow-2xl shadow-[#28303F]/20 border border-white/50 dark:border-[#353F54]/50 overflow-hidden animate-scale-in"
         onClick={(e) => e.stopPropagation()}
       >
-        <div className="bg-gradient-to-r from-blue-500 to-indigo-600 p-5 text-white relative overflow-hidden">
+        <div className="bg-gradient-to-r from-zinc-500 to-zinc-600 p-5 text-white relative overflow-hidden">
           <div className="absolute -top-10 -right-10 w-32 h-32 bg-white/10 rounded-full blur-xl" />
           <div className="absolute -bottom-6 -left-6 w-24 h-24 bg-white/5 rounded-full blur-lg" />
           <button onClick={onClose} className="absolute top-3 right-3 w-8 h-8 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center hover:bg-white/30 transition-all z-10">
@@ -79,7 +79,7 @@ function IOSInstallModal({ onClose }) {
             const Icon = step.icon;
             return (
               <div key={step.num} className="flex items-start gap-3 p-3 rounded-2xl bg-[#1A2235]/80 dark:bg-[#28303F]/50 backdrop-blur-sm border border-[#353F54]/50 animate-slide-in" style={{ animationDelay: `${step.num * 100}ms` }}>
-                <div className="w-8 h-8 rounded-full bg-gradient-to-r from-blue-500 to-indigo-600 text-white flex items-center justify-center text-sm font-black flex-shrink-0 shadow-lg shadow-blue-500/20">
+                <div className="w-8 h-8 rounded-full bg-gradient-to-r from-zinc-500 to-zinc-600 text-white flex items-center justify-center text-sm font-black flex-shrink-0 shadow-lg shadow-zinc-500/20">
                   {step.num}
                 </div>
                 <div className="flex-1 min-w-0">
@@ -87,7 +87,7 @@ function IOSInstallModal({ onClose }) {
                   <p className="text-xs text-[#4A5771] mt-0.5">{step.sub}</p>
                   <div className="mt-2 flex items-center gap-2">
                     <div className="w-8 h-8 rounded-lg bg-[#222B3D]/80 dark:bg-[#353F54]/80 flex items-center justify-center">
-                      <Icon className={`w-4 h-4 ${step.num === 3 ? 'text-[#007AFF]' : step.num === 2 ? 'text-[#007AFF]' : 'text-blue-500'}`} />
+                      <Icon className={`w-4 h-4 ${step.num === 3 ? 'text-[#71717a]' : step.num === 2 ? 'text-[#71717a]' : 'text-zinc-600'}`} />
                     </div>
                     <span className="text-xs text-[#4A5771]">{step.hint}</span>
                   </div>
@@ -98,7 +98,7 @@ function IOSInstallModal({ onClose }) {
         </div>
 
         <div className="px-5 pb-5">
-          <button onClick={onClose} className="w-full py-3.5 rounded-xl bg-gradient-to-r from-blue-500 to-indigo-600 text-white font-bold text-sm hover:shadow-lg hover:shadow-blue-500/30 transition-all hover:scale-[1.02] active:scale-95">
+          <button onClick={onClose} className="w-full py-3.5 rounded-xl bg-gradient-to-r from-zinc-500 to-zinc-600 text-white font-bold text-sm hover:shadow-lg hover:shadow-zinc-500/30 transition-all hover:scale-[1.02] active:scale-95">
             Got it!
           </button>
         </div>
@@ -173,13 +173,13 @@ export default function Install() {
   const renderInstallButton = () => {
     if (window.matchMedia('(display-mode: standalone)').matches || installState === 'installed') {
       return (
-        <div className="flex items-center justify-center gap-3 backdrop-blur-xl bg-[#007AFF]/10 border border-[#007AFF]/20 px-8 py-4 rounded-2xl shadow-lg shadow-[#007AFF]/10 animate-scale-in">
-          <CheckCircle2 className="w-6 h-6 text-[#007AFF]" />
+        <div className="flex items-center justify-center gap-3 backdrop-blur-xl bg-[#71717a]/10 border border-[#71717a]/20 px-8 py-4 rounded-2xl shadow-lg shadow-[#71717a]/10 animate-scale-in">
+          <CheckCircle2 className="w-6 h-6 text-[#71717a]" />
           <div className="text-left">
             <span className="font-bold text-[#38B8EA] text-sm block">
               {window.matchMedia('(display-mode: standalone)').matches ? 'App is Installed!' : 'App Installed!'}
             </span>
-            <span className="text-[#007AFF] text-xs">
+            <span className="text-[#71717a] text-xs">
               {window.matchMedia('(display-mode: standalone)').matches ? 'Open Omix from your taskbar or start menu' : 'Open Omix from your home screen'}
             </span>
           </div>
@@ -189,7 +189,7 @@ export default function Install() {
     // No prompt available (e.g. desktop) — show instructions
     if (!deferredPrompt && !isIOS && !isAndroid) {
       return (
-        <button onClick={handleInstall} className="group relative flex items-center gap-3 bg-gradient-to-r from-[var(--seasonal-primary,#007AFF)] to-[var(--seasonal-secondary,#0066CC)] text-white px-8 py-4 rounded-2xl font-black text-lg shadow-2xl shadow-[var(--seasonal-primary,#007AFF)]/30 hover:shadow-[var(--seasonal-primary,#007AFF)]/50 transition-all duration-300 hover:scale-105 active:scale-95 overflow-hidden">
+        <button onClick={handleInstall} className="group relative flex items-center gap-3 bg-gradient-to-r from-[var(--seasonal-primary,#71717a)] to-[var(--seasonal-secondary,#71717a)] text-white px-8 py-4 rounded-2xl font-black text-lg shadow-2xl shadow-[var(--seasonal-primary,#71717a)]/30 hover:shadow-[var(--seasonal-primary,#71717a)]/50 transition-all duration-300 hover:scale-105 active:scale-95 overflow-hidden">
           <div className="absolute inset-0 bg-white/10 opacity-0 group-hover:opacity-100 transition-opacity" />
           <Monitor className="w-6 h-6 relative z-10 group-hover:animate-bounce" />
           <span className="text-left relative z-10">
@@ -202,13 +202,13 @@ export default function Install() {
       );
     }
     if (installState === 'installing') return (
-      <div className="flex items-center gap-3 backdrop-blur-xl bg-[var(--seasonal-primary,#007AFF)]/10 border border-[var(--seasonal-primary,#007AFF)]/20 px-8 py-4 rounded-2xl">
-        <div className="w-6 h-6 border-2 border-[var(--seasonal-primary,#007AFF)] border-t-transparent rounded-full animate-spin" />
-        <span className="font-bold text-[var(--seasonal-primary,#007AFF)] text-sm">Installing...</span>
+      <div className="flex items-center gap-3 backdrop-blur-xl bg-[var(--seasonal-primary,#71717a)]/10 border border-[var(--seasonal-primary,#71717a)]/20 px-8 py-4 rounded-2xl">
+        <div className="w-6 h-6 border-2 border-[var(--seasonal-primary,#71717a)] border-t-transparent rounded-full animate-spin" />
+        <span className="font-bold text-[var(--seasonal-primary,#71717a)] text-sm">Installing...</span>
       </div>
     );
     return (
-      <button onClick={handleInstall} className="group relative flex items-center gap-3 bg-gradient-to-r from-[var(--seasonal-primary,#007AFF)] to-[var(--seasonal-secondary,#0066CC)] text-white px-8 py-4 rounded-2xl font-black text-lg shadow-2xl shadow-[var(--seasonal-primary,#007AFF)]/30 hover:shadow-[var(--seasonal-primary,#007AFF)]/50 transition-all duration-300 hover:scale-105 active:scale-95 overflow-hidden">
+      <button onClick={handleInstall} className="group relative flex items-center gap-3 bg-gradient-to-r from-[var(--seasonal-primary,#71717a)] to-[var(--seasonal-secondary,#71717a)] text-white px-8 py-4 rounded-2xl font-black text-lg shadow-2xl shadow-[var(--seasonal-primary,#71717a)]/30 hover:shadow-[var(--seasonal-primary,#71717a)]/50 transition-all duration-300 hover:scale-105 active:scale-95 overflow-hidden">
         <div className="absolute inset-0 bg-white/10 opacity-0 group-hover:opacity-100 transition-opacity" />
         <Download className="w-6 h-6 relative z-10 group-hover:animate-bounce" />
         <span className="text-left relative z-10">
@@ -228,12 +228,12 @@ export default function Install() {
       {/* Hero Section */}
       <section className="relative min-h-[90vh] flex items-center justify-center overflow-hidden">
         {/* Animated gradient background */}
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-[var(--seasonal-primary,#007AFF)]/20 via-[#1A2235] dark:via-[#242C3B] to-transparent dark:from-[var(--seasonal-primary,#007AFF)]/10" />
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-[var(--seasonal-primary,#71717a)]/20 via-[#1A2235] dark:via-[#242C3B] to-transparent dark:from-[var(--seasonal-primary,#71717a)]/10" />
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_bottom_left,_var(--tw-gradient-stops))] from-purple-500/10 via-transparent to-transparent" />
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-blue-500/10 via-transparent to-transparent" />
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-zinc-500/10 via-transparent to-transparent" />
         
         {/* Animated floating orbs */}
-        <div className="absolute top-1/4 left-1/4 w-72 h-72 bg-[var(--seasonal-primary,#007AFF)]/20 rounded-full blur-3xl animate-float-slow" />
+        <div className="absolute top-1/4 left-1/4 w-72 h-72 bg-[var(--seasonal-primary,#71717a)]/20 rounded-full blur-3xl animate-float-slow" />
         <div className="absolute bottom-1/3 right-1/4 w-56 h-56 bg-purple-500/20 rounded-full blur-3xl animate-float-slower" />
         <div className="absolute top-1/2 right-1/3 w-48 h-48 bg-blue-500/15 rounded-full blur-3xl animate-float" />
 
@@ -243,14 +243,14 @@ export default function Install() {
         <div className="relative z-10 max-w-4xl mx-auto px-4 pt-20 pb-12 text-center">
           {/* Logo with glass container */}
           <div className="relative inline-block mb-8 group">
-            <div className="absolute -inset-4 bg-gradient-to-r from-[var(--seasonal-primary,#007AFF)]/30 via-purple-500/30 to-blue-500/30 rounded-full blur-2xl opacity-75 group-hover:opacity-100 transition-opacity duration-700 animate-pulse-slow" />
+            <div className="absolute -inset-4 bg-gradient-to-r from-[var(--seasonal-primary,#71717a)]/30 via-purple-500/30 to-blue-500/30 rounded-full blur-2xl opacity-75 group-hover:opacity-100 transition-opacity duration-700 animate-pulse-slow" />
             <div className="relative w-24 h-24 rounded-full backdrop-blur-xl bg-white/60 dark:bg-[#28303F]/60 border border-white/50 dark:border-[#353F54]/50 shadow-2xl flex items-center justify-center overflow-hidden group-hover:scale-110 transition-transform duration-500">
               <img src="/logo.jpg" alt="Omix Store" className="w-full h-full object-cover" />
             </div>
           </div>
 
           <h1 className="text-5xl md:text-7xl font-black text-white mb-4 tracking-tight leading-tight">
-            <span className="bg-gradient-to-r from-[var(--seasonal-primary,#007AFF)] via-purple-500 to-blue-500 bg-clip-text text-transparent bg-[length:200%_auto] animate-gradient-x">
+            <span className="bg-gradient-to-r from-[var(--seasonal-primary,#71717a)] via-purple-500 to-blue-500 bg-clip-text text-transparent bg-[length:200%_auto] animate-gradient-x">
               {t('install.title')}
             </span>
           </h1>
@@ -300,10 +300,10 @@ export default function Install() {
 
       {/* Features */}
       <section className="relative py-20 overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-b from-transparent via-[var(--seasonal-primary,#007AFF)]/5 to-transparent dark:via-[var(--seasonal-primary,#007AFF)]/[0.02]" />
+        <div className="absolute inset-0 bg-gradient-to-b from-transparent via-[var(--seasonal-primary,#71717a)]/5 to-transparent dark:via-[var(--seasonal-primary,#71717a)]/[0.02]" />
         <div className="max-w-6xl mx-auto px-4 relative">
           <div className="text-center mb-12">
-            <span className="text-xs font-bold text-[var(--seasonal-primary,#007AFF)] uppercase tracking-[0.2em] bg-[var(--seasonal-primary,#007AFF)]/10 dark:bg-[var(--seasonal-primary,#007AFF)]/20 px-4 py-1.5 rounded-full">Why Install</span>
+            <span className="text-xs font-bold text-[var(--seasonal-primary,#71717a)] uppercase tracking-[0.2em] bg-[var(--seasonal-primary,#71717a)]/10 dark:bg-[var(--seasonal-primary,#71717a)]/20 px-4 py-1.5 rounded-full">Why Install</span>
             <h2 className="text-3xl md:text-4xl font-black text-white mt-3">Install the App</h2>
             <p className="text-[#4A5771] mt-2 max-w-md mx-auto">Everything you need, right on your home screen</p>
           </div>
@@ -314,7 +314,7 @@ export default function Install() {
               return (
                 <div key={f.title} className="group relative animate-fade-in-up" style={{ animationDelay: `${idx * 100}ms` }}>
                   {/* Glass card */}
-                  <div className="relative h-full backdrop-blur-xl bg-white/50 dark:bg-[#28303F]/50 border border-white/60 dark:border-[#353F54]/50 rounded-2xl p-6 text-center shadow-xl shadow-[#28303F]/5 hover:shadow-2xl hover:shadow-[#28303F]/10 transition-all duration-500 hover:-translate-y-2 hover:border-[var(--seasonal-primary,#007AFF)]/20">
+                  <div className="relative h-full backdrop-blur-xl bg-white/50 dark:bg-[#28303F]/50 border border-white/60 dark:border-[#353F54]/50 rounded-2xl p-6 text-center shadow-xl shadow-[#28303F]/5 hover:shadow-2xl hover:shadow-[#28303F]/10 transition-all duration-500 hover:-translate-y-2 hover:border-[var(--seasonal-primary,#71717a)]/20">
                     {/* Icon gradient glow */}
                     <div className={`w-14 h-14 rounded-xl bg-gradient-to-br ${f.bg} flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform duration-500 shadow-lg`}>
                       <Icon className={`w-7 h-7 ${f.color}`} />
@@ -397,8 +397,8 @@ export default function Install() {
 
               {/* Footer */}
               <div className="px-6 md:px-8 pb-6 md:pb-8">
-                <div className="backdrop-blur-xl bg-[#007AFF]/5 border border-[#007AFF]/20 rounded-2xl p-5 flex items-start gap-3">
-                  <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[#007AFF] to-[#0066CC] flex items-center justify-center flex-shrink-0 shadow-lg shadow-[#007AFF]/20">
+                <div className="backdrop-blur-xl bg-[#71717a]/5 border border-[#71717a]/20 rounded-2xl p-5 flex items-start gap-3">
+                  <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[#71717a] to-[#71717a] flex items-center justify-center flex-shrink-0 shadow-lg shadow-[#71717a]/20">
                     <CheckCircle2 className="w-5 h-5 text-white" />
                   </div>
                   <div>
@@ -416,16 +416,16 @@ export default function Install() {
 
       {/* CTA */}
       <section className="relative py-24 overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-t from-[var(--seasonal-primary,#007AFF)]/10 via-transparent to-transparent dark:from-[var(--seasonal-primary,#007AFF)]/5" />
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-[var(--seasonal-primary,#007AFF)]/10 via-transparent to-transparent dark:from-[var(--seasonal-primary,#007AFF)]/5" />
+        <div className="absolute inset-0 bg-gradient-to-t from-[var(--seasonal-primary,#71717a)]/10 via-transparent to-transparent dark:from-[var(--seasonal-primary,#71717a)]/5" />
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-[var(--seasonal-primary,#71717a)]/10 via-transparent to-transparent dark:from-[var(--seasonal-primary,#71717a)]/5" />
 
         {/* Floating orbs */}
-        <div className="absolute top-1/2 left-1/4 w-48 h-48 bg-[var(--seasonal-primary,#007AFF)]/20 rounded-full blur-3xl animate-float" />
+        <div className="absolute top-1/2 left-1/4 w-48 h-48 bg-[var(--seasonal-primary,#71717a)]/20 rounded-full blur-3xl animate-float" />
         <div className="absolute bottom-1/4 right-1/3 w-36 h-36 bg-purple-500/15 rounded-full blur-3xl animate-float-slow" />
 
         <div className="max-w-2xl mx-auto px-4 text-center relative">
           <div className="backdrop-blur-2xl bg-white/50 dark:bg-[#28303F]/50 border border-white/60 dark:border-[#353F54]/50 rounded-3xl p-10 md:p-12 shadow-2xl shadow-[#28303F]/5">
-            <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-[var(--seasonal-primary,#007AFF)] to-[var(--seasonal-secondary,#0066CC)] flex items-center justify-center mx-auto mb-6 shadow-xl shadow-[var(--seasonal-primary,#007AFF)]/30">
+            <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-[var(--seasonal-primary,#71717a)] to-[var(--seasonal-secondary,#71717a)] flex items-center justify-center mx-auto mb-6 shadow-xl shadow-[var(--seasonal-primary,#71717a)]/30">
               <Sparkles className="w-7 h-7 text-white" />
             </div>
             <h2 className="text-3xl md:text-4xl font-black text-white mb-3">Ready to get started?</h2>
@@ -434,12 +434,12 @@ export default function Install() {
             </p>
             <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
               {installState === 'installed' || window.matchMedia('(display-mode: standalone)').matches ? (
-                <div className="flex items-center gap-3 bg-[#007AFF]/10 border border-[#007AFF]/20 px-6 py-4 rounded-2xl">
-                  <CheckCircle2 className="w-5 h-5 text-[#007AFF]" />
+                <div className="flex items-center gap-3 bg-[#71717a]/10 border border-[#71717a]/20 px-6 py-4 rounded-2xl">
+                  <CheckCircle2 className="w-5 h-5 text-[#71717a]" />
                   <span className="font-bold text-[#38B8EA] text-sm">App Installed!</span>
                 </div>
               ) : (
-                <button onClick={handleInstall} className="group relative flex items-center gap-2 bg-gradient-to-r from-[var(--seasonal-primary,#007AFF)] to-[var(--seasonal-secondary,#0066CC)] text-white px-8 py-4 rounded-2xl font-black shadow-2xl shadow-[var(--seasonal-primary,#007AFF)]/25 hover:shadow-[var(--seasonal-primary,#007AFF)]/40 transition-all duration-300 hover:scale-105 active:scale-95 overflow-hidden">
+                <button onClick={handleInstall} className="group relative flex items-center gap-2 bg-gradient-to-r from-[var(--seasonal-primary,#71717a)] to-[var(--seasonal-secondary,#71717a)] text-white px-8 py-4 rounded-2xl font-black shadow-2xl shadow-[var(--seasonal-primary,#71717a)]/25 hover:shadow-[var(--seasonal-primary,#71717a)]/40 transition-all duration-300 hover:scale-105 active:scale-95 overflow-hidden">
                   <div className="absolute inset-0 bg-white/10 opacity-0 group-hover:opacity-100 transition-opacity" />
                   <Download className="w-5 h-5 relative z-10 group-hover:animate-bounce" />
                   <span className="relative z-10">Install App — It's Free</span>

@@ -40,7 +40,7 @@ function ConditionBadge({ condition }) {
   const colors = {
     new: 'bg-[#007AFF]/40 text-[#38B8EA] border-[#007AFF]',
     used: 'bg-amber-900/40 text-amber-400 border-amber-800',
-    refurbished: 'bg-blue-900/40 text-blue-400 border-blue-800',
+    refurbished: 'bg-blue-900/40 text-zinc-500 border-blue-800',
   };
   const cls = colors[condition?.toLowerCase()] || 'bg-[#28303F] text-[#4A5771] border-[#353F54]';
   return (

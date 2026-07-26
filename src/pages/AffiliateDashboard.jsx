@@ -27,7 +27,7 @@ const TIER_META = {
   bronze:   { label: 'Bronze',   color: 'text-amber-700',  bg: 'bg-amber-700/20',  bar: 'bg-amber-700',  iconBg: 'bg-gradient-to-br from-amber-700 to-amber-500 text-white' },
   silver:   { label: 'Silver',   color: 'text-[#8E9BB5]',   bg: 'bg-zinc-600/20',   bar: 'bg-zinc-400',   iconBg: 'bg-gradient-to-br from-zinc-500 to-zinc-200 text-white' },
   gold:     { label: 'Gold',     color: 'text-amber-400',  bg: 'bg-amber-500/20',  bar: 'bg-amber-400',  iconBg: 'bg-gradient-to-br from-amber-500 to-yellow-300 text-white' },
-  platinum: { label: 'Platinum', color: 'text-blue-300',   bg: 'bg-blue-500/20',   bar: 'bg-blue-400',   iconBg: 'bg-gradient-to-br from-blue-500 to-cyan-300 text-white' },
+  platinum: { label: 'Platinum', color: 'text-zinc-400',   bg: 'bg-zinc-500/20',   bar: 'bg-blue-400',   iconBg: 'bg-gradient-to-br from-blue-500 to-cyan-300 text-white' },
 };
 
 function TierBadge({ tier }) {
@@ -51,7 +51,7 @@ function TierProgress({ currentCount, currentTier }) {
       <div className="mt-3">
         <div className="flex justify-between text-xs text-[#4A5771] mb-1">
           <span>Orders: {currentCount}</span>
-          <span className="text-blue-300 font-bold">Platinum (Max Tier)</span>
+          <span className="text-zinc-400 font-bold">Platinum (Max Tier)</span>
         </div>
         <div className="h-2.5 bg-[#28303F] rounded-full overflow-hidden">
           <div className="h-full rounded-full bg-blue-500" style={{ width: '100%' }} />
@@ -108,7 +108,7 @@ function PayoutModal({ isOpen, onClose, affiliate, onSuccess }) {
       <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
         <div className="absolute inset-0 bg-black/50 backdrop-blur-sm" onClick={onClose} />
         <div className="relative bg-[#28303F] rounded-2xl border border-[#353F54] p-6 w-full max-w-sm shadow-2xl text-center">
-          <CheckCircle className="w-12 h-12 text-[#007AFF] mx-auto mb-3" />
+          <CheckCircle className="w-12 h-12 text-zinc-400 mx-auto mb-3" />
           <h3 className="text-lg font-bold text-white mb-1">Payout Requested</h3>
           <p className="text-sm text-[#4A5771] mb-2">{formatKES(amount)} to {mpesaNumber}</p>
           <p className="text-xs text-[#4A5771] mb-4">Status: {result.status || 'pending'}</p>
@@ -286,7 +286,7 @@ export default function AffiliateDashboard() {
           <div className="min-w-0">
             <div className="flex items-center gap-2 mb-1">
               <TierBadge tier={currentTier} />
-              <span className={`px-2.5 py-0.5 rounded-full text-[10px] font-bold ${affiliate?.status === 'active' ? 'bg-[#007AFF]/30 text-[#007AFF]' : 'bg-red-900/30 text-red-400'}`}>
+              <span className={`px-2.5 py-0.5 rounded-full text-[10px] font-bold ${affiliate?.status === 'active' ? 'bg-[#71717a]/30 text-zinc-400' : 'bg-red-900/30 text-red-400'}`}>
                 {affiliate?.status || 'inactive'}
               </span>
             </div>
@@ -346,7 +346,7 @@ export default function AffiliateDashboard() {
                 </p>
               </div>
             </div>
-            <span className={`px-3 py-1 rounded-full text-xs font-bold ${affiliate?.status === 'active' ? 'bg-[#007AFF]/30 text-[#007AFF]' : 'bg-red-900/30 text-red-400'}`}>
+            <span className={`px-3 py-1 rounded-full text-xs font-bold ${affiliate?.status === 'active' ? 'bg-[#71717a]/30 text-zinc-400' : 'bg-red-900/30 text-red-400'}`}>
               {affiliate?.status || 'inactive'}
             </span>
           </div>
@@ -394,8 +394,8 @@ export default function AffiliateDashboard() {
           {[
             { icon: MousePointerClick, color: 'text-fuchsia-400', chip: 'bg-fuchsia-500/15', top: 'border-t-fuchsia-500/40', val: stats.lifetime?.totalClicks || 0, label: 'Link Clicks' },
             { icon: Users, color: 'text-violet-400', chip: 'bg-violet-500/15', top: 'border-t-violet-500/40', val: stats.lifetime?.totalReferred || 0, label: 'Total Referrals' },
-            { icon: ShoppingBag, color: 'text-blue-400', chip: 'bg-blue-500/15', top: 'border-t-blue-500/40', val: qualifiedCount, label: 'Qualified Sales' },
-            { icon: TrendingUp, color: 'text-[#007AFF]', chip: 'bg-[#007AFF]/15', top: 'border-t-[#007AFF]/40', val: Math.round(stats.current?.totalSales || 0), label: 'Sales Value', money: true },
+            { icon: ShoppingBag, color: 'text-zinc-500', chip: 'bg-blue-500/15', top: 'border-t-blue-500/40', val: qualifiedCount, label: 'Qualified Sales' },
+            { icon: TrendingUp, color: 'text-zinc-400', chip: 'bg-[#71717a]/15', top: 'border-t-[#71717a]/40', val: Math.round(stats.current?.totalSales || 0), label: 'Sales Value', money: true },
             { icon: Wallet, color: 'text-amber-400', chip: 'bg-amber-500/15', top: 'border-t-amber-500/40', val: Math.round(pendingCommission), label: 'Pending Commission', money: true },
           ].map((s, i) => (
             <StatTile s={s} i={i} />
@@ -404,13 +404,13 @@ export default function AffiliateDashboard() {
 
         {/* Payout Section */}
         {availableForPayout >= AFFILIATE_CONFIG.MIN_PAYOUT && (
-          <div className="bg-gradient-to-r from-amber-500/10 to-[#007AFF]/10 rounded-2xl border border-amber-500/20 p-5">
+          <div className="bg-gradient-to-r from-amber-500/10 to-[#71717a]/10 rounded-2xl border border-amber-500/20 p-5">
             <div className="flex items-center justify-between">
               <div>
                 <h3 className="text-sm font-bold text-white flex items-center gap-2">
                   <Wallet className="w-4 h-4 text-amber-400" /> Available for Payout
                 </h3>
-                <p className="text-2xl font-black text-[#007AFF] mt-1">{formatKES(availableForPayout)}</p>
+                <p className="text-2xl font-black text-zinc-400 mt-1">{formatKES(availableForPayout)}</p>
                 <p className="text-xs text-[#4A5771] mt-1">Minimum payout: {formatKES(AFFILIATE_CONFIG.MIN_PAYOUT)}</p>
               </div>
               <button onClick={() => setShowPayoutModal(true)}
@@ -441,7 +441,7 @@ export default function AffiliateDashboard() {
                       <p className="text-sm font-bold text-white">{formatKES(p.amount)}</p>
                       <p className="text-xs text-[#4A5771]">{p.mpesa_number}</p>
                     </div>
-                    <span className={`text-xs font-bold ${p.status === 'paid' ? 'text-[#007AFF]' : p.status === 'processing' ? 'text-blue-400' : 'text-amber-400'}`}>
+                    <span className={`text-xs font-bold ${p.status === 'paid' ? 'text-zinc-400' : p.status === 'processing' ? 'text-zinc-500' : 'text-amber-400'}`}>
                       {p.status}
                     </span>
                   </div>
@@ -483,7 +483,7 @@ export default function AffiliateDashboard() {
           </div>
           <div className="flex justify-between bg-[#28303F]/50 -mx-5 px-5 py-3 mt-3 rounded-b-2xl">
             <span className="text-sm text-[#4A5771]">Paid</span>
-            <span className="text-sm font-bold text-[#007AFF]">{formatKES(paidCommission)}</span>
+            <span className="text-sm font-bold text-zinc-400">{formatKES(paidCommission)}</span>
           </div>
         </div>
 
@@ -511,7 +511,7 @@ export default function AffiliateDashboard() {
                       <p className="text-xs text-[#4A5771] truncate">{r.email}</p>
                       <p className="text-[10px] text-[#4A5771] mt-0.5">{new Date(r.created_at).toLocaleDateString()}</p>
                     </div>
-                    <span className={`text-[10px] uppercase font-bold px-2 py-0.5 rounded-full shrink-0 ${r.status === 'converted' ? 'bg-[#007AFF]/30 text-[#007AFF]' : 'bg-[#353F54]/40 text-[#4A5771]'}`}>
+                    <span className={`text-[10px] uppercase font-bold px-2 py-0.5 rounded-full shrink-0 ${r.status === 'converted' ? 'bg-[#71717a]/30 text-zinc-400' : 'bg-[#353F54]/40 text-[#4A5771]'}`}>
                       {r.status || 'pending'}
                     </span>
                   </div>

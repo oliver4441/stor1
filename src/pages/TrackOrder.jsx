@@ -388,7 +388,7 @@ export default function TrackOrder() {
                                 : step.isCompleted
                                   ? 'text-[#38B8EA]'
                                   : step.isCurrent
-                                    ? 'text-blue-400'
+                                    ? 'text-zinc-500'
                                     : 'text-[#4A5771]'
                             }`} />
                           </div>
@@ -406,13 +406,13 @@ export default function TrackOrder() {
                                 : step.isCompleted
                                   ? 'text-[#38B8EA]'
                                   : step.isCurrent
-                                    ? 'text-blue-400'
+                                    ? 'text-zinc-500'
                                     : 'text-[#4A5771]'
                             }`}>
                               {step.label}
                             </span>
                             {step.isCurrent && !step.isCancelled && (
-                              <span className="text-[10px] font-medium text-blue-400 bg-blue-900/30 px-2 py-0.5 rounded-full">
+                              <span className="text-[10px] font-medium text-zinc-500 bg-blue-900/30 px-2 py-0.5 rounded-full">
                                 Current
                               </span>
                             )}

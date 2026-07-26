@@ -427,7 +427,7 @@ export default function AdminAffiliates() {
               <p className="text-xs text-zinc-400">Pending</p>
             </div>
             <div className="bg-zinc-900 rounded-xl border border-zinc-800 p-3 text-center">
-              <p className="text-lg font-black text-blue-400">{approvedPending.length}</p>
+              <p className="text-lg font-black text-zinc-500">{approvedPending.length}</p>
               <p className="text-xs text-zinc-400">Approved</p>
             </div>
             <div className="bg-zinc-900 rounded-xl border border-zinc-800 p-3 text-center">
@@ -455,7 +455,7 @@ export default function AdminAffiliates() {
                         <span className={`text-xs font-bold ${
                           c.status === 'calculated' ? 'text-yellow-400' :
                           c.status === 'pending' ? 'text-yellow-400' :
-                          c.status === 'approved' ? 'text-blue-400' :
+                          c.status === 'approved' ? 'text-zinc-500' :
                           c.status === 'paid' ? 'text-green-400' : 'text-red-400'
                         }`}>{c.status}</span>
                       </div>
@@ -495,7 +495,7 @@ export default function AdminAffiliates() {
                       <p className="text-lg font-black text-primary">{formatKES(p.amount)}</p>
                       <span className={`text-xs font-bold ${
                         p.status === 'pending' ? 'text-yellow-400' :
-                        p.status === 'processing' ? 'text-blue-400' :
+                        p.status === 'processing' ? 'text-zinc-500' :
                         p.status === 'paid' ? 'text-green-400' : 'text-red-400'
                       }`}>{p.status}</span>
                     </div>

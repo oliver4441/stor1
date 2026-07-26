@@ -283,7 +283,7 @@ export default function AdminSettings() {
       {/* Delivery */}
       <div className="fusion-recessed-card p-6">
         <div className="flex items-center gap-3 mb-5">
-          <Truck className="w-5 h-5 text-blue-500" />
+          <Truck className="w-5 h-5 text-zinc-600" />
           <h3 className="text-base font-bold text-white">Delivery</h3>
         </div>
         <div className="space-y-4">

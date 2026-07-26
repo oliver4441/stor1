@@ -29,14 +29,14 @@ function CategoryIcon({ iconName, className }) {
 }
 
 const FEATURE_LINKS = [
-  { to: '/refurbished', label: 'Refurbished', icon: RefreshCw, color: 'from-blue-500 to-blue-600', glow: 'shadow-blue-500/40' },
-  { to: '/wholesale', label: 'Wholesale', icon: Package, color: 'from-blue-500 to-indigo-600', glow: 'shadow-blue-500/40' },
-  { to: 'https://omixsystems.store', label: 'Blog', icon: Globe, color: 'from-blue-400 to-blue-600', glow: 'shadow-blue-500/40', external: true },
-  { to: '/how-it-works', label: 'How It Works', icon: HelpCircle, color: 'from-blue-500 to-cyan-600', glow: 'shadow-blue-500/40' },
-  { to: '/help', label: 'Help', icon: Package, color: 'from-blue-500 to-blue-700', glow: 'shadow-blue-500/40' },
-  { to: '/about', label: 'About', icon: Info, color: 'from-cyan-500 to-blue-600', glow: 'shadow-blue-500/40' },
-  { to: '/install', label: 'Install App', icon: Download, color: 'from-[var(--seasonal-primary,#007AFF)] to-[var(--seasonal-secondary,#0066CC)]', glow: 'shadow-[var(--seasonal-primary,#007AFF)]/40' },
-  { to: '/affiliate', label: 'Earn', icon: DollarSign, color: 'from-blue-500 to-cyan-600', glow: 'shadow-blue-500/40' },
+  { to: '/refurbished', label: 'Refurbished', icon: RefreshCw, color: 'from-zinc-500 to-zinc-600', glow: 'shadow-zinc-500/40' },
+  { to: '/wholesale', label: 'Wholesale', icon: Package, color: 'from-zinc-500 to-zinc-600', glow: 'shadow-zinc-500/40' },
+  { to: 'https://omixsystems.store', label: 'Blog', icon: Globe, color: 'from-zinc-400 to-zinc-600', glow: 'shadow-zinc-500/40', external: true },
+  { to: '/how-it-works', label: 'How It Works', icon: HelpCircle, color: 'from-zinc-500 to-zinc-600', glow: 'shadow-zinc-500/40' },
+  { to: '/help', label: 'Help', icon: Package, color: 'from-zinc-500 to-zinc-700', glow: 'shadow-zinc-500/40' },
+  { to: '/about', label: 'About', icon: Info, color: 'from-zinc-500 to-zinc-600', glow: 'shadow-zinc-500/40' },
+  { to: '/install', label: 'Install App', icon: Download, color: 'from-[var(--seasonal-primary,#71717a)] to-[var(--seasonal-secondary,#71717a)]', glow: 'shadow-[var(--seasonal-primary,#71717a)]/40' },
+  { to: '/affiliate', label: 'Earn', icon: DollarSign, color: 'from-zinc-500 to-zinc-600', glow: 'shadow-zinc-500/40' },
 ];
 
 function Navbar() {
@@ -54,13 +54,13 @@ function Navbar() {
   const cartCount = getItemCount();
   const theme = useActiveTheme();
 
-  const navAccentColor = theme?.colors?.navAccent || '#007AFF';
+  const navAccentColor = theme?.colors?.navAccent || '#71717a';
   const navAccentText = theme?.colors?.navAccentText || '#ffffff';
   const badgeText = theme?.badgeText;
-  const badgeBg = theme?.colors?.badgeBg || '#007AFF';
+  const badgeBg = theme?.colors?.badgeBg || '#71717a';
   const badgeTextColor = theme?.colors?.badgeText || '#ffffff';
   const sticker = theme?.sticker || '';
-  const secondaryColor = theme?.colors?.secondary || '#0066CC';
+  const secondaryColor = theme?.colors?.secondary || '#71717a';
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
@@ -193,7 +193,7 @@ function Navbar() {
                   </Link>
                 )}
                 {isUserSeller ? (
-                  <Link to="/seller/dashboard" className="flex items-center gap-2 p-2 rounded-full bg-gradient-to-r from-blue-600/20 to-blue-700/20 text-blue-400 hover:from-blue-600/30 hover:to-blue-700/30 transition-all">
+                  <Link to="/seller/dashboard" className="flex items-center gap-2 p-2 rounded-full bg-gradient-to-r from-zinc-600/20 to-zinc-700/20 text-zinc-500 hover:from-zinc-600/30 hover:to-zinc-700/30 transition-all">
                     <Store className="w-4 h-4" />
                     <span className="text-sm font-medium">Dashboard</span>
                   </Link>
@@ -442,7 +442,7 @@ function Navbar() {
                 </Link>
               )}
               {isUserSeller ? (
-                <Link to="/seller/dashboard" className="flex items-center gap-3 px-4 py-3 rounded-2xl text-sm font-bold bg-gradient-to-r from-blue-600/20 to-blue-700/20 text-blue-400 hover:from-blue-600/30 hover:to-blue-700/30" onClick={() => setMenuOpen(false)}>
+                <Link to="/seller/dashboard" className="flex items-center gap-3 px-4 py-3 rounded-2xl text-sm font-bold bg-gradient-to-r from-zinc-600/20 to-zinc-700/20 text-zinc-500 hover:from-zinc-600/30 hover:to-zinc-700/30" onClick={() => setMenuOpen(false)}>
                   <Store className="w-5 h-5" />
                   Dashboard
                 </Link>
@@ -453,7 +453,7 @@ function Navbar() {
                 </Link>
               )}
               {isUserAdmin && (
-                <Link to="/admin" className="flex items-center gap-3 px-4 py-3 rounded-2xl text-sm font-bold text-[var(--seasonal-primary,#007AFF)] hover:bg-[var(--seasonal-primary,#007AFF)]/10" onClick={() => setMenuOpen(false)}>
+                <Link to="/admin" className="flex items-center gap-3 px-4 py-3 rounded-2xl text-sm font-bold text-[var(--seasonal-primary,#71717a)] hover:bg-[var(--seasonal-primary,#71717a)]/10" onClick={() => setMenuOpen(false)}>
                   <Shield className="w-5 h-5" />
                   Admin Dashboard
                 </Link>

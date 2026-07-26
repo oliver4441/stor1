@@ -263,7 +263,7 @@ export default function SellerDashboard() {
                 )}
                 {sellerScore > 0 && (
                   <span className="flex items-center gap-1">
-                    <BarChart3 className="w-3.5 h-3.5 text-blue-400" />
+                    <BarChart3 className="w-3.5 h-3.5 text-zinc-500" />
                     Score: {sellerScore}
                   </span>
                 )}
@@ -336,7 +336,7 @@ export default function SellerDashboard() {
             label="Total Orders"
             value={totalOrders.toLocaleString()}
             subtext="All time"
-            color="text-blue-400"
+            color="text-zinc-500"
           />
           <StatCard
             icon={DollarSign}

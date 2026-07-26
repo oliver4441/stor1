@@ -613,7 +613,7 @@ export default function AdminProducts() {
                         <a href={`/listing/${listing.id}`} target="_blank" className="p-2 rounded-lg hover:bg-zinc-800 text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-300" title="View">
                           <Eye className="w-4 h-4" />
                         </a>
-                        <button onClick={() => openEditModal(listing)} className="p-2 rounded-lg hover:bg-zinc-800 text-zinc-400 hover:text-blue-500" title="Edit">
+                        <button onClick={() => openEditModal(listing)} className="p-2 rounded-lg hover:bg-zinc-800 text-zinc-400 hover:text-zinc-600" title="Edit">
                           <Pencil className="w-4 h-4" />
                         </button>
                         <button onClick={() => setDeleteTarget({ id: listing.id, title: listing.title })} className="p-2 rounded-lg hover:bg-red-900/20 text-zinc-400 hover:text-red-500" title="Delete">
@@ -830,7 +830,7 @@ export default function AdminProducts() {
               {/* ── Shipping Dimensions ── */}
               <div className="border-t border-zinc-800 pt-4">
                 <h4 className="text-sm font-bold text-zinc-300 mb-3 flex items-center gap-2">
-                  <Package className="w-4 h-4 text-blue-500" /> Shipping Dimensions (cm)
+                  <Package className="w-4 h-4 text-zinc-600" /> Shipping Dimensions (cm)
                 </h4>
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                   <div>

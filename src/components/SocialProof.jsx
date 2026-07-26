@@ -38,7 +38,7 @@ export function ProductSocialBadge({ listing }) {
 
   if (showType === 2) {
     return (
-      <span className="flex items-center gap-1 bg-blue-900/20 text-blue-400 px-2 py-0.5 rounded-full text-[9px] font-bold">
+      <span className="flex items-center gap-1 bg-zinc-900/20 text-zinc-500 px-2 py-0.5 rounded-full text-[9px] font-bold">
         <Eye className="w-2.5 h-2.5" /> {viewingCount} viewing
       </span>
     );
@@ -63,7 +63,7 @@ export function ListingSocialProof({ listing }) {
   return (
     <div className="flex flex-wrap gap-2 mb-4">
       <span className="flex items-center gap-1 text-xs text-zinc-400">
-        <Eye className="w-3.5 h-3.5 text-blue-500" />
+        <Eye className="w-3.5 h-3.5 text-zinc-600" />
         <span className="font-bold text-zinc-300">{viewingCount}</span> people viewing this
       </span>
       <span className="flex items-center gap-1 text-xs text-zinc-400">

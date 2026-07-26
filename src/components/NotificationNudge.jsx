@@ -70,8 +70,8 @@ export default function NotificationNudge() {
     <div className="relative w-full bg-gradient-to-r from-[#0a0e1a] via-[#111827] to-[#0a0e1a] border-b border-[#1e2a4a]/60 py-3 z-50 animate-slide-down">
       <div className="max-w-7xl mx-auto px-4 flex items-center justify-between gap-4">
         <div className="flex items-center gap-3 min-w-0">
-          <div className="w-9 h-9 rounded-full bg-blue-600/20 flex items-center justify-center shrink-0 ring-1 ring-blue-500/30">
-            <Bell className="w-4.5 h-4.5 text-blue-400" style={{ width: '18px', height: '18px' }} />
+          <div className="w-9 h-9 rounded-full bg-zinc-600/20 flex items-center justify-center shrink-0 ring-1 ring-zinc-500/30">
+            <Bell className="w-4.5 h-4.5 text-zinc-500" style={{ width: '18px', height: '18px' }} />
           </div>
           <div className="min-w-0">
             <p className="text-sm font-semibold text-white leading-tight">
@@ -87,7 +87,7 @@ export default function NotificationNudge() {
           <button
             onClick={enable}
             disabled={busy}
-            className="px-4 py-1.5 bg-blue-600 hover:bg-blue-500 disabled:opacity-50 text-white text-xs font-bold rounded-lg transition-colors flex items-center gap-1.5"
+            className="px-4 py-1.5 bg-zinc-600 hover:bg-zinc-500 disabled:opacity-50 text-white text-xs font-bold rounded-lg transition-colors flex items-center gap-1.5"
           >
             {busy ? (
               <svg className="animate-spin w-3.5 h-3.5" viewBox="0 0 24 24" fill="none">

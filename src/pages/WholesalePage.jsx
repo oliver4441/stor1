@@ -127,7 +127,7 @@ function WholesalePage() {
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,rgba(255,255,255,0.1),transparent_50%)]"></div>
         <div className="relative px-4 py-12 sm:py-16 text-center max-w-4xl mx-auto">
           <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/10 backdrop-blur-sm mb-4">
-            <Package className="w-4 h-4 text-blue-300" />
+            <Package className="w-4 h-4 text-zinc-400" />
             <span className="text-xs font-bold text-white/90 uppercase tracking-wider">Bulk Pricing</span>
           </div>
           <h1 className="text-3xl sm:text-5xl font-black text-white mb-3">Wholesale</h1>

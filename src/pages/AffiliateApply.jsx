@@ -472,7 +472,7 @@ export default function AffiliateApply() {
                     type="checkbox"
                     checked={formData.promotional_methods.includes(method)}
                     onChange={() => handlePromoMethod(method)}
-                    className="w-4 h-4 rounded border-zinc-600 bg-[#28303F] text-blue-500 focus:ring-blue-500"
+                    className="w-4 h-4 rounded border-zinc-600 bg-[#28303F] text-zinc-600 focus:ring-blue-500"
                   />
                   <span className="text-sm text-zinc-200">{method}</span>
                 </label>
@@ -539,12 +539,12 @@ export default function AffiliateApply() {
                 name="agreed"
                 checked={formData.agreed}
                 onChange={handleChange}
-                className="w-5 h-5 mt-0.5 rounded border-zinc-600 bg-[#28303F] text-blue-500 focus:ring-blue-500"
+                className="w-5 h-5 mt-0.5 rounded border-zinc-600 bg-[#28303F] text-zinc-600 focus:ring-blue-500"
               />
               <div>
                 <span className="text-sm text-[#8E9BB5]">
                   I have read and agree to the{' '}
-                  <Link to="/affiliate/agreement" target="_blank" className="text-blue-400 hover:text-blue-300 underline">
+                  <Link to="/affiliate/agreement" target="_blank" className="text-zinc-500 hover:text-zinc-400 underline">
                     Omix Store Affiliate Partner Agreement
                   </Link>
                 </span>

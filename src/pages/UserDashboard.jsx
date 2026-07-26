@@ -59,7 +59,7 @@ const TABS = [
 // ── Status config ─────────────────────────────────────────────────────
 const ORDER_STATUS = {
   pending:    { color: 'text-amber-500', bg: 'bg-amber-900/30',     label: 'Pending',    icon: Clock },
-  processing: { color: 'text-blue-500',  bg: 'bg-blue-900/30',       label: 'Processing', icon: Package },
+  processing: { color: 'text-zinc-600',  bg: 'bg-zinc-900/30',       label: 'Processing', icon: Package },
   shipped:    { color: 'text-purple-500',bg: 'bg-purple-900/30',   label: 'Shipped',    icon: ShoppingBag },
   delivered:  { color: 'text-[#38B8EA]',bg: 'bg-[#007AFF]/30',label: 'Delivered',  icon: CheckCircle2 },
   cancelled:  { color: 'text-red-500',   bg: 'bg-red-900/30',         label: 'Cancelled',  icon: AlertTriangle },
@@ -1292,7 +1292,7 @@ function UserDashboard() {
             {/* Sound & Vibration Preferences */}
             <div className="fusion-recessed-card p-6">
               <div className="flex items-center gap-3 mb-5">
-                <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-blue-400 to-indigo-500 flex items-center justify-center">
+                <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-zinc-400 to-zinc-500 flex items-center justify-center">
                   <svg className="w-5 h-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                     <path strokeLinecap="round" strokeLinejoin="round" d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z" />
                   </svg>
@@ -1424,8 +1424,8 @@ function UserDashboard() {
             {/* Security */}
             <div className="fusion-recessed-card p-6">
               <div className="flex items-center gap-3 mb-4">
-                <div className="w-10 h-10 rounded-xl bg-blue-900/30 flex items-center justify-center">
-                  <Shield className="w-5 h-5 text-blue-500" />
+                <div className="w-10 h-10 rounded-xl bg-zinc-900/30 flex items-center justify-center">
+                  <Shield className="w-5 h-5 text-zinc-600" />
                 </div>
                 <h2 className="text-lg font-bold text-white">Security</h2>
               </div>
@@ -1439,7 +1439,7 @@ function UserDashboard() {
                     value={pwForm.current}
                     onChange={e => setPwForm(f => ({ ...f, current: e.target.value }))}
                     placeholder="Enter current password"
-                    className="w-full px-3 py-2.5 rounded-xl bg-[#28303F]/50 border border-[#353F54] text-sm text-white placeholder:text-[#4A5771] focus:outline-none focus:border-blue-400 transition-colors"
+                    className="w-full px-3 py-2.5 rounded-xl bg-[#28303F]/50 border border-[#353F54] text-sm text-white placeholder:text-[#4A5771] focus:outline-none focus:border-zinc-400 transition-colors"
                   />
                 </div>
                 <div>
@@ -1451,7 +1451,7 @@ function UserDashboard() {
                     value={pwForm.newPw}
                     onChange={e => setPwForm(f => ({ ...f, newPw: e.target.value }))}
                     placeholder="Min 6 characters"
-                    className="w-full px-3 py-2.5 rounded-xl bg-[#28303F]/50 border border-[#353F54] text-sm text-white placeholder:text-[#4A5771] focus:outline-none focus:border-blue-400 transition-colors"
+                    className="w-full px-3 py-2.5 rounded-xl bg-[#28303F]/50 border border-[#353F54] text-sm text-white placeholder:text-[#4A5771] focus:outline-none focus:border-zinc-400 transition-colors"
                   />
                 </div>
                 <div>
@@ -1463,7 +1463,7 @@ function UserDashboard() {
                     value={pwForm.confirm}
                     onChange={e => setPwForm(f => ({ ...f, confirm: e.target.value }))}
                     placeholder="Re-enter new password"
-                    className="w-full px-3 py-2.5 rounded-xl bg-[#28303F]/50 border border-[#353F54] text-sm text-white placeholder:text-[#4A5771] focus:outline-none focus:border-blue-400 transition-colors"
+                    className="w-full px-3 py-2.5 rounded-xl bg-[#28303F]/50 border border-[#353F54] text-sm text-white placeholder:text-[#4A5771] focus:outline-none focus:border-zinc-400 transition-colors"
                   />
                 </div>
                 {pwMsg.text && (
@@ -1478,7 +1478,7 @@ function UserDashboard() {
                 <button
                   type="submit"
                   disabled={pwBusy}
-                  className="w-full py-3 rounded-xl bg-blue-500 text-white font-bold text-sm hover:bg-blue-600 transition-colors disabled:opacity-50 flex items-center justify-center gap-2"
+                  className="w-full py-3 rounded-xl bg-zinc-500 text-white font-bold text-sm hover:bg-zinc-600 transition-colors disabled:opacity-50 flex items-center justify-center gap-2"
                 >
                   {pwBusy ? <Loader2 className="w-4 h-4 animate-spin" /> : <Lock className="w-4 h-4" />}
                   {pwBusy ? 'Changing...' : 'Change Password'}
@@ -1799,7 +1799,7 @@ function AddressForm({ onSave, onClose }) {
 
       {/* Use My Location button */}
       <button type="button" onClick={handleUseLocation} disabled={locating}
-        className="w-full flex items-center justify-center gap-2 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-sm font-bold transition-colors disabled:opacity-50">
+        className="w-full flex items-center justify-center gap-2 py-2.5 rounded-xl bg-zinc-600 hover:bg-zinc-700 text-white text-sm font-bold transition-colors disabled:opacity-50">
         <MapPin className={`w-4 h-4 ${locating ? 'animate-pulse' : ''}`} />
         {locating ? 'Detecting location...' : '📍 Use My Current Location'}
       </button>
