@@ -165,6 +165,7 @@ function App() {
               <Route path="/store" element={<SellerProfile />} />
               <Route path="/seller/dashboard" element={<SellerDashboard />} />
               <Route path="/seller/register" element={<SellerRegistration />} />
+              <Route path="/sell" element={<Navigate to="/seller/register" replace />} />
               <Route path="/affiliate-dashboard" element={<AffiliateDashboard />} />
               <Route path="/affiliate-referrals" element={<AffiliateReferrals />} />
               <Route path="/affiliate-withdrawals" element={<AffiliateWithdrawals />} />

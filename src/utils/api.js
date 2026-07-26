@@ -181,11 +181,13 @@ export async function advancedSearch(filters = {}) {
 }
 
 export async function fetchListing(id) {
+  const isUuid = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(id);
+  const field = isUuid ? 'id' : 'slug';
   const { data, error } = await supabase
     .from('listings')
     .select('*')
-    .eq('id', id)
-    .single()
+    .eq(field, id)
+    .maybeSingle()
   if (error) { console.error(error); return null }
   return mapCategoryName(data)
 }
