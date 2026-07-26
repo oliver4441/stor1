@@ -1892,6 +1892,314 @@ export async function rejectSeller(sellerId, reason) {
   }
 }
 
+// ── Helper: auth token ──────────────────────────────────────
+async function getAuthToken() {
+  const { supabase } = await import('./supabase');
+  const { data: { session } } = await supabase.auth.getSession();
+  return session?.access_token || null;
+}
+
+// ── Reports / Trust & Safety ─────────────────────────────────
+export async function submitReport({ listing_id, reason, description, order_id }) {
+  try {
+    const token = await getAuthToken();
+    const resp = await fetch(`${API_URL}/api/reports`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+      body: JSON.stringify({ listing_id, reason, description, order_id }),
+    });
+    const data = await resp.json();
+    return data;
+  } catch (err) {
+    return { success: false, error: err.message };
+  }
+}
+
+// ── Wallet ────────────────────────────────────────────────────
+export async function getWallet(userId) {
+  try {
+    const token = await getAuthToken();
+    const resp = await fetch(`${API_URL}/api/wallet/${userId}`, {
+      headers: { 'Authorization': `Bearer ${token}` },
+    });
+    const data = await resp.json();
+    return data;
+  } catch (err) {
+    return { success: false, error: err.message, wallet: null, transactions: [] };
+  }
+}
+
+export async function topUpWallet(paystackReference) {
+  try {
+    const token = await getAuthToken();
+    const resp = await fetch(`${API_URL}/api/wallet/top-up`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+      body: JSON.stringify({ paystack_reference: paystackReference }),
+    });
+    const data = await resp.json();
+    return data;
+  } catch (err) {
+    return { success: false, error: err.message };
+  }
+}
+
+export async function useWalletPayment(amount, order_id) {
+  try {
+    const token = await getAuthToken();
+    const resp = await fetch(`${API_URL}/api/wallet/use`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+      body: JSON.stringify({ amount, order_id }),
+    });
+    const data = await resp.json();
+    return data;
+  } catch (err) {
+    return { success: false, error: err.message };
+  }
+}
+
+// ── Gift Cards ────────────────────────────────────────────────
+export async function purchaseGiftCard({ amount, recipient_name, recipient_email, sender_name, message }) {
+  try {
+    const token = await getAuthToken();
+    const resp = await fetch(`${API_URL}/api/gift-cards/purchase`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+      body: JSON.stringify({ amount, recipient_name, recipient_email, sender_name, message }),
+    });
+    const data = await resp.json();
+    return data;
+  } catch (err) {
+    return { success: false, error: err.message };
+  }
+}
+
+export async function lookupGiftCard(code) {
+  try {
+    const resp = await fetch(`${API_URL}/api/gift-cards/${encodeURIComponent(code)}`);
+    const data = await resp.json();
+    return data;
+  } catch (err) {
+    return { success: false, error: err.message };
+  }
+}
+
+export async function redeemGiftCard(code, order_id) {
+  try {
+    const token = await getAuthToken();
+    const resp = await fetch(`${API_URL}/api/gift-cards/redeem`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+      body: JSON.stringify({ code, order_id }),
+    });
+    const data = await resp.json();
+    return data;
+  } catch (err) {
+    return { success: false, error: err.message };
+  }
+}
+
+// ── Product Bundles ───────────────────────────────────────────
+export async function getActiveBundles() {
+  try {
+    const resp = await fetch(`${API_URL}/api/bundles/active`);
+    const data = await resp.json();
+    return data;
+  } catch (err) {
+    return { success: false, error: err.message, bundles: [] };
+  }
+}
+
+export async function getBundle(id) {
+  try {
+    const resp = await fetch(`${API_URL}/api/bundles/${id}`);
+    const data = await resp.json();
+    return data;
+  } catch (err) {
+    return { success: false, error: err.message };
+  }
+}
+
+export async function createBundle(formData) {
+  try {
+    const token = await getAuthToken();
+    const resp = await fetch(`${API_URL}/api/bundles`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+      body: JSON.stringify(formData),
+    });
+    const data = await resp.json();
+    return data;
+  } catch (err) {
+    return { success: false, error: err.message };
+  }
+}
+
+// ── Seller Reviews ────────────────────────────────────────────
+export async function submitSellerReview({ seller_id, order_id, rating, review }) {
+  try {
+    const token = await getAuthToken();
+    const resp = await fetch(`${API_URL}/api/seller-reviews`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+      body: JSON.stringify({ seller_id, order_id, rating, review }),
+    });
+    const data = await resp.json();
+    return data;
+  } catch (err) {
+    return { success: false, error: err.message };
+  }
+}
+
+export async function getSellerReviews(sellerId) {
+  try {
+    const resp = await fetch(`${API_URL}/api/seller-reviews/${sellerId}`);
+    const data = await resp.json();
+    return data;
+  } catch (err) {
+    return { success: false, error: err.message, reviews: [], average_rating: 0, total_reviews: 0 };
+  }
+}
+
+// ── Abandoned Cart ────────────────────────────────────────────
+export async function saveAbandonedCart({ user_id, guest_id, items, total, cart_data }) {
+  try {
+    const token = user_id ? await getAuthToken() : null;
+    const headers = { 'Content-Type': 'application/json' };
+    if (token) headers['Authorization'] = `Bearer ${token}`;
+    const resp = await fetch(`${API_URL}/api/cart/abandon`, {
+      method: 'POST',
+      headers,
+      body: JSON.stringify({ user_id, guest_id, items, total, cart_data }),
+    });
+    const data = await resp.json();
+    return data;
+  } catch (err) {
+    return { success: false, error: err.message };
+  }
+}
+
+// ── Saved Payment Methods ─────────────────────────────────────
+export async function getSavedPaymentMethods(userId) {
+  try {
+    const token = await getAuthToken();
+    const resp = await fetch(`${API_URL}/api/saved-payment-methods/${userId}`, {
+      headers: { 'Authorization': `Bearer ${token}` },
+    });
+    const data = await resp.json();
+    return data;
+  } catch (err) {
+    return { success: false, error: err.message, methods: [] };
+  }
+}
+
+export async function savePaymentMethod({ type, label, details }) {
+  try {
+    const token = await getAuthToken();
+    const resp = await fetch(`${API_URL}/api/saved-payment-methods`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+      body: JSON.stringify({ type, label, details }),
+    });
+    const data = await resp.json();
+    return data;
+  } catch (err) {
+    return { success: false, error: err.message };
+  }
+}
+
+export async function deleteSavedPaymentMethod(id) {
+  try {
+    const token = await getAuthToken();
+    const resp = await fetch(`${API_URL}/api/saved-payment-methods/${id}`, {
+      method: 'DELETE',
+      headers: { 'Authorization': `Bearer ${token}` },
+    });
+    const data = await resp.json();
+    return data;
+  } catch (err) {
+    return { success: false, error: err.message };
+  }
+}
+
+// ── Reorder ───────────────────────────────────────────────────
+export async function reorderFromOrder(orderId) {
+  try {
+    const { supabase } = await import('./supabase');
+    const { data: items, error } = await supabase
+      .from('omix_order_items')
+      .select('product_id, product_name, price, quantity, variant, image_url')
+      .eq('order_id', orderId);
+    if (error) return { success: false, error: error.message };
+    return { success: true, items: items || [] };
+  } catch (err) {
+    return { success: false, error: err.message };
+  }
+}
+
+// ── Invoice / Receipt ─────────────────────────────────────────
+export function generateOrderReceiptHTML(order, items) {
+  const orderDate = new Date(order.created_at).toLocaleDateString('en-KE', {
+    year: 'numeric', month: 'long', day: 'numeric'
+  });
+  const itemsHtml = (items || []).map(item => `
+    <tr>
+      <td style="padding:8px;border-bottom:1px solid #ddd">${item.product_name || item.name}${item.variant?.size ? ' (' + item.variant.size + ')' : ''}${item.variant?.colorName ? ' - ' + item.variant.colorName : ''}</td>
+      <td style="padding:8px;border-bottom:1px solid #ddd;text-align:center">${item.quantity}</td>
+      <td style="padding:8px;border-bottom:1px solid #ddd;text-align:right">KES ${Number(item.price).toLocaleString()}</td>
+      <td style="padding:8px;border-bottom:1px solid #ddd;text-align:right">KES ${(item.price * item.quantity).toLocaleString()}</td>
+    </tr>
+  `).join('');
+  return `
+    <html>
+    <head><meta charset="UTF-8"><title>Receipt - Order #${order.id?.slice(0,8)?.toUpperCase() || 'N/A'}</title>
+    <style>body{font-family:Arial,sans-serif;max-width:700px;margin:auto;padding:40px 20px;color:#333}
+    h1{font-size:24px;margin-bottom:4px} .sub{color:#666;font-size:14px}
+    table{width:100%;border-collapse:collapse;margin:20px 0}
+    th{background:#f5f5f5;padding:8px;text-align:left;border-bottom:2px solid #ddd}
+    .total-row td{font-weight:bold;padding:12px 8px;border-top:2px solid #333}
+    .footer{margin-top:40px;font-size:12px;color:#999;text-align:center;border-top:1px solid #eee;padding-top:20px}
+    .badge{display:inline-block;background:#e8f5e9;color:#2e7d32;padding:4px 12px;border-radius:12px;font-size:13px;font-weight:bold}
+    </style></head>
+    <body>
+      <h1>Omix Store</h1>
+      <p class="sub">Kericho, Kenya | M-Pesa & Paystack Payments</p>
+      <hr style="margin:20px 0">
+      <h2>Order Receipt</h2>
+      <p><strong>Order #:</strong> ${order.id?.slice(0,8)?.toUpperCase() || 'N/A'}<br>
+      <strong>Date:</strong> ${orderDate}<br>
+      <strong>Customer:</strong> ${order.customer_name || 'N/A'}<br>
+      <strong>Status:</strong> <span class="badge">${order.status?.toUpperCase() || 'PAID'}</span></p>
+      ${order.area ? `<p><strong>Delivery:</strong> ${order.area}${order.landmark ? ' - ' + order.landmark : ''}</p>` : ''}
+      <table>
+        <tr><th>Item</th><th>Qty</th><th>Price</th><th>Subtotal</th></tr>
+        ${itemsHtml}
+        <tr class="total-row"><td colspan="3">Total</td><td style="text-align:right">KES ${Number(order.total_amount || 0).toLocaleString()}</td></tr>
+      </table>
+      <p><strong>Payment Method:</strong> ${order.payment_method === 'cod' ? 'Cash on Delivery' : 'M-Pesa / Card'}</p>
+      <div class="footer">
+        <p>Omix Store — omixsystems.store | support@omixsystems.com | +254 746 674 392</p>
+        <p>Thank you for shopping with us!</p>
+      </div>
+    </body>
+    </html>
+  `;
+}
+
+export function downloadReceipt(order, items) {
+  const html = generateOrderReceiptHTML(order, items);
+  const blob = new Blob([html], { type: 'text/html' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `receipt-${order.id?.slice(0,8)?.toUpperCase() || 'order'}.html`;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+}
+
 // ── Return Requests ───────────────────────────────────────────────
 export async function submitReturnRequest(orderId, reason, userId, orderItemId) {
   try {

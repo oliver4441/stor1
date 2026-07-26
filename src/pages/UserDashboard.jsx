@@ -6,6 +6,7 @@ import {
   ExternalLink, Users, Bookmark, X, Bell, BellRing, BellOff,
   User, Mail, Phone, Camera, Edit2, MapPin, Plus, Trash2, AlertTriangle,
   Loader2, CheckCircle2, Shield, Lock, CreditCard, Settings, Home, TrendingUp,
+  Wallet, RefreshCw,
 } from 'lucide-react';
 import 'leaflet/dist/leaflet.css';
 import { supabase } from '../utils/supabase';
@@ -15,6 +16,7 @@ import {
   setDefaultAddress, getReferralCode, getReferralStats, getLoyaltyPoints,
   getPointsHistory, getSavedSearches, removeSavedSearch,
   updateProfile, uploadAvatar, cancelOrderWithReason, getProfile, isAffiliate,
+  reorderFromOrder,
 } from '../utils/api';
 import { formatKES, CATEGORIES } from '../utils/constants';
 import ProductCard from '../components/ProductCard';
@@ -23,6 +25,7 @@ import { isPushSupported, subscribeToPush, unsubscribeFromPush } from '../utils/
 import { sounds } from '../utils/sounds';
 import { useNotifications } from '../context/NotificationContext';
 import NotificationBell from '../components/NotificationBell';
+import WalletPage from '../pages/Wallet';
 
 // ── Telegram-style Toggle Switch ──────────────────────────────────────
 function ToggleSwitch({ checked, onChange, disabled }) {
@@ -52,6 +55,7 @@ const TABS = [
   { id: 'orders',    label: 'Orders',    icon: Package },
   { id: 'addresses', label: 'Addresses', icon: MapPin },
   { id: 'rewards',   label: 'Rewards',   icon: Gift },
+  { id: 'wallet',    label: 'Wallet',    icon: Wallet },
   { id: 'notifications', label: 'Notifications', icon: Bell },
   { id: 'settings',  label: 'Settings',  icon: Settings },
 ];
@@ -155,6 +159,7 @@ function OrderCard({ order, onCancel, isExpanded, onToggle }) {
   const status = ORDER_STATUS[order.status] || ORDER_STATUS.pending;
   const StatusIcon = status.icon;
   const canCancel = CANCELLABLE_STATUSES.includes(order.status);
+  const navigate = useNavigate();
 
   return (
     <div className="fusion-recessed-card overflow-hidden transition-all duration-200">
@@ -240,6 +245,44 @@ function OrderCard({ order, onCancel, isExpanded, onToggle }) {
             >
               Track <ArrowRight className="w-4 h-4" />
             </Link>
+            {order.status === 'delivered' && (
+              <button
+                onClick={async () => {
+                  try {
+                    const result = await reorderFromOrder(order.id);
+                    if (result.success && result.items) {
+                      const cartItems = result.items.map(item => ({
+                        id: item.product_id,
+                        name: item.product_name,
+                        price: item.price,
+                        quantity: item.quantity,
+                        image_url: item.image_url,
+                        variant: item.variant || null,
+                      }));
+                      try {
+                        const existing = JSON.parse(localStorage.getItem('omix_shop_cart') || '[]');
+                        // Merge: replace items with same id, keep others
+                        const merged = [...existing];
+                        for (const newItem of cartItems) {
+                          const idx = merged.findIndex(i => i.id === newItem.id);
+                          if (idx >= 0) merged[idx] = newItem;
+                          else merged.push(newItem);
+                        }
+                        localStorage.setItem('omix_shop_cart', JSON.stringify(merged));
+                      } catch {
+                        localStorage.setItem('omix_shop_cart', JSON.stringify(cartItems));
+                      }
+                      navigate('/cart');
+                    }
+                  } catch (err) {
+                    console.error('Reorder failed:', err);
+                  }
+                }}
+                className="py-2.5 px-4 rounded-xl bg-[#71717a]/20 text-[#38B8EA] font-bold text-sm hover:bg-[#71717a]/30 transition-colors flex items-center gap-2"
+              >
+                <RefreshCw className="w-4 h-4" /> Reorder
+              </button>
+            )}
             {canCancel && (
               <button
                 onClick={() => onCancel(order)}
@@ -1562,6 +1605,10 @@ function UserDashboard() {
             )}
           </div>
         );
+
+      // ═══════════════ WALLET ════════════════
+      case 'wallet':
+        return <WalletPage />;
 
       default:
         return null;

@@ -1,6 +1,6 @@
 import { useState, useEffect, useMemo } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
-import { MapPin, CheckCircle, ShoppingCart, Minus, Plus, Package, Truck, Shield, Tag, Cpu, HardDrive, Monitor, Battery, Camera, Wifi, Bell, Heart, Percent, MessageCircle, Store, RefreshCw, ChevronRight, ChevronDown, ChevronUp, Star, Eye } from 'lucide-react';
+import { MapPin, CheckCircle, ShoppingCart, Minus, Plus, Package, Truck, Shield, Tag, Cpu, HardDrive, Monitor, Battery, Camera, Wifi, Bell, Heart, Percent, MessageCircle, Store, RefreshCw, ChevronRight, ChevronDown, ChevronUp, Star, Eye, Flag, AlertTriangle } from 'lucide-react';
 import ProductCard from '../components/ProductCard';
 
 // Accordion section for below-the-fold content
@@ -36,6 +36,8 @@ import { ReviewList, ReviewForm } from '../components/Reviews';
 import { useLang } from '../utils/lang';
 import MessageSellerButton from '../components/MessageSellerButton';
 import ProductRecommendations from '../components/ProductRecommendations';
+import ReportListingModal from '../components/ReportListingModal';
+import BundleDisplay from '../components/BundleDisplay';
 
 function formatDimensions(dim) {
   if (!dim) return '';
@@ -94,6 +96,7 @@ function ListingDetails() {
   const [submittingQuestion, setSubmittingQuestion] = useState(false);
   const [wholesalePrices, setWholesalePrices] = useState([]);
   const [sellerProfile, setSellerProfile] = useState(null);
+  const [showReportModal, setShowReportModal] = useState(false);
 
   const listingId = id;
   const inCart = cart.find(item => item.id === listingId);
@@ -382,6 +385,13 @@ function ListingDetails() {
             </div>
           )}
           <ImageGallery images={listing.images} title={listing.title} condition={listing.condition} />
+          {listing.video_url && (
+            <div className="mt-4">
+              <video controls className="w-full rounded-2xl" src={listing.video_url}>
+                Your browser does not support the video tag.
+              </video>
+            </div>
+          )}
         </div>
 
         {/* Details */}
@@ -755,6 +765,16 @@ function ListingDetails() {
               </button>
             </div>
           )}
+
+          {/* Report this listing */}
+          <div className="mt-4">
+            <button
+              onClick={() => setShowReportModal(true)}
+              className="w-full flex items-center justify-center gap-2 border border-red-800 text-red-400 font-bold py-3 rounded-xl hover:bg-red-900/20 transition-all"
+            >
+              <Flag className="w-4 h-4" /> Report this listing
+            </button>
+          </div>
         </div>
       </div>
 
@@ -769,6 +789,9 @@ function ListingDetails() {
               </div>
             </AccordionSection>
           )}
+
+          {/* Bundle Offers */}
+          <BundleDisplay listingId={listingId} />
 
           {/* Specifications */}
           {specCategories.length > 0 && (
@@ -970,6 +993,12 @@ function ListingDetails() {
         title={listing.title}
         price={effectivePrice || listing.price}
         listingId={listing.id}
+      />
+      {/* Report Listing Modal */}
+      <ReportListingModal
+        listingId={listingId}
+        isOpen={showReportModal}
+        onClose={() => setShowReportModal(false)}
       />
     </div>
   );

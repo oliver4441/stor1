@@ -2,7 +2,7 @@ import { useState, useEffect, useRef, useCallback } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import {
   User, Globe, Shield, Package, HelpCircle, Info, LogIn, UserPlus, Menu, X, Download,
-  ShoppingCart, ChevronDown, LogOut, RefreshCw, DollarSign, Store,
+  ShoppingCart, ChevronDown, LogOut, RefreshCw, DollarSign, Store, Wallet,
   Smartphone, Sofa, Shirt, Wrench, Car, Home, BookOpen, Dumbbell, Heart,
   UtensilsCrossed, Coffee, Cookie, ChefHat, Grid, Tag, ChevronRight,
   Layers, Eye, EyeOff, Search, CalendarDays
@@ -205,6 +205,9 @@ function Navbar() {
                     <span className="text-sm font-medium">Become a Seller</span>
                   </Link>
                 )}
+                <Link to="/wallet" className="p-2 rounded-full hover:bg-[#28303F] text-[#8E9BB5] transition-colors" aria-label="Wallet">
+                  <Wallet className="w-5 h-5" />
+                </Link>
               </>
             ) : (
               <>
@@ -454,6 +457,10 @@ function Navbar() {
                   Become a Seller
                 </Link>
               )}
+              <Link to="/wallet" className="flex items-center gap-3 px-4 py-3 rounded-2xl text-sm font-bold text-zinc-300 hover:bg-zinc-800" onClick={() => setMenuOpen(false)}>
+                <Wallet className="w-5 h-5" />
+                Wallet
+              </Link>
               {isUserAdmin && (
                 <Link to="/admin" className="flex items-center gap-3 px-4 py-3 rounded-2xl text-sm font-bold text-[var(--seasonal-primary,#71717a)] hover:bg-[var(--seasonal-primary,#71717a)]/10" onClick={() => setMenuOpen(false)}>
                   <Shield className="w-5 h-5" />

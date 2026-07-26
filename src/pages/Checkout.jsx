@@ -2,7 +2,8 @@ import { useState, useEffect, useRef } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { ShoppingCart, ArrowRight, Loader2, Package, CreditCard, Trash2, Plus, Minus, CheckCircle, MapPin, Phone, User, Mail, Wrench, AlertTriangle, Smartphone } from 'lucide-react';
 import { useCart } from '../context/CartContext';
-import { createOrder, getDeliveryZones, getPickupStations, initMpesaPayment, checkMpesaStatus } from '../utils/api';
+import { createOrder, getDeliveryZones, getPickupStations, initMpesaPayment, checkMpesaStatus, lookupGiftCard, redeemGiftCard, getSavedPaymentMethods, getWallet, useWalletPayment } from '../utils/api';
+import InvoiceButton from '../components/InvoiceButton';
 import { formatKES } from '../utils/constants';
 import { supabase } from '../utils/supabase';
 import { useMaintenanceMode } from '../hooks/useMaintenanceMode';
@@ -187,6 +188,22 @@ export default function CheckoutPage() {
   const [redeemPoints, setRedeemPoints] = useState(false);
   const [pointsDiscount, setPointsDiscount] = useState(0);
 
+  // Gift card state
+  const [giftCardCode, setGiftCardCode] = useState('');
+  const [giftCardData, setGiftCardData] = useState(null);
+  const [giftCardLoading, setGiftCardLoading] = useState(false);
+  const [giftCardError, setGiftCardError] = useState('');
+
+  // Wallet state
+  const [walletBalance, setWalletBalance] = useState(null);
+  const [walletLoading, setWalletLoading] = useState(false);
+  const [payWithWallet, setPayWithWallet] = useState(false);
+
+  // Saved payment methods state
+  const [savedPaymentMethods, setSavedPaymentMethods] = useState([]);
+  const [savedPaymentMethodsLoading, setSavedPaymentMethodsLoading] = useState(false);
+  const [selectedSavedMethod, setSelectedSavedMethod] = useState(null);
+
   // Apply promo code
   const applyPromoCode = async () => {
     if (!promoCode.trim()) return;
@@ -234,6 +251,36 @@ export default function CheckoutPage() {
     setPromoApplied(null);
     setPromoCode('');
     setPromoError('');
+  };
+
+  // Gift card lookup
+  const handleLookupGiftCard = async () => {
+    if (!giftCardCode.trim()) return;
+    setGiftCardLoading(true);
+    setGiftCardError('');
+    setGiftCardData(null);
+    try {
+      const res = await lookupGiftCard(giftCardCode.trim().toUpperCase());
+      if (res.success) {
+        setGiftCardData(res.giftCard || res);
+      } else {
+        setGiftCardError(res.error || 'Invalid gift card code');
+      }
+    } catch {
+      setGiftCardError('Could not validate gift card');
+    }
+    setGiftCardLoading(false);
+  };
+
+  // Gift card redeem (called at order placement)
+  const handleRedeemGiftCard = async (orderId) => {
+    if (!giftCardData) return null;
+    try {
+      const res = await redeemGiftCard(giftCardData.code || giftCardCode.trim().toUpperCase(), orderId);
+      return res;
+    } catch {
+      return { success: false, error: 'Failed to redeem gift card' };
+    }
   };
 
   const isFreeDelivery = promoApplied && promoApplied.discount_type === 'free_delivery';
@@ -290,6 +337,24 @@ export default function CheckoutPage() {
       if (res.success) setPickupStations(res.stations);
     });
   }, []);
+
+  // Fetch wallet and saved payment methods if authenticated
+  useEffect(() => {
+    if (!isAuthenticated) return;
+    const userId = null; // will be set from session
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      if (!session?.user) return;
+      const uid = session.user.id;
+
+      getWallet(uid).then(res => {
+        if (res.success) setWalletBalance(res.wallet?.balance ?? 0);
+      }).catch(() => {});
+
+      getSavedPaymentMethods(uid).then(res => {
+        if (res.success) setSavedPaymentMethods(res.methods || []);
+      }).catch(() => {});
+    });
+  }, [isAuthenticated]);
 
   // Generate or retrieve guest ID for guest checkout
   const guestId = useRef(generateGuestId());
@@ -1287,6 +1352,118 @@ export default function CheckoutPage() {
                 </div>
               </div>
 
+              {/* ── Gift Card Section ── */}
+              <div className="border-t pt-4 mt-2" style={{ borderColor: C.border }}>
+                <label className="block text-xs font-bold mb-1.5 uppercase tracking-wider" style={{ color: C.textMuted }}>
+                  Gift Card
+                </label>
+                {giftCardData ? (
+                  <div className="p-3 rounded-xl" style={{ backgroundColor: '#e8f4ff', border: '1px solid #99d6ff' }}>
+                    <div className="flex items-center justify-between mb-1">
+                      <div>
+                        <span className="text-sm font-bold" style={{ color: '#71717a' }}>Gift Card Applied</span>
+                        <p className="text-xs" style={{ color: '#71717a' }}>
+                          Balance: {formatKES(giftCardData.remaining_balance ?? giftCardData.balance ?? 0)}
+                        </p>
+                      </div>
+                      <button
+                        onClick={() => { setGiftCardData(null); setGiftCardCode(''); }}
+                        className="text-xs font-semibold underline" style={{ color: '#71717a' }}
+                      >
+                        Remove
+                      </button>
+                    </div>
+                  </div>
+                ) : (
+                  <div>
+                    <div className="flex gap-2">
+                      <input
+                        type="text"
+                        value={giftCardCode}
+                        onChange={(e) => { setGiftCardCode(e.target.value.toUpperCase()); setGiftCardError(''); }}
+                        onKeyDown={(e) => e.key === 'Enter' && (e.preventDefault(), handleLookupGiftCard())}
+                        placeholder="Enter gift card code"
+                        className="flex-1 px-3 py-2 rounded-lg border text-sm font-mono tracking-wider uppercase"
+                        style={{ borderColor: giftCardError ? '#ef4444' : C.border }}
+                      />
+                      <button
+                        onClick={handleLookupGiftCard}
+                        disabled={giftCardLoading || !giftCardCode.trim()}
+                        className="px-4 py-2 rounded-lg text-white text-xs font-bold transition-all hover:opacity-90 disabled:opacity-50"
+                        style={{ backgroundColor: C.accent }}
+                      >
+                        {giftCardLoading ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : 'Apply'}
+                      </button>
+                    </div>
+                    {giftCardError && (
+                      <p className="text-[11px] mt-1 font-medium" style={{ color: '#ef4444' }}>{giftCardError}</p>
+                    )}
+                  </div>
+                )}
+              </div>
+
+              {/* ── Wallet Balance Section ── */}
+              {isAuthenticated && (
+                <div className="border-t pt-4 mt-2" style={{ borderColor: C.border }}>
+                  <label className="block text-xs font-bold mb-1.5 uppercase tracking-wider" style={{ color: C.textMuted }}>
+                    Wallet Balance
+                  </label>
+                  {walletLoading ? (
+                    <div className="flex items-center gap-2 text-sm" style={{ color: C.textMuted }}>
+                      <Loader2 className="w-3.5 h-3.5 animate-spin" /> Loading wallet...
+                    </div>
+                  ) : walletBalance !== null ? (
+                    <label className="flex items-center gap-2 cursor-pointer p-3 rounded-xl" style={{ backgroundColor: C.bgGray }}>
+                      <input
+                        type="checkbox"
+                        checked={payWithWallet}
+                        onChange={(e) => setPayWithWallet(e.target.checked)}
+                        className="w-4 h-4 rounded border-[#8E9BB5] text-[#71717a] focus:ring-[#71717a]"
+                      />
+                      <span className="text-sm" style={{ color: C.textMuted }}>
+                        Pay with Wallet <strong className="text-[#71717a]">{formatKES(walletBalance)}</strong>
+                      </span>
+                    </label>
+                  ) : (
+                    <p className="text-sm" style={{ color: C.textMuted }}>Wallet not available</p>
+                  )}
+                </div>
+              )}
+
+              {/* ── Saved Payment Methods Section ── */}
+              {isAuthenticated && savedPaymentMethods.length > 0 && (
+                <div className="border-t pt-4 mt-2" style={{ borderColor: C.border }}>
+                  <label className="block text-xs font-bold mb-1.5 uppercase tracking-wider" style={{ color: C.textMuted }}>
+                    Saved Payment Methods
+                  </label>
+                  <div className="space-y-2">
+                    {savedPaymentMethods.map((method) => (
+                      <button
+                        key={method.id}
+                        type="button"
+                        onClick={() => setSelectedSavedMethod(selectedSavedMethod?.id === method.id ? null : method)}
+                        className="w-full flex items-center gap-3 p-3 rounded-xl text-left transition-all"
+                        style={{
+                          border: `2px solid ${selectedSavedMethod?.id === method.id ? C.accent : C.border}`,
+                          backgroundColor: selectedSavedMethod?.id === method.id ? `${C.accent}10` : C.bgGray,
+                        }}
+                      >
+                        <div className="w-5 h-5 rounded-full border-2 flex items-center justify-center" style={{ borderColor: selectedSavedMethod?.id === method.id ? C.accent : C.border }}>
+                          {selectedSavedMethod?.id === method.id && <div className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: C.accent }} />}
+                        </div>
+                        <div className="flex-1">
+                          <p className="text-sm font-bold" style={{ color: C.text }}>{method.label || method.type || 'Saved Card'}</p>
+                          <p className="text-xs" style={{ color: C.textMuted }}>
+                            {method.type === 'mpesa' ? `📱 ${method.details?.phone || ''}` : method.details?.last4 ? `•••• ${method.details.last4}` : method.type}
+                          </p>
+                        </div>
+                        <CreditCard className="w-5 h-5" style={{ color: C.accent }} />
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              )}
+
               {/* Submit */}
               {paymentMethod === 'cod' ? (
                 <button
@@ -1389,6 +1566,15 @@ function MpesaPaymentDialog({ pending, onDone }) {
         </h2>
 
         <p className="text-sm mb-4" style={{ color: '#71717a' }}>{message}</p>
+
+        {status === 'paid' && pending?.orderId && (
+          <div className="mb-4">
+            <InvoiceButton
+              order={{ id: pending.orderId, created_at: new Date().toISOString(), total_amount: pending.amount }}
+              items={[]}
+            />
+          </div>
+        )}
 
         <div className="rounded-xl p-4 mb-4 text-sm space-y-2" style={{ backgroundColor: '#f4f4f5' }}>
           <div className="flex justify-between">

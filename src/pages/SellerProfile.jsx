@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { Store, Phone, Mail, MapPin, Clock, Shield, TrendingUp, Users, Star, Award, ChevronLeft, CheckCircle, Package, HeadphonesIcon } from 'lucide-react';
+import SellerRatingCard from '../components/SellerRatingCard';
 
 const API_BASE = import.meta.env.VITE_API_URL || '';
 
@@ -198,6 +199,13 @@ export default function SellerProfile() {
               <p className="text-[#4A5771] mt-2 text-sm leading-relaxed max-w-2xl">{description}</p>
             )}
           </div>
+
+          {/* Seller Rating Card */}
+          {profile?.id && (
+            <div className="mt-4 md:mt-0 md:ml-auto">
+              <SellerRatingCard sellerId={profile.id} />
+            </div>
+          )}
         </div>
 
         {/* ── Trust Stats Grid ── */}

@@ -54,6 +54,9 @@ const WholesalePage = React.lazy(() => import('./pages/WholesalePage'));
 const ThisOrThat = React.lazy(() => import('./pages/ThisOrThat'));
 const Sell = React.lazy(() => import('./pages/Sell'));
 const Events = React.lazy(() => import('./pages/Events'));
+const Wallet = React.lazy(() => import('./pages/Wallet'));
+const GiftCards = React.lazy(() => import('./pages/GiftCards'));
+const RateSeller = React.lazy(() => import('./pages/RateSeller'));
 
 // Admin pages — co-split as an admin chunk
 const AdminRoute = React.lazy(() => import('./components/AdminRoute'));
@@ -74,6 +77,8 @@ const AdminUsers = React.lazy(() => import('./pages/AdminUsers'));
 const AdminDropshipProducts = React.lazy(() => import('./pages/AdminDropshipProducts'));
 const AdminBroadcast = React.lazy(() => import('./pages/AdminBroadcast'));
 const AdminFraud = React.lazy(() => import('./pages/AdminFraud'));
+const AdminReports = React.lazy(() => import('./pages/AdminReports'));
+const AdminBundles = React.lazy(() => import('./pages/AdminBundles'));
 const AffiliateDashboard = React.lazy(() => import('./pages/AffiliateDashboard'));
 const AffiliatePage = React.lazy(() => import('./pages/AffiliatePage'));
 const AffiliateApply = React.lazy(() => import('./pages/AffiliateApply'));
@@ -166,6 +171,9 @@ function App() {
               <Route path="/this-or-that" element={<ThisOrThat />} />
               <Route path="/sell" element={<Sell />} />
               <Route path="/events" element={<Events />} />
+              <Route path="/wallet" element={<Wallet />} />
+              <Route path="/gift-cards" element={<GiftCards />} />
+              <Route path="/rate-seller/:sellerId" element={<RateSeller />} />
               <Route path="/store" element={<SellerProfile />} />
               <Route path="/seller/dashboard" element={<SellerDashboard />} />
               <Route path="/seller/register" element={<SellerRegistration />} />
@@ -192,10 +200,12 @@ function App() {
                 <Route path="sellers" element={<AdminSellers />} />
                 <Route path="users" element={<AdminUsers />} />
                 <Route path="broadcast" element={<AdminBroadcast />} />
-                <Route path="fraud" element={<AdminFraud />} />
-              <Route path="deals" element={<AdminDeals />} />
-              <Route path="dropship" element={<AdminDropshipProducts />} />
-              </Route>
+              <Route path="fraud" element={<AdminFraud />} />
+              <Route path="reports" element={<AdminReports />} />
+              <Route path="bundles" element={<AdminBundles />} />
+            <Route path="deals" element={<AdminDeals />} />
+            <Route path="dropship" element={<AdminDropshipProducts />} />
+            </Route>
               <Route path="/listings" element={<Navigate to="/search" replace />} />
               <Route path="/earn" element={<Navigate to="/affiliate" replace />} />
               <Route path="*" element={<NotFound />} />
