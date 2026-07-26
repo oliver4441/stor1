@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Save, Store, Truck, Bell, Palette, Eye, Calendar, Wrench, Megaphone, Image } from 'lucide-react';
+import { Save, Store, Truck, Bell, Palette, Eye, Calendar, Wrench, Megaphone, Image, Wallet, Gift, Package, Flag, Clock, CreditCard } from 'lucide-react';
 import themesConfig from '../config/seasonal-themes.json';
 import { supabase } from '../utils/supabase';
 
@@ -46,6 +46,17 @@ export default function AdminSettings() {
     heroTitle: '',
     heroSubtitle: '',
     heroImageUrl: '',
+    // New feature settings
+    walletEnabled: true,
+    walletMinTopUp: '100',
+    giftCardEnabled: true,
+    giftCardExpiryDays: '365',
+    giftCardMinAmount: '100',
+    giftCardMaxAmount: '50000',
+    abandonedCartEnabled: true,
+    abandonedCartReminderHours: '4',
+    reportsAutoResolveDays: '30',
+    bundlesMaxItems: '10',
   });
 
   // Load saved states from Supabase on mount
@@ -102,6 +113,21 @@ export default function AdminSettings() {
         }
       } catch (err) {
         console.warn('Could not load hero override:', err.message);
+      }
+
+      // Load feature settings
+      const featureKeys = ['wallet_settings', 'gift_card_settings', 'abandoned_cart_settings', 'reporting_settings', 'bundle_settings'];
+      for (const key of featureKeys) {
+        try {
+          const { data: fData } = await supabase
+            .from('app_settings')
+            .select('value')
+            .eq('key', key)
+            .single();
+          if (!cancelled && fData?.value) {
+            setForm(prev => ({ ...prev, ...fData.value }));
+          }
+        } catch { /* settings not saved yet */ }
       }
     })();
     return () => { cancelled = true; };
@@ -210,6 +236,23 @@ export default function AdminSettings() {
 
       setSaved(true);
       setTimeout(() => setSaved(false), 3000);
+
+      // 5. Save feature settings
+      const featureSettings = {
+        wallet_settings: { walletEnabled: form.walletEnabled, walletMinTopUp: form.walletMinTopUp },
+        gift_card_settings: { giftCardEnabled: form.giftCardEnabled, giftCardExpiryDays: form.giftCardExpiryDays, giftCardMinAmount: form.giftCardMinAmount, giftCardMaxAmount: form.giftCardMaxAmount },
+        abandoned_cart_settings: { abandonedCartEnabled: form.abandonedCartEnabled, abandonedCartReminderHours: form.abandonedCartReminderHours },
+        reporting_settings: { reportsAutoResolveDays: form.reportsAutoResolveDays },
+        bundle_settings: { bundlesMaxItems: form.bundlesMaxItems },
+      };
+      for (const [key, value] of Object.entries(featureSettings)) {
+        const { data: existing } = await supabase.from('app_settings').select('key').eq('key', key).single();
+        if (existing) {
+          await supabase.from('app_settings').update({ value, updated_at: new Date().toISOString() }).eq('key', key);
+        } else {
+          await supabase.from('app_settings').insert({ key, value, description: `${key.replace(/_/g,' ')} configuration` });
+        }
+      }
     } catch (err) {
       console.error('Failed to save settings:', err);
       alert('Failed to save settings. Please try again.');
@@ -529,7 +572,7 @@ export default function AdminSettings() {
         <div className="flex items-center justify-between mt-3">
           <span className="text-[11px] text-zinc-400">{updateMsg.length}/200</span>
           {updateSent && (
-            <span className="text-xs font-bold text-green-600">✓ Update sent!</span>
+            <span className="text-xs font-bold text-green-600"> Update sent!</span>
           )}
           <button
             onClick={sendUpdate}
@@ -539,6 +582,125 @@ export default function AdminSettings() {
             <Megaphone className={`w-3.5 h-3.5 ${sendingUpdate ? 'animate-pulse' : ''}`} />
             {sendingUpdate ? 'Sending...' : 'Send Update'}
           </button>
+        </div>
+      </div>
+
+      {/* Wallet Settings */}
+      <div className="fusion-recessed-card p-6">
+        <div className="flex items-center gap-3 mb-5">
+          <Wallet className="w-5 h-5 text-emerald-500" />
+          <h3 className="text-base font-bold text-white">Wallet & Store Credit</h3>
+        </div>
+        <div className="space-y-4">
+          <label className="flex items-center justify-between cursor-pointer">
+            <div>
+              <p className="text-sm font-semibold text-white">Enable Wallet</p>
+              <p className="text-xs text-zinc-400">Allow customers to use store credit/wallet</p>
+            </div>
+            <div className={`w-11 h-6 rounded-full transition-colors relative ${form.walletEnabled ? 'bg-emerald-500' : 'bg-zinc-700'}`}
+              onClick={() => updateField('walletEnabled', !form.walletEnabled)}>
+              <div className={`absolute top-0.5 w-5 h-5 bg-white rounded-full shadow transition-transform ${form.walletEnabled ? 'translate-x-5.5' : 'translate-x-0.5'}`} />
+            </div>
+          </label>
+          <div>
+            <label className="block text-sm font-bold mb-1.5 text-zinc-300">Minimum Top-Up (KES)</label>
+            <input type="number" value={form.walletMinTopUp} onChange={e => updateField('walletMinTopUp', e.target.value)}
+              className="w-full md:w-1/3 px-4 py-2.5 rounded-xl bg-zinc-800 border border-transparent focus:border-emerald-500 focus:outline-none text-white text-sm" />
+          </div>
+        </div>
+      </div>
+
+      {/* Gift Card Settings */}
+      <div className="fusion-recessed-card p-6">
+        <div className="flex items-center gap-3 mb-5">
+          <Gift className="w-5 h-5 text-pink-500" />
+          <h3 className="text-base font-bold text-white">Gift Cards</h3>
+        </div>
+        <div className="space-y-4">
+          <label className="flex items-center justify-between cursor-pointer">
+            <div>
+              <p className="text-sm font-semibold text-white">Enable Gift Cards</p>
+              <p className="text-xs text-zinc-400">Allow customers to buy and redeem gift cards</p>
+            </div>
+            <div className={`w-11 h-6 rounded-full transition-colors relative ${form.giftCardEnabled ? 'bg-pink-500' : 'bg-zinc-700'}`}
+              onClick={() => updateField('giftCardEnabled', !form.giftCardEnabled)}>
+              <div className={`absolute top-0.5 w-5 h-5 bg-white rounded-full shadow transition-transform ${form.giftCardEnabled ? 'translate-x-5.5' : 'translate-x-0.5'}`} />
+            </div>
+          </label>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div>
+              <label className="block text-sm font-bold mb-1.5 text-zinc-300">Expiry (days)</label>
+              <input type="number" value={form.giftCardExpiryDays} onChange={e => updateField('giftCardExpiryDays', e.target.value)}
+                className="w-full px-4 py-2.5 rounded-xl bg-zinc-800 border border-transparent focus:border-pink-500 focus:outline-none text-white text-sm" />
+            </div>
+            <div>
+              <label className="block text-sm font-bold mb-1.5 text-zinc-300">Min Amount (KES)</label>
+              <input type="number" value={form.giftCardMinAmount} onChange={e => updateField('giftCardMinAmount', e.target.value)}
+                className="w-full px-4 py-2.5 rounded-xl bg-zinc-800 border border-transparent focus:border-pink-500 focus:outline-none text-white text-sm" />
+            </div>
+            <div>
+              <label className="block text-sm font-bold mb-1.5 text-zinc-300">Max Amount (KES)</label>
+              <input type="number" value={form.giftCardMaxAmount} onChange={e => updateField('giftCardMaxAmount', e.target.value)}
+                className="w-full px-4 py-2.5 rounded-xl bg-zinc-800 border border-transparent focus:border-pink-500 focus:outline-none text-white text-sm" />
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Abandoned Cart Settings */}
+      <div className="fusion-recessed-card p-6">
+        <div className="flex items-center gap-3 mb-5">
+          <Clock className="w-5 h-5 text-amber-500" />
+          <h3 className="text-base font-bold text-white">Abandoned Cart Recovery</h3>
+        </div>
+        <div className="space-y-4">
+          <label className="flex items-center justify-between cursor-pointer">
+            <div>
+              <p className="text-sm font-semibold text-white">Enable Recovery</p>
+              <p className="text-xs text-zinc-400">Track abandoned carts and send reminders</p>
+            </div>
+            <div className={`w-11 h-6 rounded-full transition-colors relative ${form.abandonedCartEnabled ? 'bg-amber-500' : 'bg-zinc-700'}`}
+              onClick={() => updateField('abandonedCartEnabled', !form.abandonedCartEnabled)}>
+              <div className={`absolute top-0.5 w-5 h-5 bg-white rounded-full shadow transition-transform ${form.abandonedCartEnabled ? 'translate-x-5.5' : 'translate-x-0.5'}`} />
+            </div>
+          </label>
+          <div>
+            <label className="block text-sm font-bold mb-1.5 text-zinc-300">Reminder Delay (hours)</label>
+            <input type="number" value={form.abandonedCartReminderHours} onChange={e => updateField('abandonedCartReminderHours', e.target.value)}
+              className="w-full md:w-1/3 px-4 py-2.5 rounded-xl bg-zinc-800 border border-transparent focus:border-amber-500 focus:outline-none text-white text-sm" />
+            <p className="text-xs text-zinc-400 mt-1">Hours after abandonment before sending a reminder</p>
+          </div>
+        </div>
+      </div>
+
+      {/* Reporting Settings */}
+      <div className="fusion-recessed-card p-6">
+        <div className="flex items-center gap-3 mb-5">
+          <Flag className="w-5 h-5 text-red-500" />
+          <h3 className="text-base font-bold text-white">Reports & Moderation</h3>
+        </div>
+        <div className="space-y-4">
+          <div>
+            <label className="block text-sm font-bold mb-1.5 text-zinc-300">Auto-Resolve Reports After (days)</label>
+            <input type="number" value={form.reportsAutoResolveDays} onChange={e => updateField('reportsAutoResolveDays', e.target.value)}
+              className="w-full md:w-1/3 px-4 py-2.5 rounded-xl bg-zinc-800 border border-transparent focus:border-red-500 focus:outline-none text-white text-sm" />
+            <p className="text-xs text-zinc-400 mt-1">Reports older than this are auto-dismissed</p>
+          </div>
+        </div>
+      </div>
+
+      {/* Bundle Settings */}
+      <div className="fusion-recessed-card p-6">
+        <div className="flex items-center gap-3 mb-5">
+          <Package className="w-5 h-5 text-blue-500" />
+          <h3 className="text-base font-bold text-white">Product Bundles</h3>
+        </div>
+        <div className="space-y-4">
+          <div>
+            <label className="block text-sm font-bold mb-1.5 text-zinc-300">Max Items Per Bundle</label>
+            <input type="number" value={form.bundlesMaxItems} onChange={e => updateField('bundlesMaxItems', e.target.value)}
+              className="w-full md:w-1/3 px-4 py-2.5 rounded-xl bg-zinc-800 border border-transparent focus:border-blue-500 focus:outline-none text-white text-sm" />
+          </div>
         </div>
       </div>
 
