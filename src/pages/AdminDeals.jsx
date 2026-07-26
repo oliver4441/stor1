@@ -4,6 +4,7 @@ import {
   Calendar, Image, ToggleLeft, ToggleRight, ExternalLink, Search
 } from 'lucide-react';
 import { supabase } from '../utils/supabase';
+import { isAdmin } from '../utils/api';
 import { GooeyLoader } from '@/components/ui/loader-10';
 
 export default function AdminDeals() {
@@ -129,6 +130,9 @@ export default function AdminDeals() {
     };
 
     try {
+      const isAdminUser = await isAdmin();
+      if (!isAdminUser) { alert('Admin access required'); return; }
+
       if (editingDealId) {
         const { error } = await supabase.from('flash_deals').update(payload).eq('id', editingDealId);
         if (error) throw error;
@@ -149,6 +153,8 @@ export default function AdminDeals() {
   };
 
   const handleDelete = async (id) => {
+    const isAdminUser = await isAdmin();
+    if (!isAdminUser) { alert('Admin access required'); return; }
     await supabase.from('deal_items').delete().eq('deal_id', id);
     const { error } = await supabase.from('flash_deals').delete().eq('id', id);
     if (error) { alert('Error: ' + error.message); return; }
@@ -157,6 +163,8 @@ export default function AdminDeals() {
   };
 
   const toggleActive = async (id, current) => {
+    const isAdminUser = await isAdmin();
+    if (!isAdminUser) { alert('Admin access required'); return; }
     await supabase.from('flash_deals').update({ is_active: !current }).eq('id', id);
     loadData();
   };
@@ -171,6 +179,8 @@ export default function AdminDeals() {
     e.preventDefault();
     setSubmitting(true);
     try {
+      const isAdminUser = await isAdmin();
+      if (!isAdminUser) { alert('Admin access required'); return; }
       const { error } = await supabase.from('deal_items').insert({
         deal_id: selectedDeal.id,
         listing_id: itemForm.listing_id,
@@ -189,6 +199,8 @@ export default function AdminDeals() {
   };
 
   const handleDeleteItem = async (id) => {
+    const isAdminUser = await isAdmin();
+    if (!isAdminUser) { alert('Admin access required'); return; }
     const { error } = await supabase.from('deal_items').delete().eq('id', id);
     if (error) { alert('Error: ' + error.message); return; }
     setDeleteItemTarget(null);

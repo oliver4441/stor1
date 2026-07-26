@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import { Plus, Pencil, Trash2, X, Loader2, Tag, Copy, CheckCircle, AlertTriangle, ToggleLeft, ToggleRight } from 'lucide-react';
 import { supabase } from '../utils/supabase';
+import { isAdmin } from '../utils/api';
 
 export default function AdminPromoCodes() {
   const [codes, setCodes] = useState([]);
@@ -86,6 +87,9 @@ export default function AdminPromoCodes() {
     };
 
     try {
+      const isAdminUser = await isAdmin();
+      if (!isAdminUser) { alert('Admin access required'); return; }
+
       if (editingId) {
         const { error } = await supabase.from('promo_codes').update(payload).eq('id', editingId);
         if (error) throw error;
@@ -106,6 +110,8 @@ export default function AdminPromoCodes() {
   };
 
   const handleDelete = async (id) => {
+    const isAdminUser = await isAdmin();
+    if (!isAdminUser) { alert('Admin access required'); return; }
     const { error } = await supabase.from('promo_codes').delete().eq('id', id);
     if (error) {
       alert('Error deleting: ' + error.message);
@@ -116,6 +122,8 @@ export default function AdminPromoCodes() {
   };
 
   const toggleActive = async (id, current) => {
+    const isAdminUser = await isAdmin();
+    if (!isAdminUser) { alert('Admin access required'); return; }
     await supabase.from('promo_codes').update({ is_active: !current }).eq('id', id);
     loadData();
   };

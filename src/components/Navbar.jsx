@@ -5,7 +5,7 @@ import {
   ShoppingCart, ChevronDown, LogOut, RefreshCw, DollarSign, Store,
   Smartphone, Sofa, Shirt, Wrench, Car, Home, BookOpen, Dumbbell, Heart,
   UtensilsCrossed, Coffee, Cookie, ChefHat, Grid, Tag, ChevronRight,
-  Layers, Eye, EyeOff, Search
+  Layers, Eye, EyeOff, Search, CalendarDays
 } from 'lucide-react';
 import { supabase } from '../utils/supabase';
 import { useLang } from '../utils/lang';
@@ -29,6 +29,8 @@ function CategoryIcon({ iconName, className }) {
 }
 
 const FEATURE_LINKS = [
+  { to: '/sell', label: 'Sell', icon: Package, color: 'from-zinc-500 to-zinc-600', glow: 'shadow-zinc-500/40' },
+  { to: '/events', label: 'Events', icon: CalendarDays, color: 'from-zinc-500 to-zinc-600', glow: 'shadow-zinc-500/40' },
   { to: '/refurbished', label: 'Refurbished', icon: RefreshCw, color: 'from-zinc-500 to-zinc-600', glow: 'shadow-zinc-500/40' },
   { to: '/wholesale', label: 'Wholesale', icon: Package, color: 'from-zinc-500 to-zinc-600', glow: 'shadow-zinc-500/40' },
   { to: 'https://omixsystems.store', label: 'Blog', icon: Globe, color: 'from-zinc-400 to-zinc-600', glow: 'shadow-zinc-500/40', external: true },

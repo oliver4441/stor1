@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { Plus, Pencil, Trash2, X, AlertTriangle, Loader2, Upload, Image as ImageIcon, Search, Eye, CheckSquare, Square, Tag, GripVertical, Star, Percent, Package } from 'lucide-react';
 import { supabase } from '../utils/supabase';
-import { fetchAllListings, createListing, updateListing, deleteListing, adminDeleteListing, bulkUpdateListingStatus, bulkDeleteListings, saveWholesalePrices } from '../utils/api';
+import { fetchAllListings, createListing, updateListing, deleteListing, adminDeleteListing, bulkUpdateListingStatus, bulkDeleteListings, saveWholesalePrices, isAdmin } from '../utils/api';
 import { formatKES, CATEGORIES, generateSKU, COLOR_PALETTE, SIZE_PRESETS, getPresetSizes, VARIANT_REQUIRED_CATEGORIES } from '../utils/constants';
 import { uploadImage } from '../utils/api';
 import VariantManager from '../components/VariantManager';
@@ -359,6 +359,10 @@ export default function AdminProducts() {
     const oldValue = oldListing?.[quickEditField] ?? '';
     const updateData = { [quickEditField]: quickEditValue };
     if (quickEditField === 'price') updateData.price = parseFloat(quickEditValue) || 0;
+
+    // Verify admin
+    const adminUser = await isAdmin();
+    if (!adminUser) { setErrorMsg('Admin access required'); return; }
 
     // Optimistic update
     setListings(prev => prev.map(l => l.id === quickEditId ? { ...l, [quickEditField]: quickEditValue } : l));

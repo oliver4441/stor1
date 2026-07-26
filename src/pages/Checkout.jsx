@@ -380,7 +380,7 @@ export default function CheckoutPage() {
         })),
         total: currentDiscounted,
         customerName: form.fullName.trim(),
-        phone: form.phone.trim(),
+        phone: form.phone.trim().replace(/[^0-9]/g, ''),
         email: form.email.trim(),
         address: `${form.landmark}, ${form.area}${form.city ? ', ' + form.city : ''}`,
         city: form.city || '',
@@ -535,7 +535,7 @@ export default function CheckoutPage() {
         })),
         total: currentDiscounted,
         customerName: form.fullName.trim(),
-        phone: form.phone.trim(),
+        phone: form.phone.trim().replace(/[^0-9]/g, ''),
         email: form.email.trim(),
         address: `${form.landmark}, ${form.area}${form.city ? ', ' + form.city : ''}`,
         city: form.city || '',
@@ -591,7 +591,8 @@ export default function CheckoutPage() {
 
       // Initiate M-Pesa STK push
       try {
-        const mpesaRes = await initMpesaPayment(form.phone.trim(), currentDiscounted, orderId);
+        const cleanedPhone = form.phone.trim().replace(/[^0-9]/g, '');
+        const mpesaRes = await initMpesaPayment(cleanedPhone, currentDiscounted, orderId);
 
         if (!mpesaRes.success && mpesaRes.code === 'MPESA_NOT_CONFIGURED') {
           setLoading(false);
@@ -612,7 +613,7 @@ export default function CheckoutPage() {
         setMpesaPending({
           checkoutRequestId: mpesaRes.checkoutRequestId,
           orderId,
-          phone: form.phone.trim(),
+          phone: form.phone.trim().replace(/[^0-9]/g, ''),
           amount: currentDiscounted,
         });
       } catch (err) {
@@ -663,29 +664,6 @@ export default function CheckoutPage() {
     );
   }
 
-  // ── Auth Gate ───────────────────────────────────────────────────
-  if (authChecked && !isAuthenticated) {
-    return (
-      <div className="max-w-lg mx-auto px-4 py-16">
-        <div className="text-center py-12 rounded-2xl border" style={{ borderColor: C.border, backgroundColor: C.bg }}>
-          <div className="w-20 h-20 mx-auto mb-5 rounded-full" style={{ backgroundColor: C.bgGray }}>
-            <User className="w-10 h-10 mx-auto mt-5" style={{ color: C.textMuted }} />
-          </div>
-          <h1 className="text-2xl font-black mb-2" style={{ color: C.text }}>Log in to checkout</h1>
-          <p className="text-sm mb-8" style={{ color: C.textMuted }}>You need an account to place orders.</p>
-          <Link
-            to={`/login?redirect=${encodeURIComponent(window.location.pathname)}`}
-            className="inline-flex items-center gap-2 font-bold px-8 py-3.5 rounded-xl transition-all text-white"
-            style={{ backgroundColor: C.accent }}
-          >Sign In</Link>
-          <p className="mt-4 text-sm" style={{ color: C.textMuted }}>
-            Don't have an account? <Link to={`/signup?redirect=${encodeURIComponent(window.location.pathname)}`} className="font-bold" style={{ color: C.accent }}>Sign Up</Link>
-          </p>
-        </div>
-      </div>
-    );
-  }
-
   // ── Empty Cart ──────────────────────────────────────────────────
   if (items.length === 0) {
     return (
@@ -711,6 +689,15 @@ export default function CheckoutPage() {
   // ── Checkout Form ───────────────────────────────────────────────
   return (
     <div className="max-w-5xl mx-auto px-4 sm:px-6 py-6 sm:py-8" data-name="checkout-page">
+      {authChecked && !isAuthenticated && (
+        <div className="text-center py-3 px-4 rounded-2xl border mb-4" style={{ borderColor: C.border, backgroundColor: C.bg }}>
+          <p className="text-sm" style={{ color: C.textMuted }}>
+            You're checking out as a guest.{' '}
+            <Link to={`/login?redirect=${encodeURIComponent(window.location.pathname)}`} className="font-bold" style={{ color: C.accent }}>Sign in</Link>
+            {' '}for order tracking & faster checkout next time.
+          </p>
+        </div>
+      )}
       <Breadcrumb compact />
       {/* Step Indicator */}
       <StepIndicator step={2} />

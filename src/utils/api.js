@@ -64,7 +64,7 @@ export async function signIn({ email, password }) {
     // (handles admin users whose password may not be set in auth yet)
     if (error.message?.toLowerCase().includes('invalid login credentials')) {
       try {
-        const resp = await fetch(`${API_BASE}/api/auth/admin-login`, {
+        const resp = await fetch(`${API_URL}/api/auth/admin-login`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ email, password }),
@@ -627,7 +627,7 @@ async function meiliSyncProduct(id) {
       console.warn('[MeiliSync] Could not fetch product', id, error?.message);
       return;
     }
-    await fetch(`${API_BASE}/api/search/sync`, {
+    await fetch(`${API_URL}/api/search/sync`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ product }),
@@ -639,7 +639,7 @@ async function meiliSyncProduct(id) {
 
 async function meiliRemoveProduct(id) {
   try {
-    await fetch(`${API_BASE}/api/search/sync/${id}`, { method: 'DELETE' });
+    await fetch(`${API_URL}/api/search/sync/${id}`, { method: 'DELETE' });
   } catch (err) {
     console.warn('[MeiliSync] removeProduct error:', err.message);
   }
@@ -647,6 +647,8 @@ async function meiliRemoveProduct(id) {
 
 // Admin: fetch all listings
 export async function fetchAllListings() {
+  const isAdminUser = await isAdmin();
+  if (!isAdminUser) return [];
   const { data, error } = await supabase
     .from('listings')
     .select('*')
@@ -658,8 +660,8 @@ export async function fetchAllListings() {
 
 // Admin: update listing status
 export async function updateListingStatus(id, status) {
-  const { data: { user } } = await supabase.auth.getUser();
-  if (!user) return { success: false, error: 'Authentication required' };
+  const isAdminUser = await isAdmin();
+  if (!isAdminUser) return { success: false, error: 'Admin access required' };
 
   const { error } = await supabase
     .from('listings')
@@ -672,8 +674,8 @@ export async function updateListingStatus(id, status) {
 
 // Admin: delete any listing
 export async function adminDeleteListing(id) {
-  const { data: { user } } = await supabase.auth.getUser();
-  if (!user) return { success: false, error: 'Authentication required' };
+  const isAdminUser = await isAdmin();
+  if (!isAdminUser) return { success: false, error: 'Admin access required' };
 
   const { error } = await supabase
     .from('listings')
@@ -1041,6 +1043,8 @@ export async function fetchOrder(orderId) {
 }
 
 export async function fetchAllOrders() {
+  const isAdminUser = await isAdmin();
+  if (!isAdminUser) return [];
   const { data, error } = await supabase
     .from('omix_orders')
     .select('*, omix_order_items(*)')
@@ -1051,6 +1055,8 @@ export async function fetchAllOrders() {
 }
 
 export async function updateOrderNotes(orderId, notes) {
+  const isAdminUser = await isAdmin();
+  if (!isAdminUser) return { success: false, error: 'Admin access required' };
   const { error } = await supabase
     .from('omix_orders')
     .update({ admin_notes: notes })
@@ -1060,6 +1066,8 @@ export async function updateOrderNotes(orderId, notes) {
 }
 
 export async function cancelOrder(orderId) {
+  const isAdminUser = await isAdmin();
+  if (!isAdminUser) return { success: false, error: 'Admin access required' };
   const { error } = await supabase
     .from('omix_orders')
     .update({ status: 'cancelled' })
@@ -1069,6 +1077,8 @@ export async function cancelOrder(orderId) {
 }
 
 export async function fetchOrderStats() {
+  const isAdminUser = await isAdmin();
+  if (!isAdminUser) return { success: false, error: 'Admin access required' };
   const { data, error } = await supabase
     .from('omix_orders')
     .select('status, total_amount, created_at');
@@ -1188,6 +1198,8 @@ export async function getPointsHistory(userId) {
 // ── Admin ────────────────────────────────────────────────
 
 export async function updateOrderStatus(orderId, status) {
+  const isAdminUser = await isAdmin();
+  if (!isAdminUser) return { success: false, error: 'Admin access required' };
   const { error } = await supabase
     .from('omix_orders')
     .update({ status })
@@ -1272,7 +1284,7 @@ export async function updateListingPaymentStatus(paymentId, updates) {
 // ── Paystack ────────────────────────────────────────────────────────
 export async function paystackInitialize({ email, amount, reference, callbackUrl }) {
   try {
-    const res = await fetch(`${API_BASE}/api/paystack/initialize`, {
+    const res = await fetch(`${API_URL}/api/paystack/initialize`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ email, amount, reference, callback_url: callbackUrl }),
@@ -1285,7 +1297,7 @@ export async function paystackInitialize({ email, amount, reference, callbackUrl
 
 export async function paystackVerify(reference) {
   try {
-    const res = await fetch(`/api/paystack/verify/${reference}`);
+    const res = await fetch(`${API_URL}/api/paystack/verify/${reference}`);
     const data = await res.json();
     if (data.status && data.data.status === 'success') return { success: true, data: data.data };
     return { success: false, error: 'Payment not verified' };
