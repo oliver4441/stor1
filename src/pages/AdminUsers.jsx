@@ -37,7 +37,7 @@ async function apiDelete(url) {
 
 const ROLE_META = {
   admin:    { label: 'Admin',    icon: ShieldCheck, cls: 'bg-red-900/30 text-red-400' },
-  seller:   { label: 'Seller',   icon: Shield,      cls: 'bg-blue-900/30 text-zinc-500' },
+  seller:   { label: 'Seller',   icon: Shield,      cls: 'bg-zinc-800/30 text-zinc-500' },
   customer: { label: 'Customer', icon: UserIcon,    cls: 'bg-zinc-700/40 text-zinc-400' },
 };
 

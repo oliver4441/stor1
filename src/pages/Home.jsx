@@ -91,9 +91,9 @@ function Home() {
   const heroTo = theme?.colors?.heroTo || '#2A3548';
   const heroText = theme?.colors?.heroText || '#ffffff';
   const heroSubtext = theme?.colors?.heroSubtext || '#8E9BB5';
-  const heroAccent = theme?.colors?.heroAccent || '#007AFF';
+  const heroAccent = theme?.colors?.heroAccent || '#71717a';
   const heroOverlay = theme?.colors?.heroOverlay || 'rgba(0,122,255,0.2)';
-  const ctaBg = theme?.colors?.ctaBg || '#007AFF';
+  const ctaBg = theme?.colors?.ctaBg || '#71717a';
   const ctaText = theme?.colors?.ctaText || '#ffffff';
   const heroTitle = heroOverride?.title || theme?.heroTitle || "Kenya's #1 Online Store";
   const heroSubtitle = heroOverride?.subtitle || theme?.heroSubtitle || 'M-Pesa Payments · Free Delivery · 7-Day Returns · Shop from anywhere in Kenya';
@@ -230,7 +230,7 @@ function Home() {
         <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
           <div className="flex items-center gap-3 bg-[#28303F] border border-[#353F54] rounded-xl p-4">
 <div className="w-10 h-10 rounded-lg bg-zinc-600/20 flex items-center justify-center flex-shrink-0">
-              <svg className="w-5 h-5 text-[#007AFF]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" /></svg>
+              <svg className="w-5 h-5 text-[#71717a]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" /></svg>
             </div>
             <div>
               <p className="text-sm text-[#FAFAFA] font-bold">M-Pesa Payments</p>
@@ -282,7 +282,7 @@ function Home() {
           </video>
         </div>
         <p className="text-center text-sm text-zinc-400 mt-3">
-          {!user && <Link to="/how-it-works" className="text-[var(--seasonal-primary,#007AFF)] font-bold hover:underline">{t('home.howItWorks')}</Link>}
+          {!user && <Link to="/how-it-works" className="text-[var(--seasonal-primary,#71717a)] font-bold hover:underline">{t('home.howItWorks')}</Link>}
         </p>
       </div>
 
@@ -323,8 +323,8 @@ function Home() {
               onClick={() => setActiveCategory(cat)}
               className={`px-4 py-2 rounded-[14px] text-sm font-medium whitespace-nowrap border transition-all ${
                 activeCategory === cat 
-                  ? 'bg-[#007AFF] text-white border-[#007AFF]' 
-                  : 'bg-[#28303F]/60 text-[#8E9BB5] border-[#353F54] hover:border-[#007AFF] hover:text-white'
+                  ? 'bg-[#71717a] text-white border-[#71717a]' 
+                  : 'bg-[#28303F]/60 text-[#8E9BB5] border-[#353F54] hover:border-[#71717a] hover:text-white'
               }`}
             >
               {cat}

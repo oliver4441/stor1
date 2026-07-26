@@ -27,7 +27,7 @@ const TIER_META = {
   bronze:   { label: 'Bronze',   color: 'text-amber-700',  bg: 'bg-amber-700/20',  bar: 'bg-amber-700',  iconBg: 'bg-gradient-to-br from-amber-700 to-amber-500 text-white' },
   silver:   { label: 'Silver',   color: 'text-[#8E9BB5]',   bg: 'bg-zinc-600/20',   bar: 'bg-zinc-400',   iconBg: 'bg-gradient-to-br from-zinc-500 to-zinc-200 text-white' },
   gold:     { label: 'Gold',     color: 'text-amber-400',  bg: 'bg-amber-500/20',  bar: 'bg-amber-400',  iconBg: 'bg-gradient-to-br from-amber-500 to-yellow-300 text-white' },
-  platinum: { label: 'Platinum', color: 'text-zinc-400',   bg: 'bg-zinc-500/20',   bar: 'bg-blue-400',   iconBg: 'bg-gradient-to-br from-blue-500 to-cyan-300 text-white' },
+  platinum: { label: 'Platinum', color: 'text-zinc-400',   bg: 'bg-zinc-500/20',   bar: 'bg-zinc-500',   iconBg: 'bg-gradient-to-br from-zinc-600 to-cyan-300 text-white' },
 };
 
 function TierBadge({ tier }) {
@@ -54,7 +54,7 @@ function TierProgress({ currentCount, currentTier }) {
           <span className="text-zinc-400 font-bold">Platinum (Max Tier)</span>
         </div>
         <div className="h-2.5 bg-[#28303F] rounded-full overflow-hidden">
-          <div className="h-full rounded-full bg-blue-500" style={{ width: '100%' }} />
+          <div className="h-full rounded-full bg-zinc-600" style={{ width: '100%' }} />
         </div>
       </div>
     );
@@ -394,7 +394,7 @@ export default function AffiliateDashboard() {
           {[
             { icon: MousePointerClick, color: 'text-fuchsia-400', chip: 'bg-fuchsia-500/15', top: 'border-t-fuchsia-500/40', val: stats.lifetime?.totalClicks || 0, label: 'Link Clicks' },
             { icon: Users, color: 'text-violet-400', chip: 'bg-violet-500/15', top: 'border-t-violet-500/40', val: stats.lifetime?.totalReferred || 0, label: 'Total Referrals' },
-            { icon: ShoppingBag, color: 'text-zinc-500', chip: 'bg-blue-500/15', top: 'border-t-blue-500/40', val: qualifiedCount, label: 'Qualified Sales' },
+            { icon: ShoppingBag, color: 'text-zinc-500', chip: 'bg-zinc-600/15', top: 'border-t-blue-500/40', val: qualifiedCount, label: 'Qualified Sales' },
             { icon: TrendingUp, color: 'text-zinc-400', chip: 'bg-[#71717a]/15', top: 'border-t-[#71717a]/40', val: Math.round(stats.current?.totalSales || 0), label: 'Sales Value', money: true },
             { icon: Wallet, color: 'text-amber-400', chip: 'bg-amber-500/15', top: 'border-t-amber-500/40', val: Math.round(pendingCommission), label: 'Pending Commission', money: true },
           ].map((s, i) => (

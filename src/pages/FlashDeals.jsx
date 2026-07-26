@@ -85,7 +85,7 @@ export default function FlashDeals() {
   return (
     <div className="min-h-screen bg-[#242C3B]">
       {/* Header Banner */}
-      <div className="relative overflow-hidden" style={{ backgroundColor: 'var(--seasonal-primary, #007AFF)' }}>
+      <div className="relative overflow-hidden" style={{ backgroundColor: 'var(--seasonal-primary, #71717a)' }}>
         <div className="absolute inset-0 opacity-10"
           style={{ backgroundImage: 'radial-gradient(circle at 30% 50%, rgba(255,255,255,0.3) 0%, transparent 50%)' }}
         />
@@ -115,7 +115,7 @@ export default function FlashDeals() {
             <Link
               to="/"
               className="inline-flex items-center gap-2 px-6 py-3 rounded-xl text-white font-bold text-sm transition-all hover:opacity-90"
-              style={{ backgroundColor: '#007AFF' }}
+              style={{ backgroundColor: '#71717a' }}
             >
               <ShoppingBag className="w-4 h-4" />
               Browse Products
@@ -229,7 +229,7 @@ export default function FlashDeals() {
                                       className="h-full rounded-full transition-all"
                                       style={{
                                         width: `${Math.min(100, (item.sold_quantity / item.max_quantity) * 100)}%`,
-                                        backgroundColor: '#007AFF',
+                                        backgroundColor: '#71717a',
                                       }}
                                     />
                                   </div>

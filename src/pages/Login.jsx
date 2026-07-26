@@ -118,7 +118,7 @@ function Login() {
         <div className="bg-amber-900/20 border border-amber-900/50 text-amber-700 dark:text-amber-400 p-4 rounded-xl mb-4 text-sm">
           <p className="font-bold mb-1">{t('auth.emailNotVerified') || 'Email not verified'}</p>
           <p className="text-[#4A5771] text-xs mb-2">{t('auth.emailNotVerifiedDesc') || 'Please check your email for a verification link.'}</p>
-          <p className="text-xs text-[#4A5771]">{t('auth.emailNotVerifiedHelp') || 'Need help?'} <Link to="/signup" className="text-[var(--seasonal-primary,#007AFF)] font-bold hover:underline">{t('auth.createNewAccount') || 'Create new account'}</Link>.</p>
+          <p className="text-xs text-[#4A5771]">{t('auth.emailNotVerifiedHelp') || 'Need help?'} <Link to="/signup" className="text-[var(--seasonal-primary,#71717a)] font-bold hover:underline">{t('auth.createNewAccount') || 'Create new account'}</Link>.</p>
         </div>
       )}
 
@@ -129,11 +129,11 @@ function Login() {
       <form onSubmit={handleLogin} className="space-y-4">
         <div>
           <label className="block text-sm font-bold mb-2 text-[#8E9BB5]">{t('auth.email') || 'Email'}</label>
-          <input required name="email" type="email" placeholder={t('auth.emailPlaceholder') || 'your@email.com'} className="w-full px-4 py-3.5 rounded-xl bg-[#28303F] border border-transparent focus:border-[var(--seasonal-primary,#007AFF)] focus:bg-white dark:focus:bg-[#242C3B] focus:outline-none text-white transition-all shadow-sm" />
+          <input required name="email" type="email" placeholder={t('auth.emailPlaceholder') || 'your@email.com'} className="w-full px-4 py-3.5 rounded-xl bg-[#28303F] border border-transparent focus:border-[var(--seasonal-primary,#71717a)] focus:bg-white dark:focus:bg-[#242C3B] focus:outline-none text-white transition-all shadow-sm" />
         </div>
         <div>
           <label className="block text-sm font-bold mb-2 text-[#8E9BB5]">{t('auth.password') || 'Password'}</label>
-          <input required name="password" type="password" placeholder={t('auth.passwordPlaceholder') || '••••••••'} className="w-full px-4 py-3.5 rounded-xl bg-[#28303F] border border-transparent focus:border-[var(--seasonal-primary,#007AFF)] focus:bg-white dark:focus:bg-[#242C3B] focus:outline-none text-white transition-all shadow-sm" />
+          <input required name="password" type="password" placeholder={t('auth.passwordPlaceholder') || '••••••••'} className="w-full px-4 py-3.5 rounded-xl bg-[#28303F] border border-transparent focus:border-[var(--seasonal-primary,#71717a)] focus:bg-white dark:focus:bg-[#242C3B] focus:outline-none text-white transition-all shadow-sm" />
           <div className="flex justify-end mt-1.5">
             <button
               type="button"
@@ -146,13 +146,13 @@ function Login() {
                 supabase.auth.resetPasswordForEmail(email, { redirectTo: `${window.location.origin}/account` });
                 setError('Password reset link sent to your email.');
               }}
-              className="text-xs text-[#4A5771] hover:text-[var(--seasonal-primary,#007AFF)] transition-colors font-medium"
+              className="text-xs text-[#4A5771] hover:text-[var(--seasonal-primary,#71717a)] transition-colors font-medium"
             >
               Forgot Password?
             </button>
           </div>
         </div>
-        <button type="submit" disabled={loading} className="w-full bg-[var(--seasonal-primary,#007AFF)] text-white font-black py-4 rounded-2xl hover:bg-[var(--seasonal-secondary,#0066CC)] transition-all disabled:opacity-50 shadow-lg shadow-[var(--seasonal-primary,#007AFF)]/20">
+        <button type="submit" disabled={loading} className="w-full bg-[var(--seasonal-primary,#71717a)] text-white font-black py-4 rounded-2xl hover:bg-[var(--seasonal-secondary,#71717a)] transition-all disabled:opacity-50 shadow-lg shadow-[var(--seasonal-primary,#71717a)]/20">
           {loading ? (t('auth.loggingIn') || 'Signing in...') : (t('auth.login') || 'Sign In')}
         </button>
 
@@ -192,7 +192,7 @@ function Login() {
 
       </form>
       <p className="mt-8 text-center text-[#4A5771] text-sm">
-        {t('auth.noAccount') || "Don't have an account?"} <Link to={`/signup${window.location.search}`} className="text-[var(--seasonal-primary,#007AFF)] font-bold hover:underline">{t('auth.signUp') || 'Sign Up'}</Link>
+        {t('auth.noAccount') || "Don't have an account?"} <Link to={`/signup${window.location.search}`} className="text-[var(--seasonal-primary,#71717a)] font-bold hover:underline">{t('auth.signUp') || 'Sign Up'}</Link>
       </p>
     </div>
   );

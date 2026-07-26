@@ -106,8 +106,8 @@ export default function AdminAnalytics() {
     .sort(([, a], [, b]) => b - a)
     .map(([name, value]) => ({ name, value: Math.round(value) }));
 
-  const CHART_COLORS = ['#1a5632', '#3b82f6', '#10b981', '#f59e0b', '#8b5cf6', '#ec4899', '#06b6d4'];
-  const STATUS_COLORS = { pending: '#f59e0b', processing: '#3b82f6', shipped: '#8b5cf6', delivered: '#10b981', cancelled: '#ef4444' };
+  const CHART_COLORS = ['#1a5632', '#71717a', '#10b981', '#f59e0b', '#8b5cf6', '#ec4899', '#06b6d4'];
+  const STATUS_COLORS = { pending: '#f59e0b', processing: '#71717a', shipped: '#8b5cf6', delivered: '#10b981', cancelled: '#ef4444' };
 
   // Custom tooltip
   const CustomTooltip = ({ active, payload, label }) => {
@@ -168,7 +168,7 @@ export default function AdminAnalytics() {
           <p className="text-xs text-zinc-400 mt-1">Avg Order</p>
         </div>
         <div className="fusion-recessed-card p-5">
-          <Users className="w-5 h-5 text-sky-500 mb-2" />
+          <Users className="w-5 h-5 text-zinc-500 mb-2" />
           <p className="text-2xl font-black text-white">{customerCount}</p>
           <p className="text-xs text-zinc-400 mt-1">Customers</p>
         </div>
@@ -244,7 +244,7 @@ export default function AdminAnalytics() {
                 <XAxis dataKey="day" tick={{ fontSize: 10, fill: '#71717a' }} tickLine={false} axisLine={false} />
                 <YAxis tick={{ fontSize: 10, fill: '#71717a' }} tickLine={false} axisLine={false} allowDecimals={false} />
                 <Tooltip content={<CustomTooltip />} />
-                <Bar dataKey="orders" fill="#3b82f6" radius={[4, 4, 0, 0]} />
+                <Bar dataKey="orders" fill="#71717a" radius={[4, 4, 0, 0]} />
               </BarChart>
             </ResponsiveContainer>
           </div>

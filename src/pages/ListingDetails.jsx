@@ -209,7 +209,7 @@ function ListingDetails() {
     return (
       <div className="max-w-7xl mx-auto px-4 py-20 text-center">
         <h2 className="text-3xl font-bold mb-4 text-white">{error || t('listing.listingNotFound')}</h2>
-        <Link to="/" className="text-[var(--seasonal-primary,#007AFF)] font-bold hover:underline">{t('listing.goBackHome')}</Link>
+        <Link to="/" className="text-[var(--seasonal-primary,#71717a)] font-bold hover:underline">{t('listing.goBackHome')}</Link>
       </div>
     );
   }
@@ -412,7 +412,7 @@ function ListingDetails() {
           <div className="flex flex-wrap gap-2 mb-6">
             {deliveryZones.length > 0 ? (
               <>
-                <span className="flex items-center gap-1.5 bg-zinc-900/20 text-zinc-600 dark:text-zinc-500 px-3 py-1.5 rounded-xl text-xs font-bold border border-blue-800">
+                <span className="flex items-center gap-1.5 bg-zinc-900/20 text-zinc-600 dark:text-zinc-500 px-3 py-1.5 rounded-xl text-xs font-bold border border-zinc-700">
                   <Truck className="w-3.5 h-3.5" /> Free delivery in {deliveryZones[0].name || 'Kenya'}
                 </span>
                 <span className="flex items-center gap-1.5 bg-purple-900/20 text-purple-700 dark:text-purple-400 px-3 py-1.5 rounded-xl text-xs font-bold border border-purple-200 dark:border-purple-800">
@@ -421,7 +421,7 @@ function ListingDetails() {
               </>
             ) : (
               <>
-                <span className="flex items-center gap-1.5 bg-zinc-900/20 text-zinc-600 dark:text-zinc-500 px-3 py-1.5 rounded-xl text-xs font-bold border border-blue-800">
+                <span className="flex items-center gap-1.5 bg-zinc-900/20 text-zinc-600 dark:text-zinc-500 px-3 py-1.5 rounded-xl text-xs font-bold border border-zinc-700">
                   <Truck className="w-3.5 h-3.5" /> Free delivery nationwide
                 </span>
                 <span className="flex items-center gap-1.5 bg-purple-900/20 text-purple-700 dark:text-purple-400 px-3 py-1.5 rounded-xl text-xs font-bold border border-purple-200 dark:border-purple-800">
@@ -442,7 +442,7 @@ function ListingDetails() {
                   const Icon = spec.icon;
                   return (
                     <div key={i} className="flex items-center gap-2 bg-[#28303F]/60 border border-[#353F54] rounded-xl px-3 py-2.5 flex-shrink-0">
-                      <Icon className="w-4 h-4 text-[var(--seasonal-primary,#007AFF)]" />
+                      <Icon className="w-4 h-4 text-[var(--seasonal-primary,#71717a)]" />
                       <div className="leading-tight">
                         <p className="text-[10px] text-[#4A5771] uppercase tracking-wider">{spec.label}</p>
                         <p className="text-xs font-bold text-white">{spec.value}</p>
@@ -509,7 +509,7 @@ function ListingDetails() {
                         {type.name} {selectedVal && <span className="text-[#8E9BB5] normal-case">— {selectedLabel}</span>}
                       </label>
                       {type.id === 'size' && listing.size_guide && (
-                        <button type="button" className="text-[10px] text-[var(--seasonal-primary,#007AFF)] font-bold hover:underline">
+                        <button type="button" className="text-[10px] text-[var(--seasonal-primary,#71717a)] font-bold hover:underline">
                           Size Guide
                         </button>
                       )}
@@ -529,10 +529,10 @@ function ListingDetails() {
                             }}
                             className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl border-2 text-xs font-bold transition-all ${
                               isSelected
-                                ? 'border-[var(--seasonal-primary,#007AFF)] bg-[var(--seasonal-primary,#007AFF)]/5'
+                                ? 'border-[var(--seasonal-primary,#71717a)] bg-[var(--seasonal-primary,#71717a)]/5'
                                 : disabled
                                   ? 'border-[#353F54] opacity-40 cursor-not-allowed'
-                                  : 'border-[#353F54] hover:border-[var(--seasonal-primary,#007AFF)]'
+                                  : 'border-[#353F54] hover:border-[var(--seasonal-primary,#71717a)]'
                             }`}
                           >
                             <div className="w-4 h-4 rounded-full border border-zinc-300 dark:border-zinc-600 flex-shrink-0" style={{ backgroundColor: v.value?.startsWith('#') ? v.value : '#ccc' }} />
@@ -554,10 +554,10 @@ function ListingDetails() {
                             }}
                             className={`min-w-[36px] px-2.5 py-1.5 rounded-xl border-2 text-xs font-bold text-center transition-all ${
                               isSelected
-                                ? 'border-[var(--seasonal-primary,#007AFF)] bg-[var(--seasonal-primary,#007AFF)] text-white'
+                                ? 'border-[var(--seasonal-primary,#71717a)] bg-[var(--seasonal-primary,#71717a)] text-white'
                                 : disabled
                                   ? 'border-[#353F54] opacity-40 cursor-not-allowed line-through'
-                                  : 'border-[#353F54] text-[#8E9BB5] hover:border-[var(--seasonal-primary,#007AFF)]'
+                                  : 'border-[#353F54] text-[#8E9BB5] hover:border-[var(--seasonal-primary,#71717a)]'
                             }`}
                           >
                             {v.label}
@@ -578,10 +578,10 @@ function ListingDetails() {
                             }}
                             className={`px-3 py-1.5 rounded-xl border-2 text-xs font-bold transition-all ${
                               isSelected
-                                ? 'border-[var(--seasonal-primary,#007AFF)] bg-[var(--seasonal-primary,#007AFF)]/10 text-[var(--seasonal-primary,#007AFF)]'
+                                ? 'border-[var(--seasonal-primary,#71717a)] bg-[var(--seasonal-primary,#71717a)]/10 text-[var(--seasonal-primary,#71717a)]'
                                 : disabled
                                   ? 'border-[#353F54] opacity-40 cursor-not-allowed'
-                                  : 'border-[#353F54] text-[#8E9BB5] hover:border-[var(--seasonal-primary,#007AFF)]'
+                                  : 'border-[#353F54] text-[#8E9BB5] hover:border-[var(--seasonal-primary,#71717a)]'
                             }`}
                           >
                             {v.label}
@@ -622,7 +622,7 @@ function ListingDetails() {
                 className={`flex items-center gap-2 px-4 py-2.5 rounded-xl font-bold text-sm transition-all ${
                   wishlisted
                     ? 'bg-red-900/30 text-red-400 border border-red-800'
-                    : 'bg-[#28303F] text-[#8E9BB5] border border-[#353F54] hover:border-[var(--seasonal-primary,#007AFF)] hover:text-[var(--seasonal-primary,#007AFF)]'
+                    : 'bg-[#28303F] text-[#8E9BB5] border border-[#353F54] hover:border-[var(--seasonal-primary,#71717a)] hover:text-[var(--seasonal-primary,#71717a)]'
                 }`}
                 aria-label={wishlisted ? 'Remove from wishlist' : 'Save to wishlist'}
               >
@@ -631,7 +631,7 @@ function ListingDetails() {
               </button>
             </div>
             {inCart && user && (
-              <div className="flex items-center gap-2 text-sm text-[#38B8EA] bg-[#007AFF]/20 px-4 py-2 rounded-xl font-bold border border-[#38B8EA]/30 dark:border-[#007AFF]/50">
+              <div className="flex items-center gap-2 text-sm text-[#38B8EA] bg-[#71717a]/20 px-4 py-2 rounded-xl font-bold border border-[#38B8EA]/30 dark:border-[#71717a]/50">
                 <ShoppingCart className="w-4 h-4" /> {inCart.quantity} {t('cart.title').toLowerCase()}
               </div>
             )}
@@ -674,7 +674,7 @@ function ListingDetails() {
                   <>
                     <button
                       onClick={handleAddToCart}
-                      className="w-full flex items-center justify-center gap-2 bg-[var(--seasonal-primary,#007AFF)] text-white font-black py-4 rounded-2xl hover:bg-[var(--seasonal-secondary,#0066CC)] transition-all shadow-lg shadow-[var(--seasonal-primary,#007AFF)]/20 text-lg"
+                      className="w-full flex items-center justify-center gap-2 bg-[var(--seasonal-primary,#71717a)] text-white font-black py-4 rounded-2xl hover:bg-[var(--seasonal-secondary,#71717a)] transition-all shadow-lg shadow-[var(--seasonal-primary,#71717a)]/20 text-lg"
                     >
                       <ShoppingCart className="w-5 h-5" /> {inCart ? t('cart.title') : t('productCard.addToCart')} — {formatKES(effectivePrice * quantity)}
                     </button>
@@ -695,7 +695,7 @@ function ListingDetails() {
                   </div>
                 ) : (
                   <>
-                    <Link to={`/signup?redirect=/listing/${listing.id}`} className="w-full flex items-center justify-center gap-2 bg-[var(--seasonal-primary,#007AFF)] text-white font-black py-4 rounded-2xl hover:bg-[var(--seasonal-secondary,#0066CC)] transition-all shadow-lg shadow-[var(--seasonal-primary,#007AFF)]/20 text-lg">
+                    <Link to={`/signup?redirect=/listing/${listing.id}`} className="w-full flex items-center justify-center gap-2 bg-[var(--seasonal-primary,#71717a)] text-white font-black py-4 rounded-2xl hover:bg-[var(--seasonal-secondary,#71717a)] transition-all shadow-lg shadow-[var(--seasonal-primary,#71717a)]/20 text-lg">
                       <ShoppingCart className="w-5 h-5" /> {t('listing.signUpToAddToCart')}
                     </Link>
                     <Link to={`/login?redirect=/listing/${listing.id}`} className="w-full flex items-center justify-center gap-2 bg-[#28303F] dark:bg-white text-white dark:text-zinc-900 font-bold py-4 rounded-2xl hover:opacity-90 transition-all">
@@ -712,14 +712,14 @@ function ListingDetails() {
           {listing.wholesale_enabled && wholesalePrices.length > 0 && (
             <div className="mt-6 fusion-recessed-card p-4">
               <div className="flex items-center gap-2 mb-3">
-                <Package className="w-4 h-4 text-[var(--seasonal-primary,#007AFF)]" />
+                <Package className="w-4 h-4 text-[var(--seasonal-primary,#71717a)]" />
                 <span className="font-bold text-sm text-white">Wholesale / Bulk Purchase Available</span>
               </div>
               <div className="space-y-2">
                 {wholesalePrices.map((tier, i) => (
                   <div key={i} className="flex items-center justify-between bg-[#28303F]/60 rounded-xl px-3 py-2.5">
                     <span className="text-xs font-bold text-[#8E9BB5]">{tier.min_qty}+ units</span>
-                    <span className="text-sm font-black text-[var(--seasonal-primary,#007AFF)]">{formatKES(tier.price_per_unit)} / unit</span>
+                    <span className="text-sm font-black text-[var(--seasonal-primary,#71717a)]">{formatKES(tier.price_per_unit)} / unit</span>
                   </div>
                 ))}
               </div>
@@ -740,7 +740,7 @@ function ListingDetails() {
                   await watchPriceDrop(user.id, listing.id);
                   storeNotification({ type: 'default', title: 'Price Watch Set', body: `You'll be notified when "${listing.title}" drops in price.`, tag: 'price-watch' });
                 }}
-                className="w-full flex items-center justify-center gap-2 border-2 border-[var(--seasonal-primary,#007AFF)] text-[var(--seasonal-primary,#007AFF)] font-bold py-3 rounded-xl hover:bg-[var(--seasonal-primary,#007AFF)]/5 transition-all"
+                className="w-full flex items-center justify-center gap-2 border-2 border-[var(--seasonal-primary,#71717a)] text-[var(--seasonal-primary,#71717a)] font-bold py-3 rounded-xl hover:bg-[var(--seasonal-primary,#71717a)]/5 transition-all"
               >
                 <Bell className="w-4 h-4" /> Notify me when price drops
               </button>
@@ -749,7 +749,7 @@ function ListingDetails() {
                   await watchBackInStock(user.id, listing.id);
                   storeNotification({ type: 'default', title: 'Back-in-Stock Watch Set', body: `You'll be notified when "${listing.title}" is back in stock.`, tag: 'stock-watch' });
                 }}
-                className="w-full flex items-center justify-center gap-2 border-2 border-[var(--seasonal-primary,#007AFF)] text-[var(--seasonal-primary,#007AFF)] font-bold py-3 rounded-xl hover:bg-[var(--seasonal-primary,#007AFF)]/5 transition-all"
+                className="w-full flex items-center justify-center gap-2 border-2 border-[var(--seasonal-primary,#71717a)] text-[var(--seasonal-primary,#71717a)] font-bold py-3 rounded-xl hover:bg-[var(--seasonal-primary,#71717a)]/5 transition-all"
               >
                 <Bell className="w-4 h-4" /> Notify when back in stock
               </button>
@@ -886,8 +886,8 @@ function ListingDetails() {
                       {q.user_name || 'Anonymous'} — {new Date(q.created_at).toLocaleDateString()}
                     </p>
                     {q.answer && (
-                      <div className="mt-3 bg-[#28303F]/60 rounded-xl p-3 border-l-2 border-[var(--seasonal-primary,#007AFF)]">
-                        <p className="text-xs font-bold text-[var(--seasonal-primary,#007AFF)] mb-1">Seller Response</p>
+                      <div className="mt-3 bg-[#28303F]/60 rounded-xl p-3 border-l-2 border-[var(--seasonal-primary,#71717a)]">
+                        <p className="text-xs font-bold text-[var(--seasonal-primary,#71717a)] mb-1">Seller Response</p>
                         <p className="text-xs text-[#8E9BB5]">{q.answer}</p>
                       </div>
                     )}
@@ -906,7 +906,7 @@ function ListingDetails() {
               value={newQuestion}
               onChange={(e) => setNewQuestion(e.target.value)}
               placeholder="Ask a question about this product..."
-              className="flex-1 bg-[#28303F] border border-[#353F54] rounded-xl px-4 py-3 text-sm text-white placeholder-zinc-500 focus:outline-none focus:border-[var(--seasonal-primary,#007AFF)]"
+              className="flex-1 bg-[#28303F] border border-[#353F54] rounded-xl px-4 py-3 text-sm text-white placeholder-zinc-500 focus:outline-none focus:border-[var(--seasonal-primary,#71717a)]"
               disabled={submittingQuestion}
             />
             <button
@@ -921,13 +921,13 @@ function ListingDetails() {
                 setSubmittingQuestion(false);
               }}
               disabled={submittingQuestion || !newQuestion.trim()}
-              className="bg-[var(--seasonal-primary,#007AFF)] text-white font-bold px-5 py-3 rounded-xl text-sm hover:bg-[var(--seasonal-secondary,#0066CC)] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+              className="bg-[var(--seasonal-primary,#71717a)] text-white font-bold px-5 py-3 rounded-xl text-sm hover:bg-[var(--seasonal-secondary,#71717a)] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {submittingQuestion ? 'Submitting...' : 'Ask'}
             </button>
           </div>
         ) : (
-          <Link to={`/login?redirect=/listing/${listingId}`} className="inline-flex items-center gap-2 text-sm text-[var(--seasonal-primary,#007AFF)] font-bold hover:underline">
+          <Link to={`/login?redirect=/listing/${listingId}`} className="inline-flex items-center gap-2 text-sm text-[var(--seasonal-primary,#71717a)] font-bold hover:underline">
             <MessageCircle className="w-4 h-4" />
             Log in to ask a question
           </Link>

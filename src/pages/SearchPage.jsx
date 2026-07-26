@@ -252,7 +252,7 @@ function SearchPage() {
                 onClick={() => handleFilterChange('category', isSelected ? '' : cat)}
                 className={`flex items-center gap-2 px-2.5 py-2 rounded-xl text-xs font-semibold transition-all ${
                   isSelected
-                    ? 'bg-[var(--seasonal-primary,#007AFF)] text-white shadow-md'
+                    ? 'bg-[var(--seasonal-primary,#71717a)] text-white shadow-md'
                     : 'bg-[#28303F]/60 text-[#8E9BB5] hover:bg-[#353F54] hover:text-white'
                 }`}
               >
@@ -277,7 +277,7 @@ function SearchPage() {
             placeholder="Min"
             value={filters.min_price}
             onChange={(e) => handleFilterChange('min_price', e.target.value)}
-            className="w-full bg-[#28303F] border border-[#353F54] rounded-xl px-3 py-2.5 text-sm text-white placeholder-[#4A5771] focus:border-[var(--seasonal-primary,#007AFF)] focus:outline-none"
+            className="w-full bg-[#28303F] border border-[#353F54] rounded-xl px-3 py-2.5 text-sm text-white placeholder-[#4A5771] focus:border-[var(--seasonal-primary,#71717a)] focus:outline-none"
           />
           <span className="text-[#4A5771] text-xs">-</span>
           <input
@@ -286,7 +286,7 @@ function SearchPage() {
             placeholder="Max"
             value={filters.max_price}
             onChange={(e) => handleFilterChange('max_price', e.target.value)}
-            className="w-full bg-[#28303F] border border-[#353F54] rounded-xl px-3 py-2.5 text-sm text-white placeholder-[#4A5771] focus:border-[var(--seasonal-primary,#007AFF)] focus:outline-none"
+            className="w-full bg-[#28303F] border border-[#353F54] rounded-xl px-3 py-2.5 text-sm text-white placeholder-[#4A5771] focus:border-[var(--seasonal-primary,#71717a)] focus:outline-none"
           />
         </div>
       </div>
@@ -307,7 +307,7 @@ function SearchPage() {
                 type="checkbox"
                 checked={selectedCondition.includes(cond)}
                 onChange={() => toggleCondition(cond)}
-                className="w-4 h-4 rounded border-[#353F54] bg-[#28303F] text-[var(--seasonal-primary,#007AFF)] focus:ring-[var(--seasonal-primary,#007AFF)] focus:ring-offset-0"
+                className="w-4 h-4 rounded border-[#353F54] bg-[#28303F] text-[var(--seasonal-primary,#71717a)] focus:ring-[var(--seasonal-primary,#71717a)] focus:ring-offset-0"
               />
               <span className="text-sm text-[#8E9BB5] group-hover:text-white transition-colors capitalize">
                 {cond === 'Refurbished' ? 'Refurbished' : cond}
@@ -328,7 +328,7 @@ function SearchPage() {
           placeholder="City or area..."
           value={filters.location}
           onChange={(e) => handleFilterChange('location', e.target.value)}
-          className="w-full bg-[#28303F] border border-[#353F54] rounded-xl px-3 py-2.5 text-sm text-white placeholder-[#4A5771] focus:border-[var(--seasonal-primary,#007AFF)] focus:outline-none"
+          className="w-full bg-[#28303F] border border-[#353F54] rounded-xl px-3 py-2.5 text-sm text-white placeholder-[#4A5771] focus:border-[var(--seasonal-primary,#71717a)] focus:outline-none"
         />
       </div>
 
@@ -343,7 +343,7 @@ function SearchPage() {
           placeholder="Brand name..."
           value={filters.brand}
           onChange={(e) => handleFilterChange('brand', e.target.value)}
-          className="w-full bg-[#28303F] border border-[#353F54] rounded-xl px-3 py-2.5 text-sm text-white placeholder-[#4A5771] focus:border-[var(--seasonal-primary,#007AFF)] focus:outline-none"
+          className="w-full bg-[#28303F] border border-[#353F54] rounded-xl px-3 py-2.5 text-sm text-white placeholder-[#4A5771] focus:border-[var(--seasonal-primary,#71717a)] focus:outline-none"
         />
       </div>
 
@@ -356,7 +356,7 @@ function SearchPage() {
         <select
           value={filters.availability}
           onChange={(e) => handleFilterChange('availability', e.target.value)}
-          className="w-full bg-[#28303F] border border-[#353F54] rounded-xl px-3 py-2.5 text-sm text-white focus:border-[var(--seasonal-primary,#007AFF)] focus:outline-none"
+          className="w-full bg-[#28303F] border border-[#353F54] rounded-xl px-3 py-2.5 text-sm text-white focus:border-[var(--seasonal-primary,#71717a)] focus:outline-none"
         >
           {AVAILABILITY_OPTIONS.map((opt) => (
             <option key={opt.value} value={opt.value}>
@@ -416,7 +416,7 @@ function SearchPage() {
             type="checkbox"
             checked={filters.has_discount === 'true'}
             onChange={(e) => handleFilterChange('has_discount', e.target.checked ? 'true' : '')}
-            className="w-4 h-4 rounded border-[#353F54] bg-[#28303F] text-[var(--seasonal-primary,#007AFF)] focus:ring-[var(--seasonal-primary,#007AFF)] focus:ring-offset-0"
+            className="w-4 h-4 rounded border-[#353F54] bg-[#28303F] text-[var(--seasonal-primary,#71717a)] focus:ring-[var(--seasonal-primary,#71717a)] focus:ring-offset-0"
           />
           <span className="text-sm text-[#8E9BB5] group-hover:text-white transition-colors">
             Discounted items only
@@ -441,7 +441,7 @@ function SearchPage() {
                     onClick={() => handleFilterChange('size', filters.size === s ? '' : s)}
                     className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-colors ${
                       filters.size === s
-                        ? 'bg-[var(--seasonal-primary,#007AFF)] text-white'
+                        ? 'bg-[var(--seasonal-primary,#71717a)] text-white'
                         : 'bg-[#28303F] text-[#8E9BB5] hover:bg-[#353F54]'
                     }`}
                   >
@@ -458,7 +458,7 @@ function SearchPage() {
           placeholder="Size (e.g. M, 42, Large)..."
           value={filters.size}
           onChange={(e) => handleFilterChange('size', e.target.value)}
-          className="w-full bg-[#28303F] border border-[#353F54] rounded-xl px-3 py-2.5 text-sm text-white placeholder-[#4A5771] focus:border-[var(--seasonal-primary,#007AFF)] focus:outline-none"
+          className="w-full bg-[#28303F] border border-[#353F54] rounded-xl px-3 py-2.5 text-sm text-white placeholder-[#4A5771] focus:border-[var(--seasonal-primary,#71717a)] focus:outline-none"
         />
       </div>
     </div>
@@ -535,7 +535,7 @@ function SearchPage() {
               value={localQ}
               onChange={(e) => setLocalQ(e.target.value)}
               placeholder="Search products..."
-              className="w-full pl-12 pr-32 py-3.5 rounded-2xl bg-[#28303F] border border-[#353F54] focus:border-[var(--seasonal-primary,#007AFF)] focus:outline-none text-white text-sm shadow-sm"
+              className="w-full pl-12 pr-32 py-3.5 rounded-2xl bg-[#28303F] border border-[#353F54] focus:border-[var(--seasonal-primary,#71717a)] focus:outline-none text-white text-sm shadow-sm"
             />
             {localQ && (
               <button
@@ -552,7 +552,7 @@ function SearchPage() {
             )}
             <button
               type="submit"
-              className="absolute right-2 top-1/2 -translate-y-1/2 bg-[var(--seasonal-primary,#007AFF)] text-white px-4 py-1.5 rounded-xl text-xs font-bold hover:bg-[var(--seasonal-secondary,#0066CC)] transition-colors"
+              className="absolute right-2 top-1/2 -translate-y-1/2 bg-[var(--seasonal-primary,#71717a)] text-white px-4 py-1.5 rounded-xl text-xs font-bold hover:bg-[var(--seasonal-secondary,#71717a)] transition-colors"
             >
               Search
             </button>
@@ -569,7 +569,7 @@ function SearchPage() {
             <select
               value={filters.sort}
               onChange={(e) => handleFilterChange('sort', e.target.value)}
-              className="bg-[#28303F] border border-[#353F54] rounded-lg px-3 py-2 text-xs text-white focus:border-[var(--seasonal-primary,#007AFF)] focus:outline-none appearance-none cursor-pointer"
+              className="bg-[#28303F] border border-[#353F54] rounded-lg px-3 py-2 text-xs text-white focus:border-[var(--seasonal-primary,#71717a)] focus:outline-none appearance-none cursor-pointer"
             >
               {SORT_OPTIONS.map((opt) => (
                 <option key={opt.value} value={opt.value}>
@@ -581,7 +581,7 @@ function SearchPage() {
               onClick={() => setSidebarOpen(!sidebarOpen)}
               className={`flex items-center gap-1.5 px-3 py-2 rounded-lg border transition-all text-xs font-semibold active:scale-95 ${
                 sidebarOpen
-                  ? 'bg-[var(--seasonal-primary,#007AFF)] border-[var(--seasonal-primary,#007AFF)] text-white'
+                  ? 'bg-[var(--seasonal-primary,#71717a)] border-[var(--seasonal-primary,#71717a)] text-white'
                   : 'bg-[#28303F] border-[#353F54] text-[#8E9BB5] hover:bg-[#28303F]'
               }`}
             >
@@ -603,7 +603,7 @@ function SearchPage() {
             <select
               value={filters.sort}
               onChange={(e) => handleFilterChange('sort', e.target.value)}
-              className="bg-[#28303F] border border-[#353F54] rounded-xl px-3 py-1.5 text-xs text-white focus:border-[var(--seasonal-primary,#007AFF)] focus:outline-none"
+              className="bg-[#28303F] border border-[#353F54] rounded-xl px-3 py-1.5 text-xs text-white focus:border-[var(--seasonal-primary,#71717a)] focus:outline-none"
             >
               {SORT_OPTIONS.map((opt) => (
                 <option key={opt.value} value={opt.value}>

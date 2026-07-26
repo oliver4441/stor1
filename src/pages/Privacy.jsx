@@ -240,9 +240,9 @@ function Privacy() {
           <div className="fusion-recessed-card p-6 my-4">
             <p className="mb-2"><strong>Omix Marketplace — Data Protection Officer</strong></p>
             <p className="mb-2">Kericho, Kenya</p>
-            <p className="mb-2">Email: <a href="mailto:omixsystems@gmail.com" className="text-[var(--seasonal-primary,#007AFF)] hover:underline">omixsystems@gmail.com</a></p>
-            <p className="mb-2">General Inquiries: <a href="mailto:omixsystems@gmail.com" className="text-[var(--seasonal-primary,#007AFF)] hover:underline">omixsystems@gmail.com</a></p>
-            <p>Website: <a href="https://omixsystems.store" className="text-[var(--seasonal-primary,#007AFF)] hover:underline">www.omixsystems.store</a></p>
+            <p className="mb-2">Email: <a href="mailto:omixsystems@gmail.com" className="text-[var(--seasonal-primary,#71717a)] hover:underline">omixsystems@gmail.com</a></p>
+            <p className="mb-2">General Inquiries: <a href="mailto:omixsystems@gmail.com" className="text-[var(--seasonal-primary,#71717a)] hover:underline">omixsystems@gmail.com</a></p>
+            <p>Website: <a href="https://omixsystems.store" className="text-[var(--seasonal-primary,#71717a)] hover:underline">www.omixsystems.store</a></p>
           </div>
           <p>
             We will respond to all privacy-related inquiries within 30 days of receipt. If you are not satisfied with our response, you have the right to lodge a complaint with the relevant data protection authority in Kenya.
@@ -258,7 +258,7 @@ function Privacy() {
       <div className="mb-10">
         <Link
           to="/"
-          className="inline-flex items-center gap-2 text-sm text-[#4A5771] hover:text-[var(--seasonal-primary,#007AFF)] mb-6 transition-colors"
+          className="inline-flex items-center gap-2 text-sm text-[#4A5771] hover:text-[var(--seasonal-primary,#71717a)] mb-6 transition-colors"
         >
           <ArrowLeft className="w-4 h-4" />
           Back to Home
@@ -284,7 +284,7 @@ function Privacy() {
             <a
               key={section.id}
               href={`#${section.id}`}
-              className="text-sm text-[#4A5771] hover:text-[var(--seasonal-primary,#007AFF)] transition-colors py-1"
+              className="text-sm text-[#4A5771] hover:text-[var(--seasonal-primary,#71717a)] transition-colors py-1"
             >
               {section.title}
             </a>
@@ -297,7 +297,7 @@ function Privacy() {
         {sections.map((section) => (
           <section key={section.id} id={section.id} className="scroll-mt-24">
             <div className="flex items-center gap-3 mb-4">
-              <div className="w-10 h-10 rounded-xl bg-[var(--seasonal-primary,#007AFF)]/10 text-[var(--seasonal-primary,#007AFF)] flex items-center justify-center flex-shrink-0">
+              <div className="w-10 h-10 rounded-xl bg-[var(--seasonal-primary,#71717a)]/10 text-[var(--seasonal-primary,#71717a)] flex items-center justify-center flex-shrink-0">
                 {section.icon}
               </div>
               <h2 className="text-2xl font-bold text-white">

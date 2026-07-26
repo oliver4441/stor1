@@ -44,7 +44,7 @@ export default function AffiliatePage() {
             <div className="flex flex-col sm:flex-row gap-4">
               <Link
                 to="/affiliate/apply"
-                className="inline-flex items-center justify-center gap-2 px-8 py-3.5 rounded-xl font-semibold text-white bg-gradient-to-r from-zinc-600 to-zinc-500 hover:from-blue-500 hover:to-zinc-400 transition-all duration-200 shadow-lg shadow-zinc-500/20"
+                className="inline-flex items-center justify-center gap-2 px-8 py-3.5 rounded-xl font-semibold text-white bg-gradient-to-r from-zinc-600 to-zinc-500 hover:from-zinc-600 hover:to-zinc-400 transition-all duration-200 shadow-lg shadow-zinc-500/20"
               >
                 Join the Affiliates
                 <ChevronRight size={18} />
@@ -144,7 +144,7 @@ export default function AffiliatePage() {
           </p>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          <div className="p-6 rounded-xl bg-gradient-to-br from-blue-500/5 to-transparent border border-blue-500/10">
+          <div className="p-6 rounded-xl bg-gradient-to-br from-zinc-600/5 to-transparent border border-zinc-600/10">
             <div className="w-12 h-12 rounded-lg bg-zinc-500/10 flex items-center justify-center mb-4">
               <Share2 className="text-zinc-500" />
             </div>
@@ -162,9 +162,9 @@ export default function AffiliatePage() {
               Prioritize promoting products with higher price points. A single high-value sale can earn you more commission than multiple small ones.
             </p>
           </div>
-          <div className="p-6 rounded-xl bg-gradient-to-br from-[#007AFF]/5 to-transparent border border-[#007AFF]/10">
-            <div className="w-12 h-12 rounded-lg bg-[#007AFF]/10 flex items-center justify-center mb-4">
-              <Calendar className="text-[#007AFF]" />
+          <div className="p-6 rounded-xl bg-gradient-to-br from-[#71717a]/5 to-transparent border border-[#71717a]/10">
+            <div className="w-12 h-12 rounded-lg bg-[#71717a]/10 flex items-center justify-center mb-4">
+              <Calendar className="text-[#71717a]" />
             </div>
             <h3 className="text-lg font-semibold mb-2">Promote During Peak Seasons</h3>
             <p className="text-[#4A5771] text-sm leading-relaxed">
@@ -174,7 +174,7 @@ export default function AffiliatePage() {
         </div>
 
         {/* Pro Tip Callout */}
-        <div className="mt-8 p-6 rounded-xl bg-gradient-to-r from-blue-600/5 via-blue-500/5 to-transparent border border-blue-500/10">
+        <div className="mt-8 p-6 rounded-xl bg-gradient-to-r from-zinc-700/5 via-zinc-600/5 to-transparent border border-zinc-600/10">
           <div className="flex items-start gap-4">
             <div className="w-10 h-10 rounded-lg bg-zinc-500/10 flex items-center justify-center shrink-0 mt-0.5">
               <Shield size={20} className="text-zinc-500" />
@@ -208,11 +208,11 @@ export default function AffiliatePage() {
               <p className="text-[#4A5771] text-sm mt-2">Earn this minimum before requesting a payout</p>
             </div>
             <div className="p-6 rounded-xl bg-[#28303F] border border-[#353F54] text-center">
-              <div className="w-14 h-14 rounded-full bg-[#007AFF]/10 flex items-center justify-center mx-auto mb-4">
-                <CreditCard className="text-[#007AFF]" />
+              <div className="w-14 h-14 rounded-full bg-[#71717a]/10 flex items-center justify-center mx-auto mb-4">
+                <CreditCard className="text-[#71717a]" />
               </div>
               <h3 className="text-lg font-semibold mb-1">Payment Method</h3>
-              <p className="text-2xl font-bold text-[#007AFF]">M-Pesa</p>
+              <p className="text-2xl font-bold text-[#71717a]">M-Pesa</p>
               <p className="text-[#4A5771] text-sm mt-2">Paid directly to your registered M-Pesa number</p>
             </div>
             <div className="p-6 rounded-xl bg-[#28303F] border border-[#353F54] text-center">
@@ -236,7 +236,7 @@ export default function AffiliatePage() {
         <div className="flex flex-col sm:flex-row gap-4 justify-center">
           <Link
             to="/affiliate/apply"
-            className="inline-flex items-center justify-center gap-2 px-8 py-3.5 rounded-xl font-semibold text-white bg-gradient-to-r from-zinc-600 to-zinc-500 hover:from-blue-500 hover:to-zinc-400 transition-all duration-200 shadow-lg shadow-zinc-500/20"
+            className="inline-flex items-center justify-center gap-2 px-8 py-3.5 rounded-xl font-semibold text-white bg-gradient-to-r from-zinc-600 to-zinc-500 hover:from-zinc-600 hover:to-zinc-400 transition-all duration-200 shadow-lg shadow-zinc-500/20"
           >
             Join the Affiliates
             <ChevronRight size={18} />

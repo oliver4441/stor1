@@ -116,7 +116,7 @@ export default function AffiliateReferrals() {
   return (
     <div className="min-h-screen bg-zinc-950">
       {/* Hero */}
-      <div className="bg-gradient-to-br from-zinc-500/20 via-blue-600/10 to-zinc-950 px-4 py-8">
+      <div className="bg-gradient-to-br from-zinc-500/20 via-zinc-700/10 to-zinc-950 px-4 py-8">
         <div className="max-w-4xl mx-auto">
           <div className="flex items-center gap-2 mb-1">
             <Share2 className="w-5 h-5 text-zinc-500" />
@@ -206,18 +206,18 @@ export default function AffiliateReferrals() {
           </button>
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
             <button onClick={() => shareVia('whatsapp')}
-              className="flex items-center gap-2.5 p-3 rounded-xl bg-[#007AFF]/10 border border-[#007AFF]/20 hover:bg-[#007AFF]/20 transition-colors text-left">
+              className="flex items-center gap-2.5 p-3 rounded-xl bg-[#71717a]/10 border border-[#71717a]/20 hover:bg-[#71717a]/20 transition-colors text-left">
               <MessageCircle className="w-5 h-5 text-[#38B8EA] shrink-0" />
               <span className="text-sm font-bold text-white">WhatsApp</span>
             </button>
             <button onClick={() => shareVia('telegram')}
-              className="flex items-center gap-2.5 p-3 rounded-xl bg-zinc-500/10 border border-blue-500/20 hover:bg-zinc-500/20 transition-colors text-left">
+              className="flex items-center gap-2.5 p-3 rounded-xl bg-zinc-500/10 border border-zinc-600/20 hover:bg-zinc-500/20 transition-colors text-left">
               <Send className="w-5 h-5 text-zinc-500 shrink-0" />
               <span className="text-sm font-bold text-white">Telegram</span>
             </button>
             <button onClick={() => shareVia('facebook')}
-              className="flex items-center gap-2.5 p-3 rounded-xl bg-indigo-500/10 border border-indigo-500/20 hover:bg-indigo-500/20 transition-colors text-left">
-              <Globe className="w-5 h-5 text-indigo-400 shrink-0" />
+              className="flex items-center gap-2.5 p-3 rounded-xl bg-zinc-600/10 border border-zinc-600/20 hover:bg-zinc-600/20 transition-colors text-left">
+              <Globe className="w-5 h-5 text-zinc-500 shrink-0" />
               <span className="text-sm font-bold text-white">Facebook</span>
             </button>
             <button onClick={downloadQR}
@@ -245,7 +245,7 @@ export default function AffiliateReferrals() {
                 const initials = (r.full_name || r.email || 'C').split(/[\s@]+/).map(s => s[0]).slice(0, 2).join('').toUpperCase();
                 return (
                   <div key={r.id || i} className="flex items-center gap-3 px-5 py-3">
-                    <div className="w-10 h-10 rounded-full bg-gradient-to-br from-primary/30 to-blue-500/30 flex items-center justify-center text-sm font-bold text-white shrink-0">
+                    <div className="w-10 h-10 rounded-full bg-gradient-to-br from-primary/30 to-zinc-600/30 flex items-center justify-center text-sm font-bold text-white shrink-0">
                       {initials}
                     </div>
                     <div className="min-w-0 flex-1">
@@ -254,7 +254,7 @@ export default function AffiliateReferrals() {
                       <p className="text-[10px] text-[#4A5771]">{new Date(r.created_at).toLocaleDateString()}</p>
                     </div>
                     <span className={`text-[10px] uppercase font-bold px-2 py-0.5 rounded-full shrink-0 ${
-                      r.status === 'converted' ? 'bg-[#007AFF]/30 text-[#38B8EA]' : 
+                      r.status === 'converted' ? 'bg-[#71717a]/30 text-[#38B8EA]' : 
                       r.status === 'expired' ? 'bg-red-900/30 text-red-400' :
                       'bg-amber-900/30 text-amber-400'
                     }`}>

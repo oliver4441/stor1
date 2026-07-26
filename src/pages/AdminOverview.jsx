@@ -114,7 +114,7 @@ export default function AdminOverview() {
                       order.status === 'pending' ? 'bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400' :
                       order.status === 'delivered' ? 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400' :
                       order.status === 'cancelled' ? 'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400' :
-                      'bg-blue-100 text-zinc-600 dark:bg-blue-900/30 dark:text-zinc-500'
+                      'bg-zinc-800 text-zinc-600 dark:bg-zinc-800/30 dark:text-zinc-500'
                     }`}>{order.status === 'cod_pending' ? 'COD' : order.status}</span>
                   </div>
                 </div>
@@ -166,7 +166,7 @@ export default function AdminOverview() {
             <Package className="w-5 h-5 text-primary" />
             <span className="text-sm font-semibold text-zinc-300 group-hover:text-primary">Add Product</span>
           </a>
-          <a href="/admin/orders" className="flex items-center gap-3 p-3 rounded-xl bg-zinc-800 hover:bg-zinc-900/20 hover:border-blue-500/30 border border-transparent transition-all group">
+          <a href="/admin/orders" className="flex items-center gap-3 p-3 rounded-xl bg-zinc-800 hover:bg-zinc-900/20 hover:border-zinc-600/30 border border-transparent transition-all group">
             <ShoppingBag className="w-5 h-5 text-zinc-600" />
             <span className="text-sm font-semibold text-zinc-300 group-hover:text-zinc-600">View Orders</span>
           </a>

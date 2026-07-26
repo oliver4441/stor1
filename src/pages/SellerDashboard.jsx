@@ -210,7 +210,7 @@ export default function SellerDashboard() {
           </p>
           <Link
             to="/seller/register"
-            className="inline-flex items-center gap-2 bg-gradient-to-r from-[#007AFF] to-[#0066CC] hover:from-[#38B8EA] hover:to-[#007AFF] text-white px-6 py-3 rounded-xl font-bold transition-all shadow-lg shadow-[#007AFF]/30"
+            className="inline-flex items-center gap-2 bg-gradient-to-r from-[#71717a] to-[#71717a] hover:from-[#38B8EA] hover:to-[#71717a] text-white px-6 py-3 rounded-xl font-bold transition-all shadow-lg shadow-[#71717a]/30"
           >
             <Store className="w-4 h-4" />
             Become a Seller
@@ -241,14 +241,14 @@ export default function SellerDashboard() {
         {/* ── Header ── */}
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-8">
           <div className="flex items-center gap-4">
-            <div className="p-3 rounded-2xl bg-gradient-to-br from-[#007AFF] to-[#0066CC] shadow-lg shadow-[#007AFF]/30">
+            <div className="p-3 rounded-2xl bg-gradient-to-br from-[#71717a] to-[#71717a] shadow-lg shadow-[#71717a]/30">
               <Store className="w-6 h-6 text-white" />
             </div>
             <div>
               <div className="flex items-center gap-2 flex-wrap">
                 <h1 className="text-2xl font-bold">{sellerName}</h1>
                 {isVerified && (
-                  <span className="inline-flex items-center gap-1 text-xs bg-[#007AFF]/15 text-[#38B8EA] px-2.5 py-0.5 rounded-full border border-[#007AFF]/30">
+                  <span className="inline-flex items-center gap-1 text-xs bg-[#71717a]/15 text-[#38B8EA] px-2.5 py-0.5 rounded-full border border-[#71717a]/30">
                     <CheckCircle className="w-3 h-3" />
                     Verified
                   </span>
@@ -406,7 +406,7 @@ export default function SellerDashboard() {
               <p className="text-[#4A5771] text-sm mb-4">No listings yet.</p>
               <Link
                 to="/seller/listings/new"
-                className="inline-flex items-center gap-2 bg-[#007AFF] hover:bg-[#38B8EA] text-white px-5 py-2.5 rounded-xl font-bold text-sm transition-colors"
+                className="inline-flex items-center gap-2 bg-[#71717a] hover:bg-[#38B8EA] text-white px-5 py-2.5 rounded-xl font-bold text-sm transition-colors"
               >
                 Create Your First Listing
               </Link>
@@ -479,7 +479,7 @@ export default function SellerDashboard() {
                           <span
                             className={`inline-block px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider ${
                               isActive
-                                ? 'bg-[#007AFF]/15 text-[#38B8EA] border border-[#007AFF]/30'
+                                ? 'bg-[#71717a]/15 text-[#38B8EA] border border-[#71717a]/30'
                                 : 'bg-[#28303F] text-zinc-500 border border-zinc-700'
                             }`}
                           >
@@ -501,7 +501,7 @@ export default function SellerDashboard() {
                               className={`p-2 rounded-lg transition-colors ${
                                 isActive
                                   ? 'hover:bg-red-900/20 text-[#4A5771] hover:text-red-400'
-                                  : 'hover:bg-[#007AFF]/20 text-[#4A5771] hover:text-[#38B8EA]'
+                                  : 'hover:bg-[#71717a]/20 text-[#4A5771] hover:text-[#38B8EA]'
                               } disabled:opacity-50 disabled:cursor-not-allowed`}
                               aria-label={isActive ? 'Deactivate listing' : 'Activate listing'}
                             >

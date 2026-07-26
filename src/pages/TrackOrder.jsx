@@ -199,11 +199,11 @@ export default function TrackOrder() {
             onChange={(e) => setOrderId(e.target.value)}
             onKeyDown={(e) => e.key === 'Enter' && handleSearch()}
             placeholder="Enter order ID..."
-            className="w-full pl-12 pr-4 py-4 rounded-2xl bg-[#28303F] border border-[#353F54] focus:border-[var(--seasonal-primary,#007AFF)] focus:outline-none text-white placeholder-[#4A5771]"
+            className="w-full pl-12 pr-4 py-4 rounded-2xl bg-[#28303F] border border-[#353F54] focus:border-[var(--seasonal-primary,#71717a)] focus:outline-none text-white placeholder-[#4A5771]"
           />
         </div>
         <button onClick={handleSearch} disabled={loading}
-          className="bg-[var(--seasonal-primary,#007AFF)] text-white font-bold px-8 py-4 rounded-2xl hover:bg-[var(--seasonal-secondary,#0066CC)] transition-colors disabled:opacity-50">
+          className="bg-[var(--seasonal-primary,#71717a)] text-white font-bold px-8 py-4 rounded-2xl hover:bg-[var(--seasonal-secondary,#71717a)] transition-colors disabled:opacity-50">
           {loading ? 'Searching...' : 'Track'}
         </button>
       </div>
@@ -233,7 +233,7 @@ export default function TrackOrder() {
               </div>
               <div>
                 <p className="text-[#4A5771]">Total</p>
-                <p className="font-bold text-[var(--seasonal-primary,#007AFF)]">{formatKES(order.total_amount)}</p>
+                <p className="font-bold text-[var(--seasonal-primary,#71717a)]">{formatKES(order.total_amount)}</p>
               </div>
               {order.phone && (
                 <div>
@@ -377,9 +377,9 @@ export default function TrackOrder() {
                             step.isCancelled
                               ? 'bg-red-900/30 border-2 border-red-500'
                               : step.isCompleted
-                                ? 'bg-[#007AFF]/30 border-2 border-[#007AFF]'
+                                ? 'bg-[#71717a]/30 border-2 border-[#71717a]'
                                 : step.isCurrent
-                                  ? 'bg-blue-900/30 border-2 border-blue-500 animate-pulse'
+                                  ? 'bg-zinc-800/30 border-2 border-zinc-600 animate-pulse'
                                   : 'bg-[#28303F] border-2 border-[#353F54]'
                           }`}>
                             <StepIcon className={`w-4 h-4 ${
@@ -412,7 +412,7 @@ export default function TrackOrder() {
                               {step.label}
                             </span>
                             {step.isCurrent && !step.isCancelled && (
-                              <span className="text-[10px] font-medium text-zinc-500 bg-blue-900/30 px-2 py-0.5 rounded-full">
+                              <span className="text-[10px] font-medium text-zinc-500 bg-zinc-800/30 px-2 py-0.5 rounded-full">
                                 Current
                               </span>
                             )}
@@ -487,7 +487,7 @@ export default function TrackOrder() {
                   </p>
                 </div>
                 <button onClick={() => setShowReturnForm(true)}
-                  className="bg-[var(--seasonal-primary,#007AFF)] text-white font-bold px-6 py-3 rounded-2xl hover:bg-[var(--seasonal-secondary,#0066CC)] transition-colors text-sm">
+                  className="bg-[var(--seasonal-primary,#71717a)] text-white font-bold px-6 py-3 rounded-2xl hover:bg-[var(--seasonal-secondary,#71717a)] transition-colors text-sm">
                   Request Return
                 </button>
               </div>
@@ -498,7 +498,7 @@ export default function TrackOrder() {
             <div className="bg-[#28303F] rounded-3xl border border-[#353F54] p-6">
               <h2 className="text-lg font-bold text-white mb-3">Submit Return Request</h2>
               {returnSuccess ? (
-                <div className="bg-[#007AFF]/20 text-[#38B8EA] p-4 rounded-xl text-sm font-medium border border-[#007AFF]/50">
+                <div className="bg-[#71717a]/20 text-[#38B8EA] p-4 rounded-xl text-sm font-medium border border-[#71717a]/50">
                   {returnSuccess}
                 </div>
               ) : (
@@ -519,7 +519,7 @@ export default function TrackOrder() {
                       onChange={(e) => setReturnReason(e.target.value)}
                       placeholder="Tell us why you want to return this item..."
                       rows={4}
-                      className="w-full px-4 py-3 rounded-2xl bg-[#28303F] border border-[#353F54] focus:border-[var(--seasonal-primary,#007AFF)] focus:outline-none text-white placeholder-[#4A5771] text-sm resize-none"
+                      className="w-full px-4 py-3 rounded-2xl bg-[#28303F] border border-[#353F54] focus:border-[var(--seasonal-primary,#71717a)] focus:outline-none text-white placeholder-[#4A5771] text-sm resize-none"
                     />
                   </div>
                   <div className="flex gap-3">
@@ -528,7 +528,7 @@ export default function TrackOrder() {
                       Cancel
                     </button>
                     <button onClick={handleReturnRequest} disabled={returnSubmitting || !returnReason.trim()}
-                      className="flex-1 bg-[var(--seasonal-primary,#007AFF)] text-white font-bold px-6 py-3 rounded-2xl hover:bg-[var(--seasonal-secondary,#0066CC)] transition-colors disabled:opacity-50 text-sm">
+                      className="flex-1 bg-[var(--seasonal-primary,#71717a)] text-white font-bold px-6 py-3 rounded-2xl hover:bg-[var(--seasonal-secondary,#71717a)] transition-colors disabled:opacity-50 text-sm">
                       {returnSubmitting ? 'Submitting...' : 'Submit Return Request'}
                     </button>
                   </div>

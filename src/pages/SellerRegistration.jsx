@@ -156,7 +156,7 @@ export default function SellerRegistration() {
     return (
       <div className="min-h-screen bg-[#1B2333] flex items-center justify-center px-4">
         <div className="max-w-md w-full bg-[#28303F]/60 border border-[#353F54] rounded-3xl p-8 text-center">
-          <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-[#007AFF]/20 mb-5">
+          <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-[#71717a]/20 mb-5">
             <Clock className="w-8 h-8 text-[#38B8EA]" />
           </div>
           <h1 className="text-2xl font-bold text-white mb-2">Pending Approval</h1>
@@ -182,7 +182,7 @@ export default function SellerRegistration() {
       return (
         <div className="min-h-screen bg-[#1B2333] flex items-center justify-center px-4">
           <div className="max-w-md w-full bg-[#28303F]/60 border border-[#353F54] rounded-3xl p-8 text-center">
-            <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-[#007AFF]/20 mb-5">
+            <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-[#71717a]/20 mb-5">
               <Clock className="w-8 h-8 text-[#38B8EA]" />
             </div>
             <h1 className="text-2xl font-bold text-white mb-2">Application Pending</h1>
@@ -254,7 +254,7 @@ export default function SellerRegistration() {
       <div className="max-w-lg w-full">
         {/* Header */}
         <div className="text-center mb-8">
-          <div className="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-gradient-to-br from-[#007AFF] to-[#0066CC] shadow-lg shadow-[#007AFF]/30 mb-4">
+          <div className="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-gradient-to-br from-[#71717a] to-[#71717a] shadow-lg shadow-[#71717a]/30 mb-4">
             <Store className="w-7 h-7 text-white" />
           </div>
           <h1 className="text-2xl font-bold text-white">Become a Seller</h1>
@@ -276,7 +276,7 @@ export default function SellerRegistration() {
               value={form.shopName}
               onChange={(e) => updateField('shopName', e.target.value)}
               placeholder="My Awesome Shop"
-              className="w-full bg-[#28303F]/80 border border-[#2A3448] rounded-xl px-4 py-2.5 text-white placeholder-[#4A5771] text-sm focus:outline-none focus:ring-2 focus:ring-[#007AFF]/50 focus:border-[#007AFF] transition-colors"
+              className="w-full bg-[#28303F]/80 border border-[#2A3448] rounded-xl px-4 py-2.5 text-white placeholder-[#4A5771] text-sm focus:outline-none focus:ring-2 focus:ring-[#71717a]/50 focus:border-[#71717a] transition-colors"
             />
           </div>
 
@@ -294,7 +294,7 @@ export default function SellerRegistration() {
                 value={form.shopSlug}
                 onChange={(e) => handleSlugChange(e.target.value)}
                 placeholder="my-awesome-shop"
-                className="w-full bg-[#28303F]/80 border border-[#2A3448] rounded-xl pl-16 pr-4 py-2.5 text-white placeholder-[#4A5771] text-sm focus:outline-none focus:ring-2 focus:ring-[#007AFF]/50 focus:border-[#007AFF] transition-colors"
+                className="w-full bg-[#28303F]/80 border border-[#2A3448] rounded-xl pl-16 pr-4 py-2.5 text-white placeholder-[#4A5771] text-sm focus:outline-none focus:ring-2 focus:ring-[#71717a]/50 focus:border-[#71717a] transition-colors"
               />
             </div>
             <p className="text-xs text-[#4A5771] mt-1">
@@ -312,7 +312,7 @@ export default function SellerRegistration() {
               onChange={(e) => updateField('description', e.target.value)}
               placeholder="Tell customers about your shop..."
               rows={3}
-              className="w-full bg-[#28303F]/80 border border-[#2A3448] rounded-xl px-4 py-2.5 text-white placeholder-[#4A5771] text-sm focus:outline-none focus:ring-2 focus:ring-[#007AFF]/50 focus:border-[#007AFF] transition-colors resize-none"
+              className="w-full bg-[#28303F]/80 border border-[#2A3448] rounded-xl px-4 py-2.5 text-white placeholder-[#4A5771] text-sm focus:outline-none focus:ring-2 focus:ring-[#71717a]/50 focus:border-[#71717a] transition-colors resize-none"
             />
           </div>
 
@@ -326,7 +326,7 @@ export default function SellerRegistration() {
               value={form.phone}
               onChange={(e) => updateField('phone', e.target.value)}
               placeholder="+254 7XX XXX XXX"
-              className="w-full bg-[#28303F]/80 border border-[#2A3448] rounded-xl px-4 py-2.5 text-white placeholder-[#4A5771] text-sm focus:outline-none focus:ring-2 focus:ring-[#007AFF]/50 focus:border-[#007AFF] transition-colors"
+              className="w-full bg-[#28303F]/80 border border-[#2A3448] rounded-xl px-4 py-2.5 text-white placeholder-[#4A5771] text-sm focus:outline-none focus:ring-2 focus:ring-[#71717a]/50 focus:border-[#71717a] transition-colors"
             />
           </div>
 
@@ -340,7 +340,7 @@ export default function SellerRegistration() {
               value={form.email}
               onChange={(e) => updateField('email', e.target.value)}
               placeholder="shop@example.com"
-              className="w-full bg-[#28303F]/80 border border-[#2A3448] rounded-xl px-4 py-2.5 text-white placeholder-[#4A5771] text-sm focus:outline-none focus:ring-2 focus:ring-[#007AFF]/50 focus:border-[#007AFF] transition-colors"
+              className="w-full bg-[#28303F]/80 border border-[#2A3448] rounded-xl px-4 py-2.5 text-white placeholder-[#4A5771] text-sm focus:outline-none focus:ring-2 focus:ring-[#71717a]/50 focus:border-[#71717a] transition-colors"
             />
           </div>
 
@@ -354,7 +354,7 @@ export default function SellerRegistration() {
               value={form.address}
               onChange={(e) => updateField('address', e.target.value)}
               placeholder="Nairobi, Kenya"
-              className="w-full bg-[#28303F]/80 border border-[#2A3448] rounded-xl px-4 py-2.5 text-white placeholder-[#4A5771] text-sm focus:outline-none focus:ring-2 focus:ring-[#007AFF]/50 focus:border-[#007AFF] transition-colors"
+              className="w-full bg-[#28303F]/80 border border-[#2A3448] rounded-xl px-4 py-2.5 text-white placeholder-[#4A5771] text-sm focus:outline-none focus:ring-2 focus:ring-[#71717a]/50 focus:border-[#71717a] transition-colors"
             />
           </div>
 
@@ -373,7 +373,7 @@ export default function SellerRegistration() {
               value={form.businessRegistration}
               onChange={(e) => updateField('businessRegistration', e.target.value)}
               placeholder="e.g. BRN-2024-12345"
-              className="w-full bg-[#28303F]/80 border border-[#2A3448] rounded-xl px-4 py-2.5 text-white placeholder-[#4A5771] text-sm focus:outline-none focus:ring-2 focus:ring-[#007AFF]/50 focus:border-[#007AFF] transition-colors"
+              className="w-full bg-[#28303F]/80 border border-[#2A3448] rounded-xl px-4 py-2.5 text-white placeholder-[#4A5771] text-sm focus:outline-none focus:ring-2 focus:ring-[#71717a]/50 focus:border-[#71717a] transition-colors"
             />
           </div>
 
@@ -388,7 +388,7 @@ export default function SellerRegistration() {
               onChange={(e) => updateField('kraPin', e.target.value.toUpperCase())}
               placeholder="e.g. P051234567Z"
               maxLength={11}
-              className="w-full bg-[#28303F]/80 border border-[#2A3448] rounded-xl px-4 py-2.5 text-white placeholder-[#4A5771] text-sm focus:outline-none focus:ring-2 focus:ring-[#007AFF]/50 focus:border-[#007AFF] transition-colors font-mono uppercase"
+              className="w-full bg-[#28303F]/80 border border-[#2A3448] rounded-xl px-4 py-2.5 text-white placeholder-[#4A5771] text-sm focus:outline-none focus:ring-2 focus:ring-[#71717a]/50 focus:border-[#71717a] transition-colors font-mono uppercase"
             />
           </div>
 
@@ -402,7 +402,7 @@ export default function SellerRegistration() {
               value={form.idNumber}
               onChange={(e) => updateField('idNumber', e.target.value)}
               placeholder="e.g. 12345678"
-              className="w-full bg-[#28303F]/80 border border-[#2A3448] rounded-xl px-4 py-2.5 text-white placeholder-[#4A5771] text-sm focus:outline-none focus:ring-2 focus:ring-[#007AFF]/50 focus:border-[#007AFF] transition-colors"
+              className="w-full bg-[#28303F]/80 border border-[#2A3448] rounded-xl px-4 py-2.5 text-white placeholder-[#4A5771] text-sm focus:outline-none focus:ring-2 focus:ring-[#71717a]/50 focus:border-[#71717a] transition-colors"
             />
           </div>
 
@@ -416,7 +416,7 @@ export default function SellerRegistration() {
               value={form.mpesaPhone}
               onChange={(e) => updateField('mpesaPhone', e.target.value)}
               placeholder="+254 7XX XXX XXX"
-              className="w-full bg-[#28303F]/80 border border-[#2A3448] rounded-xl px-4 py-2.5 text-white placeholder-[#4A5771] text-sm focus:outline-none focus:ring-2 focus:ring-[#007AFF]/50 focus:border-[#007AFF] transition-colors"
+              className="w-full bg-[#28303F]/80 border border-[#2A3448] rounded-xl px-4 py-2.5 text-white placeholder-[#4A5771] text-sm focus:outline-none focus:ring-2 focus:ring-[#71717a]/50 focus:border-[#71717a] transition-colors"
             />
           </div>
 
@@ -432,7 +432,7 @@ export default function SellerRegistration() {
           <button
             type="submit"
             disabled={submitting}
-            className="w-full flex items-center justify-center gap-2 bg-gradient-to-r from-[#007AFF] to-[#0066CC] hover:from-[#0056CC] hover:to-[#004D99] text-white font-bold py-3 rounded-xl transition-all disabled:opacity-50 disabled:cursor-not-allowed shadow-lg shadow-[#007AFF]/30"
+            className="w-full flex items-center justify-center gap-2 bg-gradient-to-r from-[#71717a] to-[#71717a] hover:from-[#0056CC] hover:to-[#004D99] text-white font-bold py-3 rounded-xl transition-all disabled:opacity-50 disabled:cursor-not-allowed shadow-lg shadow-[#71717a]/30"
           >
             {submitting ? (
               <>

@@ -16,7 +16,7 @@ const VALID_TRANSITIONS = {
 };
 const STATUS_COLORS = {
   pending: 'bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400',
-  processing: 'bg-blue-100 text-zinc-600 dark:bg-blue-900/30 dark:text-zinc-500',
+  processing: 'bg-zinc-800 text-zinc-600 dark:bg-zinc-800/30 dark:text-zinc-500',
   shipped: 'bg-purple-100 text-purple-700 dark:bg-purple-900/30 dark:text-purple-400',
   delivered: 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400',
   cancelled: 'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400',

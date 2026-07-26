@@ -462,7 +462,7 @@ export default function AdminAffiliates() {
                     </div>
                     {c.status === 'calculated' && (
                       <button onClick={() => approveCommission(c.id)}
-                        className="w-full py-2 bg-blue-600 text-white rounded-lg text-xs font-bold hover:bg-blue-700 flex items-center justify-center gap-1">
+                        className="w-full py-2 bg-zinc-700 text-white rounded-lg text-xs font-bold hover:bg-zinc-800 flex items-center justify-center gap-1">
                         <Check className="w-3 h-3" /> Approve Commission
                       </button>
                     )}

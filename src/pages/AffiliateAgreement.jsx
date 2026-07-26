@@ -166,7 +166,7 @@ export default function AffiliateAgreement() {
             </button>
             <button
               onClick={handleDownload}
-              className="inline-flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium text-white bg-blue-600 hover:bg-blue-500 transition-colors"
+              className="inline-flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium text-white bg-zinc-700 hover:bg-zinc-600 transition-colors"
             >
               <Download size={16} />
               Download
@@ -176,7 +176,7 @@ export default function AffiliateAgreement() {
 
         {/* Document Header */}
         <div className="text-center mb-10 pb-8 border-b border-[#353F54]">
-          <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-zinc-500/10 border border-blue-500/20 text-zinc-500 text-xs font-medium mb-4">
+          <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-zinc-500/10 border border-zinc-600/20 text-zinc-500 text-xs font-medium mb-4">
             <FileText size={14} />
             Document Version 1.0 | July 2026
           </div>
@@ -197,7 +197,7 @@ export default function AffiliateAgreement() {
               className="py-8 border-b border-[#353F54]/50 last:border-b-0"
             >
               <div className="flex items-start gap-4">
-                <div className="w-10 h-10 rounded-lg bg-zinc-500/10 border border-blue-500/20 flex items-center justify-center shrink-0 text-zinc-500 font-bold text-sm">
+                <div className="w-10 h-10 rounded-lg bg-zinc-500/10 border border-zinc-600/20 flex items-center justify-center shrink-0 text-zinc-500 font-bold text-sm">
                   {section.number.padStart(2, '0')}
                 </div>
                 <div className="flex-1 min-w-0">
@@ -213,7 +213,7 @@ export default function AffiliateAgreement() {
                     <ul className="space-y-2">
                       {section.subsections.map((sub) => (
                         <li key={sub.label} className="flex items-start gap-3">
-                          <span className="w-1.5 h-1.5 rounded-full bg-blue-400 shrink-0 mt-2.5" />
+                          <span className="w-1.5 h-1.5 rounded-full bg-zinc-500 shrink-0 mt-2.5" />
                           <span className="text-[#8E9BB5] leading-relaxed">
                             <strong className="text-zinc-200">{sub.label}:</strong>{' '}
                             {sub.text}
@@ -254,7 +254,7 @@ export default function AffiliateAgreement() {
         <div className="mt-8 text-center">
           <Link
             to="/affiliate/apply"
-            className="inline-flex items-center gap-2 px-8 py-3.5 rounded-xl font-semibold text-white bg-gradient-to-r from-blue-600 to-blue-500 hover:from-blue-500 hover:to-blue-400 transition-all duration-200 shadow-lg shadow-blue-500/20"
+            className="inline-flex items-center gap-2 px-8 py-3.5 rounded-xl font-semibold text-white bg-gradient-to-r from-zinc-700 to-zinc-600 hover:from-zinc-600 hover:to-zinc-500 transition-all duration-200 shadow-lg shadow-zinc-600/20"
           >
             Apply Now
           </Link>

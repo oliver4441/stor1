@@ -7,9 +7,9 @@ const trackSteps = [
     desc: 'Visit /track-order from any page, or find "Track Order" in your account dashboard.',
     svg: `<svg viewBox="0 0 400 60" xmlns="http://www.w3.org/2000/svg" class="w-full">
       <rect x="0" y="0" width="400" height="60" rx="8" fill="#f0f9ff"/>
-      <rect x="20" y="10" width="120" height="40" rx="6" fill="#3b82f6"/>
+      <rect x="20" y="10" width="120" height="40" rx="6" fill="#71717a"/>
       <text x="80" y="35" font-size="12" fill="white" text-anchor="middle" font-weight="bold">Track Order</text>
-      <text x="160" y="35" font-size="11" fill="#1e40af">/track-order</text>
+      <text x="160" y="35" font-size="11" fill="#52525b">/track-order</text>
     </svg>`
   },
   {
@@ -29,7 +29,7 @@ const trackSteps = [
       <rect x="0" y="0" width="400" height="80" rx="8" fill="#f0fdf4"/>
       <rect x="20" y="15" width="80" height="50" rx="6" fill="#22c55e"/>
       <text x="60" y="45" font-size="10" fill="white" text-anchor="middle">Delivered</text>
-      <rect x="120" y="15" width="80" height="50" rx="6" fill="#3b82f6"/>
+      <rect x="120" y="15" width="80" height="50" rx="6" fill="#71717a"/>
       <text x="160" y="45" font-size="10" fill="white" text-anchor="middle">In Transit</text>
       <rect x="220" y="15" width="80" height="50" rx="6" fill="#f59e0b"/>
       <text x="260" y="45" font-size="10" fill="white" text-anchor="middle">Preparing</text>

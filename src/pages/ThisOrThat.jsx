@@ -38,9 +38,9 @@ function StarRating({ rating }) {
 
 function ConditionBadge({ condition }) {
   const colors = {
-    new: 'bg-[#007AFF]/40 text-[#38B8EA] border-[#007AFF]',
+    new: 'bg-[#71717a]/40 text-[#38B8EA] border-[#71717a]',
     used: 'bg-amber-900/40 text-amber-400 border-amber-800',
-    refurbished: 'bg-blue-900/40 text-zinc-500 border-blue-800',
+    refurbished: 'bg-zinc-800/40 text-zinc-500 border-zinc-700',
   };
   const cls = colors[condition?.toLowerCase()] || 'bg-[#28303F] text-[#4A5771] border-[#353F54]';
   return (
@@ -81,7 +81,7 @@ function SkeletonCard() {
 
 function SkeletonAnalysis() {
   return (
-    <div className="bg-[#28303F]/60 rounded-2xl p-6 animate-pulse space-y-4 border-l-4 border-[#007AFF]/30">
+    <div className="bg-[#28303F]/60 rounded-2xl p-6 animate-pulse space-y-4 border-l-4 border-[#71717a]/30">
       <div className="h-5 bg-[#353F54]/50 rounded w-1/3" />
       <div className="space-y-2">
         <div className="h-3 bg-[#353F54]/50 rounded w-full" />
@@ -168,7 +168,7 @@ function ProductSearchSelect({ label, onSelect, value, onClear }) {
             onChange={(e) => setQuery(e.target.value)}
             onFocus={() => results.length > 0 && setOpen(true)}
             placeholder={`Search ${label}...`}
-            className="w-full bg-[#28303F] border border-[#353F54] rounded-xl pl-10 pr-10 py-2.5 text-sm text-white placeholder-[#4A5771] focus:outline-none focus:ring-2 focus:ring-[#007AFF]/50 focus:border-[#007AFF]/50 transition-all"
+            className="w-full bg-[#28303F] border border-[#353F54] rounded-xl pl-10 pr-10 py-2.5 text-sm text-white placeholder-[#4A5771] focus:outline-none focus:ring-2 focus:ring-[#71717a]/50 focus:border-[#71717a]/50 transition-all"
           />
           {loading && (
             <Loader2 className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#4A5771] animate-spin" />
@@ -441,7 +441,7 @@ export default function ThisOrThat() {
                 e.stopPropagation();
                 handleAddToCart(product);
               }}
-              className="flex-1 flex items-center justify-center gap-1.5 bg-[#007AFF] hover:bg-[#0066CC] text-white text-xs font-bold px-3 py-2 rounded-xl transition-colors"
+              className="flex-1 flex items-center justify-center gap-1.5 bg-[#71717a] hover:bg-[#71717a] text-white text-xs font-bold px-3 py-2 rounded-xl transition-colors"
             >
               <ShoppingCart className="w-3.5 h-3.5" />
               Add to Cart
@@ -499,7 +499,7 @@ export default function ThisOrThat() {
                 disabled={!canCompare || comparing}
                 className={`inline-flex items-center gap-2 px-5 py-2.5 rounded-xl font-bold text-sm transition-all ${
                   canCompare && !comparing
-                    ? 'bg-[#007AFF] hover:bg-[#0066CC] text-white shadow-lg shadow-[#007AFF]/20 active:scale-95'
+                    ? 'bg-[#71717a] hover:bg-[#71717a] text-white shadow-lg shadow-[#71717a]/20 active:scale-95'
                     : 'bg-[#28303F] text-[#4A5771] cursor-not-allowed'
                 }`}
               >
@@ -515,7 +515,7 @@ export default function ThisOrThat() {
 
           {/* AI Comparison result */}
           {comparison && !comparing && (
-            <div className="bg-[#28303F]/80 rounded-2xl p-5 md:p-6 border-l-4 border-[#007AFF] shadow-lg">
+            <div className="bg-[#28303F]/80 rounded-2xl p-5 md:p-6 border-l-4 border-[#71717a] shadow-lg">
               <div className="flex items-center gap-2 mb-3">
                 <Sparkles className="w-5 h-5 text-[#38B8EA]" />
                 <h3 className="text-white font-bold text-sm">

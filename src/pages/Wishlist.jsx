@@ -109,7 +109,7 @@ export default function Wishlist() {
         <Heart className="w-16 h-16 text-zinc-600 mx-auto mb-4" />
         <h1 className="text-2xl font-black mb-2">Saved Items</h1>
         <p className="text-[#4A5771] mb-8">Sign in to save your favorite items and get notified about price drops.</p>
-        <Link to="/login" className="bg-[var(--seasonal-primary,#007AFF)] text-white font-bold px-8 py-3 rounded-xl inline-block">Sign In</Link>
+        <Link to="/login" className="bg-[var(--seasonal-primary,#71717a)] text-white font-bold px-8 py-3 rounded-xl inline-block">Sign In</Link>
       </div>
     );
   }
@@ -119,7 +119,7 @@ export default function Wishlist() {
       <Breadcrumb />
       <div className="flex items-center justify-between mb-6">
         <h1 className="text-2xl font-black flex items-center gap-2">
-          <Heart className="w-6 h-6 text-[var(--seasonal-primary,#007AFF)]" /> Saved Items
+          <Heart className="w-6 h-6 text-[var(--seasonal-primary,#71717a)]" /> Saved Items
         </h1>
         <span className="text-sm text-[#4A5771]">{items.length} item{items.length !== 1 ? 's' : ''}</span>
       </div>
@@ -129,7 +129,7 @@ export default function Wishlist() {
           <Heart className="w-16 h-16 text-zinc-600 mx-auto mb-4" />
           <h2 className="text-lg font-bold mb-2">Your wishlist is empty</h2>
           <p className="text-[#4A5771] mb-6">Start saving items you love! Tap the heart on any product.</p>
-          <Link to="/" className="bg-[var(--seasonal-primary,#007AFF)] text-white font-bold px-8 py-3 rounded-xl inline-flex items-center gap-2">
+          <Link to="/" className="bg-[var(--seasonal-primary,#71717a)] text-white font-bold px-8 py-3 rounded-xl inline-flex items-center gap-2">
             <ArrowLeft className="w-4 h-4" /> Browse Products
           </Link>
         </div>
@@ -156,9 +156,9 @@ export default function Wishlist() {
                 <div className="flex-1 min-w-0 flex flex-col justify-between">
                   <div>
                     <Link to={`/listing/${listing.id}`}>
-                      <h3 className="font-bold text-sm text-white truncate hover:text-[var(--seasonal-primary,#007AFF)] transition-colors">{listing.title}</h3>
+                      <h3 className="font-bold text-sm text-white truncate hover:text-[var(--seasonal-primary,#71717a)] transition-colors">{listing.title}</h3>
                     </Link>
-                    <p className="text-[var(--seasonal-primary,#007AFF)] font-black text-base mt-0.5">{formatKES(listing.price)}</p>
+                    <p className="text-[var(--seasonal-primary,#71717a)] font-black text-base mt-0.5">{formatKES(listing.price)}</p>
                     {outOfStock && (
                       <div className="flex items-center gap-1 text-amber-400 text-xs font-bold mt-1">
                         <AlertCircle className="w-3 h-3" /> Out of stock
@@ -174,7 +174,7 @@ export default function Wishlist() {
                         className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold transition-all ${
                           item.stockWatch
                             ? 'bg-emerald-900/30 text-[#38B8EA] border border-emerald-800'
-                            : 'bg-[#28303F] text-[#8E9BB5] border border-[#353F54] hover:border-[var(--seasonal-primary,#007AFF)]'
+                            : 'bg-[#28303F] text-[#8E9BB5] border border-[#353F54] hover:border-[var(--seasonal-primary,#71717a)]'
                         }`}
                       >
                         <Bell className="w-3 h-3" /> {item.stockWatch ? 'Notifying' : 'Notify Me'}
@@ -184,8 +184,8 @@ export default function Wishlist() {
                         onClick={() => handleAddToCart(listing)}
                         className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold transition-all ${
                           inCart
-                            ? 'bg-[var(--seasonal-primary,#007AFF)] text-white'
-                            : 'bg-[#28303F] text-[#8E9BB5] border border-[#353F54] hover:border-[var(--seasonal-primary,#007AFF)] hover:text-white'
+                            ? 'bg-[var(--seasonal-primary,#71717a)] text-white'
+                            : 'bg-[#28303F] text-[#8E9BB5] border border-[#353F54] hover:border-[var(--seasonal-primary,#71717a)] hover:text-white'
                         }`}
                       >
                         <ShoppingCart className="w-3 h-3" /> {inCart ? 'Added!' : 'Add to Cart'}

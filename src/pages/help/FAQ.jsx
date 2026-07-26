@@ -20,7 +20,7 @@ const faqSteps = [
       <rect x="0" y="0" width="400" height="70" rx="8" fill="#f1f5f9" stroke="#cbd5e1"/>
       <rect x="20" y="15" width="80" height="40" rx="6" fill="#10b981"/>
       <text x="60" y="38" font-size="10" fill="white" text-anchor="middle" font-weight="bold">M-Pesa</text>
-      <rect x="110" y="15" width="80" height="40" rx="6" fill="#3b82f6"/>
+      <rect x="110" y="15" width="80" height="40" rx="6" fill="#71717a"/>
       <text x="150" y="38" font-size="10" fill="white" text-anchor="middle" font-weight="bold">Paybill</text>
       <rect x="200" y="15" width="80" height="40" rx="6" fill="#f59e0b"/>
       <text x="240" y="38" font-size="10" fill="white" text-anchor="middle" font-weight="bold">Bank</text>
@@ -35,7 +35,7 @@ const faqSteps = [
       <rect x="0" y="0" width="400" height="70" rx="8" fill="#ecfdf5"/>
       <rect x="20" y="15" width="100" height="40" rx="6" fill="#22c55e"/>
       <text x="70" y="38" font-size="10" fill="white" text-anchor="middle">Delivered</text>
-      <rect x="130" y="15" width="100" height="40" rx="6" fill="#3b82f6"/>
+      <rect x="130" y="15" width="100" height="40" rx="6" fill="#71717a"/>
       <text x="180" y="38" font-size="10" fill="white" text-anchor="middle">In Transit</text>
       <rect x="240" y="15" width="100" height="40" rx="6" fill="#f59e0b"/>
       <text x="290" y="38" font-size="10" fill="white" text-anchor="middle">Preparing</text>

@@ -147,7 +147,7 @@ export default function SellerProfile() {
   return (
     <div className="min-h-screen bg-zinc-950 text-white">
       {/* ── Banner ── */}
-      <div className="relative h-48 md:h-64 w-full overflow-hidden bg-gradient-to-r from-blue-900 via-purple-900 to-zinc-900">
+      <div className="relative h-48 md:h-64 w-full overflow-hidden bg-gradient-to-r from-zinc-800 via-purple-900 to-zinc-900">
         {banner_url ? (
           <img
             src={banner_url}
@@ -185,7 +185,7 @@ export default function SellerProfile() {
                 {store_name}
               </h1>
               {is_verified && (
-                <span className="inline-flex items-center gap-1 text-xs bg-zinc-500/20 text-zinc-500 px-2.5 py-1 rounded-full border border-blue-500/30">
+                <span className="inline-flex items-center gap-1 text-xs bg-zinc-500/20 text-zinc-500 px-2.5 py-1 rounded-full border border-zinc-600/30">
                   <CheckCircle className="w-3.5 h-3.5" />
                   Verified
                 </span>

@@ -7,9 +7,9 @@ const affiliateSteps = [
     desc: 'Visit /affiliate and click "Join the Affiliates". Fill out the application form with your details and agree to the terms.',
     svg: `<svg viewBox="0 0 400 80" xmlns="http://www.w3.org/2000/svg" class="w-full">
       <rect x="0" y="0" width="400" height="80" rx="8" fill="#f0f9ff"/>
-      <rect x="20" y="15" width="160" height="50" rx="6" fill="#3b82f6"/>
+      <rect x="20" y="15" width="160" height="50" rx="6" fill="#71717a"/>
       <text x="100" y="45" font-size="14" fill="white" text-anchor="middle" font-weight="bold">Join Affiliates</text>
-      <text x="200" y="45" font-size="12" fill="#1e40af">Fill form > Submit</text>
+      <text x="200" y="45" font-size="12" fill="#52525b">Fill form > Submit</text>
     </svg>`
   },
   {
@@ -47,7 +47,7 @@ const affiliateSteps = [
     desc: 'Request payouts via M-Pesa once you reach KES 2,000 minimum. Payments processed within 48 hours.',
     svg: `<svg viewBox="0 0 400 60" xmlns="http://www.w3.org/2000/svg" class="w-full">
       <rect x="0" y="0" width="400" height="60" rx="8" fill="#ecfdf5"/>
-      <rect x="20" y="10" width="120" height="40" rx="6" fill="#007AFF"/>
+      <rect x="20" y="10" width="120" height="40" rx="6" fill="#71717a"/>
       <text x="80" y="35" font-size="12" fill="white" text-anchor="middle" font-weight="bold">M-Pesa</text>
       <text x="160" y="35" font-size="11" fill="#065f46">Min KES 2,000</text>
     </svg>`

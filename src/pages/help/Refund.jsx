@@ -23,7 +23,7 @@ const refundSteps = [
       <rect x="40" y="15" width="80" height="50" rx="6" fill="#22c55e"/>
       <text x="80" y="45" font-size="12" fill="white" text-anchor="middle" font-weight="bold">Approved</text>
       <path d="M130 40l15 15 40-40" stroke="#22c55e" stroke-width="3" stroke-linecap="round"/>
-      <rect x="180" y="15" width="100" height="50" rx="6" fill="#007AFF"/>
+      <rect x="180" y="15" width="100" height="50" rx="6" fill="#71717a"/>
       <text x="230" y="42" font-size="12" fill="white" text-anchor="middle" font-weight="bold">Ksh 1,299</text>
       <text x="230" y="58" font-size="10" fill="#d1fae5" text-anchor="middle">Refunded</text>
       <text x="320" y="45" font-size="11" fill="#16a34a">1-2 hours to M-Pesa</text>

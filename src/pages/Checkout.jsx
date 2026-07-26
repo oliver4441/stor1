@@ -16,8 +16,8 @@ import { trackBeginCheckout, trackError } from '../utils/analytics';
 
 // ── Design Tokens (matching Nia chat) ──────────────────────────────
 const C = {
-  accent: '#007AFF',
-  accentDark: '#0066CC',
+  accent: '#71717a',
+  accentDark: '#71717a',
   bg: '#ffffff',
   bgDark: '#18181b',
   bgGray: '#f9fafb',
@@ -635,15 +635,15 @@ export default function CheckoutPage() {
   if (isMaintenance) {
     return (
       <div className="max-w-lg mx-auto px-4 py-16">
-        <div className="text-center py-12 rounded-2xl border border-[#007AFF] dark:border-[#0066CC]" style={{ backgroundColor: '#e8f4ff' }}>
-          <div className="w-20 h-20 mx-auto mb-5 rounded-full flex items-center justify-center bg-[#007AFF]/10">
-            <Wrench className="w-10 h-10 text-[#007AFF] animate-pulse" />
+        <div className="text-center py-12 rounded-2xl border border-[#71717a] dark:border-[#71717a]" style={{ backgroundColor: '#e8f4ff' }}>
+          <div className="w-20 h-20 mx-auto mb-5 rounded-full flex items-center justify-center bg-[#71717a]/10">
+            <Wrench className="w-10 h-10 text-[#71717a] animate-pulse" />
           </div>
-          <h1 className="text-2xl font-black mb-2 text-[#0066CC]">Under Maintenance</h1>
-          <p className="text-sm mb-2 text-[#007AFF]">
+          <h1 className="text-2xl font-black mb-2 text-[#71717a]">Under Maintenance</h1>
+          <p className="text-sm mb-2 text-[#71717a]">
             We're currently performing scheduled maintenance on our store.
           </p>
-          <p className="text-xs mb-8 text-[#007AFF]">
+          <p className="text-xs mb-8 text-[#71717a]">
             You can still browse products, but checkout and payments are temporarily disabled. Please check back shortly!
           </p>
           <div className="flex flex-col sm:flex-row gap-3 justify-center">
@@ -655,7 +655,7 @@ export default function CheckoutPage() {
               Continue Browsing <ArrowRight className="w-4 h-4" />
             </Link>
           </div>
-          <p className="text-[11px] mt-6 text-[#007AFF]">
+          <p className="text-[11px] mt-6 text-[#71717a]">
             Need help? Contact us at omixsystems@gmail.com or +254 768 213 649
           </p>
         </div>
@@ -799,15 +799,15 @@ export default function CheckoutPage() {
               {promoApplied ? (
                 <div className="flex items-center justify-between p-3 rounded-xl" style={{ backgroundColor: '#e8f4ff', border: '1px solid #99d6ff' }}>
                   <div className="flex items-center gap-2">
-                    <CheckCircle className="w-4 h-4 text-[#007AFF]" />
+                    <CheckCircle className="w-4 h-4 text-[#71717a]" />
                     <div>
-                      <span className="text-sm font-bold text-[#0066CC]">{promoApplied.code}</span>
-                      <p className="text-[11px] text-[#007AFF]">
+                      <span className="text-sm font-bold text-[#71717a]">{promoApplied.code}</span>
+                      <p className="text-[11px] text-[#71717a]">
                         {promoApplied.discount_type === 'free_delivery' ? 'Free delivery applied' : 'Discount applied'}
                       </p>
                     </div>
                   </div>
-                  <button onClick={removePromo} className="text-xs font-semibold text-[#0066CC] hover:text-[#004499] underline">
+                  <button onClick={removePromo} className="text-xs font-semibold text-[#71717a] hover:text-[#004499] underline">
                     Remove
                   </button>
                 </div>
@@ -848,10 +848,10 @@ export default function CheckoutPage() {
                     type="checkbox"
                     checked={redeemPoints}
                     onChange={(e) => setRedeemPoints(e.target.checked)}
-                    className="w-4 h-4 rounded border-[#8E9BB5] text-[#007AFF] focus:ring-[#007AFF]"
+                    className="w-4 h-4 rounded border-[#8E9BB5] text-[#71717a] focus:ring-[#71717a]"
                   />
                   <span className="text-sm" style={{ color: C.textMuted }}>
-                    Use loyalty points <strong className="text-[#007AFF]">({userPoints} pts)</strong>
+                    Use loyalty points <strong className="text-[#71717a]">({userPoints} pts)</strong>
                     <span className="text-xs block">100 pts = KES 50 • Max 50% of order</span>
                   </span>
                 </label>

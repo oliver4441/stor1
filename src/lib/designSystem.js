@@ -6,9 +6,9 @@
 
 // ─── Colors ────────────────────────────────────────────────────────────────
 export const colors = {
-  primary: '#007AFF',
-  primaryHover: '#0066CC',
-  accent: '#007AFF',
+  primary: '#71717a',
+  primaryHover: '#71717a',
+  accent: '#71717a',
   danger: '#dc2626',
   surface: '#242C3B',
   surfaceAlt: '#28303F',
@@ -74,7 +74,7 @@ export const shadows = {
 
 // ─── Button Variants ───────────────────────────────────────────────────────
 export const buttonVariants = {
-  primary: 'bg-[#007AFF] text-white hover:bg-[#0066CC] transition-colors duration-150',
+  primary: 'bg-[#71717a] text-white hover:bg-[#71717a] transition-colors duration-150',
   secondary: 'bg-[#28303F] text-white border border-[#353F54] hover:bg-[#323B4F] transition-colors duration-150',
   ghost: 'bg-transparent text-[#4A5771] hover:text-white transition-colors duration-150',
   danger: 'bg-red-600 text-white hover:bg-red-700 transition-colors duration-150',

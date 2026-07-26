@@ -28,7 +28,7 @@ async function apiGet(url) {
 const SEVERITY_COLORS = {
   high: { bg: 'bg-red-500/10', border: 'border-red-500/20', text: 'text-red-400', dot: 'bg-red-500' },
   medium: { bg: 'bg-amber-500/10', border: 'border-amber-500/20', text: 'text-amber-400', dot: 'bg-amber-500' },
-  info: { bg: 'bg-zinc-500/10', border: 'border-blue-500/20', text: 'text-zinc-500', dot: 'bg-blue-500' },
+  info: { bg: 'bg-zinc-500/10', border: 'border-zinc-600/20', text: 'text-zinc-500', dot: 'bg-zinc-600' },
 };
 
 function AlertCard({ alert }) {

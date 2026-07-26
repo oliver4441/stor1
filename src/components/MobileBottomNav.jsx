@@ -130,7 +130,7 @@ export default function MobileBottomNav() {
                 onClick={() => setCascadeOpen(false)}
                 className={`flex items-center gap-3 px-4 py-3 text-sm font-bold transition-all ${
                   isItemActive
-                    ? 'text-[var(--seasonal-primary,#007AFF)] bg-[var(--seasonal-primary,#007AFF)]/10'
+                    ? 'text-[var(--seasonal-primary,#71717a)] bg-[var(--seasonal-primary,#71717a)]/10'
                     : 'text-[#8E9BB5] active:bg-[#28303F]'
                 } ${i < cascadeItems.length - 1 ? 'border-b border-[#353F54]/50' : ''}`}
                 style={{ animationDelay: `${i * 50}ms`, animation: cascadeOpen ? `cascade-up 0.25s ease-out ${i * 50}ms both` : 'none' }}
@@ -162,8 +162,8 @@ export default function MobileBottomNav() {
                       onClick={() => setCascadeOpen(!cascadeOpen)}
                       className={`relative -mt-5 w-[52px] h-[52px] rounded-full flex items-center justify-center shadow-xl transition-all duration-300 active:scale-90 ${
                         cascadeOpen
-                          ? 'bg-[#007AFF] rotate-45 scale-110 shadow-[#007AFF]/40'
-                          : 'bg-gradient-to-br from-[var(--seasonal-primary,#007AFF)] to-[var(--seasonal-secondary,#0066CC)] hover:scale-105 shadow-black/30'
+                          ? 'bg-[#71717a] rotate-45 scale-110 shadow-[#71717a]/40'
+                          : 'bg-gradient-to-br from-[var(--seasonal-primary,#71717a)] to-[var(--seasonal-secondary,#71717a)] hover:scale-105 shadow-black/30'
                       }`}
                       aria-label={cascadeOpen ? 'Close menu' : 'Open actions'}
                     >
@@ -187,7 +187,7 @@ export default function MobileBottomNav() {
                   <div className={`relative transition-transform duration-150 ${active ? 'scale-110 -translate-y-0.5' : ''}`}>
                     <Icon className="w-5 h-5" strokeWidth={active ? 2.5 : 1.5} />
                     {badge > 0 && (
-                      <span className="absolute -top-1.5 -right-2.5 min-w-[16px] h-4 px-1 bg-[#007AFF] text-white text-[9px] font-bold rounded-full flex items-center justify-center shadow-lg">
+                      <span className="absolute -top-1.5 -right-2.5 min-w-[16px] h-4 px-1 bg-[#71717a] text-white text-[9px] font-bold rounded-full flex items-center justify-center shadow-lg">
                         {badge > 99 ? '99+' : badge}
                       </span>
                     )}

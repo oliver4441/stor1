@@ -22,7 +22,7 @@ export default function CartPage() {
           </div>
           <h1 className="text-2xl font-bold text-[#FAFAFA] mb-3">Your cart is empty</h1>
           <p className="text-[#4A5771] mb-8">Browse our products and add items to your cart.</p>
-          <Link to="/" className="inline-flex items-center gap-2 bg-[#007AFF] hover:bg-[#e62e4f] text-[#FAFAFA] font-semibold px-8 py-4 rounded-xl transition-colors mb-8">
+          <Link to="/" className="inline-flex items-center gap-2 bg-[#71717a] hover:bg-[#e62e4f] text-[#FAFAFA] font-semibold px-8 py-4 rounded-xl transition-colors mb-8">
             Browse Products
           </Link>
           <NiaContextualTrigger page="emptyCart" />
@@ -51,7 +51,7 @@ export default function CartPage() {
                 )}
               </div>
               <div className="flex-grow min-w-0">
-                <Link to={`/listing/${item.id}`} className="font-bold text-[#FAFAFA] hover:text-[#007AFF] transition-colors">
+                <Link to={`/listing/${item.id}`} className="font-bold text-[#FAFAFA] hover:text-[#71717a] transition-colors">
                   {item.name}
                 </Link>
                 {item.variant && (
@@ -67,7 +67,7 @@ export default function CartPage() {
                     )}
                   </div>
                 )}
-                <p className="text-[#007AFF] font-bold">{formatKES(item.price)}</p>
+                <p className="text-[#71717a] font-bold">{formatKES(item.price)}</p>
                 <div className="flex items-center gap-3 mt-2">
                   <div className="flex items-center gap-2">
                     <button onClick={() => updateQuantity(item.id, item.quantity - 1, item._cartKey)} className="w-8 h-8 rounded-lg bg-[#28303F] flex items-center justify-center hover:bg-[#323B4F] transition-colors" aria-label={`Decrease quantity of ${item.name}`}>
@@ -106,13 +106,13 @@ export default function CartPage() {
           <div className="border-t border-[#353F54] pt-4 mb-6">
             <div className="flex justify-between items-center">
               <span className="font-bold text-[#FAFAFA]">Total</span>
-              <span className="text-2xl font-black text-[#007AFF]">{formatKES(total)}</span>
+              <span className="text-2xl font-black text-[#71717a]">{formatKES(total)}</span>
             </div>
           </div>
-          <Link to="/checkout" className="flex items-center justify-center gap-2 w-full bg-[#007AFF] text-[#FAFAFA] font-black py-4 rounded-2xl hover:bg-[#0066CC] transition-all shadow-lg shadow-[#007AFF]/20">
+          <Link to="/checkout" className="flex items-center justify-center gap-2 w-full bg-[#71717a] text-[#FAFAFA] font-black py-4 rounded-2xl hover:bg-[#71717a] transition-all shadow-lg shadow-[#71717a]/20">
             Proceed to Checkout <ArrowRight className="w-5 h-5" />
           </Link>
-          <Link to="/" className="block text-center text-sm text-[#4A5771] hover:text-[#007AFF] mt-4 font-medium">
+          <Link to="/" className="block text-center text-sm text-[#4A5771] hover:text-[#71717a] mt-4 font-medium">
             Continue Shopping
           </Link>
         </div>

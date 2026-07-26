@@ -210,7 +210,7 @@ export default function AdminDeals() {
 
   const getStatusBadge = (deal) => {
     if (isDealActive(deal)) return { label: 'Active', color: 'bg-green-500/10 text-green-400 border-green-500/20' };
-    if (isDealUpcoming(deal)) return { label: 'Upcoming', color: 'bg-zinc-500/10 text-zinc-500 border-blue-500/20' };
+    if (isDealUpcoming(deal)) return { label: 'Upcoming', color: 'bg-zinc-500/10 text-zinc-500 border-zinc-600/20' };
     if (isDealEnded(deal)) return { label: 'Ended', color: 'bg-zinc-500/10 text-zinc-400 border-zinc-500/20' };
     return { label: deal.is_active ? 'Active' : 'Inactive', color: 'bg-zinc-500/10 text-zinc-400 border-zinc-500/20' };
   };

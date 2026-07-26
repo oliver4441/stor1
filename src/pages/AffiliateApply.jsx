@@ -177,8 +177,8 @@ export default function AffiliateApply() {
     return (
       <div className="min-h-screen bg-[#242C3B] flex items-center justify-center px-4 py-20">
         <div className="max-w-lg w-full text-center">
-          <div className="w-20 h-20 rounded-full bg-[#007AFF]/10 flex items-center justify-center mx-auto mb-6">
-            <CheckCircle size={40} className="text-[#007AFF]" />
+          <div className="w-20 h-20 rounded-full bg-[#71717a]/10 flex items-center justify-center mx-auto mb-6">
+            <CheckCircle size={40} className="text-[#71717a]" />
           </div>
           <h1 className="text-2xl font-bold text-white mb-4">Application Submitted</h1>
           {accountCreated ? (
@@ -192,7 +192,7 @@ export default function AffiliateApply() {
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
                 <Link
                   to="/login"
-                  className="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-xl font-medium text-white bg-blue-600 hover:bg-blue-500 transition-colors"
+                  className="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-xl font-medium text-white bg-zinc-700 hover:bg-zinc-600 transition-colors"
                 >
                   Sign In to Your Account
                 </Link>
@@ -212,7 +212,7 @@ export default function AffiliateApply() {
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
                 <Link
                   to="/affiliate"
-                  className="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-xl font-medium text-white bg-blue-600 hover:bg-blue-500 transition-colors"
+                  className="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-xl font-medium text-white bg-zinc-700 hover:bg-zinc-600 transition-colors"
                 >
                   <ArrowLeft size={16} />
                   Back to Affiliate Program
@@ -234,7 +234,7 @@ export default function AffiliateApply() {
   const inputClass = (name) =>
     `w-full px-4 py-3 rounded-lg bg-[#28303F]/50 border ${
       fieldErrors[name] ? 'border-red-500/50' : 'border-[#353F54]'
-    } text-white placeholder-zinc-500 focus:outline-none focus:border-blue-500 transition-colors`;
+    } text-white placeholder-zinc-500 focus:outline-none focus:border-zinc-600 transition-colors`;
 
   return (
     <div className="min-h-screen bg-[#242C3B] py-12">
@@ -257,14 +257,14 @@ export default function AffiliateApply() {
         </div>
 
         {/* Already an affiliate? */}
-        <div className="mb-6 p-4 rounded-lg bg-blue-500/5 border border-blue-500/20 flex items-center justify-between">
+        <div className="mb-6 p-4 rounded-lg bg-zinc-600/5 border border-zinc-600/20 flex items-center justify-between">
           <div>
             <p className="text-sm font-medium text-zinc-200">Already an affiliate?</p>
             <p className="text-xs text-[#4A5771]">Sign in to access your dashboard, view commissions, and manage referrals.</p>
           </div>
           <Link
             to="/login"
-            className="shrink-0 inline-flex items-center gap-1.5 px-4 py-2 rounded-lg font-medium text-sm text-white bg-blue-600 hover:bg-blue-500 transition-colors"
+            className="shrink-0 inline-flex items-center gap-1.5 px-4 py-2 rounded-lg font-medium text-sm text-white bg-zinc-700 hover:bg-zinc-600 transition-colors"
           >
             Sign In
             <ArrowLeft size={14} className="rotate-180" />
@@ -464,7 +464,7 @@ export default function AffiliateApply() {
                   key={method}
                   className={`flex items-center gap-3 p-3 rounded-lg border cursor-pointer transition-colors ${
                     formData.promotional_methods.includes(method)
-                      ? 'border-blue-500/30 bg-blue-500/5'
+                      ? 'border-zinc-600/30 bg-zinc-600/5'
                       : 'border-[#353F54] bg-[#28303F]/30 hover:bg-[#28303F]/50'
                   }`}
                 >
@@ -472,7 +472,7 @@ export default function AffiliateApply() {
                     type="checkbox"
                     checked={formData.promotional_methods.includes(method)}
                     onChange={() => handlePromoMethod(method)}
-                    className="w-4 h-4 rounded border-zinc-600 bg-[#28303F] text-zinc-600 focus:ring-blue-500"
+                    className="w-4 h-4 rounded border-zinc-600 bg-[#28303F] text-zinc-600 focus:ring-zinc-600"
                   />
                   <span className="text-sm text-zinc-200">{method}</span>
                 </label>
@@ -539,7 +539,7 @@ export default function AffiliateApply() {
                 name="agreed"
                 checked={formData.agreed}
                 onChange={handleChange}
-                className="w-5 h-5 mt-0.5 rounded border-zinc-600 bg-[#28303F] text-zinc-600 focus:ring-blue-500"
+                className="w-5 h-5 mt-0.5 rounded border-zinc-600 bg-[#28303F] text-zinc-600 focus:ring-zinc-600"
               />
               <div>
                 <span className="text-sm text-[#8E9BB5]">
@@ -561,7 +561,7 @@ export default function AffiliateApply() {
             <button
               type="submit"
               disabled={submitting}
-              className="inline-flex items-center gap-2 px-8 py-3.5 rounded-xl font-semibold text-white bg-gradient-to-r from-blue-600 to-blue-500 hover:from-blue-500 hover:to-blue-400 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 shadow-lg shadow-blue-500/20 shrink-0"
+              className="inline-flex items-center gap-2 px-8 py-3.5 rounded-xl font-semibold text-white bg-gradient-to-r from-zinc-700 to-zinc-600 hover:from-zinc-600 hover:to-zinc-500 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 shadow-lg shadow-zinc-600/20 shrink-0"
             >
               {submitting ? (
                 <>

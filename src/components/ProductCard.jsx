@@ -142,7 +142,7 @@ function ProductCard({ listing, compareMode, onCompareChange }) {
   const inCart = cart.find(item => item.id === listing.id);
   const theme = useActiveTheme();
   const priceColor = theme?.colors?.priceColor || '#38B8EA';
-  const accentColor = theme?.colors?.accent || '#007AFF';
+  const accentColor = theme?.colors?.accent || '#71717a';
   const sticker = theme?.sticker || '';
   const socialBadge = theme?.socialBadge || '';
 
@@ -307,7 +307,7 @@ function ProductCard({ listing, compareMode, onCompareChange }) {
         )}
 
         {listing.wholesale_enabled && (
-          <div className="absolute top-10 left-2 bg-blue-600 text-white px-2 py-0.5 rounded text-[9px] font-bold shadow-sm z-10">
+          <div className="absolute top-10 left-2 bg-zinc-700 text-white px-2 py-0.5 rounded text-[9px] font-bold shadow-sm z-10">
             Wholesale
           </div>
         )}
@@ -317,8 +317,8 @@ function ProductCard({ listing, compareMode, onCompareChange }) {
             onClick={toggleCompare}
             className={`absolute top-2 left-2 p-1.5 rounded-full shadow-sm transition-all z-10 ${
               isCompared
-                ? 'bg-[var(--seasonal-primary,#007AFF)] text-white'
-                : 'bg-white/90 bg-[#28303F]/90 text-[#4A5771] hover:text-[var(--seasonal-primary,#007AFF)]'
+                ? 'bg-[var(--seasonal-primary,#71717a)] text-white'
+                : 'bg-white/90 bg-[#28303F]/90 text-[#4A5771] hover:text-[var(--seasonal-primary,#71717a)]'
             }`}
             aria-label={isCompared ? 'Remove from comparison' : 'Add to comparison'}
           >
@@ -329,8 +329,8 @@ function ProductCard({ listing, compareMode, onCompareChange }) {
         <button onClick={handleWishlist}
           className={`absolute top-2 left-2 p-1.5 rounded-full shadow-sm transition-all z-10 ${
             wishlisted
-              ? 'bg-[var(--seasonal-primary,#007AFF)] text-white scale-110'
-              : 'bg-black/60 text-white/80 hover:text-[var(--seasonal-primary,#007AFF)] hover:bg-black/80 md:opacity-0 md:group-hover:opacity-100'
+              ? 'bg-[var(--seasonal-primary,#71717a)] text-white scale-110'
+              : 'bg-black/60 text-white/80 hover:text-[var(--seasonal-primary,#71717a)] hover:bg-black/80 md:opacity-0 md:group-hover:opacity-100'
           }`}
           aria-label={wishlisted ? 'Remove from wishlist' : 'Add to wishlist'}
         >
@@ -338,7 +338,7 @@ function ProductCard({ listing, compareMode, onCompareChange }) {
         </button>
 
         <button onClick={handleWebShare}
-          className="absolute top-2 right-12 bg-white/90 bg-[#28303F]/90 text-[#8E9BB5] p-1.5 rounded-full shadow-sm hover:bg-[var(--seasonal-primary,#007AFF)] hover:text-white transition-all opacity-0 group-hover:opacity-100"
+          className="absolute top-2 right-12 bg-white/90 bg-[#28303F]/90 text-[#8E9BB5] p-1.5 rounded-full shadow-sm hover:bg-[var(--seasonal-primary,#71717a)] hover:text-white transition-all opacity-0 group-hover:opacity-100"
           aria-label="Share">
           <Share2 className="w-3 h-3" />
         </button>
@@ -351,7 +351,7 @@ function ProductCard({ listing, compareMode, onCompareChange }) {
 
         <button
           onClick={(e) => { e.preventDefault(); e.stopPropagation(); }}
-          className="absolute top-10 right-2 bg-white/90 bg-[#28303F]/90 text-white p-1.5 rounded-full shadow-sm hover:bg-[var(--seasonal-primary,#007AFF)] hover:text-white transition-all opacity-0 group-hover:opacity-100"
+          className="absolute top-10 right-2 bg-white/90 bg-[#28303F]/90 text-white p-1.5 rounded-full shadow-sm hover:bg-[var(--seasonal-primary,#71717a)] hover:text-white transition-all opacity-0 group-hover:opacity-100"
           aria-label="Quick view"
         >
           <Eye className="w-3 h-3" />
@@ -363,14 +363,14 @@ function ProductCard({ listing, compareMode, onCompareChange }) {
           disabled={hasVariants && !allSelected}
           className={`absolute bottom-2 right-2 flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-[10px] font-bold shadow-sm transition-all opacity-0 group-hover:opacity-100 ${
             isMaintenanceCached()
-              ? 'bg-[#007AFF] text-white'
+              ? 'bg-[#71717a] text-white'
               : justAdded
-                ? 'bg-[#007AFF] text-white'
+                ? 'bg-[#71717a] text-white'
                 : inCart
-                  ? 'bg-[var(--seasonal-primary,#007AFF)]/90 text-white'
+                  ? 'bg-[var(--seasonal-primary,#71717a)]/90 text-white'
                   : hasVariants && !allSelected
                     ? 'bg-[#353F54] text-[#4A5771] cursor-not-allowed'
-                    : 'bg-white/90 bg-[#28303F]/90 text-white hover:bg-[var(--seasonal-primary,#007AFF)] hover:text-white'
+                    : 'bg-white/90 bg-[#28303F]/90 text-white hover:bg-[var(--seasonal-primary,#71717a)] hover:text-white'
           }`}
           aria-label={
             isMaintenanceCached()
@@ -446,10 +446,10 @@ function ProductCard({ listing, compareMode, onCompareChange }) {
                         }}
                         className={`text-xs font-bold px-3 py-1.5 rounded-lg border transition-all w-full ${
                           isSelected
-                            ? 'bg-[var(--seasonal-primary,#007AFF)] text-white border-[var(--seasonal-primary,#007AFF)]'
+                            ? 'bg-[var(--seasonal-primary,#71717a)] text-white border-[var(--seasonal-primary,#71717a)]'
                             : disabled
                               ? 'bg-[#1E2A3D] text-[#4A5771] border-[#353F54] line-through cursor-not-allowed'
-                              : 'bg-[#28303F] text-[#8E9BB5] border-[#353F54] hover:border-[var(--seasonal-primary,#007AFF)]'
+                              : 'bg-[#28303F] text-[#8E9BB5] border-[#353F54] hover:border-[var(--seasonal-primary,#71717a)]'
                         }`}
                         title={disabled ? 'Out of stock' : label}
                       >
@@ -499,10 +499,10 @@ function ProductCard({ listing, compareMode, onCompareChange }) {
                           }}
                           className={`w-6 h-6 rounded-full border-2 flex-shrink-0 transition-all ${
                             isSelected
-                              ? 'border-[var(--seasonal-primary,#007AFF)] scale-125 shadow-sm shadow-[var(--seasonal-primary,#007AFF)]/30'
+                              ? 'border-[var(--seasonal-primary,#71717a)] scale-125 shadow-sm shadow-[var(--seasonal-primary,#71717a)]/30'
                               : disabled
                                 ? 'border-[#353F54] opacity-25 cursor-not-allowed'
-                                : 'border-[#4A5771] hover:border-[var(--seasonal-primary,#007AFF)] hover:scale-110'
+                                : 'border-[#4A5771] hover:border-[var(--seasonal-primary,#71717a)] hover:scale-110'
                           }`}
                           style={{ backgroundColor: value?.startsWith('#') ? value : '#ccc' }}
                           title={`${label}${disabled ? ' (out of stock)' : ''}`}
@@ -527,10 +527,10 @@ function ProductCard({ listing, compareMode, onCompareChange }) {
                         }}
                         className={`text-[9px] font-bold px-2 py-0.5 rounded-full border transition-all ${
                           isSelected
-                            ? 'bg-[var(--seasonal-primary,#007AFF)] text-white border-[var(--seasonal-primary,#007AFF)]'
+                            ? 'bg-[var(--seasonal-primary,#71717a)] text-white border-[var(--seasonal-primary,#71717a)]'
                             : disabled
                               ? 'bg-[#1E2A3D] text-[#4A5771] border-[#353F54] line-through cursor-not-allowed'
-                              : 'bg-[#28303F] text-[#8E9BB5] border-[#353F54] hover:border-[var(--seasonal-primary,#007AFF)]'
+                              : 'bg-[#28303F] text-[#8E9BB5] border-[#353F54] hover:border-[var(--seasonal-primary,#71717a)]'
                         }`}
                         title={disabled ? 'Out of stock' : label}
                       >

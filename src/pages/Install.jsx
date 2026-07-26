@@ -235,7 +235,7 @@ export default function Install() {
         {/* Animated floating orbs */}
         <div className="absolute top-1/4 left-1/4 w-72 h-72 bg-[var(--seasonal-primary,#71717a)]/20 rounded-full blur-3xl animate-float-slow" />
         <div className="absolute bottom-1/3 right-1/4 w-56 h-56 bg-purple-500/20 rounded-full blur-3xl animate-float-slower" />
-        <div className="absolute top-1/2 right-1/3 w-48 h-48 bg-blue-500/15 rounded-full blur-3xl animate-float" />
+        <div className="absolute top-1/2 right-1/3 w-48 h-48 bg-zinc-600/15 rounded-full blur-3xl animate-float" />
 
         {/* Animated grid pattern */}
         <div className="absolute inset-0 opacity-[0.02] dark:opacity-[0.04]" style={{ backgroundImage: 'radial-gradient(circle at 1px 1px, currentColor 1px, transparent 0)', backgroundSize: '40px 40px' }} />
@@ -243,14 +243,14 @@ export default function Install() {
         <div className="relative z-10 max-w-4xl mx-auto px-4 pt-20 pb-12 text-center">
           {/* Logo with glass container */}
           <div className="relative inline-block mb-8 group">
-            <div className="absolute -inset-4 bg-gradient-to-r from-[var(--seasonal-primary,#71717a)]/30 via-purple-500/30 to-blue-500/30 rounded-full blur-2xl opacity-75 group-hover:opacity-100 transition-opacity duration-700 animate-pulse-slow" />
+            <div className="absolute -inset-4 bg-gradient-to-r from-[var(--seasonal-primary,#71717a)]/30 via-purple-500/30 to-zinc-600/30 rounded-full blur-2xl opacity-75 group-hover:opacity-100 transition-opacity duration-700 animate-pulse-slow" />
             <div className="relative w-24 h-24 rounded-full backdrop-blur-xl bg-white/60 dark:bg-[#28303F]/60 border border-white/50 dark:border-[#353F54]/50 shadow-2xl flex items-center justify-center overflow-hidden group-hover:scale-110 transition-transform duration-500">
               <img src="/logo.jpg" alt="Omix Store" className="w-full h-full object-cover" />
             </div>
           </div>
 
           <h1 className="text-5xl md:text-7xl font-black text-white mb-4 tracking-tight leading-tight">
-            <span className="bg-gradient-to-r from-[var(--seasonal-primary,#71717a)] via-purple-500 to-blue-500 bg-clip-text text-transparent bg-[length:200%_auto] animate-gradient-x">
+            <span className="bg-gradient-to-r from-[var(--seasonal-primary,#71717a)] via-purple-500 to-zinc-600 bg-clip-text text-transparent bg-[length:200%_auto] animate-gradient-x">
               {t('install.title')}
             </span>
           </h1>

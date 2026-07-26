@@ -7,9 +7,9 @@ const sellerSteps = [
     desc: 'Visit /seller/register and fill out the seller application form with your business details.',
     svg: `<svg viewBox="0 0 400 60" xmlns="http://www.w3.org/2000/svg" class="w-full">
       <rect x="0" y="0" width="400" height="60" rx="8" fill="#f0f9ff"/>
-      <rect x="20" y="10" width="140" height="40" rx="6" fill="#3b82f6"/>
+      <rect x="20" y="10" width="140" height="40" rx="6" fill="#71717a"/>
       <text x="90" y="35" font-size="12" fill="white" text-anchor="middle" font-weight="bold">Register Seller</text>
-      <text x="180" y="35" font-size="11" fill="#1e40af">/seller/register</text>
+      <text x="180" y="35" font-size="11" fill="#52525b">/seller/register</text>
     </svg>`
   },
   {
@@ -47,7 +47,7 @@ const sellerSteps = [
     desc: 'Receive payouts for completed orders. Payments processed weekly via M-Pesa.',
     svg: `<svg viewBox="0 0 400 60" xmlns="http://www.w3.org/2000/svg" class="w-full">
       <rect x="0" y="0" width="400" height="60" rx="8" fill="#ecfdf5"/>
-      <rect x="20" y="10" width="100" height="40" rx="6" fill="#007AFF"/>
+      <rect x="20" y="10" width="100" height="40" rx="6" fill="#71717a"/>
       <text x="70" y="35" font-size="12" fill="white" text-anchor="middle" font-weight="bold">Payout</text>
       <text x="140" y="35" font-size="11" fill="#065f46">Weekly via M-Pesa</text>
     </svg>`

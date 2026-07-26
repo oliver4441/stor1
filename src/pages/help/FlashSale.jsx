@@ -14,7 +14,7 @@ const flashSaleSteps = [
       <text x="210" y="40" font-size="28" fill="#dc2626" text-anchor="middle" font-weight="bold">50%</text>
       <text x="210" y="58" font-size="10" fill="#ea580c" text-anchor="middle">OFF</text>
       <rect x="280" y="15" width="100" height="50" rx="6" fill="#eff6ff"/>
-      <text x="330" y="40" font-size="12" fill="#3b82f6" text-anchor="middle" font-weight="bold">5 left</text>
+      <text x="330" y="40" font-size="12" fill="#71717a" text-anchor="middle" font-weight="bold">5 left</text>
       <text x="330" y="58" font-size="10" fill="#64748b" text-anchor="middle">Hurry!</text>
     </svg>`
   },

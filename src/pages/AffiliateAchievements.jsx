@@ -15,7 +15,7 @@ const TIER_COLORS = {
   bronze: { bg: 'bg-amber-700/20', border: 'border-amber-700/30', text: 'text-amber-600', glow: 'shadow-amber-700/20' },
   silver: { bg: 'bg-zinc-400/20', border: 'border-zinc-400/30', text: 'text-[#8E9BB5]', glow: 'shadow-zinc-400/20' },
   gold: { bg: 'bg-yellow-500/20', border: 'border-yellow-500/30', text: 'text-yellow-400', glow: 'shadow-yellow-500/20' },
-  platinum: { bg: 'bg-blue-400/20', border: 'border-blue-400/30', text: 'text-zinc-400', glow: 'shadow-blue-400/20' },
+  platinum: { bg: 'bg-zinc-500/20', border: 'border-zinc-500/30', text: 'text-zinc-400', glow: 'shadow-zinc-500/20' },
 };
 
 function AchievementCard({ ach }) {

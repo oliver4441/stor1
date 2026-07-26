@@ -9,11 +9,11 @@ const shoppingSteps = [
       <rect x="0" y="0" width="400" height="50" rx="8" fill="#f8fafc" stroke="#e2e8f0"/>
       <path d="M120 25l6 6 6-6" stroke="#94a3b8" stroke-width="2" stroke-linecap="round"/>
       <text x="140" y="28" font-size="12" fill="#64748b">Search for anything...</text>
-      <rect x="0" y="60" width="120" height="35" rx="6" fill="#007AFF"/>
+      <rect x="0" y="60" width="120" height="35" rx="6" fill="#71717a"/>
       <text x="60" y="82" font-size="11" fill="white" text-anchor="middle" font-weight="bold">Electronics</text>
       <rect x="130" y="60" width="120" height="35" rx="6" fill="#10b981"/>
       <text x="190" y="82" font-size="11" fill="white" text-anchor="middle" font-weight="bold">Shoes</text>
-      <rect x="260" y="60" width="120" height="35" rx="6" fill="#3b82f6"/>
+      <rect x="260" y="60" width="120" height="35" rx="6" fill="#71717a"/>
       <text x="320" y="82" font-size="11" fill="white" text-anchor="middle" font-weight="bold">Clothing</text>
     </svg>`
   },
@@ -25,11 +25,11 @@ const shoppingSteps = [
       <rect x="20" y="20" width="80" height="80" rx="4" fill="#334155"/>
       <text x="60" y="55" font-size="10" fill="#94a3b8" text-anchor="middle">IMAGE</text>
       <text x="120" y="35" font-size="14" fill="#f1f5f9" font-weight="bold">Product Name</text>
-      <text x="120" y="55" font-size="16" fill="#007AFF">Ksh 1,299</text>
+      <text x="120" y="55" font-size="16" fill="#71717a">Ksh 1,299</text>
       <rect x="120" y="70" width="100" height="25" rx="4" fill="#10b981"/>
       <text x="170" y="87" font-size="11" fill="white" text-anchor="middle" font-weight="bold">Add to Cart</text>
-      <circle cx="280" cy="40" r="4" fill="#007AFF"/>
-      <circle cx="295" cy="40" r="4" fill="#3b82f6"/>
+      <circle cx="280" cy="40" r="4" fill="#71717a"/>
+      <circle cx="295" cy="40" r="4" fill="#71717a"/>
       <circle cx="310" cy="40" r="4" fill="#10b981"/>
       <text x="280" y="60" font-size="10" fill="#94a3b8">Colors</text>
       <rect x="260" y="70" width="50" height="20" rx="4" fill="#334155"/>
@@ -41,11 +41,11 @@ const shoppingSteps = [
     desc: 'Select your size/color, then click "Add to Cart". Products stay in your cart even if you leave the site and return later.',
     svg: `<svg viewBox="0 0 400 80" xmlns="http://www.w3.org/2000/svg" class="w-full">
       <rect x="0" y="0" width="400" height="80" rx="8" fill="#f1f5f9" stroke="#cbd5e1"/>
-      <rect x="20" y="25" width="36" height="36" rx="4" fill="#007AFF"/>
+      <rect x="20" y="25" width="36" height="36" rx="4" fill="#71717a"/>
       <text x="38" y="47" font-size="12" fill="white" font-weight="bold">1</text>
       <text x="70" y="40" font-size="14" fill="#0f172a" font-weight="bold">Cart Updated</text>
       <text x="70" y="58" font-size="12" fill="#64748b">Product added successfully</text>
-      <rect x="250" y="20" width="130" height="40" rx="6" fill="#007AFF"/>
+      <rect x="250" y="20" width="130" height="40" rx="6" fill="#71717a"/>
       <text x="315" y="44" font-size="12" fill="white" text-anchor="middle" font-weight="bold">View Cart (1)</text>
     </svg>`
   },
@@ -64,7 +64,7 @@ const shoppingSteps = [
       <text x="200" y="117" font-size="11" fill="#cbd5e1" text-anchor="middle">Cash on Delivery</text>
       <rect x="270" y="100" width="100" height="25" rx="4" fill="#334155"/>
       <text x="320" y="117" font-size="11" fill="#cbd5e1" text-anchor="middle">Bank Transfer</text>
-      <rect x="260" y="125" width="120" height="30" rx="6" fill="#007AFF"/>
+      <rect x="260" y="125" width="120" height="30" rx="6" fill="#71717a"/>
       <text x="320" y="143" font-size="13" fill="white" text-anchor="middle" font-weight="bold">Place Order</text>
     </svg>`
   }

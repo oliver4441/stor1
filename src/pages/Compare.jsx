@@ -132,7 +132,7 @@ export default function Compare() {
         <Scale className="w-16 h-16 text-[#8E9BB5] mx-auto mb-4" />
         <h1 className="text-2xl font-black mb-2">Compare Products</h1>
         <p className="text-[#4A5771] mb-8">{error}</p>
-        <Link to="/" className="inline-flex items-center gap-2 bg-[var(--seasonal-primary,#007AFF)] text-white font-bold px-6 py-3 rounded-xl">
+        <Link to="/" className="inline-flex items-center gap-2 bg-[var(--seasonal-primary,#71717a)] text-white font-bold px-6 py-3 rounded-xl">
           <ArrowLeft className="w-4 h-4" /> Browse Products
         </Link>
       </div>
@@ -145,7 +145,7 @@ export default function Compare() {
         <Scale className="w-16 h-16 text-[#8E9BB5] mx-auto mb-4" />
         <h1 className="text-2xl font-black mb-2">No Results</h1>
         <p className="text-[#4A5771] mb-8">Could not find the selected listings.</p>
-        <Link to="/" className="inline-flex items-center gap-2 bg-[var(--seasonal-primary,#007AFF)] text-white font-bold px-6 py-3 rounded-xl">
+        <Link to="/" className="inline-flex items-center gap-2 bg-[var(--seasonal-primary,#71717a)] text-white font-bold px-6 py-3 rounded-xl">
           <ArrowLeft className="w-4 h-4" /> Back to Home
         </Link>
       </div>
@@ -158,7 +158,7 @@ export default function Compare() {
       <div className="flex items-center justify-between mb-8">
         <div>
           <h1 className="text-2xl font-black flex items-center gap-2">
-            <Scale className="w-6 h-6 text-[var(--seasonal-primary,#007AFF)]" /> Compare Products
+            <Scale className="w-6 h-6 text-[var(--seasonal-primary,#71717a)]" /> Compare Products
           </h1>
           <p className="text-[#4A5771] text-sm">Comparing {listings.length} product{listings.length !== 1 ? 's' : ''}</p>
         </div>
@@ -169,7 +169,7 @@ export default function Compare() {
               onClick={() => setDiffMode(!diffMode)}
               className={`flex items-center gap-1.5 px-3 py-2 rounded-xl font-bold text-xs transition-all ${
                 diffMode
-                  ? 'bg-[var(--seasonal-primary,#007AFF)] text-white'
+                  ? 'bg-[var(--seasonal-primary,#71717a)] text-white'
                   : 'bg-[#28303F] text-[#8E9BB5] hover:bg-zinc-700'
               }`}
             >
@@ -199,7 +199,7 @@ export default function Compare() {
       </div>
 
       {shared && (
-        <div className="mb-4 text-center text-sm font-medium text-[#38B8EA] bg-[#007AFF]/20 px-4 py-2 rounded-xl animate-fade-in">
+        <div className="mb-4 text-center text-sm font-medium text-[#38B8EA] bg-[#71717a]/20 px-4 py-2 rounded-xl animate-fade-in">
           Comparison shared to WhatsApp!
         </div>
       )}
@@ -233,11 +233,11 @@ export default function Compare() {
                           </div>
                         )}
                       </div>
-                      <h3 className="font-bold text-sm text-white truncate hover:text-[var(--seasonal-primary,#007AFF)] transition-colors">
+                      <h3 className="font-bold text-sm text-white truncate hover:text-[var(--seasonal-primary,#71717a)] transition-colors">
                         {listing.title}
                       </h3>
                     </Link>
-                    <p className="text-[var(--seasonal-primary,#007AFF)] font-bold text-sm mt-1">
+                    <p className="text-[var(--seasonal-primary,#71717a)] font-bold text-sm mt-1">
                       {listing.flash_sale_price ? formatKES(listing.flash_sale_price) : formatKES(listing.price)}
                     </p>
                     {listing.compare_at_price && listing.compare_at_price > listing.price && (
@@ -296,7 +296,7 @@ export default function Compare() {
       <div className="mt-8 flex items-center justify-center gap-4">
         <Link
           to="/"
-          className="inline-flex items-center gap-2 bg-[var(--seasonal-primary,#007AFF)] text-white font-bold px-8 py-3 rounded-xl hover:bg-[var(--seasonal-secondary,#0066CC)] transition-all shadow-lg shadow-[var(--seasonal-primary,#007AFF)]/20"
+          className="inline-flex items-center gap-2 bg-[var(--seasonal-primary,#71717a)] text-white font-bold px-8 py-3 rounded-xl hover:bg-[var(--seasonal-secondary,#71717a)] transition-all shadow-lg shadow-[var(--seasonal-primary,#71717a)]/20"
         >
           <ArrowLeft className="w-4 h-4" /> Continue Browsing
         </Link>

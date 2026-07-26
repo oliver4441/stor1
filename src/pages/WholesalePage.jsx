@@ -112,8 +112,8 @@ function WholesalePage() {
     setLoadingMore(false);
   };
 
-  const heroFrom = theme?.colors?.heroFrom || '#007AFF';
-  const heroVia = theme?.colors?.heroVia || '#0066CC';
+  const heroFrom = theme?.colors?.heroFrom || '#71717a';
+  const heroVia = theme?.colors?.heroVia || '#71717a';
   const heroTo = theme?.colors?.heroTo || '#0055AA';
   const particleType = theme?.particleType || 'none';
 
@@ -156,7 +156,7 @@ function WholesalePage() {
               onClick={() => setActiveCategory(cat)}
               className={`px-4 py-2 rounded-xl text-xs font-bold whitespace-nowrap transition-all ${
                 activeCategory === cat
-                  ? 'bg-[var(--seasonal-primary,#007AFF)] text-white shadow-lg'
+                  ? 'bg-[var(--seasonal-primary,#71717a)] text-white shadow-lg'
                   : 'bg-[#28303F] text-[#4A5771] hover:bg-[#28303F]'
               }`}
             >
@@ -186,7 +186,7 @@ function WholesalePage() {
                 <div key={listing.id} className="relative">
                   <ProductCard listing={listing} onQuickView={() => setQuickViewListing(listing)} />
                   {/* Wholesale Available Badge */}
-                  <div className="absolute top-2 right-2 z-20 bg-blue-600 text-white px-2 py-0.5 rounded text-[9px] font-bold shadow-sm">
+                  <div className="absolute top-2 right-2 z-20 bg-zinc-700 text-white px-2 py-0.5 rounded text-[9px] font-bold shadow-sm">
                     Wholesale Available
                   </div>
                   {/* Minimum Order Quantity Badge */}
