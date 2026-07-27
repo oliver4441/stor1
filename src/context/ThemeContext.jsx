@@ -21,10 +21,25 @@ html[data-theme="dark"] [class*="border-[#353F54]"],
 html[data-theme="dark"] [class*="border-\\[\\#353F54\\]"] { border-color: #1a1a1a !important; }
 
 html[data-theme="dark"] [class*="text-[#8E9BB5]"],
-html[data-theme="dark"] [class*="text-\\[\\#8E9BB5\\]"] { color: #525252 !important; }
+html[data-theme="dark"] [class*="text-\\[\\#8E9BB5\\]"] { color: #737373 !important; }
 
 html[data-theme="dark"] [class*="text-[#4A5771]"],
-html[data-theme="dark"] [class*="text-\\[\\#4A5771\\]"] { color: #404040 !important; }
+html[data-theme="dark"] [class*="text-\\[\\#4A5771\\]"] { color: #525252 !important; }
+
+/* Replace old grey accent with teal */
+html[data-theme="dark"] [class*="text-[#71717a]"],
+html[data-theme="dark"] [class*="text-\\[\\#71717a\\]"] { color: #14b8a6 !important; }
+
+html[data-theme="dark"] [class*="bg-[#71717a]"],
+html[data-theme="dark"] [class*="bg-\\[\\#71717a\\]"] { background-color: #14b8a6 !important; }
+
+html[data-theme="dark"] [class*="border-[#71717a]"],
+html[data-theme="dark"] [class*="border-\\[\\#71717a\\]"] { border-color: #14b8a6 !important; }
+
+html[data-theme="dark"] [style*="--seasonal-primary"],
+html[data-theme="dark"] [style*="--seasonal-primary,#71717a"] {
+  --seasonal-primary: #14b8a6 !important;
+}
 
 html[data-theme="dark"] .fusion-recessed-card {
   background-color: #0a0a0a !important;
@@ -98,6 +113,16 @@ html[data-theme="light"] [class*="bg-zinc-950"] { background-color: #f5f5f5 !imp
 html[data-theme="light"] [class*="bg-black"] { background-color: #ffffff !important; }
 
 html[data-theme="light"] [class*="text-white"]:not([class*="hover"]):not(nav *):not(button *):not(a *) { color: #0a0a0a !important; }
+
+/* Accent color in light mode */
+html[data-theme="light"] [class*="text-[#71717a]"],
+html[data-theme="light"] [class*="text-\\[\\#71717a\\]"] { color: #0d9488 !important; }
+
+html[data-theme="light"] [class*="bg-[#71717a]"],
+html[data-theme="light"] [class*="bg-\\[\\#71717a\\]"] { background-color: #14b8a6 !important; }
+
+html[data-theme="light"] [class*="border-[#71717a]"],
+html[data-theme="light"] [class*="border-\\[\\#71717a\\]"] { border-color: #14b8a6 !important; }
 
 html[data-theme="light"] .fusion-recessed-card {
   background-color: #ffffff !important;

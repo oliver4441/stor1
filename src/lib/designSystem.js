@@ -1,23 +1,31 @@
 /**
  * Omix Design System Tokens
- * TRUE DARK theme — pure black base, no blue/grey tint.
- * Light mode overrides managed by ThemeContext CSS injection.
+ * Dark theme with vibrant accent colors — pure dark backgrounds,
+ * teal/emerald accent for life, warm amber for energy.
  */
 
 // ─── Colors ────────────────────────────────────────────────────────────────
 export const colors = {
-  primary: '#a3a3a3',
-  primaryHover: '#a3a3a3',
-  accent: '#a3a3a3',
+  // Primary accent — vibrant teal (pops beautifully on dark backgrounds)
+  primary: '#14b8a6',
+  primaryHover: '#0d9488',
+  accent: '#14b8a6',
+
+  // Semantic
   danger: '#ef4444',
+  success: '#22c55e',
+  warning: '#f59e0b',
+  priceColor: '#2dd4bf',
+
+  // Dark surfaces — pure black base, no blue/grey tint
   surface: '#0a0a0a',
-  surfaceAlt: '#141414',
+  surfaceAlt: '#121212',
   border: '#1f1f1f',
+
+  // Text
   textPrimary: '#fafafa',
-  textSecondary: '#525252',
+  textSecondary: '#737373',
   textMuted: '#525252',
-  success: '#4ade80',
-  priceColor: '#38B8EA',
 };
 
 // Light mode overrides (applied via CSS injection by ThemeContext)
@@ -26,7 +34,7 @@ export const lightColors = {
   surfaceAlt: '#f5f5f5',
   border: '#e5e5e5',
   textPrimary: '#0a0a0a',
-  textSecondary: '#a3a3a3',
+  textSecondary: '#737373',
   textMuted: '#a3a3a3',
 };
 
@@ -70,9 +78,9 @@ export const shadows = {
 
 // ─── Button Variants ───────────────────────────────────────────────────────
 export const buttonVariants = {
-  primary: 'bg-[#a3a3a3] text-black hover:bg-[#a3a3a3] transition-colors duration-150',
-  secondary: 'bg-[#141414] text-white border border-[#1f1f1f] hover:bg-[#1f1f1f] transition-colors duration-150',
-  ghost: 'bg-transparent text-[#525252] hover:text-white transition-colors duration-150',
+  primary: 'bg-[#14b8a6] text-black hover:bg-[#0d9488] transition-colors duration-150 font-bold',
+  secondary: 'bg-[#121212] text-white border border-[#1f1f1f] hover:border-[#14b8a6]/30 hover:bg-[#181818] transition-colors duration-150',
+  ghost: 'bg-transparent text-[#525252] hover:text-[#14b8a6] transition-colors duration-150',
   danger: 'bg-red-600 text-white hover:bg-red-700 transition-colors duration-150',
 };
 
