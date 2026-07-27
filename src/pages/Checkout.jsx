@@ -650,6 +650,33 @@ export default function CheckoutPage() {
         })),
       }));
 
+      // ── Wallet Payment ─────────────────────────────────────
+      if (payWithWallet && isAuthenticated) {
+        const walletRes = await useWalletPayment(currentDiscounted, orderId);
+        if (!walletRes.success) {
+          setError(walletRes.error || 'Wallet payment failed');
+          setLoading(false);
+          orderCreated.current = false;
+          return;
+        }
+        // Wallet paid — skip M-Pesa
+        sessionStorage.setItem(`omix_order_${orderId}`, JSON.stringify({
+          id: orderId,
+          total: currentDiscounted,
+          items: currentItems.map(item => ({
+            product_id: item.id,
+            product_name: item.name,
+            price: item.price,
+            quantity: item.quantity,
+          })),
+        }));
+        sounds.checkout();
+        await new Promise(resolve => setTimeout(resolve, 500));
+        setLoading(false);
+        navigate(`/order-success?orderId=${orderId}&wallet=true`);
+        return;
+      }
+
       // Initiate M-Pesa STK push
       try {
         const cleanedPhone = form.phone.trim().replace(/[^0-9]/g, '');

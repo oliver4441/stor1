@@ -7,6 +7,7 @@ import { sounds } from '../utils/sounds';
 export default function OrderSuccess() {
   const params = new URLSearchParams(window.location.search);
   const orderId = params.get('orderId') || 'N/A';
+  const isWallet = params.get('wallet') === 'true';
 
   // Track purchase on page load
   React.useEffect(() => {
@@ -33,7 +34,7 @@ export default function OrderSuccess() {
           <CheckCircle className="w-10 h-10 text-emerald-400" />
         </div>
         <h1 className="text-2xl sm:text-3xl font-black text-white mb-3">Order Placed Successfully!</h1>
-        <p className="text-zinc-400 mb-2">Thank you for your order. We will process it shortly.</p>
+        <p className="text-zinc-400 mb-2">{isWallet ? 'Payment made via wallet.' : 'Thank you for your order. We will process it shortly.'}</p>
 
         <div className="bg-zinc-900 rounded-3xl border border-zinc-800 p-6 mt-8 inline-block">
           <div className="flex items-center gap-3 text-sm text-zinc-400">
