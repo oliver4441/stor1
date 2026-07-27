@@ -106,7 +106,7 @@ export default function AdminAnalytics() {
     .sort(([, a], [, b]) => b - a)
     .map(([name, value]) => ({ name, value: Math.round(value) }));
 
-  const CHART_COLORS = ['#1a5632', '#71717a', '#10b981', '#f59e0b', '#8b5cf6', '#ec4899', '#06b6d4'];
+  const CHART_COLORS = ['#0d9488', '#71717a', '#10b981', '#f59e0b', '#8b5cf6', '#ec4899', '#06b6d4'];
   const STATUS_COLORS = { pending: '#f59e0b', processing: '#71717a', shipped: '#8b5cf6', delivered: '#10b981', cancelled: '#ef4444' };
 
   // Custom tooltip
@@ -218,14 +218,14 @@ export default function AdminAnalytics() {
               <AreaChart data={chartData} margin={{ top: 5, right: 5, bottom: 5, left: 5 }}>
                 <defs>
                   <linearGradient id="colorRevenue" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%" stopColor="#1a5632" stopOpacity={0.3} />
-                    <stop offset="95%" stopColor="#1a5632" stopOpacity={0} />
+                    <stop offset="5%" stopColor="#0d9488" stopOpacity={0.3} />
+                    <stop offset="95%" stopColor="#0d9488" stopOpacity={0} />
                   </linearGradient>
                 </defs>
-                <XAxis dataKey="day" tick={{ fontSize: 10, fill: '#71717a' }} tickLine={false} axisLine={false} />
-                <YAxis tick={{ fontSize: 10, fill: '#71717a' }} tickLine={false} axisLine={false} width={60} tickFormatter={v => v >= 1000 ? `${(v/1000).toFixed(0)}k` : v} />
+                <XAxis dataKey="day" tick={{ fontSize: 10, fill: '#6b7280' }} tickLine={false} axisLine={false} />
+                <YAxis tick={{ fontSize: 10, fill: '#6b7280' }} tickLine={false} axisLine={false} width={60} tickFormatter={v => v >= 1000 ? `${(v/1000).toFixed(0)}k` : v} />
                 <Tooltip content={<CustomTooltip />} />
-                <Area type="monotone" dataKey="revenue" stroke="#1a5632" strokeWidth={2} fill="url(#colorRevenue)" />
+                <Area type="monotone" dataKey="revenue" stroke="#0d9488" strokeWidth={2} fill="url(#colorRevenue)" />
               </AreaChart>
             </ResponsiveContainer>
           </div>
@@ -241,8 +241,8 @@ export default function AdminAnalytics() {
           <div className="h-56">
             <ResponsiveContainer width="100%" height="100%">
               <BarChart data={chartData} margin={{ top: 5, right: 5, bottom: 5, left: 5 }}>
-                <XAxis dataKey="day" tick={{ fontSize: 10, fill: '#71717a' }} tickLine={false} axisLine={false} />
-                <YAxis tick={{ fontSize: 10, fill: '#71717a' }} tickLine={false} axisLine={false} allowDecimals={false} />
+                <XAxis dataKey="day" tick={{ fontSize: 10, fill: '#6b7280' }} tickLine={false} axisLine={false} />
+                <YAxis tick={{ fontSize: 10, fill: '#6b7280' }} tickLine={false} axisLine={false} allowDecimals={false} />
                 <Tooltip content={<CustomTooltip />} />
                 <Bar dataKey="orders" fill="#71717a" radius={[4, 4, 0, 0]} />
               </BarChart>
@@ -310,7 +310,7 @@ export default function AdminAnalytics() {
           <div className="h-64">
             <ResponsiveContainer width="100%" height="100%">
               <BarChart data={statusData} layout="vertical" margin={{ top: 5, right: 20, bottom: 5, left: 10 }}>
-                <XAxis type="number" tick={{ fontSize: 12, fill: '#71717a' }} tickLine={false} axisLine={false} />
+                <XAxis type="number" tick={{ fontSize: 12, fill: '#6b7280' }} tickLine={false} axisLine={false} />
                 <YAxis type="category" dataKey="status" tick={{ fontSize: 12, fill: '#e4e4e7' }} tickLine={false} axisLine={false} width={90} />
                 <Tooltip
                   contentStyle={{ backgroundColor: '#18181b', border: '1px solid #27272a', borderRadius: '12px', color: '#fff' }}

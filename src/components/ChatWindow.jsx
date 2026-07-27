@@ -54,7 +54,7 @@ function Skeleton() {
           <div key={i} className={`flex ${isRight ? 'justify-end' : 'justify-start'}`}>
             <div
               className={`rounded-2xl h-10 ${isRight ? 'w-2/3' : 'w-1/2'}`}
-              style={{ backgroundColor: isRight ? '#1a5632' : '#27272a' }}
+              style={{ backgroundColor: isRight ? '#0d9488' : '#27272a' }}
             />
           </div>
         );
@@ -289,7 +289,7 @@ export default function ChatWindow({ conversationId, currentUserId, onBack }) {
               onClick={handleSend}
               disabled={!inputText.trim() || sending}
               className="p-2.5 rounded-xl text-white transition-all disabled:opacity-40 hover:opacity-90 active:scale-95"
-              style={{ backgroundColor: 'var(--seasonal-primary, #1a5632)' }}
+              style={{ backgroundColor: 'var(--seasonal-primary, #0d9488)' }}
               aria-label="Send message"
             >
               <Send className="w-4 h-4" />
@@ -338,7 +338,7 @@ export default function ChatWindow({ conversationId, currentUserId, onBack }) {
                     className="px-4 py-2.5 text-sm leading-relaxed whitespace-pre-wrap break-words"
                     style={{
                       backgroundColor: isMine
-                        ? 'var(--seasonal-primary, #1a5632)'
+                        ? 'var(--seasonal-primary, #0d9488)'
                         : '#27272a',
                       color: '#ffffff',
                       borderRadius: isMine
@@ -377,7 +377,7 @@ export default function ChatWindow({ conversationId, currentUserId, onBack }) {
             onClick={handleSend}
             disabled={!inputText.trim() || sending}
             className="p-2.5 rounded-xl text-white transition-all disabled:opacity-40 hover:opacity-90 active:scale-95"
-            style={{ backgroundColor: 'var(--seasonal-primary, #1a5632)' }}
+            style={{ backgroundColor: 'var(--seasonal-primary, #0d9488)' }}
             aria-label="Send message"
           >
             <Send className="w-4 h-4" />

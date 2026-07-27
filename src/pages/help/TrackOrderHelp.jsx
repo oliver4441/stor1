@@ -58,7 +58,7 @@ export default function TrackOrderHelp() {
       
       <h3>Need Help?</h3>
       <p>
-        If your order seems stuck, contact us via WhatsApp at 254746674392 with your order ID.
+        If your order seems stuck, contact us via WhatsApp at 254768213649 with your order ID.
       </p>
     </HelpLayout>
   );

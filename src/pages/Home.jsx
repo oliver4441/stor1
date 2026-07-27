@@ -228,36 +228,36 @@ function Home() {
       {/* Trust Strip */}
       <div className="max-w-7xl mx-auto px-4 mb-8">
         <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-          <div className="flex items-center gap-3 bg-[#28303F] border border-[#353F54] rounded-xl p-4">
-<div className="w-10 h-10 rounded-lg bg-zinc-600/20 flex items-center justify-center flex-shrink-0">
-              <svg className="w-5 h-5 text-[#71717a]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" /></svg>
+          <div className="flex items-center gap-3 bg-[#28303F] border border-[#353F54] rounded-xl p-4 hover:border-[#14b8a6]/30 transition-colors">
+            <div className="w-10 h-10 rounded-lg bg-[#14b8a6]/15 flex items-center justify-center flex-shrink-0 ring-1 ring-[#14b8a6]/20">
+              <svg className="w-5 h-5 text-[#14b8a6]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" /></svg>
             </div>
             <div>
-              <p className="text-sm text-[#FAFAFA] font-bold">M-Pesa Payments</p>
+              <p className="text-sm text-white font-bold">M-Pesa Payments</p>
               <p className="text-xs text-[#4A5771]">Secure checkout</p>
             </div>
           </div>
-          <div className="flex items-center gap-3 bg-[#28303F] border border-[#353F54] rounded-xl p-4">
-            <div className="w-10 h-10 rounded-lg bg-accent/20 flex items-center justify-center flex-shrink-0">
-              <svg className="w-5 h-5 text-accent" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4" /></svg>
+          <div className="flex items-center gap-3 bg-[#28303F] border border-[#353F54] rounded-xl p-4 hover:border-[#14b8a6]/30 transition-colors">
+            <div className="w-10 h-10 rounded-lg bg-[#14b8a6]/15 flex items-center justify-center flex-shrink-0 ring-1 ring-[#14b8a6]/20">
+              <svg className="w-5 h-5 text-[#14b8a6]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4" /></svg>
             </div>
             <div>
               <p className="text-sm font-bold text-white">Free Delivery</p>
               <p className="text-xs text-[#4A5771]">Nationwide delivery</p>
             </div>
           </div>
-          <div className="flex items-center gap-3 bg-[#28303F] border border-[#353F54] rounded-xl p-4">
-            <div className="w-10 h-10 rounded-lg bg-primary/20 flex items-center justify-center flex-shrink-0">
-              <svg className="w-5 h-5 text-primary-200" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+          <div className="flex items-center gap-3 bg-[#28303F] border border-[#353F54] rounded-xl p-4 hover:border-[#14b8a6]/30 transition-colors">
+            <div className="w-10 h-10 rounded-lg bg-[#14b8a6]/15 flex items-center justify-center flex-shrink-0 ring-1 ring-[#14b8a6]/20">
+              <svg className="w-5 h-5 text-[#14b8a6]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
             </div>
             <div>
               <p className="text-sm font-bold text-white">7-Day Returns</p>
-              <p className="text-xs text-zinc-400">Hassle-free</p>
+              <p className="text-xs text-[#4A5771]">Hassle-free</p>
             </div>
           </div>
-          <div className="flex items-center gap-3 bg-[#28303F] border border-[#353F54] rounded-xl p-4">
-            <div className="w-10 h-10 rounded-lg bg-zinc-500/20 flex items-center justify-center flex-shrink-0">
-              <svg className="w-5 h-5 text-zinc-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.062-.382-3.016z" /></svg>
+          <div className="flex items-center gap-3 bg-[#28303F] border border-[#353F54] rounded-xl p-4 hover:border-[#14b8a6]/30 transition-colors">
+            <div className="w-10 h-10 rounded-lg bg-[#14b8a6]/15 flex items-center justify-center flex-shrink-0 ring-1 ring-[#14b8a6]/20">
+              <svg className="w-5 h-5 text-[#14b8a6]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.062-.382-3.016z" /></svg>
             </div>
             <div>
               <p className="text-sm font-bold text-white">Verified Seller</p>
@@ -282,7 +282,7 @@ function Home() {
           </video>
         </div>
         <p className="text-center text-sm text-zinc-400 mt-3">
-          {!user && <Link to="/how-it-works" className="text-[var(--seasonal-primary,#71717a)] font-bold hover:underline">{t('home.howItWorks')}</Link>}
+          {!user && <Link to="/how-it-works" className="text-[#14b8a6] font-bold hover:underline">{t('home.howItWorks')}</Link>}
         </p>
       </div>
 
@@ -315,21 +315,23 @@ function Home() {
           </div>
         )}
 
-        {/* Categories */}
-        <div className="flex gap-2 overflow-x-auto pb-4 mb-6 scrollbar-hide">
-          {CATEGORIES.map(cat => (
-            <button
-              key={cat}
-              onClick={() => setActiveCategory(cat)}
-              className={`px-4 py-2 rounded-[14px] text-sm font-medium whitespace-nowrap border transition-all ${
-                activeCategory === cat 
-                  ? 'bg-[#71717a] text-white border-[#71717a]' 
-                  : 'bg-[#28303F]/60 text-[#8E9BB5] border-[#353F54] hover:border-[#71717a] hover:text-white'
-              }`}
-            >
-              {cat}
-            </button>
-          ))}
+      {/* Categories — sticky on mobile */}
+        <div className="sticky top-14 md:top-[88px] z-30 bg-[#08080a]/90 backdrop-blur-sm -mx-4 px-4 pb-2 pt-2 mb-4">
+          <div className="flex gap-2 overflow-x-auto scrollbar-hide">
+            {CATEGORIES.map(cat => (
+              <button
+                key={cat}
+                onClick={() => setActiveCategory(cat)}
+                className={`px-4 py-2 rounded-[14px] text-sm font-medium whitespace-nowrap border transition-all flex-shrink-0 ${
+                  activeCategory === cat 
+                    ? 'bg-[#14b8a6] text-white border-[#14b8a6]' 
+                    : 'bg-[#28303F]/60 text-[#8E9BB5] border-[#353F54] hover:border-[#14b8a6] hover:text-white'
+                }`}
+              >
+                {cat}
+              </button>
+            ))}
+          </div>
         </div>
 
         {/* Grid */}
@@ -363,7 +365,7 @@ function Home() {
         {!loading && listings.length === 0 && (
           <div className="text-center py-20">
             <p className="text-zinc-400 mb-4 text-lg">{t('home.noListings')}</p>
-            <Link to="/" className="text-[var(--seasonal-primary,#1a5632)] font-bold text-lg hover:underline underline-offset-4 mb-8 block">
+            <Link to="/" className="text-[#14b8a6] font-bold text-lg hover:underline underline-offset-4 mb-8 block">
               {t('home.browseListings') || 'Browse Products'}
             </Link>
             <NiaContextualTrigger page="emptyCart" />

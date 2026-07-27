@@ -48,34 +48,42 @@ export default function WalletPage() {
       return;
     }
 
+    const amountInput = prompt('Enter amount to top up (KES):', '100');
+    if (!amountInput) return;
+
+    const amount = parseInt(amountInput.replace(/,/g, ''), 10);
+    if (isNaN(amount) || amount < 10) {
+      setError('Please enter a valid amount (minimum KES 10).');
+      return;
+    }
+
     setTopUpLoading(true);
     setError('');
 
-    // Dynamically load Paystack inline script
     if (!window.PaystackPop) {
       const script = document.createElement('script');
       script.src = 'https://js.paystack.co/v1/inline.js';
-      script.onload = () => openPaystack();
+      script.onload = () => openPaystack(amount);
       script.onerror = () => {
         setTopUpLoading(false);
         setError('Failed to load payment gateway. Please try again.');
       };
       document.body.appendChild(script);
     } else {
-      openPaystack();
+      openPaystack(amount);
     }
   };
 
-  const openPaystack = () => {
+  const openPaystack = (amount) => {
     const handler = window.PaystackPop.setup({
       key: PAYSTACK_PUBLIC_KEY,
       email: user?.email || 'customer@omixsystems.com',
-      amount: 0, // Will be set by user input
+      amount: amount * 100,
       currency: 'KES',
       callback: async (response) => {
         if (response.reference) {
           try {
-            const result = await topUpWallet(response.reference);
+            const result = await topUpWallet(response.reference, amount);
             if (result.success) {
               loadWallet(user.id);
             } else {
@@ -91,21 +99,7 @@ export default function WalletPage() {
         setTopUpLoading(false);
       },
     });
-
-    // Prompt user for amount
-    const amountInput = prompt('Enter amount to top up (KES):', '100');
-    if (amountInput) {
-      const amount = parseInt(amountInput.replace(/,/g, ''), 10);
-      if (isNaN(amount) || amount < 10) {
-        setError('Please enter a valid amount (minimum KES 10).');
-        setTopUpLoading(false);
-        return;
-      }
-      handler.setAttribute('amount', amount * 100); // Paystack uses kobo/cents
-      handler.openIframe();
-    } else {
-      setTopUpLoading(false);
-    }
+    handler.openIframe();
   };
 
   const getTypeIcon = (type) => {
@@ -118,7 +112,7 @@ export default function WalletPage() {
       case 'withdrawal':
         return <ArrowUpRight className="w-4 h-4 text-red-400" />;
       default:
-        return <Clock className="w-4 h-4 text-zinc-400" />;
+        return <Clock className="w-4 h-4 text-[#4A5771]" />;
     }
   };
 
@@ -144,8 +138,8 @@ export default function WalletPage() {
   if (!user) {
     return (
       <div className="max-w-md mx-auto px-4 py-20 text-center">
-        <Wallet className="w-16 h-16 text-zinc-600 mx-auto mb-4" />
-        <h1 className="text-2xl font-black mb-2">Wallet</h1>
+        <Wallet className="w-16 h-16 text-[#4A5771] mx-auto mb-4" />
+        <h1 className="text-2xl font-black mb-2 text-white">Wallet</h1>
         <p className="text-[#4A5771] mb-8">Sign in to access your wallet and manage your store credit.</p>
         <a href="/login" className="bg-[#71717a] text-white font-bold px-8 py-3 rounded-xl inline-block">Sign In</a>
       </div>
@@ -160,7 +154,7 @@ export default function WalletPage() {
           <Wallet className="w-7 h-7 text-[#71717a]" />
         </div>
         <div>
-          <h1 className="text-2xl font-black">Wallet</h1>
+          <h1 className="text-2xl font-black text-white">Wallet</h1>
           <p className="text-sm text-[#4A5771]">Manage your store credit and transactions</p>
         </div>
       </div>
@@ -172,7 +166,7 @@ export default function WalletPage() {
       )}
 
       {/* Balance Card */}
-      <div className="fusion-recessed-card p-6 mb-8">
+      <div className="wallet-balance-card p-6 mb-8">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div>
             <p className="text-sm text-[#4A5771] font-medium mb-1">Available Balance</p>
@@ -202,14 +196,14 @@ export default function WalletPage() {
 
       {/* Transactions */}
       <div>
-        <h2 className="text-lg font-bold mb-4 flex items-center gap-2">
+        <h2 className="text-lg font-bold mb-4 flex items-center gap-2 text-white">
           <Clock className="w-5 h-5 text-[#4A5771]" />
           Recent Transactions
         </h2>
 
         {transactions.length === 0 ? (
-          <div className="text-center py-12 fusion-recessed-card">
-            <Clock className="w-12 h-12 text-zinc-600 mx-auto mb-3" />
+          <div className="text-center py-12 wallet-transaction-card">
+            <Clock className="w-12 h-12 text-[#4A5771] mx-auto mb-3" />
             <p className="text-[#4A5771]">No transactions yet</p>
             <p className="text-xs text-[#4A5771] mt-1">Top up your wallet to get started</p>
           </div>
@@ -218,7 +212,7 @@ export default function WalletPage() {
             {transactions.map((tx) => (
               <div
                 key={tx.id}
-                className="fusion-recessed-card p-4 flex items-center gap-4 hover:border-[#353F54] transition-colors"
+                className="wallet-transaction-card p-4 flex items-center gap-4 transition-colors"
               >
                 <div className="p-2 rounded-xl bg-[#28303F] flex-shrink-0">
                   {getTypeIcon(tx.type)}

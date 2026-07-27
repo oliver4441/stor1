@@ -1617,7 +1617,7 @@ function UserDashboard() {
 
   // ═══════════════ RENDER ════════════════
   return (
-    <div className="max-w-4xl mx-auto px-4 py-6 w-full" data-name="user-dashboard-page">
+    <div className="fusion-clay-panel max-w-4xl mx-auto px-4 py-6 w-full" data-name="user-dashboard-page">
       <Breadcrumb />
       <div className="flex items-center justify-between mb-6">
         <div>

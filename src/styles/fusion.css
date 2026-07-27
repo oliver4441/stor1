@@ -12,9 +12,9 @@
   --fusion-charcoal-850: #121216;
   --fusion-charcoal-800: #18181b;
   --fusion-charcoal-700: #27272a;
-  --fusion-vibe-primary: #71717a;
-  --fusion-vibe-accent: #71717a;
-  --fusion-vibe-info: #71717a;
+  --fusion-vibe-primary: #14b8a6;
+  --fusion-vibe-accent: #14b8a6;
+  --fusion-vibe-info: #14b8a6;
   --fusion-vibe-danger: #f87171;
   --fusion-glass-bg: rgba(36, 44, 59, 0.55);
   --fusion-glass-bg-strong: rgba(36, 44, 59, 0.72);
@@ -296,6 +296,103 @@
   pointer-events: none;
   z-index: 1;
   mix-blend-mode: overlay;
+}
+
+/* ---- Claymorphism input field (spec 15): recessed with depth ---- */
+.fusion-clay-input {
+  background: var(--fusion-recessed-bg, #0f0f12);
+  border-radius: 14px;
+  border: none;
+  color: #fafafa;
+  padding: 0.75rem 1rem;
+  box-shadow: inset 3px 3px 8px rgba(0,0,0,0.6),
+              inset -2px -2px 6px rgba(255,255,255,0.03);
+  transition: box-shadow var(--fusion-dur) var(--fusion-spring);
+  width: 100%;
+  outline: none;
+  font-size: 0.875rem;
+}
+.fusion-clay-input::placeholder { color: #52525b; }
+.fusion-clay-input:focus {
+  box-shadow: inset 4px 4px 10px rgba(0,0,0,0.7),
+              inset -3px -3px 8px rgba(255,255,255,0.04),
+              0 0 0 1px rgba(20,184,166,0.3);
+}
+
+/* ---- Claymorphism panel (spec 16): raised with soft 3D edge ---- */
+.fusion-clay-panel {
+  background: var(--fusion-clay-bg, #1c1c20);
+  border-radius: var(--fusion-radius-panel, 24px);
+  box-shadow: 10px 10px 20px rgba(0,0,0,0.5),
+              -5px -5px 15px rgba(255,255,255,0.03);
+  border: 1px solid rgba(255,255,255,0.04);
+  transition: box-shadow var(--fusion-dur) var(--fusion-spring);
+}
+
+/* ---- Claymorphism card (spec 17): softer than panel, for inner content ---- */
+.fusion-clay-card {
+  background: var(--fusion-charcoal-850, #121216);
+  border-radius: 18px;
+  box-shadow: 6px 6px 14px rgba(0,0,0,0.45),
+              -4px -4px 10px rgba(255,255,255,0.02);
+  border: 1px solid rgba(255,255,255,0.03);
+  transition: box-shadow var(--fusion-dur) var(--fusion-spring);
+}
+.fusion-clay-card:hover {
+  box-shadow: 8px 8px 18px rgba(0,0,0,0.5),
+              -5px -5px 12px rgba(255,255,255,0.03);
+}
+
+/* ---- Claymorphism toggle/option button (spec 18) ---- */
+.fusion-clay-option {
+  background: var(--fusion-charcoal-850, #121216);
+  border-radius: 14px;
+  border: 1px solid transparent;
+  box-shadow: inset 2px 2px 6px rgba(0,0,0,0.4),
+              inset -1px -1px 4px rgba(255,255,255,0.02);
+  transition: all var(--fusion-dur) var(--fusion-spring);
+  cursor: pointer;
+}
+.fusion-clay-option[data-active="true"],
+.fusion-clay-option.active {
+  box-shadow: inset 3px 3px 8px rgba(0,0,0,0.5),
+              inset -2px -2px 6px rgba(255,255,255,0.03),
+              0 0 0 1px rgba(20,184,166,0.4);
+  background: rgba(20,184,166,0.08);
+  color: #14b8a6;
+}
+
+/* ---- Claymorphism divider (spec 19) ---- */
+.fusion-clay-divider {
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.06), transparent);
+  border: none;
+  margin: 1rem 0;
+}
+
+/* ---- Clay submit button (teal variant) ---- */
+.fusion-clay-submit {
+  background: linear-gradient(135deg, #0d9488, #14b8a6);
+  border-radius: 16px;
+  border: none;
+  color: white;
+  font-weight: 800;
+  box-shadow: 8px 8px 20px rgba(0,0,0,0.5),
+              -4px -4px 12px rgba(255,255,255,0.03),
+              inset 0 1px 0 rgba(255,255,255,0.15);
+  transition: transform var(--fusion-dur) var(--fusion-spring),
+              box-shadow var(--fusion-dur) var(--fusion-spring);
+  cursor: pointer;
+}
+.fusion-clay-submit:hover {
+  transform: translateY(-2px);
+  box-shadow: 10px 10px 24px rgba(0,0,0,0.55),
+              -5px -5px 14px rgba(255,255,255,0.03);
+}
+.fusion-clay-submit:active {
+  transform: scale(0.97);
+  box-shadow: inset 6px 6px 14px rgba(0,0,0,0.5),
+              inset -3px -3px 8px rgba(255,255,255,0.04);
 }
 
 /* Respect reduced-motion (already global in index.css) */

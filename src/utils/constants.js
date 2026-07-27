@@ -152,7 +152,7 @@ export const COLOR_PALETTE = [
   { name: 'Black',       hex: '#1a1a1a' },
   { name: 'White',       hex: '#FFFFFF' },
   { name: 'Navy',        hex: '#1e3a5f' },
-  { name: 'Blue',        hex: '#71717a' },
+  { name: 'Blue',        hex: '#14b8a6' },
   { name: 'Light Blue',  hex: '#7dd3fc' },
   { name: 'Red',         hex: '#dc2626' },
   { name: 'Burgundy',    hex: '#7f1d1d' },

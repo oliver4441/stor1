@@ -52,7 +52,7 @@ export default function FAQ() {
       
       <h3>More Questions?</h3>
       <p>
-        If you cannot find your answer here, contact us via WhatsApp at 254746674392
+        If you cannot find your answer here, contact us via WhatsApp at 254768213649
         or email omixsystems@gmail.com. We respond within 24 hours.
       </p>
     </HelpLayout>

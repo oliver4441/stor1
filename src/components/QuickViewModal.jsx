@@ -72,7 +72,7 @@ export default function QuickViewModal({ listing, onClose }) {
 
       {/* Modal */}
       <div
-        className="relative bg-zinc-900 rounded-3xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto"
+        className="fusion-clay-panel relative bg-zinc-900 rounded-3xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Close button */}
@@ -150,7 +150,7 @@ export default function QuickViewModal({ listing, onClose }) {
             <h2 className="text-xl font-black text-white mb-2">{listing.title}</h2>
 
             <div className="flex items-center gap-2 mb-4">
-              <p className="text-2xl font-black text-[var(--seasonal-primary,#1a5632)]">{formatKES(listing.price)}</p>
+              <p className="text-2xl font-black text-[var(--seasonal-primary,#0d9488)]">{formatKES(listing.price)}</p>
               {listing.compare_at_price && listing.compare_at_price > listing.price && (
                 <>
                   <p className="text-sm text-zinc-400 line-through">{formatKES(listing.compare_at_price)}</p>
@@ -181,8 +181,8 @@ export default function QuickViewModal({ listing, onClose }) {
                     justAdded
                       ? 'bg-emerald-500 text-white'
                       : inCart
-                      ? 'bg-[var(--seasonal-primary,#1a5632)]/10 text-[var(--seasonal-primary,#1a5632)] border border-[var(--seasonal-primary,#1a5632)]/20'
-                      : 'bg-[var(--seasonal-primary,#1a5632)] text-white hover:bg-[var(--seasonal-secondary,#14472a)] shadow-lg shadow-[var(--seasonal-primary,#1a5632)]/20'
+                      ? 'bg-[var(--seasonal-primary,#0d9488)]/10 text-[var(--seasonal-primary,#0d9488)] border border-[var(--seasonal-primary,#0d9488)]/20'
+                      : 'bg-[var(--seasonal-primary,#0d9488)] text-white hover:bg-[var(--seasonal-secondary,#14b8a6)] shadow-lg shadow-[var(--seasonal-primary,#0d9488)]/20'
                   }`}
                 >
                   <ShoppingCart className="w-4 h-4" />
@@ -201,7 +201,7 @@ export default function QuickViewModal({ listing, onClose }) {
             <Link
               to={`/listing/${listing.id}`}
               onClick={onClose}
-              className="mt-3 text-center text-xs font-bold text-[var(--seasonal-primary,#1a5632)] hover:underline"
+              className="mt-3 text-center text-xs font-bold text-[var(--seasonal-primary,#0d9488)] hover:underline"
             >
               View full details
             </Link>

@@ -37,7 +37,7 @@ export default function OrderSuccess() {
 
         <div className="bg-zinc-900 rounded-3xl border border-zinc-800 p-6 mt-8 inline-block">
           <div className="flex items-center gap-3 text-sm text-zinc-400">
-            <Package className="w-5 h-5 text-[var(--seasonal-primary,#1a5632)]" />
+            <Package className="w-5 h-5 text-[var(--seasonal-primary,#0d9488)]" />
             <span>Order ID: <strong className="text-white font-mono">{String(orderId).slice(0, 8).toUpperCase()}</strong></span>
           </div>
           <p className="text-xs text-zinc-400 mt-2">Estimated delivery: 2-5 business days</p>
@@ -45,7 +45,7 @@ export default function OrderSuccess() {
 
         <div className="flex flex-col sm:flex-row gap-3 justify-center mt-8">
           <Link to={`/track-order?orderId=${orderId}`}
-            className="inline-flex items-center justify-center gap-2 bg-[var(--seasonal-primary,#1a5632)] hover:bg-[var(--seasonal-secondary,#14472a)] text-white font-bold px-8 py-4 rounded-2xl transition-colors">
+            className="inline-flex items-center justify-center gap-2 bg-[var(--seasonal-primary,#0d9488)] hover:bg-[var(--seasonal-secondary,#14b8a6)] text-white font-bold px-8 py-4 rounded-2xl transition-colors">
             Track Order <ArrowRight className="w-4 h-4" />
           </Link>
           <Link to="/"

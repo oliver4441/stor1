@@ -54,7 +54,7 @@ function Skeleton({ className = '' }) {
 
 function StatCard({ icon: Icon, label, value, subtext, color = 'text-[#38B8EA]' }) {
   return (
-    <div className="fusion-recessed-card p-5 transition-all duration-300 hover:border-zinc-700 hover:bg-[#28303F]">
+    <div className="fusion-clay-panel fusion-recessed-card p-5 transition-all duration-300 hover:border-zinc-700 hover:bg-[#28303F]">
       <div className="flex items-start justify-between mb-3">
         <div className={`p-2.5 rounded-xl bg-[#28303F]/80 border border-zinc-700/60 ${color}`}>
           <Icon className="w-5 h-5" />

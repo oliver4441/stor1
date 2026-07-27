@@ -77,7 +77,7 @@ export default function AffiliateHelp() {
       
       <h3>Need Help?</h3>
       <p>
-        Contact us via WhatsApp at 254746674392 or email omixsystems@gmail.com for affiliate support.
+        Contact us via WhatsApp at 254768213649 or email omixsystems@gmail.com for affiliate support.
       </p>
     </HelpLayout>
   );

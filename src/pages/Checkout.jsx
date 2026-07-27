@@ -17,8 +17,8 @@ import { trackBeginCheckout, trackError } from '../utils/analytics';
 
 // ── Design Tokens (matching Nia chat) ──────────────────────────────
 const C = {
-  accent: '#71717a',
-  accentDark: '#71717a',
+  accent: '#14b8a6',
+  accentDark: '#0d9488',
   bg: '#ffffff',
   bgDark: '#18181b',
   bgGray: '#f9fafb',
@@ -29,7 +29,7 @@ const C = {
   textMutedDark: '#a1a1aa',
   border: '#e4e4e7',
   borderDark: '#3f3f46',
-  success: '#38B8EA',
+  success: '#14b8a6',
   warning: '#f59e0b',
 };
 
@@ -87,12 +87,8 @@ function Field({ icon: Icon, label, error, dark, ...props }) {
         )}
         <input
           {...props}
-          className="w-full text-sm focus:outline-none transition-all"
+          className="w-full text-sm focus:outline-none transition-all fusion-clay-input"
           style={{
-            backgroundColor: dark ? C.bgGrayDark : C.bgGray,
-            color: dark ? C.textDark : C.text,
-            border: `1px solid ${error ? '#ef4444' : dark ? C.borderDark : C.border}`,
-            borderRadius: '12px',
             paddingLeft: Icon ? '2.5rem' : '1rem',
             paddingRight: '1rem',
             paddingTop: '0.75rem',
@@ -504,7 +500,7 @@ export default function CheckoutPage() {
 
       const message = `Hello Omix Store!\n\nI have placed a Cash on Delivery order.\n\nOrder ID: #${orderId.toString().slice(0,8).toUpperCase()}\n\nItems:\n${itemList}\n\nTotal: KES ${currentDiscounted.toLocaleString()}\nPayment: Cash on Delivery\n\n${deliveryInfo}\nPhone: ${form.phone}\nName: ${form.fullName}\n\nPlease confirm my order. Asante!`;
 
-      const whatsappUrl = `https://wa.me/254746674392?text=${encodeURIComponent(message)}`;
+      const whatsappUrl = `https://wa.me/254768213649?text=${encodeURIComponent(message)}`;
       window.open(whatsappUrl, '_blank');
 
       clearCart();
@@ -701,15 +697,15 @@ export default function CheckoutPage() {
   if (isMaintenance) {
     return (
       <div className="max-w-lg mx-auto px-4 py-16">
-        <div className="text-center py-12 rounded-2xl border border-[#71717a] dark:border-[#71717a]" style={{ backgroundColor: '#e8f4ff' }}>
-          <div className="w-20 h-20 mx-auto mb-5 rounded-full flex items-center justify-center bg-[#71717a]/10">
-            <Wrench className="w-10 h-10 text-[#71717a] animate-pulse" />
+        <div className="text-center py-12 rounded-2xl border border-[#14b8a6] dark:border-[#14b8a6]" style={{ backgroundColor: '#e8f4ff' }}>
+          <div className="w-20 h-20 mx-auto mb-5 rounded-full flex items-center justify-center bg-[#0d9488]/10">
+            <Wrench className="w-10 h-10 text-[#14b8a6] animate-pulse" />
           </div>
-          <h1 className="text-2xl font-black mb-2 text-[#71717a]">Under Maintenance</h1>
-          <p className="text-sm mb-2 text-[#71717a]">
+          <h1 className="text-2xl font-black mb-2 text-[#14b8a6]">Under Maintenance</h1>
+          <p className="text-sm mb-2 text-[#14b8a6]">
             We're currently performing scheduled maintenance on our store.
           </p>
-          <p className="text-xs mb-8 text-[#71717a]">
+          <p className="text-xs mb-8 text-[#14b8a6]">
             You can still browse products, but checkout and payments are temporarily disabled. Please check back shortly!
           </p>
           <div className="flex flex-col sm:flex-row gap-3 justify-center">
@@ -721,7 +717,7 @@ export default function CheckoutPage() {
               Continue Browsing <ArrowRight className="w-4 h-4" />
             </Link>
           </div>
-          <p className="text-[11px] mt-6 text-[#71717a]">
+          <p className="text-[11px] mt-6 text-[#14b8a6]">
             Need help? Contact us at omixsystems@gmail.com or +254 768 213 649
           </p>
         </div>
@@ -775,7 +771,7 @@ export default function CheckoutPage() {
       <div className="grid grid-cols-1 lg:grid-cols-5 gap-6">
         {/* ── Order Summary (left, 2 cols) ──────────────────────── */}
         <div className="lg:col-span-2 order-2 lg:order-1">
-          <div className="rounded-2xl border overflow-hidden sticky top-4" style={{ borderColor: C.border, backgroundColor: C.bg }}>
+          <div className="fusion-clay-panel overflow-hidden sticky top-4" style={{ borderColor: C.border, backgroundColor: C.bg }}>
             {/* Header */}
             <div className="px-5 py-4 border-b" style={{ borderColor: C.border, background: `linear-gradient(135deg, ${C.accent}08, ${C.accent}03)` }}>
               <div className="flex items-center justify-between">
@@ -847,19 +843,19 @@ export default function CheckoutPage() {
             </div>
 
             {/* Promo Code */}
-            <div className="px-5 py-4 border-t" style={{ borderColor: C.border }}>
+            <div className="px-5 py-4 fusion-clay-divider w-full">
               {promoApplied ? (
                 <div className="flex items-center justify-between p-3 rounded-xl" style={{ backgroundColor: '#e8f4ff', border: '1px solid #99d6ff' }}>
                   <div className="flex items-center gap-2">
-                    <CheckCircle className="w-4 h-4 text-[#71717a]" />
+                    <CheckCircle className="w-4 h-4 text-[#14b8a6]" />
                     <div>
-                      <span className="text-sm font-bold text-[#71717a]">{promoApplied.code}</span>
-                      <p className="text-[11px] text-[#71717a]">
+                      <span className="text-sm font-bold text-[#14b8a6]">{promoApplied.code}</span>
+                      <p className="text-[11px] text-[#14b8a6]">
                         {promoApplied.discount_type === 'free_delivery' ? 'Free delivery applied' : 'Discount applied'}
                       </p>
                     </div>
                   </div>
-                  <button onClick={removePromo} className="text-xs font-semibold text-[#71717a] hover:text-[#004499] underline">
+                  <button onClick={removePromo} className="text-xs font-semibold text-[#14b8a6] hover:text-[#004499] underline">
                     Remove
                   </button>
                 </div>
@@ -894,23 +890,23 @@ export default function CheckoutPage() {
 
             {/* Total */}
             {userPoints > 0 && (
-              <div className="px-5 py-3 border-t" style={{ borderColor: C.border }}>
+              <div className="px-5 py-3 fusion-clay-divider w-full">
                 <label className="flex items-center gap-2 cursor-pointer">
                   <input
                     type="checkbox"
                     checked={redeemPoints}
                     onChange={(e) => setRedeemPoints(e.target.checked)}
-                    className="w-4 h-4 rounded border-[#8E9BB5] text-[#71717a] focus:ring-[#71717a]"
+                    className="w-4 h-4 rounded border-[#8E9BB5] text-[#14b8a6] focus:ring-[#14b8a6]"
                   />
                   <span className="text-sm" style={{ color: C.textMuted }}>
-                    Use loyalty points <strong className="text-[#71717a]">({userPoints} pts)</strong>
+                    Use loyalty points <strong className="text-[#14b8a6]">({userPoints} pts)</strong>
                     <span className="text-xs block">100 pts = KES 50 • Max 50% of order</span>
                   </span>
                 </label>
               </div>
             )}
 
-            <div className="px-5 py-4 border-t" style={{ borderColor: C.border }}>
+            <div className="px-5 py-4 fusion-clay-divider w-full">
               <div className="flex justify-between items-center mb-2">
                 <span className="text-sm" style={{ color: C.textMuted }}>Subtotal</span>
                 <span className="text-sm font-semibold" style={{ color: C.text }}>{formatKES(total)}</span>
@@ -941,7 +937,7 @@ export default function CheckoutPage() {
                   <span className="text-sm font-semibold" style={{ color: C.success }}>-{formatKES(pointsDiscount)}</span>
                 </div>
               )}
-              <div className="flex justify-between items-center pt-3 border-t" style={{ borderColor: C.border }}>
+              <div className="flex justify-between items-center pt-3 fusion-clay-divider w-full">
                 <span className="text-base font-bold" style={{ color: C.text }}>Total</span>
                 <span className="text-xl font-black" style={{ color: C.accent }}>{formatKES(discountedTotal)}</span>
               </div>
@@ -954,7 +950,7 @@ export default function CheckoutPage() {
 
         {/* ── Delivery Form (right, 3 cols) ─────────────────────── */}
         <div className="lg:col-span-3 order-1 lg:order-2">
-          <div className="rounded-2xl border overflow-hidden" style={{ borderColor: C.border, backgroundColor: C.bg }}>
+          <div className="fusion-clay-panel overflow-hidden" style={{ borderColor: C.border, backgroundColor: C.bg }}>
             {/* Header */}
             <div className="px-5 py-4 border-b" style={{ borderColor: C.border, background: `linear-gradient(135deg, ${C.accent}, ${C.accentDark})` }}>
               <h2 className="text-base font-bold text-white flex items-center gap-2">
@@ -1353,7 +1349,7 @@ export default function CheckoutPage() {
               </div>
 
               {/* ── Gift Card Section ── */}
-              <div className="border-t pt-4 mt-2" style={{ borderColor: C.border }}>
+              <div className="fusion-clay-divider w-full pt-4 mt-2">
                 <label className="block text-xs font-bold mb-1.5 uppercase tracking-wider" style={{ color: C.textMuted }}>
                   Gift Card
                 </label>
@@ -1361,14 +1357,14 @@ export default function CheckoutPage() {
                   <div className="p-3 rounded-xl" style={{ backgroundColor: '#e8f4ff', border: '1px solid #99d6ff' }}>
                     <div className="flex items-center justify-between mb-1">
                       <div>
-                        <span className="text-sm font-bold" style={{ color: '#71717a' }}>Gift Card Applied</span>
-                        <p className="text-xs" style={{ color: '#71717a' }}>
+                        <span className="text-sm font-bold" style={{ color: '#14b8a6' }}>Gift Card Applied</span>
+                        <p className="text-xs" style={{ color: '#14b8a6' }}>
                           Balance: {formatKES(giftCardData.remaining_balance ?? giftCardData.balance ?? 0)}
                         </p>
                       </div>
                       <button
                         onClick={() => { setGiftCardData(null); setGiftCardCode(''); }}
-                        className="text-xs font-semibold underline" style={{ color: '#71717a' }}
+                        className="text-xs font-semibold underline" style={{ color: '#14b8a6' }}
                       >
                         Remove
                       </button>
@@ -1404,7 +1400,7 @@ export default function CheckoutPage() {
 
               {/* ── Wallet Balance Section ── */}
               {isAuthenticated && (
-                <div className="border-t pt-4 mt-2" style={{ borderColor: C.border }}>
+                <div className="fusion-clay-divider w-full pt-4 mt-2">
                   <label className="block text-xs font-bold mb-1.5 uppercase tracking-wider" style={{ color: C.textMuted }}>
                     Wallet Balance
                   </label>
@@ -1418,10 +1414,10 @@ export default function CheckoutPage() {
                         type="checkbox"
                         checked={payWithWallet}
                         onChange={(e) => setPayWithWallet(e.target.checked)}
-                        className="w-4 h-4 rounded border-[#8E9BB5] text-[#71717a] focus:ring-[#71717a]"
+                        className="w-4 h-4 rounded border-[#8E9BB5] text-[#14b8a6] focus:ring-[#14b8a6]"
                       />
                       <span className="text-sm" style={{ color: C.textMuted }}>
-                        Pay with Wallet <strong className="text-[#71717a]">{formatKES(walletBalance)}</strong>
+                        Pay with Wallet <strong className="text-[#14b8a6]">{formatKES(walletBalance)}</strong>
                       </span>
                     </label>
                   ) : (
@@ -1432,7 +1428,7 @@ export default function CheckoutPage() {
 
               {/* ── Saved Payment Methods Section ── */}
               {isAuthenticated && savedPaymentMethods.length > 0 && (
-                <div className="border-t pt-4 mt-2" style={{ borderColor: C.border }}>
+                <div className="fusion-clay-divider w-full pt-4 mt-2">
                   <label className="block text-xs font-bold mb-1.5 uppercase tracking-wider" style={{ color: C.textMuted }}>
                     Saved Payment Methods
                   </label>
@@ -1470,7 +1466,7 @@ export default function CheckoutPage() {
                   type="button"
                   onClick={handleCOD}
                   disabled={loading}
-                  className="fusion-chrome w-full font-black py-4 rounded-xl transition-all disabled:opacity-50 flex items-center justify-center gap-2 text-base hover:opacity-90 active:scale-[0.98]"
+                  className="fusion-clay-submit w-full font-black py-4 rounded-xl transition-all disabled:opacity-50 flex items-center justify-center gap-2 text-base hover:opacity-90 active:scale-[0.98]"
                 >
                   {loading ? (
                     <><Loader2 className="w-5 h-5 animate-spin" /> Processing...</>
@@ -1482,7 +1478,7 @@ export default function CheckoutPage() {
               <button
                 type="submit"
                 disabled={loading}
-                className="fusion-chrome w-full font-black py-4 rounded-xl transition-all disabled:opacity-50 flex items-center justify-center gap-2 text-base hover:opacity-90 active:scale-[0.98]"
+                className="fusion-clay-submit w-full font-black py-4 rounded-xl transition-all disabled:opacity-50 flex items-center justify-center gap-2 text-base hover:opacity-90 active:scale-[0.98]"
               >
                 {loading ? (
                   <><Loader2 className="w-5 h-5 animate-spin" /> Processing...</>
@@ -1565,7 +1561,7 @@ function MpesaPaymentDialog({ pending, onDone }) {
           {status === 'paid' ? 'Payment Successful!' : 'Check Your Phone'}
         </h2>
 
-        <p className="text-sm mb-4" style={{ color: '#71717a' }}>{message}</p>
+        <p className="text-sm mb-4" style={{ color: '#14b8a6' }}>{message}</p>
 
         {status === 'paid' && pending?.orderId && (
           <div className="mb-4">
@@ -1578,15 +1574,15 @@ function MpesaPaymentDialog({ pending, onDone }) {
 
         <div className="rounded-xl p-4 mb-4 text-sm space-y-2" style={{ backgroundColor: '#f4f4f5' }}>
           <div className="flex justify-between">
-            <span style={{ color: '#71717a' }}>Amount</span>
+            <span style={{ color: '#14b8a6' }}>Amount</span>
             <span className="font-bold">KES {Number(pending.amount).toLocaleString()}</span>
           </div>
           <div className="flex justify-between">
-            <span style={{ color: '#71717a' }}>Phone</span>
+            <span style={{ color: '#14b8a6' }}>Phone</span>
             <span className="font-bold">{maskedPhone}</span>
           </div>
           <div className="flex justify-between">
-            <span style={{ color: '#71717a' }}>Order</span>
+            <span style={{ color: '#14b8a6' }}>Order</span>
             <span className="font-bold">#{String(pending.orderId).slice(0, 8).toUpperCase()}</span>
           </div>
         </div>
@@ -1601,7 +1597,7 @@ function MpesaPaymentDialog({ pending, onDone }) {
         )}
 
         {status === 'pending' && (
-          <div className="flex items-center justify-center gap-2 text-sm" style={{ color: '#71717a' }}>
+          <div className="flex items-center justify-center gap-2 text-sm" style={{ color: '#14b8a6' }}>
             <Loader2 className="w-4 h-4 animate-spin" />
             <span>Waiting for PIN entry...</span>
           </div>

@@ -72,7 +72,7 @@ export default function FlashDealsBar() {
   const currentDeal = deals[currentIndex];
 
   return (
-    <div className="relative overflow-hidden" style={{ backgroundColor: 'var(--seasonal-primary, #1a5632)' }}>
+    <div className="relative overflow-hidden" style={{ backgroundColor: 'var(--seasonal-primary, #0d9488)' }}>
       {/* Background pattern */}
       <div className="absolute inset-0 opacity-10">
         <div className="absolute inset-0" style={{

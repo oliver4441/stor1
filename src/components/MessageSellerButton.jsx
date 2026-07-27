@@ -107,7 +107,7 @@ function MessageSellerButton({ listingId, listingTitle, sellerId, className = ''
     <button
       onClick={handleClick}
       disabled={loading}
-      className={`w-full flex items-center justify-center gap-2 border-2 border-zinc-700 text-zinc-300 font-bold py-3 rounded-xl hover:border-[var(--seasonal-primary,#1a5632)] hover:text-[var(--seasonal-primary,#1a5632)] hover:bg-[var(--seasonal-primary,#1a5632)]/5 transition-all disabled:opacity-50 disabled:cursor-not-allowed ${className}`}
+      className={`w-full flex items-center justify-center gap-2 border-2 border-zinc-700 text-zinc-300 font-bold py-3 rounded-xl hover:border-[var(--seasonal-primary,#0d9488)] hover:text-[var(--seasonal-primary,#0d9488)] hover:bg-[var(--seasonal-primary,#0d9488)]/5 transition-all disabled:opacity-50 disabled:cursor-not-allowed ${className}`}
       aria-label={loading ? 'Starting conversation...' : 'Message seller'}
     >
       {loading ? (

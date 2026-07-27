@@ -19,9 +19,9 @@
        These defaults are used when no theme is active.
        Dark navy/blue theme.
        ============================================= */
-    --seasonal-primary: #71717a;
-    --seasonal-secondary: #71717a;
-    --seasonal-accent: #71717a;
+    --seasonal-primary: #14b8a6;
+    --seasonal-secondary: #0d9488;
+    --seasonal-accent: #14b8a6;
 
     /* Hero section */
     --seasonal-hero-from: #1E2A3D;
@@ -29,20 +29,20 @@
     --seasonal-hero-to: #2A3548;
     --seasonal-hero-text: #ffffff;
     --seasonal-hero-subtext: #8E9BB5;
-    --seasonal-hero-accent: #71717a;
+    --seasonal-hero-accent: #14b8a6;
     --seasonal-hero-overlay: rgba(0,122,255,0.2);
 
     /* CTA buttons */
-    --seasonal-cta-bg: #71717a;
+    --seasonal-cta-bg: #0d9488;
     --seasonal-cta-text: #ffffff;
-    --seasonal-cta-hover: #71717a;
+    --seasonal-cta-hover: #14b8a6;
 
     /* Badge */
-    --seasonal-badge-bg: #71717a;
+    --seasonal-badge-bg: #14b8a6;
     --seasonal-badge-text: #ffffff;
 
     /* Navbar */
-    --seasonal-nav-accent: #71717a;
+    --seasonal-nav-accent: #14b8a6;
     --seasonal-nav-accent-text: #ffffff;
     --seasonal-nav-bg-from: #1E2A3D;
     --seasonal-nav-bg-to: #242C3B;
@@ -60,7 +60,7 @@
     /* Dark footer */
     --seasonal-footer-bg: #1E2A3D;
     --seasonal-footer-text: #4A5771;
-    --seasonal-footer-link: #71717a;
+    --seasonal-footer-link: #14b8a6;
     
     /* Dark cards */
     --seasonal-card-bg: #28303F;
@@ -68,12 +68,12 @@
     --seasonal-price-color: #38B8EA;
     
     /* Buttons */
-    --seasonal-button-bg: #71717a;
+    --seasonal-button-bg: #0d9488;
     --seasonal-button-text: #ffffff;
     
     /* Effects */
-    --seasonal-shadow: #71717a;
-    --seasonal-glow: #71717a;
+    --seasonal-shadow: #14b8a6;
+    --seasonal-glow: #14b8a6;
     --seasonal-bg-pattern: none;
     --seasonal-sticker: "";
   }
@@ -247,7 +247,7 @@ html, body {
     left: 0;
     right: 0;
     height: env(safe-area-inset-top, 0);
-    background: var(--seasonal-primary, #71717a);
+    background: var(--seasonal-primary, #14b8a6);
     z-index: 9999;
     pointer-events: none;
   }

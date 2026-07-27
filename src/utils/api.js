@@ -1929,13 +1929,13 @@ export async function getWallet(userId) {
   }
 }
 
-export async function topUpWallet(paystackReference) {
+export async function topUpWallet(paystackReference, amount) {
   try {
     const token = await getAuthToken();
     const resp = await fetch(`${API_URL}/api/wallet/top-up`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
-      body: JSON.stringify({ paystack_reference: paystackReference }),
+      body: JSON.stringify({ paystack_reference: paystackReference, amount }),
     });
     const data = await resp.json();
     return data;

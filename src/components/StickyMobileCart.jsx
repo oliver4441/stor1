@@ -19,7 +19,7 @@ export default function StickyMobileCart({ listing, quantity, effectivePrice, se
         {/* Price */}
         <div className="flex-shrink-0">
           <p className="text-xs text-zinc-400 leading-none">Price</p>
-          <p className="text-lg font-black text-[var(--seasonal-primary,#1a5632)] leading-tight">{formatKES((effectivePrice || listing.price) * quantity)}</p>
+          <p className="text-lg font-black text-[var(--seasonal-primary,#0d9488)] leading-tight">{formatKES((effectivePrice || listing.price) * quantity)}</p>
         </div>
 
         {/* Buttons */}
@@ -35,7 +35,7 @@ export default function StickyMobileCart({ listing, quantity, effectivePrice, se
               </button>
               <button
                 onClick={onBuyNow}
-                className="flex-1 flex items-center justify-center gap-1.5 bg-[var(--seasonal-primary,#1a5632)] text-white font-bold py-3 rounded-xl text-sm active:scale-95 transition-transform"
+                className="flex-1 flex items-center justify-center gap-1.5 bg-[var(--seasonal-primary,#0d9488)] text-white font-bold py-3 rounded-xl text-sm active:scale-95 transition-transform"
               >
                 Buy Now
               </button>
@@ -44,7 +44,7 @@ export default function StickyMobileCart({ listing, quantity, effectivePrice, se
             <>
               <Link
                 to={`/signup?redirect=/listing/${listing.id}`}
-                className="flex-1 flex items-center justify-center gap-1.5 bg-[var(--seasonal-primary,#1a5632)] text-white font-bold py-3 rounded-xl text-sm text-center"
+                className="flex-1 flex items-center justify-center gap-1.5 bg-[var(--seasonal-primary,#0d9488)] text-white font-bold py-3 rounded-xl text-sm text-center"
               >
                 Sign Up to Buy
               </Link>

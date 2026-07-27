@@ -70,7 +70,7 @@ export default function Breadcrumb({ customLabel, showOnMobile = true }) {
               ) : (
                 <Link
                   to={`/${item.path}`}
-                  className="text-zinc-400 hover:text-[var(--seasonal-primary,#1a5632)] dark:hover:text-[var(--seasonal-primary,#1a5632)] transition-colors flex items-center gap-1"
+                  className="text-zinc-400 hover:text-[var(--seasonal-primary,#0d9488)] dark:hover:text-[var(--seasonal-primary,#0d9488)] transition-colors flex items-center gap-1"
                 >
                   {index === 0 && <Home className="w-3 h-3" />}
                   <span>{item.label}</span>

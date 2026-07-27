@@ -78,7 +78,7 @@ export default function InstallBanner({ onOpenFullGuide }) {
     <div className="fixed bottom-0 left-0 right-0 z-50 p-3 safe-area-bottom">
       <div className="max-w-lg mx-auto bg-zinc-900 rounded-2xl shadow-2xl shadow-black/20 border border-zinc-800 p-4 flex items-center gap-3 animate-slide-up">
         {/* App Icon */}
-        <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-[var(--seasonal-primary,#1a5632)] to-[var(--seasonal-primary,#1a5632)] flex items-center justify-center flex-shrink-0 shadow-lg shadow-[var(--seasonal-primary,#1a5632)]/20">
+        <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-teal-600 to-teal-500 flex items-center justify-center flex-shrink-0 shadow-lg shadow-teal-600/20">
           <span className="text-white font-black text-xl">O</span>
         </div>
 
@@ -96,7 +96,7 @@ export default function InstallBanner({ onOpenFullGuide }) {
         <div className="flex items-center gap-2 flex-shrink-0">
           <button
             onClick={handleInstall}
-            className="flex items-center gap-1.5 bg-gradient-to-r from-[var(--seasonal-primary,#1a5632)] to-[var(--seasonal-secondary,#14472a)] text-white px-4 py-2 rounded-xl text-xs font-bold shadow-lg shadow-[var(--seasonal-primary,#1a5632)]/20 hover:shadow-[var(--seasonal-primary,#1a5632)]/40 transition-all active:scale-95"
+            className="flex items-center gap-1.5 bg-gradient-to-r from-teal-600 to-teal-500 text-white px-4 py-2 rounded-xl text-xs font-bold shadow-lg shadow-teal-600/20 hover:shadow-teal-500/30 transition-all active:scale-95"
           >
             <Download className="w-3.5 h-3.5" />
             {isIOS ? 'How' : 'Install'}

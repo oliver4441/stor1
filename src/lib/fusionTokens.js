@@ -24,7 +24,7 @@ export const charcoal = {
 export const vibe = {
   primary: '#4ade80',   // price / success / primary action text
   accent: '#d4a017',    // gold — premium chrome companion
-  info: '#71717a',      // links / active
+  info: '#14b8a6',      // links / active
   danger: '#f87171',    // errors / remove
   warn: '#fbbf24',
 };

@@ -62,7 +62,7 @@ function RecommendationCard({ listing }) {
               {listing.category}
             </p>
           )}
-          <p className="text-base font-black text-[var(--seasonal-primary,#1a5632)] mt-auto">
+          <p className="text-base font-black text-[var(--seasonal-primary,#0d9488)] mt-auto">
             {formatKES(listing.price)}
           </p>
         </div>

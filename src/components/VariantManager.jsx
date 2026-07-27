@@ -308,13 +308,13 @@ const STYLE_OPTIONS = [
 ];
 
 const INPUT_CLASS =
-  'bg-zinc-800 border border-transparent focus:border-[var(--seasonal-primary,#1a5632)] text-white text-sm rounded-xl px-4 py-2.5 w-full outline-none transition-colors placeholder:text-zinc-600';
+  'bg-zinc-800 border border-transparent focus:border-[var(--seasonal-primary,#0d9488)] text-white text-sm rounded-xl px-4 py-2.5 w-full outline-none transition-colors placeholder:text-zinc-600';
 const SELECT_CLASS =
-  'bg-zinc-800 border border-transparent focus:border-[var(--seasonal-primary,#1a5632)] text-white text-sm rounded-xl px-4 py-2.5 outline-none transition-colors appearance-none cursor-pointer';
+  'bg-zinc-800 border border-transparent focus:border-[var(--seasonal-primary,#0d9488)] text-white text-sm rounded-xl px-4 py-2.5 outline-none transition-colors appearance-none cursor-pointer';
 const LABEL_CLASS =
   'text-zinc-400 text-xs font-medium tracking-wider uppercase mb-1.5 block';
 const BTN_PRIMARY =
-  'inline-flex items-center gap-2 bg-[var(--seasonal-primary,#1a5632)] hover:brightness-110 text-white text-sm font-bold rounded-xl px-5 py-2.5 transition-all';
+  'inline-flex items-center gap-2 bg-[var(--seasonal-primary,#0d9488)] hover:brightness-110 text-white text-sm font-bold rounded-xl px-5 py-2.5 transition-all';
 const BTN_SECONDARY =
   'inline-flex items-center gap-2 bg-zinc-800 hover:bg-zinc-700 text-zinc-300 text-sm font-medium rounded-xl px-4 py-2.5 transition-colors';
 

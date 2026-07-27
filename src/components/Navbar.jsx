@@ -38,7 +38,7 @@ const FEATURE_LINKS = [
   { to: '/how-it-works', label: 'How It Works', icon: HelpCircle, color: 'from-zinc-500 to-zinc-600', glow: 'shadow-zinc-500/40' },
   { to: '/help', label: 'Help', icon: Package, color: 'from-zinc-500 to-zinc-700', glow: 'shadow-zinc-500/40' },
   { to: '/about', label: 'About', icon: Info, color: 'from-zinc-500 to-zinc-600', glow: 'shadow-zinc-500/40' },
-  { to: '/install', label: 'Install App', icon: Download, color: 'from-[var(--seasonal-primary,#71717a)] to-[var(--seasonal-secondary,#71717a)]', glow: 'shadow-[var(--seasonal-primary,#71717a)]/40' },
+  { to: '/install', label: 'Install App', icon: Download, color: 'from-[var(--seasonal-primary,#0d9488)] to-[var(--seasonal-secondary,#14b8a6)]', glow: 'shadow-[var(--seasonal-primary,#0d9488)]/40' },
   { to: '/affiliate', label: 'Earn', icon: DollarSign, color: 'from-zinc-500 to-zinc-600', glow: 'shadow-zinc-500/40' },
 ];
 
@@ -57,13 +57,13 @@ function Navbar() {
   const cartCount = getItemCount();
   const theme = useActiveTheme();
 
-  const navAccentColor = theme?.colors?.navAccent || '#71717a';
+  const navAccentColor = theme?.colors?.navAccent || '#0d9488';
   const navAccentText = theme?.colors?.navAccentText || '#ffffff';
   const badgeText = theme?.badgeText;
-  const badgeBg = theme?.colors?.badgeBg || '#71717a';
+  const badgeBg = theme?.colors?.badgeBg || '#0d9488';
   const badgeTextColor = theme?.colors?.badgeText || '#ffffff';
   const sticker = theme?.sticker || '';
-  const secondaryColor = theme?.colors?.secondary || '#71717a';
+  const secondaryColor = theme?.colors?.secondary || '#0d9488';
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
@@ -167,7 +167,7 @@ function Navbar() {
               <ShoppingCart className="w-5 h-5" />
               {cartCount > 0 && (
                 <span className="absolute -top-1 -right-1 w-5 h-5 text-zinc-900 text-[10px] font-bold rounded-full flex items-center justify-center"
-                  style={{ backgroundColor: '#34d399' }}
+                  style={{ backgroundColor: '#14b8a6' }}
                 >
                   {cartCount > 9 ? '9+' : cartCount}
                 </span>
@@ -221,8 +221,8 @@ function Navbar() {
                   to="/signup"
                   className="flex items-center gap-1.5 text-white px-5 py-2.5 rounded-full text-sm font-bold shadow-lg transition-all hover:scale-105 active:scale-95"
                   style={{
-                    background: `linear-gradient(135deg, ${navAccentColor}, ${theme?.colors?.secondary || '#14472a'})`,
-                    boxShadow: `0 4px 14px ${navAccentColor}40`,
+                    background: `linear-gradient(135deg, ${navAccentColor || '#14b8a6'}, ${theme?.colors?.secondary || '#0d9488'})`,
+                    boxShadow: `0 4px 14px ${navAccentColor || '#14b8a6'}40`,
                   }}
                 >
                   <UserPlus className="w-4 h-4" />
@@ -246,7 +246,7 @@ function Navbar() {
                   {/* Backdrop */}
                   <div className="fixed inset-0 z-40" onClick={() => setDesktopMenuOpen(false)} />
                   {/* Dropdown */}
-                  <div className="absolute right-0 top-full mt-2 w-56 bg-[#1E2A3D] border border-[#353F54] rounded-2xl shadow-2xl z-50 py-2 overflow-hidden">
+                  <div className="fusion-clay-panel absolute right-0 top-full mt-2 w-56 bg-[#1E2A3D] border border-[#353F54] rounded-2xl shadow-2xl z-50 py-2 overflow-hidden">
                     {visibleLinks.map(link => {
                       const Icon = link.icon;
                       const isActive = !link.external && location.pathname === link.to;
@@ -292,7 +292,7 @@ function Navbar() {
               <ShoppingCart className="w-5 h-5" />
               {cartCount > 0 && (
                 <span className="absolute -top-1 -right-1 w-5 h-5 text-zinc-900 text-[10px] font-bold rounded-full flex items-center justify-center"
-                  style={{ backgroundColor: '#34d399' }}
+                  style={{ backgroundColor: '#14b8a6' }}
                 >
                   {cartCount > 9 ? '9+' : cartCount}
                 </span>
@@ -359,7 +359,7 @@ function Navbar() {
       {/* Drawer */}
       <div
         ref={drawerRef}
-        className={`fixed top-0 right-0 bottom-0 w-80 max-w-[85vw] bg-zinc-950/95 backdrop-blur-xl border-l border-zinc-800 shadow-2xl z-[61] lg:hidden flex flex-col transition-transform duration-300 ease-out ${
+        className={`fusion-clay-panel fixed top-0 right-0 bottom-0 w-80 max-w-[85vw] bg-zinc-950/95 backdrop-blur-xl border-l border-zinc-800 shadow-2xl z-[61] lg:hidden flex flex-col transition-transform duration-300 ease-out ${
           menuOpen ? 'translate-x-0' : 'translate-x-full'
         }`}
         style={{ paddingTop: 'env(safe-area-inset-top)' }}
@@ -464,7 +464,7 @@ function Navbar() {
                 Wallet
               </Link>
               {isUserAdmin && (
-                <Link to="/admin" className="flex items-center gap-3 px-4 py-3 rounded-2xl text-sm font-bold text-[var(--seasonal-primary,#71717a)] hover:bg-[var(--seasonal-primary,#71717a)]/10" onClick={() => setMenuOpen(false)}>
+                <Link to="/admin" className="flex items-center gap-3 px-4 py-3 rounded-2xl text-sm font-bold text-[#14b8a6] hover:bg-[#14b8a6]/10" onClick={() => setMenuOpen(false)}>
                   <Shield className="w-5 h-5" />
                   Admin Dashboard
                 </Link>
@@ -487,7 +487,7 @@ function Navbar() {
               <Link
                 to="/signup"
                 className="flex items-center gap-3 px-4 py-3 rounded-2xl text-sm font-bold text-white"
-                style={{ background: `linear-gradient(135deg, ${navAccentColor}, ${secondaryColor})` }}
+                style={{ background: `linear-gradient(135deg, ${navAccentColor || '#14b8a6'}, ${secondaryColor || '#0d9488'})` }}
                 onClick={() => setMenuOpen(false)}
               >
                 <UserPlus className="w-4 h-4" />

@@ -690,7 +690,7 @@ export default function AdminProducts() {
       {modalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
           <div className="absolute inset-0 bg-black/50 backdrop-blur-sm" onClick={() => setModalOpen(false)} />
-          <div className="relative bg-zinc-900 rounded-2xl border border-zinc-800 p-6 w-full max-w-2xl shadow-2xl max-h-[90vh] overflow-y-auto">
+          <div className="relative bg-zinc-900 rounded-2xl border border-zinc-800 p-4 sm:p-6 w-full max-w-[95vw] sm:max-w-2xl shadow-2xl max-h-[90vh] overflow-y-auto">
             <div className="flex items-center justify-between mb-6">
               <h3 className="text-lg font-bold text-white">{editingId ? 'Edit Product' : 'Add New Product'}</h3>
               <button onClick={() => setModalOpen(false)} className="p-2 rounded-full hover:bg-zinc-800 text-zinc-400"><X className="w-5 h-5" /></button>
@@ -699,10 +699,10 @@ export default function AdminProducts() {
               {/* Multi-Image Upload */}
               <div>
                 <label className="block text-sm font-bold mb-2 text-zinc-300">Product Images * <span className="font-normal text-zinc-400">(up to {MAX_IMAGES}, drag to reorder)</span></label>
-                <div className="flex flex-wrap gap-3">
+                <div className="flex flex-wrap gap-2 sm:gap-3">
                   {form.images.map((url, i) => (
                     <div key={i} className="relative group">
-                      <div className="w-24 h-24 rounded-xl bg-zinc-800 overflow-hidden border-2 border-zinc-700">
+                      <div className="w-16 h-16 sm:w-24 sm:h-24 rounded-xl bg-zinc-800 overflow-hidden border-2 border-zinc-700">
                         <img src={url} alt="" className="w-full h-full object-cover" />
                       </div>
                       {i === 0 && (
@@ -726,7 +726,7 @@ export default function AdminProducts() {
                     </div>
                   ))}
                   {form.images.length < MAX_IMAGES && (
-                    <div className="w-24 h-24 rounded-xl bg-zinc-800 border-2 border-dashed border-zinc-300 dark:border-zinc-600 flex flex-col items-center justify-center cursor-pointer hover:border-primary transition-colors"
+                    <div className="w-16 h-16 sm:w-24 sm:h-24 rounded-xl bg-zinc-800 border-2 border-dashed border-zinc-300 dark:border-zinc-600 flex flex-col items-center justify-center cursor-pointer hover:border-primary transition-colors"
                       onClick={() => fileInputRef.current?.click()}>
                       {imageUploading ? (
                         <div className="flex flex-col items-center gap-1 w-full px-1">
