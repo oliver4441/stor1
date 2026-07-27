@@ -3,6 +3,7 @@ import { X, Send, RotateCcw } from 'lucide-react';
 import { useNiaChat } from '../context/NiaChatContext';
 import { useAuth } from '../context/AuthContext';
 import { useLang } from '../utils/lang';
+import { TypingDots } from '@/components/ui/typing-dots';
 
 const QUICK_ACTIONS_EN = ['Browse products', 'Track my order', 'How it works', 'Contact support'];
 const QUICK_ACTIONS_SW = ['Ona bidhaa', 'Fuatilia oda', 'Jinsi inavyofanya kazi', 'Wasiliana nasi'];
@@ -109,11 +110,7 @@ export default function NiaChat() {
           <div className="flex justify-start">
             <img src="/nia-avatar.jpg" alt="Nia" className="w-6 h-6 rounded-full object-cover mr-2 mt-1 flex-shrink-0" />
             <div className="rounded-2xl rounded-bl-md px-4 py-3 bg-zinc-800">
-              <div className="flex gap-1.5">
-                <span className="w-2 h-2 rounded-full animate-bounce bg-zinc-500" style={{ animationDelay: '0ms' }} />
-                <span className="w-2 h-2 rounded-full animate-bounce bg-zinc-500" style={{ animationDelay: '150ms' }} />
-                <span className="w-2 h-2 rounded-full animate-bounce bg-zinc-500" style={{ animationDelay: '300ms' }} />
-              </div>
+              <TypingDots color="#a1a1aa" size="sm" />
             </div>
           </div>
         )}

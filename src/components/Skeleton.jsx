@@ -4,9 +4,17 @@
 export function Skeleton({ className, ...props }) {
   return (
     <div
-      className={`animate-pulse bg-zinc-700 rounded-xl ${className || ''}`}
+      className={`relative overflow-hidden rounded-xl bg-zinc-800 ${className || ''}`}
       {...props}
-    />
+    >
+      {/* Shimmer overlay */}
+      <div
+        className="absolute inset-0 -translate-x-full animate-[shimmer_1.5s_infinite]"
+        style={{
+          background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.04), transparent)',
+        }}
+      />
+    </div>
   );
 }
 
@@ -17,7 +25,7 @@ export function ProductCardSkeleton() {
     <div className="block group">
       {/* Image placeholder — matches aspect-[4/5] ratio used in ProductCard */}
       <div className="bg-zinc-900 rounded-2xl overflow-hidden aspect-[4/5] mb-3 relative">
-        <Skeleton className="absolute inset-0 rounded-none bg-zinc-200 dark:bg-zinc-800" />
+        <Skeleton className="absolute inset-0 rounded-none" />
         {/* Condition badge skeleton */}
         <Skeleton className="absolute top-2 left-2 w-16 h-5 rounded-lg" />
       </div>

@@ -9,6 +9,14 @@ export default {
   darkMode: 'class',
   theme: {
     extend: {
+      keyframes: {
+        shimmer: {
+          '100%': { transform: 'translateX(100%)' },
+        },
+      },
+      animation: {
+        shimmer: 'shimmer 1.5s infinite',
+      },
       colors: {
         // Core brand colors from design system
         primary: {
