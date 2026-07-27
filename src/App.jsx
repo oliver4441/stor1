@@ -1,6 +1,7 @@
 import React, { Suspense, useEffect } from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
 import ErrorBoundary from './components/ErrorBoundary';
+import { ThemeProvider } from './context/ThemeContext';
 import { SeasonalProvider } from './context/SeasonalContext';
 import { LanguageProvider } from './utils/lang';
 import { AuthProvider } from './context/AuthContext';
@@ -113,6 +114,7 @@ function App() {
   }, []);
 
   return (
+    <ThemeProvider>
     <SeasonalProvider>
       <ThemeStyles />
     <LanguageProvider>
@@ -200,12 +202,12 @@ function App() {
                 <Route path="sellers" element={<AdminSellers />} />
                 <Route path="users" element={<AdminUsers />} />
                 <Route path="broadcast" element={<AdminBroadcast />} />
-              <Route path="fraud" element={<AdminFraud />} />
-              <Route path="reports" element={<AdminReports />} />
-              <Route path="bundles" element={<AdminBundles />} />
-            <Route path="deals" element={<AdminDeals />} />
-            <Route path="dropship" element={<AdminDropshipProducts />} />
-            </Route>
+                <Route path="fraud" element={<AdminFraud />} />
+                <Route path="reports" element={<AdminReports />} />
+                <Route path="bundles" element={<AdminBundles />} />
+              <Route path="deals" element={<AdminDeals />} />
+              <Route path="dropship" element={<AdminDropshipProducts />} />
+              </Route>
               <Route path="/listings" element={<Navigate to="/search" replace />} />
               <Route path="/earn" element={<Navigate to="/affiliate" replace />} />
               <Route path="*" element={<NotFound />} />
@@ -228,6 +230,7 @@ function App() {
     </AuthProvider>
     </LanguageProvider>
     </SeasonalProvider>
+    </ThemeProvider>
   )
 }
 

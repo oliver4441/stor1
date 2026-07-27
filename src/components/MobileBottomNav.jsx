@@ -1,9 +1,10 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Home, Search, ShoppingCart, Heart, User, Download, HelpCircle, Info, LogIn, UserPlus, Plus, X } from 'lucide-react';
+import { Home, Search, ShoppingCart, Heart, User, Download, HelpCircle, Info, LogIn, UserPlus, Plus, X, Sun, Moon } from 'lucide-react';
 import { useCart } from '../context/CartContext';
 import { supabase } from '../utils/supabase';
 import { WISHLIST_CHANGE_EVENT } from '../utils/constants';
+import { useTheme } from '../context/ThemeContext';
 
 const CASCADE_ITEMS = [
   { to: '/account', icon: User, label: 'Account' },
@@ -26,12 +27,13 @@ const navItems = [
 ];
 
 export default function MobileBottomNav() {
+  const [cascadeOpen, setCascadeOpen] = useState(false);
+  const cascadeRef = useRef(null);
   const location = useLocation();
   const { getItemCount } = useCart();
+  const { toggleTheme, isDark } = useTheme();
   const [wishCount, setWishCount] = useState(0);
-  const [cascadeOpen, setCascadeOpen] = useState(false);
   const [user, setUser] = useState(null);
-  const cascadeRef = useRef(null);
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
@@ -140,6 +142,12 @@ export default function MobileBottomNav() {
               </Link>
             );
           })}
+          {/* Theme toggle in cascade */}
+          <button onClick={() => { setCascadeOpen(false); toggleTheme(); }}
+            className="flex items-center gap-3 px-4 py-3 text-sm font-bold transition-all text-[#8E9BB5] active:bg-[#28303F] w-full text-left border-t border-[#353F54]/50">
+            {isDark ? <Sun className="w-5 h-5 shrink-0" /> : <Moon className="w-5 h-5 shrink-0" />}
+            <span className="truncate">{isDark ? 'Light Mode' : 'Dark Mode'}</span>
+          </button>
         </div>
       </div>
 

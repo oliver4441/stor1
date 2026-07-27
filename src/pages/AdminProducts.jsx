@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
-import { Plus, Pencil, Trash2, X, AlertTriangle, Loader2, Upload, Image as ImageIcon, Search, Eye, CheckSquare, Square, Tag, GripVertical, Star, Percent, Package } from 'lucide-react';
+import { Plus, Pencil, Trash2, X, AlertTriangle, Loader2, Upload, Image as ImageIcon, Search, Eye, CheckSquare, Square, Tag, GripVertical, Star, Percent, Package, Copy } from 'lucide-react';
 import { supabase } from '../utils/supabase';
 import { fetchAllListings, createListing, updateListing, deleteListing, adminDeleteListing, bulkUpdateListingStatus, bulkDeleteListings, saveWholesalePrices, isAdmin } from '../utils/api';
 import { formatKES, CATEGORIES, generateSKU, COLOR_PALETTE, SIZE_PRESETS, getPresetSizes, VARIANT_REQUIRED_CATEGORIES } from '../utils/constants';
@@ -37,6 +37,7 @@ export default function AdminProducts() {
     title: '', price: '', description: '', category: 'Electronics', condition: 'new', location: 'CBD',
     images: [], brand: '', model: '', color: '', weight: '', sku: '', status: 'active', tags: '',
     has_variants: false, variants: [], size_guide: '', product_type: 'new',
+    quantity: '', original_price: '', low_stock_threshold: '5',
     wholesale_enabled: false, wholesale_min_qty: '', wholesale_tiers: [],
     warranty_period: '', warranty_type: 'seller',
     shipping_length: '', shipping_width: '', shipping_height: '',
@@ -152,6 +153,7 @@ export default function AdminProducts() {
       title: '', price: '', description: '', category: cat, condition: 'new', location: 'CBD',
       images: [], brand: '', model: '', color: '', weight: '',
       sku: generateSKU(cat), status: 'active', tags: '',
+      quantity: '', original_price: '', low_stock_threshold: '5',
       has_variants: true, variants: [], size_guide: '', product_type: 'new',
       wholesale_enabled: false, wholesale_min_qty: '', wholesale_tiers: [],
       warranty_period: '', warranty_type: 'seller',
@@ -601,10 +603,21 @@ export default function AdminProducts() {
                           onBlur={saveQuickEdit} onKeyDown={e => e.key === 'Enter' && saveQuickEdit()}
                           className="text-sm font-bold text-white bg-zinc-800 border border-primary rounded px-1 py-0.5 w-24" />
                       ) : (
-                        <span className="text-sm font-bold text-white cursor-pointer hover:text-primary"
-                          onDoubleClick={() => startQuickEdit(listing.id, 'price', String(listing.price))} title="Double-click to edit">
-                          {formatKES(listing.price)}
-                        </span>
+                        <div className="flex items-center gap-2">
+                          <span className="text-sm font-bold text-white cursor-pointer hover:text-primary"
+                            onDoubleClick={() => startQuickEdit(listing.id, 'price', String(listing.price))} title="Double-click to edit">
+                            {formatKES(listing.price)}
+                          </span>
+                          {listing.original_price && Number(listing.original_price) > Number(listing.price) && (
+                            <span className="text-[10px] text-zinc-400 line-through hidden sm:inline">{formatKES(listing.original_price)}</span>
+                          )}
+                          {listing.quantity !== undefined && listing.quantity !== null && Number(listing.quantity) <= (Number(listing.low_stock_threshold) || 5) && Number(listing.quantity) > 0 && (
+                            <span className="text-[9px] font-bold text-amber-500 bg-amber-900/30 px-1.5 py-0.5 rounded-full">Low Stock</span>
+                          )}
+                          {(!listing.quantity || Number(listing.quantity) === 0) && listing.status === 'active' && (
+                            <span className="text-[9px] font-bold text-red-500 bg-red-900/30 px-1.5 py-0.5 rounded-full">Out</span>
+                          )}
+                        </div>
                       )}
                     </td>
                     <td className="px-4 py-3 hidden lg:table-cell">
@@ -619,6 +632,37 @@ export default function AdminProducts() {
                         </a>
                         <button onClick={() => openEditModal(listing)} className="p-2 rounded-lg hover:bg-zinc-800 text-zinc-400 hover:text-zinc-600" title="Edit">
                           <Pencil className="w-4 h-4" />
+                        </button>
+                        <button onClick={() => {
+                          setEditingId(null);
+                          setForm({
+                            title: listing.title + ' (Copy)', price: String(listing.price),
+                            description: listing.description || '',
+                            category: listing.category || 'Electronics', condition: listing.condition || 'new',
+                            location: listing.location_city || 'CBD', images: listing.images || [],
+                            brand: listing.brand || '', model: listing.model || '',
+                            color: listing.color || '', weight: listing.weight || '',
+                            sku: generateSKU(listing.category || 'Electronics'), status: 'active', tags: listing.tags || '',
+                            quantity: listing.quantity || '', original_price: listing.original_price || '', low_stock_threshold: listing.low_stock_threshold || '5',
+                            has_variants: listing.has_variants || false,
+                            variants: listing.variants || [],
+                            size_guide: listing.size_guide || '',
+                            product_type: listing.product_type || 'new',
+                            wholesale_enabled: listing.wholesale_enabled || false,
+                            wholesale_min_qty: listing.wholesale_min_qty || '',
+                            wholesale_tiers: Array.isArray(listing.wholesale_tiers) ? listing.wholesale_tiers : [],
+                            warranty_period: listing.warranty_period || '',
+                            warranty_type: listing.warranty_type || 'seller',
+                            shipping_length: listing.shipping_length || '',
+                            shipping_width: listing.shipping_width || '',
+                            shipping_height: listing.shipping_height || '',
+                            return_policy: listing.return_policy || '',
+                            stock_status_label: listing.stock_status_label || '',
+                            seller_response_time: listing.seller_response_time || '',
+                          });
+                          setModalOpen(true);
+                        }} className="p-2 rounded-lg hover:bg-zinc-800 text-zinc-400 hover:text-blue-500" title="Duplicate">
+                          <Copy className="w-4 h-4" />
                         </button>
                         <button onClick={() => setDeleteTarget({ id: listing.id, title: listing.title })} className="p-2 rounded-lg hover:bg-red-900/20 text-zinc-400 hover:text-red-500" title="Delete">
                           <Trash2 className="w-4 h-4" />
@@ -702,6 +746,20 @@ export default function AdminProducts() {
                   )}
                 </div>
                 <input ref={fileInputRef} type="file" accept="image/*" multiple onChange={handleImageSelect} className="hidden" />
+                <div className="flex items-center gap-2 mt-2">
+                  <input type="url" value={form.imageUrlInput || ''} onChange={e => setForm({...form, imageUrlInput: e.target.value})}
+                    placeholder="Or paste image URL..."
+                    className="flex-1 px-4 py-2 rounded-xl bg-zinc-800 border border-transparent focus:border-primary focus:outline-none text-white text-sm" />
+                  <button type="button" onClick={() => {
+                    const url = (form.imageUrlInput || '').trim();
+                    if (url && form.images.length < MAX_IMAGES) {
+                      setForm(prev => ({ ...prev, images: [...prev.images, url], imageUrlInput: '' }));
+                    }
+                  }} disabled={!form.imageUrlInput?.trim() || form.images.length >= MAX_IMAGES}
+                    className="px-4 py-2 rounded-xl bg-zinc-700 text-white text-sm font-bold hover:bg-zinc-600 disabled:opacity-50 transition-all">
+                    Add URL
+                  </button>
+                </div>
                 <p className="text-xs text-zinc-400 mt-2">JPG, PNG or WebP. Max 5MB each. First image is the cover.</p>
               </div>
 
@@ -710,10 +768,36 @@ export default function AdminProducts() {
                   <label className="block text-sm font-bold mb-1.5 text-zinc-300">Product Title *</label>
                   <input required value={form.title} onChange={e => setForm({...form, title: e.target.value})} placeholder="e.g. iPhone 13 Pro 256GB" className="w-full px-4 py-2.5 rounded-xl bg-zinc-800 border border-transparent focus:border-primary focus:outline-none text-white text-sm" />
                 </div>
-                <div>
+                <div className="md:col-span-1">
                   <label className="block text-sm font-bold mb-1.5 text-zinc-300">Price (KES) *</label>
                   <input required type="number" value={form.price} onChange={e => setForm({...form, price: e.target.value})} placeholder="85000" className="w-full px-4 py-2.5 rounded-xl bg-zinc-800 border border-transparent focus:border-primary focus:outline-none text-white text-sm" />
                 </div>
+              </div>
+
+              { /* Sale Pricing */ }
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                <div>
+                  <label className="block text-sm font-bold mb-1.5 text-zinc-300">Original Price (KES)</label>
+                  <input type="number" value={form.original_price} onChange={e => setForm({...form, original_price: e.target.value})} placeholder="e.g. 100000" className="w-full px-4 py-2.5 rounded-xl bg-zinc-800 border border-transparent focus:border-primary focus:outline-none text-white text-sm" />
+                  <p className="text-[10px] text-zinc-500 mt-1">Set higher than price to show discount</p>
+                </div>
+                <div>
+                  <label className="block text-sm font-bold mb-1.5 text-zinc-300">Quantity in Stock</label>
+                  <input type="number" min="0" value={form.quantity} onChange={e => setForm({...form, quantity: e.target.value})} placeholder="e.g. 50" className="w-full px-4 py-2.5 rounded-xl bg-zinc-800 border border-transparent focus:border-primary focus:outline-none text-white text-sm" />
+                </div>
+                <div>
+                  <label className="block text-sm font-bold mb-1.5 text-zinc-300">Low Stock Alert at</label>
+                  <input type="number" min="0" value={form.low_stock_threshold} onChange={e => setForm({...form, low_stock_threshold: e.target.value})} placeholder="e.g. 5" className="w-full px-4 py-2.5 rounded-xl bg-zinc-800 border border-transparent focus:border-primary focus:outline-none text-white text-sm" />
+                  <p className="text-[10px] text-zinc-500 mt-1">Shows warning when stock is below this</p>
+                </div>
+                {form.original_price && Number(form.original_price) > Number(form.price) && (
+                  <div className="sm:col-span-3">
+                    <span className="inline-flex items-center gap-1.5 text-xs font-bold text-green-500 bg-green-900/30 px-3 py-1.5 rounded-lg">
+                      <Percent className="w-3 h-3" />
+                      Customers save {Math.round((1 - Number(form.price) / Number(form.original_price)) * 100)}% — KES {Number(form.original_price - form.price).toLocaleString()} off
+                    </span>
+                  </div>
+                )}
               </div>
 
               <div className="grid grid-cols-2 md:grid-cols-4 gap-4">

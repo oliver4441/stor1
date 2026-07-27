@@ -14,6 +14,7 @@ import { useCart } from '../context/CartContext';
 import { useActiveTheme } from '../context/SeasonalContext';
 import { sounds } from '../utils/sounds';
 import NotificationBell from './NotificationBell';
+import ThemeToggle from './ThemeToggle';
 import { WhatsAppNavButton } from './WhatsAppButtons';
 import { CATEGORIES, CATEGORY_INFO } from '../utils/constants';
 
@@ -159,6 +160,7 @@ function Navbar() {
             <Link to="/search" className="p-2 rounded-full hover:bg-[#28303F] text-[#8E9BB5] transition-colors" aria-label="Search">
               <Search className="w-5 h-5" />
             </Link>
+            <ThemeToggle />
             <WhatsAppNavButton />
             <NotificationBell />
             <Link to="/cart" className="relative p-2 rounded-full hover:bg-[#28303F] text-[#8E9BB5] transition-colors" aria-label={`Shopping cart, ${cartCount} items`}>
