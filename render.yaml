@@ -10,6 +10,8 @@ services:
     envVars:
       - key: NODE_ENV
         value: production
+      - key: VITE_API_URL
+        value: https://omix-gateway.kipkiruigideon890.workers.dev
       - key: VITE_OPENCODE_API_KEY
         sync: false
       - key: VITE_ONESIGNAL_APP_ID
