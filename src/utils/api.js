@@ -144,7 +144,12 @@ export async function fetchListings(category = 'All', searchQuery = '', page = 1
 
   const { data, error, count } = await query
   if (error) { console.error(error); return { listings: [], total: 0 } }
-  return { listings: mapListingCategories(data || []), total: count || 0 }
+  let listings = mapListingCategories(data || [])
+  try {
+    const { applyListingSort } = await import('../lib/ranking')
+    listings = applyListingSort(listings, productType === 'new' ? 'newest' : 'recommended', { query: searchQuery })
+  } catch { /* ranking optional */ }
+  return { listings, total: count || 0 }
 }
 
 // Advanced search via backend API with filters
@@ -172,6 +177,10 @@ export async function advancedSearch(filters = {}) {
     // API returns category_id but not category string — map it for display
     if (data.listings && Array.isArray(data.listings)) {
       data.listings = data.listings.map(mapCategoryName);
+      try {
+        const { applyListingSort } = await import('../lib/ranking');
+        data.listings = applyListingSort(data.listings, filters.sort || 'recommended', { query: filters.q });
+      } catch { /* ranking optional */ }
     }
     return data;
   } catch (err) {
@@ -1573,6 +1582,7 @@ export async function getWishlist() {
 
     const { data, error } = await supabase
       .from('omix_wishlist')
+      .select('*, listings(*)')
       .eq('user_id', user.id)
       .order('created_at', { ascending: false });
 

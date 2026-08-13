@@ -70,10 +70,10 @@ export function NiaChatProvider({ children }) {
     setTimeout(() => messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' }), 50);
   }, []);
 
-  const addBotMessage = useCallback((text, chips = [], delay = 0) => {
+  const addBotMessage = useCallback((text, chips = [], delay = 0, products = []) => {
     if (delay > 0) setIsTyping(true);
     setTimeout(() => {
-      setMessages(prev => [...prev, { id: Date.now(), sender: 'nia', text, timestamp: new Date() }]);
+      setMessages(prev => [...prev, { id: Date.now(), sender: 'nia', text, products, timestamp: new Date() }]);
       conversationHistoryRef.current.push({ sender: 'nia', text, isChipResponse: false, timestamp: new Date() });
       setCurrentChips(chips);
       setIsTyping(false);
@@ -156,7 +156,7 @@ export function NiaChatProvider({ children }) {
     } catch {}
 
     const response = await niaChat(conversationHistoryRef.current, text.trim(), userId, pageContext, cartItems);
-    addBotMessage(response.text, response.chips, 300);
+    addBotMessage(response.text, response.chips, 300, response.products || []);
   }, [addBotMessage]);
 
   const handleChipClick = useCallback((chip) => {

@@ -31,6 +31,10 @@ export default function AdminOverview() {
   const activeListings = listings.filter(l => l.status === 'active').length;
   const lowStock = listings.filter(l => l.quantity > 0 && l.quantity <= 3).length;
   const outOfStock = listings.filter(l => l.quantity === 0).length;
+  const uniqueCustomers = new Set(orders.map((o) => o.user_id || o.email || o.phone).filter(Boolean)).size;
+  const paidOrders = orders.filter((o) => o.status === 'paid' || o.status === 'delivered');
+  const aov = paidOrders.length ? paidOrders.reduce((sum, o) => sum + parseFloat(o.total_amount || 0), 0) / paidOrders.length : 0;
+  const failedPayments = orders.filter((o) => o.status === 'failed' || o.status === 'payment_failed').length;
 
   // COD stats
   const codOrders = orders.filter(o => o.status === 'cod_pending' || o.payment_method === 'cod');
@@ -67,12 +71,14 @@ export default function AdminOverview() {
     { label: 'Revenue (Online)', value: formatKES(totalRevenue), icon: DollarSign, color: 'text-emerald-500', bg: 'bg-emerald-500/10', change: 'Paid orders' },
     { label: 'Cash on Delivery', value: formatKES(codRevenue), icon: Banknote, color: 'text-orange-500', bg: 'bg-orange-500/10', change: `${codOrders.length} orders • ${codProductCount} items` },
     { label: 'Low Stock', value: lowStock + outOfStock, icon: AlertTriangle, color: 'text-amber-500', bg: 'bg-amber-500/10', change: `${outOfStock} out of stock` },
+    { label: 'Customers', value: uniqueCustomers, icon: Eye, color: 'text-sky-400', bg: 'bg-sky-500/10', change: `${failedPayments} failed payments` },
+    { label: 'Avg order value', value: formatKES(aov || 0), icon: TrendingUp, color: 'text-teal-400', bg: 'bg-teal-500/10', change: `${paidOrders.length} paid` },
   ];
 
   return (
     <div className="space-y-6 max-w-7xl">
       {/* Stats Grid */}
-      <div className="admin-stat-grid grid grid-cols-2 lg:grid-cols-5 gap-4">
+      <div className="admin-stat-grid grid grid-cols-2 lg:grid-cols-4 gap-4">
         {stats.map(stat => {
           const Icon = stat.icon;
           return (

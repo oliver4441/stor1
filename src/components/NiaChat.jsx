@@ -64,7 +64,7 @@ export default function NiaChat() {
           <img src="/nia-avatar.jpg" alt="Nia" className="w-8 h-8 rounded-full object-cover" />
           <div>
             <h2 className="text-white font-semibold text-sm">Nia</h2>
-            <span className="text-[10px] text-emerald-400 font-medium">Online</span>
+            <span className="text-[10px] text-zinc-400 font-medium">Your STOR1 shopping assistant</span>
           </div>
         </div>
         <div className="flex items-center gap-1">
@@ -102,6 +102,16 @@ export default function NiaChat() {
               }}
             >
               {msg.text}
+              {Array.isArray(msg.products) && msg.products.length > 0 && (
+                <div className="mt-3 space-y-2">
+                  {msg.products.slice(0, 4).map((product) => (
+                    <a key={product.id} href={`/listing/${product.id}`} className="block rounded-xl bg-zinc-800/80 p-2 hover:bg-zinc-700">
+                      <div className="font-semibold text-xs text-white truncate">{product.title}</div>
+                      <div className="text-[11px] text-emerald-400">KES {Number(product.price || 0).toLocaleString()}</div>
+                    </a>
+                  ))}
+                </div>
+              )}
             </div>
           </div>
         ))}

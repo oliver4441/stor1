@@ -163,8 +163,8 @@ function Home() {
   const heroAccent = theme?.colors?.heroAccent || '#a9e7c5';
   const ctaBg = theme?.colors?.ctaBg || '#f5c56b';
   const ctaText = theme?.colors?.ctaText || '#173a35';
-  const heroTitle = heroOverride?.title || theme?.heroTitle || 'Good finds. Trusted locally.';
-  const heroSubtitle = heroOverride?.subtitle || theme?.heroSubtitle || 'Discover quality products from Kenyan sellers, pay simply with M-Pesa and get your next favourite find delivered to your door.';
+  const heroTitle = heroOverride?.title || theme?.heroTitle || 'Everything you need.\nDelivered across Kenya.';
+  const heroSubtitle = heroOverride?.subtitle || theme?.heroSubtitle || 'Search thousands of products from Kenyan sellers. Compare, save, and checkout when you are ready.';
   const heroImage = heroOverride?.imageUrl || theme?.heroImages?.[0] || '/hero-bg.jpg';
   const particleType = theme?.particleType || 'none';
   const sticker = theme?.sticker || '';
@@ -197,7 +197,8 @@ function Home() {
         <div className="marketplace-hero-inner">
           <div className="marketplace-hero-copy">
             <div className="marketplace-eyebrow marketplace-eyebrow-light"><span className="marketplace-live-dot" />{socialBadge || 'Kenya’s trusted marketplace'}</div>
-            <h1>{heroTitle}</h1>
+            {user && <p className="marketplace-eyebrow marketplace-eyebrow-light" style={{ marginBottom: 8 }}>Welcome back{user.user_metadata?.full_name ? `, ${String(user.user_metadata.full_name).split(' ')[0]}` : ''}</p>}
+            <h1 style={{ whiteSpace: 'pre-line' }}>{heroTitle}</h1>
             <p>{heroSubtitle}</p>
             <div className="marketplace-hero-actions">
               <button type="button" className="marketplace-button marketplace-button-hero" onClick={() => document.getElementById('products-section')?.scrollIntoView({ behavior: 'smooth', block: 'start' })}>{t('home.browseListings') || 'Explore products'}<ArrowRight className="h-4 w-4" /></button>
@@ -262,6 +263,13 @@ function Home() {
           })}
         </div>
       </section>
+
+      {user && (
+        <section className="marketplace-container marketplace-discovery-section">
+          <div className="marketplace-section-heading"><div><span className="marketplace-eyebrow">Pick up where you left off</span><h2>Continue shopping</h2></div></div>
+          <RecentlyViewed allListings={listings} />
+        </section>
+      )}
 
       {showDiscoveryRows && featuredProducts.length > 0 && (
         <section className="marketplace-container marketplace-discovery-section">

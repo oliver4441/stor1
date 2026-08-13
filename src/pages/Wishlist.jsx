@@ -159,6 +159,9 @@ export default function Wishlist() {
                       <h3 className="font-bold text-sm text-white truncate hover:text-[var(--seasonal-primary,#71717a)] transition-colors">{listing.title}</h3>
                     </Link>
                     <p className="text-[var(--seasonal-primary,#71717a)] font-black text-base mt-0.5">{formatKES(listing.price)}</p>
+                    {listing.compare_at_price && Number(listing.compare_at_price) > Number(listing.price) && (
+                      <p className="text-xs text-emerald-400 font-semibold">Price dropped {formatKES(listing.compare_at_price)} → {formatKES(listing.price)}</p>
+                    )}
                     {outOfStock && (
                       <div className="flex items-center gap-1 text-amber-400 text-xs font-bold mt-1">
                         <AlertCircle className="w-3 h-3" /> Out of stock

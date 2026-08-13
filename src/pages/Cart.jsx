@@ -1,15 +1,38 @@
+import { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { ShoppingCart, Trash2, Plus, Minus, ArrowRight, Package } from 'lucide-react';
+import { ShoppingCart, Trash2, Plus, Minus, ArrowRight, Package, Bookmark } from 'lucide-react';
 import { useCart } from '../context/CartContext';
 import { formatKES } from '../utils/constants';
 import NiaContextualTrigger from '../components/NiaContextualTrigger';
 import Breadcrumb from '../components/Breadcrumb';
 
+const SAVED_KEY = 'stor1_saved_for_later';
+
+function loadSaved() {
+  try { return JSON.parse(localStorage.getItem(SAVED_KEY) || '[]'); } catch { return []; }
+}
+
 export default function CartPage() {
-  const { getItems, getTotal, updateQuantity, removeItem, getItemCount } = useCart();
+  const { getItems, getTotal, updateQuantity, removeItem, getItemCount, addItem } = useCart();
   const items = getItems();
   const total = getTotal();
   const count = getItemCount();
+  const [saved, setSaved] = useState(loadSaved);
+
+  const persistSaved = (next) => {
+    setSaved(next);
+    try { localStorage.setItem(SAVED_KEY, JSON.stringify(next)); } catch {}
+  };
+
+  const saveForLater = (item) => {
+    persistSaved([item, ...saved.filter((s) => (s._cartKey || s.id) !== (item._cartKey || item.id))]);
+    removeItem(item.id, item._cartKey);
+  };
+
+  const moveToCart = (item) => {
+    addItem(item);
+    persistSaved(saved.filter((s) => (s._cartKey || s.id) !== (item._cartKey || item.id)));
+  };
 
   // ── Offline check removed ──
 
@@ -77,6 +100,9 @@ export default function CartPage() {
                     <button onClick={() => updateQuantity(item.id, item.quantity + 1, item._cartKey)} className="w-8 h-8 rounded-lg bg-[#28303F] flex items-center justify-center hover:bg-[#323B4F] transition-colors" aria-label={`Increase quantity of ${item.name}`}>
                       <Plus className="w-3 h-3" />
                     </button>
+                    <button onClick={() => saveForLater(item)} className="text-[#4A5771] hover:text-[#14b8a6] p-1 transition-colors" aria-label={`Save ${item.name} for later`}>
+                      <Bookmark className="w-4 h-4" />
+                    </button>
                     <button onClick={() => removeItem(item.id, item._cartKey)} className="text-[#4A5771] hover:text-red-500 p-1 transition-colors" aria-label={`Remove ${item.name} from cart`}>
                       <Trash2 className="w-4 h-4" />
                     </button>
@@ -117,6 +143,26 @@ export default function CartPage() {
           </Link>
         </div>
       </div>
+
+      {saved.length > 0 && (
+        <section className="mt-10">
+          <h2 className="text-lg font-bold text-[#FAFAFA] mb-4">Saved for later</h2>
+          <div className="space-y-3">
+            {saved.map((item) => (
+              <div key={item._cartKey || item.id} className="bg-[#28303F] rounded-2xl border border-[#353F54] p-4 flex items-center gap-4">
+                <div className="w-16 h-16 rounded-xl overflow-hidden bg-[#242C3B] shrink-0">
+                  {item.image_url ? <img src={item.image_url} alt="" className="w-full h-full object-cover" /> : <Package className="w-6 h-6 m-5 text-[#4A5771]" />}
+                </div>
+                <div className="min-w-0 flex-1">
+                  <p className="font-semibold text-white truncate">{item.name}</p>
+                  <p className="text-sm text-[#14b8a6]">{formatKES(item.price)}</p>
+                </div>
+                <button type="button" onClick={() => moveToCart(item)} className="text-xs font-bold px-3 py-2 rounded-lg bg-[#14b8a6] text-black">Move to cart</button>
+              </div>
+            ))}
+          </div>
+        </section>
+      )}
     </div>
   );
 }
