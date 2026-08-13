@@ -10,6 +10,7 @@ import {
 } from 'lucide-react';
 import { sounds } from '../utils/sounds';
 import { GooeyLoader } from '@/components/ui/loader-10';
+import AdminCommandPalette from '../components/AdminCommandPalette';
 
 const NAV_GROUPS = [
   {
@@ -184,6 +185,7 @@ export default function AdminLayout() {
             <div className="admin-breadcrumbs"><span>{currentGroup?.label || 'Workspace'}</span><ChevronRight className="h-3.5 w-3.5" /><strong>{currentPage.label}</strong></div>
           </div>
           <div className="admin-topbar-actions">
+            <span className="hidden md:inline text-[11px] text-zinc-500 border border-zinc-700 rounded-lg px-2 py-1">Ctrl/⌘ K</span>
             <span className="admin-store-status"><i /> Store online</span>
             <Link to="/" className="admin-view-store"><ExternalLink className="h-3.5 w-3.5" /> <span>View store</span></Link>
           </div>
@@ -201,6 +203,7 @@ export default function AdminLayout() {
           </div>
         </main>
       </div>
+      <AdminCommandPalette />
     </div>
   );
 }

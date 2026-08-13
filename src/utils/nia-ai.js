@@ -58,7 +58,7 @@ export async function niaChat(conversationHistory, userText, userId = '', pageCo
       text = fullResponse.replace(/\nCHIPS:.*$/m, '');
     }
 
-    return { text: text.trim(), chips };
+    return { text: text.trim(), chips, products: Array.isArray(data.products) ? data.products : [] };
   } catch (err) {
     console.error('Nia AI error:', err);
     return fallbackResponse(userText);
@@ -80,7 +80,7 @@ function fallbackResponse(text) {
   // English greetings
   if (lower.match(/hello|\bhi\b|hey|good morning|good evening|howdy|what'?s up/i)) {
     return {
-      text: "Hello! I'm Nia, your Omix Store assistant. How can I help you today?",
+      text: "Hello! I'm Nia, your STOR1 shopping assistant. How can I help you today?",
       chips: ['Browse products', 'Track my order', 'How it works', 'Refer a friend'],
     };
   }
@@ -173,7 +173,7 @@ export function getGreeting(userName) {
   const name = userName ? `, ${userName.split(' ')[0]}` : '';
 
   return {
-    text: `${timeGreeting}${name}! I'm Nia, your Omix Store assistant. 👋\n\nI can help you find products, track orders, answer payments & delivery questions, and more!\n\nWhat would you like to do?`,
+    text: `${timeGreeting}${name}! I'm Nia, your STOR1 shopping assistant. 👋\n\nI can help you find products, track orders, answer payments & delivery questions, and more!\n\nWhat would you like to do?`,
     chips: ['Browse products', 'Track my order', 'How it works', 'Refer a friend'],
   };
 }

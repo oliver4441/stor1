@@ -26,6 +26,8 @@ import {
   UtensilsCrossed,
   MoreHorizontal,
   ArrowLeft,
+  LayoutGrid,
+  List,
 } from 'lucide-react';
 import ProductCard from '../components/ProductCard';
 import { ProductCardSkeleton } from '../components/Skeleton';
@@ -61,7 +63,8 @@ const CATEGORY_ICONS = {
 
 // Sort options for the dropdown
 const SORT_OPTIONS = [
-  { value: '', label: 'Newest First' },
+  { value: '', label: 'Recommended' },
+  { value: 'newest', label: 'Newest First' },
   { value: 'price_asc', label: 'Price: Low to High' },
   { value: 'price_desc', label: 'Price: High to Low' },
   { value: 'rating_desc', label: 'Best Rated' },
@@ -94,6 +97,14 @@ function SearchPage() {
   const [loading, setLoading] = useState(true);
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [localQ, setLocalQ] = useState(filters.q);
+  const [viewMode, setViewMode] = useState(() => {
+    try { return localStorage.getItem('stor1_listing_view') || 'grid'; } catch { return 'grid'; }
+  });
+
+  const setView = (mode) => {
+    setViewMode(mode);
+    try { localStorage.setItem('stor1_listing_view', mode); } catch {}
+  };
 
   // Lock body scroll when mobile filter sidebar is open
   // Uses position:fixed to prevent Android viewport jump (overflow:hidden alone causes scroll reset)
@@ -505,7 +516,7 @@ function SearchPage() {
 
     return (
       <>
-        <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 sm:gap-4">
+        <div className={viewMode === 'list' ? 'space-y-3' : 'grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 sm:gap-4'}>
           {listings.map((listing) => (
             <ProductCard key={listing.id} listing={listing} />
           ))}

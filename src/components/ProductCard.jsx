@@ -276,7 +276,7 @@ function ProductCard({ listing, compareMode, onCompareChange }) {
           )}
         </div>
         <div className="marketplace-product-details">
-          <div className="marketplace-product-topline"><span>{listing.category || 'Marketplace'}</span>{listing.wholesale_enabled && <em className="marketplace-wholesale-badge">Wholesale</em>}<ProductSocialBadge listing={listing} /></div>
+          <div className="marketplace-product-topline"><span>{listing.category || 'Marketplace'}</span>{listing._rankReasons?.[0]?.label && <em className="marketplace-wholesale-badge">{listing._rankReasons[0].label}</em>}{listing.wholesale_enabled && <em className="marketplace-wholesale-badge">Wholesale</em>}<ProductSocialBadge listing={listing} /></div>
           <h3>{listing.title}</h3>
           <div className="marketplace-product-meta">
             {listing.avg_rating !== undefined && listing.avg_rating > 0 ? (

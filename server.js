@@ -459,10 +459,10 @@ async function fetchProducts(query = '', limit = 5) {
     const supabaseKey = SUPABASE_SERVICE_KEY;
     if (!supabaseUrl || !supabaseKey) return [];
 
-    let url = `${supabaseUrl}/rest/v1/products?select=id,title,price,category,condition,image_url,location&status=eq.active&order=created_at.desc&limit=${limit}`;
-    if (query) {
-      // Search by title or category
-      url = `${supabaseUrl}/rest/v1/products?select=id,title,price,category,condition,image_url,location&status=eq.active&or=(title.ilike.*${encodeURIComponent(query)}*,category.ilike.*${encodeURIComponent(query)}*)&order=created_at.desc&limit=${limit}`;
+    const safe = String(query || '').replace(/[^a-zA-Z0-9\s\-.]/g, '').trim();
+    let url = `${supabaseUrl}/rest/v1/listings?select=id,title,price,compare_at_price,avg_rating,review_count,purchase_count,quantity,status,category_id,brand,images,location_city,created_at&status=eq.active&order=created_at.desc&limit=${limit}`;
+    if (safe) {
+      url = `${supabaseUrl}/rest/v1/listings?select=id,title,price,compare_at_price,avg_rating,review_count,purchase_count,quantity,status,category_id,brand,images,location_city,created_at&status=eq.active&or=(title.ilike.*${encodeURIComponent(safe)}*,brand.ilike.*${encodeURIComponent(safe)}*)&order=created_at.desc&limit=${limit}`;
     }
 
     const resp = await fetch(url, {
@@ -555,10 +555,14 @@ app.post('/api/nia/chat', async (req, res) => {
       const searchTerms = lastUserMsg.replace(/^(show|find|search|look|get|i want|i need|do you have|any|recommend|suggest|what|where)\s*/i, '').trim();
       const products = await fetchProducts(searchTerms, 5);
       if (products.length > 0) {
-        productContext = '\n\n## Available Products:\n' + products.map(p =>
-          `- ${p.title}: KES ${p.price.toLocaleString()} (${p.condition || 'used'}${p.category ? `, ${p.category}` : ''})`
+        productContext = '\n\n## Available Products (real catalog only):\n' + products.map(p =>
+          `- ${p.title}: KES ${Number(p.price || 0).toLocaleString()}${p.avg_rating ? ` • ${p.avg_rating}★` : ''}${p.brand ? ` • ${p.brand}` : ''}`
         ).join('\n');
       }
+    }
+    if (pageContext) productContext += `\n\n## Current page context:\n${typeof pageContext === 'string' ? pageContext : JSON.stringify(pageContext)}`;
+    if (Array.isArray(cartItems) && cartItems.length) {
+      productContext += '\n\n## Cart items:\n' + cartItems.slice(0, 8).map((item) => `- ${item.name || item.title || item.id}`).join('\n');
     }
 
     // Build user context
@@ -639,7 +643,12 @@ app.post('/api/nia/chat', async (req, res) => {
       return res.status(502).json({ error: 'AI returned empty response' });
     }
 
-    res.json({ content });
+    let products = [];
+    if (isProductQuery) {
+      const searchTerms = lastUserMsg.replace(/^(show|find|search|look|get|i want|i need|do you have|any|recommend|suggest|what|where)\s*/i, '').trim();
+      products = await fetchProducts(searchTerms, 5);
+    }
+    res.json({ content, products, suggestions: [] });
   } catch (err) {
     console.error('[Nia Proxy] Error:', err.message);
     res.status(500).json({ error: 'Internal server error' });
