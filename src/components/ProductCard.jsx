@@ -1,6 +1,6 @@
 import { useState, useEffect, useMemo } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { Image as ImageIcon, MapPin, Share2, MessageCircle, Package, ShoppingCart, CheckSquare, Square, AlertTriangle, Heart, ArrowRight, Sparkles } from 'lucide-react';
+import { Image as ImageIcon, MapPin, Share2, MessageCircle, Package, ShoppingCart, CheckSquare, Square, AlertTriangle, Heart, ArrowRight, Sparkles, Eye } from 'lucide-react';
 import CountdownTimer from './CountdownTimer';
 import { ProductSocialBadge } from '../components/SocialProof';
 import { formatKES } from '../utils/constants';
@@ -9,6 +9,7 @@ import { useAuth } from '../context/AuthContext';
 import { isMaintenanceCached } from '../hooks/useMaintenanceMode';
 import { useActiveTheme } from '../context/SeasonalContext';
 import { addToWishlist, removeFromWishlist, isInWishlist } from '../utils/api';
+import QuickViewModal from './QuickViewModal';
 
 const COMPARE_KEY = 'omix_compare_ids';
 
@@ -57,6 +58,7 @@ function ProductCard({ listing, compareMode, onCompareChange }) {
   const [justAdded, setJustAdded] = useState(false);
   const [wishlisted, setWishlisted] = useState(false);
   const [wishBusy, setWishBusy] = useState(false);
+  const [quickViewOpen, setQuickViewOpen] = useState(false);
   const { user } = useAuth();
   const { addItem, cart } = useCart();
 
@@ -274,7 +276,7 @@ function ProductCard({ listing, compareMode, onCompareChange }) {
           )}
         </div>
         <div className="marketplace-product-details">
-          <div className="marketplace-product-topline"><span>{listing.category || 'Marketplace'}</span><ProductSocialBadge listing={listing} /></div>
+          <div className="marketplace-product-topline"><span>{listing.category || 'Marketplace'}</span>{listing.wholesale_enabled && <em className="marketplace-wholesale-badge">Wholesale</em>}<ProductSocialBadge listing={listing} /></div>
           <h3>{listing.title}</h3>
           <div className="marketplace-product-meta">
             {listing.avg_rating !== undefined && listing.avg_rating > 0 ? (
@@ -306,6 +308,7 @@ function ProductCard({ listing, compareMode, onCompareChange }) {
         </button>
         <button type="button" onClick={handleWebShare} className="marketplace-card-action marketplace-share-action" aria-label="Share product"><Share2 className="h-4 w-4" /></button>
         <button type="button" onClick={handleWhatsAppShare} className="marketplace-card-action marketplace-whatsapp-action" aria-label="Share on WhatsApp"><MessageCircle className="h-4 w-4" /></button>
+        <button type="button" onClick={(event) => { event.preventDefault(); event.stopPropagation(); setQuickViewOpen(true); }} className="marketplace-card-action marketplace-quick-view-action" aria-label="Quick view"><Eye className="h-4 w-4" /></button>
       </div>
 
       <button
@@ -341,6 +344,8 @@ function ProductCard({ listing, compareMode, onCompareChange }) {
           {Object.values(selections).some(value => value != null) && <span className="marketplace-selected-variant">{variantData.types.filter(type => selections[type.id] != null).map(type => type.values.find(value => value.value === selections[type.id])?.label || selections[type.id]).join(' / ')}</span>}
         </div>
       )}
+
+      {quickViewOpen && <QuickViewModal listing={listing} onClose={() => setQuickViewOpen(false)} />}
     </article>
   );
 }
