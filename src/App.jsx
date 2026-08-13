@@ -190,6 +190,7 @@ function App() {
               <Route path="/affiliate/agreement" element={<AffiliateAgreement />} />
               <Route path="/admin" element={<AdminRoute><AdminLayout /></AdminRoute>}>
                 <Route index element={<AdminOverview />} />
+                <Route path="dashboard" element={<AdminOverview />} />
                 <Route path="products" element={<AdminProducts />} />
                 <Route path="orders" element={<AdminOrders />} />
                 <Route path="customers" element={<AdminCustomers />} />

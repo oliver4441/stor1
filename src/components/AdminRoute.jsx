@@ -29,8 +29,8 @@ export default function AdminRoute({ children }) {
 
   if (status === 'loading') {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-zinc-950">
-        <GooeyLoader />
+      <div className="admin-loading-screen">
+        <GooeyLoader label="Checking admin access" />
       </div>
     );
   }

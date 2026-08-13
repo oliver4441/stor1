@@ -72,7 +72,7 @@ export default function AdminOverview() {
   return (
     <div className="space-y-6 max-w-7xl">
       {/* Stats Grid */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+      <div className="admin-stat-grid grid grid-cols-2 lg:grid-cols-5 gap-4">
         {stats.map(stat => {
           const Icon = stat.icon;
           return (
