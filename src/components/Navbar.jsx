@@ -1,11 +1,11 @@
-import { useState, useEffect, useRef, useCallback } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import {
-  User, Globe, Shield, Package, HelpCircle, Info, LogIn, UserPlus, Menu, X, Download,
-  ShoppingCart, ChevronDown, LogOut, RefreshCw, DollarSign, Store, Wallet,
+  User, Shield, Package, HelpCircle, Info, LogIn, UserPlus, Menu, X,
+  ShoppingCart, LogOut, RefreshCw, DollarSign, Store, Wallet,
   Smartphone, Sofa, Shirt, Wrench, Car, Home, BookOpen, Dumbbell, Heart,
   UtensilsCrossed, Coffee, Cookie, ChefHat, Grid, Tag, ChevronRight,
-  Layers, Eye, EyeOff, Search, CalendarDays
+  Layers, Search, CalendarDays, Sparkles, Download,
 } from 'lucide-react';
 import { supabase } from '../utils/supabase';
 import { useLang } from '../utils/lang';
@@ -18,28 +18,27 @@ import ThemeToggle from './ThemeToggle';
 import { WhatsAppNavButton } from './WhatsAppButtons';
 import { CATEGORIES, CATEGORY_INFO } from '../utils/constants';
 
-// Icon resolver: maps CATEGORY_INFO.icon string names to Lucide components
 const CATEGORY_ICON_MAP = {
   Smartphone, Sofa, Shirt, Wrench, Car, Home, BookOpen, Dumbbell, Heart,
-  UtensilsCrossed, Coffee, Cookie, ChefHat, Grid, Tag, Layers,
+  UtensilsCrossed, Coffee, Cookie, ChefHat, Grid, Tag,
 };
 
 function CategoryIcon({ iconName, className }) {
   const Icon = CATEGORY_ICON_MAP[iconName] || Tag;
-  return <Icon className={className} />;
+  return <Icon className={className} aria-hidden="true" />;
 }
 
 const FEATURE_LINKS = [
-  { to: '/sell', label: 'Sell', icon: Package, color: 'from-zinc-500 to-zinc-600', glow: 'shadow-zinc-500/40' },
-  { to: '/events', label: 'Events', icon: CalendarDays, color: 'from-zinc-500 to-zinc-600', glow: 'shadow-zinc-500/40' },
-  { to: '/refurbished', label: 'Refurbished', icon: RefreshCw, color: 'from-zinc-500 to-zinc-600', glow: 'shadow-zinc-500/40' },
-  { to: '/wholesale', label: 'Wholesale', icon: Package, color: 'from-zinc-500 to-zinc-600', glow: 'shadow-zinc-500/40' },
-  { to: 'https://omixsystems.store', label: 'Blog', icon: Globe, color: 'from-zinc-400 to-zinc-600', glow: 'shadow-zinc-500/40', external: true },
-  { to: '/how-it-works', label: 'How It Works', icon: HelpCircle, color: 'from-zinc-500 to-zinc-600', glow: 'shadow-zinc-500/40' },
-  { to: '/help', label: 'Help', icon: Package, color: 'from-zinc-500 to-zinc-700', glow: 'shadow-zinc-500/40' },
-  { to: '/about', label: 'About', icon: Info, color: 'from-zinc-500 to-zinc-600', glow: 'shadow-zinc-500/40' },
-  { to: '/install', label: 'Install App', icon: Download, color: 'from-[var(--seasonal-primary,#0d9488)] to-[var(--seasonal-secondary,#14b8a6)]', glow: 'shadow-[var(--seasonal-primary,#0d9488)]/40' },
-  { to: '/affiliate', label: 'Earn', icon: DollarSign, color: 'from-zinc-500 to-zinc-600', glow: 'shadow-zinc-500/40' },
+  { to: '/seller/register', label: 'Sell on Omix', icon: Package },
+  { to: '/events', label: 'Events', icon: CalendarDays },
+  { to: '/refurbished', label: 'Refurbished', icon: RefreshCw },
+  { to: '/wholesale', label: 'Wholesale', icon: Package },
+  { to: 'https://omixsystems.store', label: 'Journal', icon: Sparkles, external: true },
+  { to: '/how-it-works', label: 'How it works', icon: HelpCircle },
+  { to: '/help', label: 'Help centre', icon: HelpCircle },
+  { to: '/about', label: 'About Omix', icon: Info },
+  { to: '/install', label: 'Install app', icon: Download },
+  { to: '/affiliate', label: 'Earn with Omix', icon: DollarSign },
 ];
 
 function Navbar() {
@@ -48,8 +47,6 @@ function Navbar() {
   const [isUserAffiliate, setIsUserAffiliate] = useState(false);
   const [isUserSeller, setIsUserSeller] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
-  const [desktopMenuOpen, setDesktopMenuOpen] = useState(false);
-  const drawerRef = useRef(null);
   const { t } = useLang();
   const location = useLocation();
   const navigate = useNavigate();
@@ -57,82 +54,60 @@ function Navbar() {
   const cartCount = getItemCount();
   const theme = useActiveTheme();
 
-  const navAccentColor = theme?.colors?.navAccent || '#0d9488';
-  const navAccentText = theme?.colors?.navAccentText || '#ffffff';
-  const badgeText = theme?.badgeText;
-  const badgeBg = theme?.colors?.badgeBg || '#0d9488';
-  const badgeTextColor = theme?.colors?.badgeText || '#ffffff';
-  const sticker = theme?.sticker || '';
-  const secondaryColor = theme?.colors?.secondary || '#0d9488';
+  const navAccentColor = theme?.colors?.navAccent || 'var(--brand)';
+
+  const loadUserRoles = useCallback(async (sessionUser) => {
+    if (!sessionUser) {
+      setIsUserAdmin(false);
+      setIsUserAffiliate(false);
+      setIsUserSeller(false);
+      return;
+    }
+    const [admin, affiliate, seller] = await Promise.all([
+      isAdmin().catch(() => false),
+      isAffiliate().catch(() => false),
+      getSellerProfile(sessionUser.id).catch(() => null),
+    ]);
+    setIsUserAdmin(admin);
+    setIsUserAffiliate(affiliate);
+    setIsUserSeller(!!seller?.seller);
+  }, []);
 
   useEffect(() => {
+    let mounted = true;
     supabase.auth.getSession().then(({ data: { session } }) => {
+      if (!mounted) return;
       setUser(session?.user ?? null);
-      if (session?.user) {
-        isAdmin().then(admin => setIsUserAdmin(admin));
-        isAffiliate().then(aff => setIsUserAffiliate(aff));
-        getSellerProfile(session.user.id).then(res => setIsUserSeller(!!res?.seller)).catch(() => setIsUserSeller(false));
-      } else {
-        setIsUserAdmin(false);
-        setIsUserAffiliate(false);
-        setIsUserSeller(false);
-      }
+      loadUserRoles(session?.user);
     });
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
       setUser(session?.user ?? null);
-      if (session?.user) {
-        isAdmin().then(admin => setIsUserAdmin(admin));
-        isAffiliate().then(aff => setIsUserAffiliate(aff));
-        getSellerProfile(session.user.id).then(res => setIsUserSeller(!!res?.seller)).catch(() => setIsUserSeller(false));
-      } else {
-        setIsUserAdmin(false);
-        setIsUserAffiliate(false);
-        setIsUserSeller(false);
-      }
+      loadUserRoles(session?.user);
     });
-    return () => subscription.unsubscribe();
-  }, []);
-
-  // Close menu on route change
-  useEffect(() => { setMenuOpen(false); setDesktopMenuOpen(false); }, [location.pathname]);
-
-  // Filter out how-it-works for logged-in users
-  const visibleLinks = FEATURE_LINKS.filter(
-    link => !(link.to === '/how-it-works' && user)
-  );
-
-  // Close menu on Escape key
-  const handleKeyDown = useCallback((e) => {
-    if (e.key === 'Escape') { setMenuOpen(false); setDesktopMenuOpen(false); }
-  }, []);
+    return () => {
+      mounted = false;
+      subscription.unsubscribe();
+    };
+  }, [loadUserRoles]);
 
   useEffect(() => {
-    if (menuOpen || desktopMenuOpen) {
-      document.addEventListener('keydown', handleKeyDown);
-    }
-    return () => document.removeEventListener('keydown', handleKeyDown);
-  }, [menuOpen, desktopMenuOpen, handleKeyDown]);
+    setMenuOpen(false);
+  }, [location.pathname, location.search]);
 
-  // Lock body scroll when menu open on mobile
   useEffect(() => {
     document.body.style.overflow = menuOpen ? 'hidden' : '';
     return () => { document.body.style.overflow = ''; };
   }, [menuOpen]);
 
-  // Collapsible navbar — hide on scroll down, show on scroll up
-  const [navVisible, setNavVisible] = useState(true);
-  const lastScrollY = useRef(0);
-  useEffect(() => {
-    const handleScroll = () => {
-      const currentY = window.scrollY;
-      if (currentY < 50) { setNavVisible(true); lastScrollY.current = currentY; return; }
-      if (currentY > lastScrollY.current + 5) setNavVisible(false);
-      else if (currentY < lastScrollY.current - 5) setNavVisible(true);
-      lastScrollY.current = currentY;
-    };
-    window.addEventListener('scroll', handleScroll, { passive: true });
-    return () => window.removeEventListener('scroll', handleScroll);
+  const handleKeyDown = useCallback((event) => {
+    if (event.key === 'Escape') setMenuOpen(false);
   }, []);
+
+  useEffect(() => {
+    if (!menuOpen) return undefined;
+    document.addEventListener('keydown', handleKeyDown);
+    return () => document.removeEventListener('keydown', handleKeyDown);
+  }, [menuOpen, handleKeyDown]);
 
   const handleLogout = async () => {
     sounds.logout();
@@ -141,363 +116,175 @@ function Navbar() {
     navigate('/login');
   };
 
+  const visibleLinks = FEATURE_LINKS.filter(link => !(link.to === '/how-it-works' && user));
+  const topCategories = CATEGORIES.filter(category => category !== 'All').slice(0, 7);
+
+  const renderCart = (className = '') => (
+    <Link
+      to="/cart"
+      className={`marketplace-icon-button marketplace-cart-button ${className}`}
+      aria-label={`Shopping cart, ${cartCount} item${cartCount === 1 ? '' : 's'}`}
+    >
+      <ShoppingCart className="h-[19px] w-[19px]" strokeWidth={1.8} />
+      {cartCount > 0 && <span className="marketplace-cart-count">{cartCount > 99 ? '99+' : cartCount}</span>}
+    </Link>
+  );
+
   return (
     <>
-      <nav className={`border-b border-[#353F54]/50 bg-[#1E2A3D]/80 backdrop-blur-xl sticky top-0 z-50 transition-transform duration-200 ease-out ${navVisible ? 'translate-y-0' : '-translate-y-full'}`} style={{ paddingTop: 'env(safe-area-inset-top)' }}>
-        <div className="max-w-7xl mx-auto px-4 h-14 flex items-center justify-between">
-          {/* Logo */}
-          <Link to="/" className="flex items-center gap-2 shrink-0">
-            <span className="text-xl font-bold tracking-tight text-white" style={{ color: navAccentText || '#ffffff' }}>
-              Omix Store
-            </span>
+      <header className="marketplace-navbar" style={{ '--nav-accent': navAccentColor }}>
+        <div className="marketplace-nav-inner">
+          <Link to="/" className="marketplace-brand" aria-label="Omix Store home">
+            <span className="marketplace-brand-mark" aria-hidden="true"><span>O</span></span>
+            <span className="marketplace-brand-wordmark">omix<span>store</span></span>
           </Link>
 
-          {/* Desktop (lg+): Spacer so right section stays flush right */}
-          <div className="hidden lg:block flex-1" />
+          <Link to="/search" className="marketplace-nav-search" aria-label="Search the marketplace">
+            <Search className="h-[18px] w-[18px]" strokeWidth={1.8} />
+            <span>Search products, brands and more</span>
+            <kbd>⌘ K</kbd>
+          </Link>
 
-          {/* Desktop (lg+): Right side */}
-          <div className="hidden lg:flex items-center gap-2">
-            <Link to="/search" className="p-2 rounded-full hover:bg-[#28303F] text-[#8E9BB5] transition-colors" aria-label="Search">
-              <Search className="w-5 h-5" />
+          <div className="marketplace-nav-actions marketplace-nav-actions-desktop">
+            <Link to="/seller/register" className="marketplace-sell-link">
+              <Package className="h-4 w-4" />
+              Sell
             </Link>
             <ThemeToggle />
             <WhatsAppNavButton />
             <NotificationBell />
-            <Link to="/cart" className="relative p-2 rounded-full hover:bg-[#28303F] text-[#8E9BB5] transition-colors" aria-label={`Shopping cart, ${cartCount} items`}>
-              <ShoppingCart className="w-5 h-5" />
-              {cartCount > 0 && (
-                <span className="absolute -top-1 -right-1 w-5 h-5 text-zinc-900 text-[10px] font-bold rounded-full flex items-center justify-center"
-                  style={{ backgroundColor: '#14b8a6' }}
-                >
-                  {cartCount > 9 ? '9+' : cartCount}
-                </span>
-              )}
-            </Link>
-
-            {/* ── Offline toggle removed ── */}
-
-            {isUserAdmin && (
-              <Link to="/admin" className="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold transition-all border"
-                style={{ color: navAccentColor, borderColor: navAccentColor + '33' }}
-              >
-                <Shield className="w-3.5 h-3.5" />
-                Admin
-              </Link>
-            )}
-
+            {renderCart()}
+            {isUserAdmin && <Link to="/admin" className="marketplace-role-link"><Shield className="h-4 w-4" />Admin</Link>}
             {user ? (
-              <>
-                <Link to="/account" className="flex items-center gap-2 p-2 rounded-full hover:bg-[#28303F] text-[#8E9BB5] transition-colors">
-                  <User className="w-5 h-5" />
-                  <span className="text-sm font-medium">{t('nav.account') || 'Account'}</span>
-                </Link>
-                {isUserAffiliate && (
-                  <Link to="/affiliate-dashboard" className="flex items-center gap-2 p-2 rounded-full hover:bg-[#28303F] text-[#8E9BB5] transition-colors">
-                    <span className="text-sm font-medium">Affiliate Dashboard</span>
-                  </Link>
-                )}
-                {isUserSeller ? (
-                  <Link to="/seller/dashboard" className="flex items-center gap-2 p-2 rounded-full bg-gradient-to-r from-zinc-600/20 to-zinc-700/20 text-zinc-500 hover:from-zinc-600/30 hover:to-zinc-700/30 transition-all">
-                    <Store className="w-4 h-4" />
-                    <span className="text-sm font-medium">Dashboard</span>
-                  </Link>
-                ) : (
-                  <Link to="/seller/register" className="flex items-center gap-2 p-2 rounded-full hover:bg-[#28303F] text-[#8E9BB5] transition-colors">
-                    <Store className="w-4 h-4" />
-                    <span className="text-sm font-medium">Become a Seller</span>
-                  </Link>
-                )}
-                <Link to="/wallet" className="p-2 rounded-full hover:bg-[#28303F] text-[#8E9BB5] transition-colors" aria-label="Wallet">
-                  <Wallet className="w-5 h-5" />
-                </Link>
-              </>
+              <Link to="/account" className="marketplace-account-link">
+                <span className="marketplace-avatar"><User className="h-4 w-4" /></span>
+                <span>{t('nav.account') || 'Account'}</span>
+              </Link>
             ) : (
-              <>
-                <Link to="/login" className="flex items-center gap-1.5 text-sm font-medium text-[#8E9BB5] hover:text-white px-3 py-2 rounded-full hover:bg-[#28303F] transition-all">
-                  <LogIn className="w-4 h-4" />
-                  Log In
-                </Link>
-                <Link
-                  to="/signup"
-                  className="flex items-center gap-1.5 text-white px-5 py-2.5 rounded-full text-sm font-bold shadow-lg transition-all hover:scale-105 active:scale-95"
-                  style={{
-                    background: `linear-gradient(135deg, ${navAccentColor || '#14b8a6'}, ${theme?.colors?.secondary || '#0d9488'})`,
-                    boxShadow: `0 4px 14px ${navAccentColor || '#14b8a6'}40`,
-                  }}
-                >
-                  <UserPlus className="w-4 h-4" />
-                  Sign Up
-                </Link>
-              </>
+              <Link to="/login" className="marketplace-login-link">Log In</Link>
             )}
-
-            {/* Desktop menu trigger */}
-            <div className="relative">
-              <button
-                onClick={() => setDesktopMenuOpen(!desktopMenuOpen)}
-                className="p-2 rounded-full hover:bg-[#28303F] text-[#8E9BB5] transition-colors"
-                aria-label={desktopMenuOpen ? 'Close navigation menu' : 'Open navigation menu'}
-              >
-                {desktopMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
-              </button>
-
-              {desktopMenuOpen && (
-                <>
-                  {/* Backdrop */}
-                  <div className="fixed inset-0 z-40" onClick={() => setDesktopMenuOpen(false)} />
-                  {/* Dropdown */}
-                  <div className="fusion-clay-panel absolute right-0 top-full mt-2 w-56 bg-[#1E2A3D] border border-[#353F54] rounded-2xl shadow-2xl z-50 py-2 overflow-hidden">
-                    {visibleLinks.map(link => {
-                      const Icon = link.icon;
-                      const isActive = !link.external && location.pathname === link.to;
-                      const btnClass = `flex items-center gap-3 px-4 py-2.5 text-sm font-bold transition-all ${
-                        isActive
-                          ? `bg-gradient-to-r ${link.color} text-white`
-                          : 'text-zinc-300 hover:bg-zinc-800'
-                      }`;
-                      if (link.external) {
-                        return (
-                          <a key={link.to} href={link.to} target="_blank" rel="noopener noreferrer" className={btnClass} onClick={() => setDesktopMenuOpen(false)}>
-                            <Icon className="w-4 h-4" />
-                            {link.label}
-                          </a>
-                        );
-                      }
-                      return (
-                        <Link key={link.to} to={link.to} className={btnClass} onClick={() => setDesktopMenuOpen(false)}>
-                          <Icon className="w-4 h-4" />
-                          {link.label}
-                        </Link>
-                      );
-                    })}
-                  </div>
-                </>
-              )}
-            </div>
           </div>
 
-          {/* Below lg: Compact controls + Hamburger */}
-          <div className="flex lg:hidden items-center gap-1">
-            <WhatsAppNavButton />
-            {/* Mobile search icon */}
-            <Link to="/search" className="p-2 rounded-full hover:bg-[#28303F] text-[#8E9BB5] transition-colors" aria-label="Search">
-              <Search className="w-5 h-5" />
-            </Link>
-
-            {/* Notification bell always visible on mobile */}
-            <NotificationBell />
-
-            {/* Cart icon always visible on mobile */}
-            <Link to="/cart" className="relative p-2 rounded-full hover:bg-[#28303F] text-[#8E9BB5] transition-colors" aria-label={`Shopping cart, ${cartCount} items`}>
-              <ShoppingCart className="w-5 h-5" />
-              {cartCount > 0 && (
-                <span className="absolute -top-1 -right-1 w-5 h-5 text-zinc-900 text-[10px] font-bold rounded-full flex items-center justify-center"
-                  style={{ backgroundColor: '#14b8a6' }}
-                >
-                  {cartCount > 9 ? '9+' : cartCount}
-                </span>
-              )}
-            </Link>
-
-            {/* Hamburger */}
+          <div className="marketplace-nav-actions marketplace-nav-actions-mobile">
+            {renderCart()}
             <button
-              onClick={() => setMenuOpen(!menuOpen)}
-              className="p-2 rounded-full hover:bg-[#28303F] text-[#8E9BB5] transition-colors"
-              aria-label={menuOpen ? 'Close menu' : 'Open menu'}
+              type="button"
+              className="marketplace-icon-button"
+              onClick={() => setMenuOpen(true)}
+              aria-label="Open navigation menu"
+              aria-expanded={menuOpen}
             >
-              {menuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+              <Menu className="h-5 w-5" strokeWidth={1.8} />
             </button>
           </div>
         </div>
-      </nav>
 
-      {/* ── Offline banner removed ── */}
-
-      {/* ── Category Bar (Jumia-style mega menu) ── */}
-      <div className={`border-b border-[#353F54]/50 bg-[#1E2A3D]/60 backdrop-blur-sm sticky z-40 transition-all duration-200 ease-out ${navVisible ? 'top-[56px]' : 'top-0'}`}>
-        <div className="max-w-7xl mx-auto px-4">
-          <div className="flex items-center overflow-x-auto scrollbar-hide gap-0.5 py-1.5 -mx-2 px-2">
-            {CATEGORIES.filter(c => c !== 'All').slice(0, 12).map(cat => {
-              const info = CATEGORY_INFO[cat] || { icon: 'Tag', color: 'from-zinc-500 to-zinc-600', glow: 'shadow-zinc-500/40' };
-              const isActive = location.pathname === '/search' && new URLSearchParams(location.search).get('category') === cat;
+        <div className="marketplace-category-bar" aria-label="Shop by category">
+          <div className="marketplace-category-inner">
+            <Link to="/search" className={`marketplace-category-link marketplace-category-all ${location.pathname === '/search' && !location.search ? 'is-active' : ''}`}>
+              <Layers className="h-4 w-4" />
+              Browse all
+            </Link>
+            {topCategories.map(category => {
+              const info = CATEGORY_INFO[category] || {};
+              const isActive = location.pathname === '/search' && new URLSearchParams(location.search).get('category') === category;
               return (
                 <Link
-                  key={cat}
-                  to={`/search?category=${encodeURIComponent(cat)}`}
-                  className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-[11px] font-bold whitespace-nowrap transition-all flex-shrink-0 ${
-                    isActive
-                      ? `bg-gradient-to-r ${info.color} text-white shadow-sm ${info.glow}`
-                      : 'text-[#8E9BB5] hover:text-white hover:bg-[#28303F] border border-transparent hover:border-[#353F54]'
-                  }`}
+                  key={category}
+                  to={`/search?category=${encodeURIComponent(category)}`}
+                  className={`marketplace-category-link ${isActive ? 'is-active' : ''}`}
                 >
-                  <CategoryIcon iconName={info.icon} className="w-3.5 h-3.5" />
-                  {cat}
+                  <CategoryIcon iconName={info.icon} className="h-4 w-4" />
+                  {category}
                 </Link>
               );
             })}
-            <Link
-              to="/search"
-              className="flex items-center gap-1 px-3 py-1.5 rounded-xl text-[11px] font-bold whitespace-nowrap text-[#4A5771] hover:text-[#8E9BB5] hover:bg-[#28303F] transition-all flex-shrink-0"
-            >
-              <ChevronRight className="w-3 h-3" />
-              All
+            <Link to="/flash-deals" className="marketplace-category-link marketplace-deals-link">
+              <Sparkles className="h-4 w-4" />
+              Flash deals
             </Link>
           </div>
         </div>
-      </div>
+      </header>
 
-      {/* Mobile Sidebar — rendered OUTSIDE nav to avoid CSS transform containing block bug */}
-      {/* Backdrop overlay */}
       <div
-        className={`fixed inset-0 bg-black/40 backdrop-blur-sm z-[60] lg:hidden transition-opacity duration-300 ease-out ${
-          menuOpen ? 'opacity-100' : 'opacity-0 pointer-events-none'
-        }`}
+        className={`marketplace-drawer-backdrop ${menuOpen ? 'is-open' : ''}`}
         onClick={() => setMenuOpen(false)}
         aria-hidden="true"
       />
-
-      {/* Drawer */}
-      <div
-        ref={drawerRef}
-        className={`fusion-clay-panel fixed top-0 right-0 bottom-0 w-80 max-w-[85vw] bg-zinc-950/95 backdrop-blur-xl border-l border-zinc-800 shadow-2xl z-[61] lg:hidden flex flex-col transition-transform duration-300 ease-out ${
-          menuOpen ? 'translate-x-0' : 'translate-x-full'
-        }`}
-        style={{ paddingTop: 'env(safe-area-inset-top)' }}
-        role="dialog"
-        aria-modal="true"
-        aria-label="Navigation menu"
-      >
-        {/* Header */}
-        <div className="flex items-center justify-between px-5 h-14 border-b border-[#353F54] shrink-0">
-          <span className="text-sm font-bold tracking-wide text-[#4A5771] uppercase">Menu</span>
-          <button
-            onClick={() => setMenuOpen(false)}
-            className="p-2 rounded-full hover:bg-[#28303F] text-[#8E9BB5] transition-colors"
-            aria-label="Close menu"
-          >
-            <X className="w-5 h-5" />
+      <aside className={`marketplace-drawer ${menuOpen ? 'is-open' : ''}`} aria-label="Navigation menu" aria-hidden={!menuOpen}>
+        <div className="marketplace-drawer-header">
+          <Link to="/" className="marketplace-brand" onClick={() => setMenuOpen(false)}>
+            <span className="marketplace-brand-mark" aria-hidden="true"><span>O</span></span>
+            <span className="marketplace-brand-wordmark">omix<span>store</span></span>
+          </Link>
+          <button type="button" className="marketplace-icon-button" onClick={() => setMenuOpen(false)} aria-label="Close navigation menu">
+            <X className="h-5 w-5" />
           </button>
         </div>
 
-        {/* Navigation Links */}
-        <div className="flex-1 overflow-y-auto px-4 py-4 space-y-1">
-          {visibleLinks.map(link => {
-            const Icon = link.icon;
-            const isActive = !link.external && location.pathname === link.to;
-            const linkClass = `flex items-center gap-3 px-4 py-3 rounded-2xl text-sm font-bold transition-all ${
-              isActive
-                ? `bg-gradient-to-r ${link.color} text-white shadow-lg`
-                : 'text-zinc-300 hover:bg-zinc-800'
-            }`;
-            if (link.external) {
-              return (
-                <a key={link.to} href={link.to} target="_blank" rel="noopener noreferrer" className={linkClass} onClick={() => setMenuOpen(false)}>
-                  <Icon className="w-5 h-5" />
-                  {link.label}
-                </a>
-              );
-            }
-            return (
-              <Link key={link.to} to={link.to} className={linkClass} onClick={() => setMenuOpen(false)}>
-                <Icon className="w-5 h-5" />
-                {link.label}
-              </Link>
-            );
-          })}
+        <div className="marketplace-drawer-scroll">
+          <Link to="/search" className="marketplace-drawer-search" onClick={() => setMenuOpen(false)}>
+            <Search className="h-5 w-5" />
+            <span>Search the marketplace</span>
+          </Link>
 
-          {/* ── Shop by Category (Mobile) ── */}
-          <div className="border-t border-zinc-800 my-1" />
-          <div className="px-1 py-2">
-            <div className="flex items-center gap-2 px-3 mb-2">
-              <Layers className="w-4 h-4 text-zinc-500" />
-              <span className="text-[11px] font-bold text-zinc-500 uppercase tracking-wider">Shop by Category</span>
+          <div className="marketplace-drawer-account">
+            {user ? (
+              <>
+                <div className="marketplace-drawer-profile">
+                  <span className="marketplace-avatar marketplace-avatar-large"><User className="h-5 w-5" /></span>
+                  <div><strong>Welcome back</strong><span>{user.email}</span></div>
+                </div>
+                <Link to="/account" onClick={() => setMenuOpen(false)} className="marketplace-drawer-profile-link">View account <ChevronRight className="h-4 w-4" /></Link>
+              </>
+            ) : (
+              <div className="marketplace-drawer-auth">
+                <div><strong>Make shopping personal</strong><span>Save favourites and track every order.</span></div>
+                <div className="marketplace-drawer-auth-actions">
+                  <Link to="/login" onClick={() => setMenuOpen(false)} className="marketplace-button marketplace-button-secondary">Log In</Link>
+                  <Link to="/signup" onClick={() => setMenuOpen(false)} className="marketplace-button marketplace-button-primary">Create account</Link>
+                </div>
+              </div>
+            )}
+          </div>
+
+          <div className="marketplace-drawer-section">
+            <p className="marketplace-drawer-label">Explore Omix</p>
+            {visibleLinks.map(link => {
+              const Icon = link.icon;
+              const linkClass = 'marketplace-drawer-link';
+              if (link.external) {
+                return <a key={link.to} href={link.to} target="_blank" rel="noopener noreferrer" className={linkClass} onClick={() => setMenuOpen(false)}><Icon className="h-[18px] w-[18px]" />{link.label}<ChevronRight className="h-4 w-4 ml-auto" /></a>;
+              }
+              return <Link key={link.to} to={link.to} className={linkClass} onClick={() => setMenuOpen(false)}><Icon className="h-[18px] w-[18px]" />{link.label}<ChevronRight className="h-4 w-4 ml-auto" /></Link>;
+            })}
+          </div>
+
+          <div className="marketplace-drawer-section">
+            <div className="flex items-center justify-between mb-3">
+              <p className="marketplace-drawer-label mb-0">Shop categories</p>
+              <Link to="/search" onClick={() => setMenuOpen(false)} className="marketplace-drawer-see-all">See all</Link>
             </div>
-            <div className="grid grid-cols-2 gap-1">
-              {CATEGORIES.filter(c => c !== 'All').map(cat => {
-                const info = CATEGORY_INFO[cat] || { icon: 'Tag', color: 'from-zinc-500 to-zinc-600' };
-                return (
-                  <Link
-                    key={cat}
-                    to={`/search?category=${encodeURIComponent(cat)}`}
-                    className="flex items-center gap-2.5 px-3 py-2.5 rounded-xl text-sm font-medium text-[#8E9BB5] hover:bg-[#28303F] transition-colors"
-                    onClick={() => setMenuOpen(false)}
-                  >
-                    <span className={`w-7 h-7 rounded-lg bg-gradient-to-br ${info.color} flex items-center justify-center flex-shrink-0`}>
-                      <CategoryIcon iconName={info.icon} className="w-3.5 h-3.5 text-white" />
-                    </span>
-                    {cat}
-                  </Link>
-                );
+            <div className="marketplace-drawer-categories">
+              {topCategories.concat(CATEGORIES.filter(category => category !== 'All').slice(7)).map(category => {
+                const info = CATEGORY_INFO[category] || {};
+                return <Link key={category} to={`/search?category=${encodeURIComponent(category)}`} onClick={() => setMenuOpen(false)} className="marketplace-drawer-category"><span><CategoryIcon iconName={info.icon} className="h-4 w-4" /></span>{category}</Link>;
               })}
             </div>
           </div>
 
-          {/* Divider — account section */}
-          <div className="border-t border-zinc-800 my-1" />
-
-          {/* Account section */}
-          {user ? (
-            <>
-              <Link to="/account" className="flex items-center gap-3 px-4 py-3 rounded-2xl text-sm font-bold text-zinc-300 hover:bg-zinc-800" onClick={() => setMenuOpen(false)}>
-                <User className="w-5 h-5" />
-                My Account
-              </Link>
-              {isUserAffiliate && (
-                <Link to="/affiliate-dashboard" className="flex items-center gap-3 px-4 py-3 rounded-2xl text-sm font-bold text-zinc-300 hover:bg-zinc-800" onClick={() => setMenuOpen(false)}>
-                  <User className="w-5 h-5" />
-                  Affiliate Dashboard
-                </Link>
-              )}
-              {isUserSeller ? (
-                <Link to="/seller/dashboard" className="flex items-center gap-3 px-4 py-3 rounded-2xl text-sm font-bold bg-gradient-to-r from-zinc-600/20 to-zinc-700/20 text-zinc-500 hover:from-zinc-600/30 hover:to-zinc-700/30" onClick={() => setMenuOpen(false)}>
-                  <Store className="w-5 h-5" />
-                  Dashboard
-                </Link>
-              ) : (
-                <Link to="/seller/register" className="flex items-center gap-3 px-4 py-3 rounded-2xl text-sm font-bold text-zinc-300 hover:bg-zinc-800" onClick={() => setMenuOpen(false)}>
-                  <Store className="w-5 h-5" />
-                  Become a Seller
-                </Link>
-              )}
-              <Link to="/wallet" className="flex items-center gap-3 px-4 py-3 rounded-2xl text-sm font-bold text-zinc-300 hover:bg-zinc-800" onClick={() => setMenuOpen(false)}>
-                <Wallet className="w-5 h-5" />
-                Wallet
-              </Link>
-              {isUserAdmin && (
-                <Link to="/admin" className="flex items-center gap-3 px-4 py-3 rounded-2xl text-sm font-bold text-[#14b8a6] hover:bg-[#14b8a6]/10" onClick={() => setMenuOpen(false)}>
-                  <Shield className="w-5 h-5" />
-                  Admin Dashboard
-                </Link>
-              )}
-              <button
-                onClick={handleLogout}
-                className="flex items-center gap-3 px-4 py-3 rounded-2xl text-sm font-bold text-red-400 hover:bg-red-900/20 w-full text-left"
-              >
-                <LogOut className="w-5 h-5" />
-                Log Out
-              </button>
-              {/* ── Offline mobile toggle removed ── */}
-            </>
-          ) : (
-            <>
-              <Link to="/login" className="flex items-center gap-3 px-4 py-3 rounded-2xl text-sm font-bold text-zinc-300 hover:bg-zinc-800" onClick={() => setMenuOpen(false)}>
-                <LogIn className="w-5 h-5" />
-                Log In
-              </Link>
-              <Link
-                to="/signup"
-                className="flex items-center gap-3 px-4 py-3 rounded-2xl text-sm font-bold text-white"
-                style={{ background: `linear-gradient(135deg, ${navAccentColor || '#14b8a6'}, ${secondaryColor || '#0d9488'})` }}
-                onClick={() => setMenuOpen(false)}
-              >
-                <UserPlus className="w-4 h-4" />
-                Sign Up
-              </Link>
-            </>
+          {user && (
+            <div className="marketplace-drawer-section marketplace-drawer-account-links">
+              {isUserSeller ? <Link to="/seller/dashboard" onClick={() => setMenuOpen(false)} className="marketplace-drawer-link"><Store className="h-[18px] w-[18px]" />Seller dashboard<ChevronRight className="h-4 w-4 ml-auto" /></Link> : <Link to="/seller/register" onClick={() => setMenuOpen(false)} className="marketplace-drawer-link"><Store className="h-[18px] w-[18px]" />Become a seller<ChevronRight className="h-4 w-4 ml-auto" /></Link>}
+              {isUserAffiliate && <Link to="/affiliate-dashboard" onClick={() => setMenuOpen(false)} className="marketplace-drawer-link"><DollarSign className="h-[18px] w-[18px]" />Affiliate dashboard<ChevronRight className="h-4 w-4 ml-auto" /></Link>}
+              <Link to="/wallet" onClick={() => setMenuOpen(false)} className="marketplace-drawer-link"><Wallet className="h-[18px] w-[18px]" />Wallet<ChevronRight className="h-4 w-4 ml-auto" /></Link>
+              {isUserAdmin && <Link to="/admin" onClick={() => setMenuOpen(false)} className="marketplace-drawer-link"><Shield className="h-[18px] w-[18px]" />Admin dashboard<ChevronRight className="h-4 w-4 ml-auto" /></Link>}
+              <button type="button" onClick={handleLogout} className="marketplace-drawer-link marketplace-drawer-logout"><LogOut className="h-[18px] w-[18px]" />Sign out</button>
+            </div>
           )}
-          {/* ── Offline toggle (always visible) removed ── */}
         </div>
-      </div>
+      </aside>
     </>
   );
 }

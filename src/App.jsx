@@ -125,7 +125,7 @@ function App() {
     <ErrorBoundary>
       <ScrollToTop />
       <RealtimeOrderWatcher />
-      <div className="min-h-screen flex flex-col bg-[#08080a]">
+      <div className="min-h-screen flex flex-col marketplace-shell">
         <a href="#main-content" className="sr-only focus:not-sr-only focus:absolute focus:top-2 focus:left-2 focus:z-[100] focus:bg-white focus:text-black focus:px-4 focus:py-2 focus:rounded-lg focus:font-bold">Skip to main content</a>
         <Navbar />
         <NotificationNudge />
@@ -190,6 +190,7 @@ function App() {
               <Route path="/affiliate/agreement" element={<AffiliateAgreement />} />
               <Route path="/admin" element={<AdminRoute><AdminLayout /></AdminRoute>}>
                 <Route index element={<AdminOverview />} />
+                <Route path="dashboard" element={<AdminOverview />} />
                 <Route path="products" element={<AdminProducts />} />
                 <Route path="orders" element={<AdminOrders />} />
                 <Route path="customers" element={<AdminCustomers />} />

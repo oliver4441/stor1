@@ -1,6 +1,6 @@
 import { useState, useEffect, useMemo } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { Image as ImageIcon, MapPin, Share2, Package, ShoppingCart, Eye, CheckSquare, Square, AlertTriangle, Heart } from 'lucide-react';
+import { Image as ImageIcon, MapPin, Share2, MessageCircle, Package, ShoppingCart, CheckSquare, Square, AlertTriangle, Heart, ArrowRight, Sparkles, Eye } from 'lucide-react';
 import CountdownTimer from './CountdownTimer';
 import { ProductSocialBadge } from '../components/SocialProof';
 import { formatKES } from '../utils/constants';
@@ -9,6 +9,7 @@ import { useAuth } from '../context/AuthContext';
 import { isMaintenanceCached } from '../hooks/useMaintenanceMode';
 import { useActiveTheme } from '../context/SeasonalContext';
 import { addToWishlist, removeFromWishlist, isInWishlist } from '../utils/api';
+import QuickViewModal from './QuickViewModal';
 
 const COMPARE_KEY = 'omix_compare_ids';
 
@@ -57,6 +58,7 @@ function ProductCard({ listing, compareMode, onCompareChange }) {
   const [justAdded, setJustAdded] = useState(false);
   const [wishlisted, setWishlisted] = useState(false);
   const [wishBusy, setWishBusy] = useState(false);
+  const [quickViewOpen, setQuickViewOpen] = useState(false);
   const { user } = useAuth();
   const { addItem, cart } = useCart();
 
@@ -141,10 +143,7 @@ function ProductCard({ listing, compareMode, onCompareChange }) {
 
   const inCart = cart.find(item => item.id === listing.id);
   const theme = useActiveTheme();
-  const priceColor = theme?.colors?.priceColor || '#38B8EA';
-  const accentColor = theme?.colors?.accent || '#14b8a6';
-  const sticker = theme?.sticker || '';
-  const socialBadge = theme?.socialBadge || '';
+  const priceColor = theme?.colors?.priceColor || '#0e7665';
 
   // Check if this item is selected for comparison
   const [isCompared, setIsCompared] = useState(() => getCompareIds().includes(listing.id));
@@ -253,357 +252,101 @@ function ProductCard({ listing, compareMode, onCompareChange }) {
   })() : (listing.flash_sale_price ? formatKES(listing.flash_sale_price) : formatKES(listing.price));
 
   return (
-    <Link to={`/listing/${listing.id}`} className="block group theme-card-shimmer theme-card-glow">
-      <div className="fusion-recessed-card fusion-card-interactive aspect-[4/5] mb-3 relative">
-        {hasImage ? (
-          <div className="fusion-img-frame fusion-aurora w-full h-full">
-          <img key={mainImage} src={mainImage} alt={listing.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" loading="lazy" onError={() => setImgError(true)} />
-          </div>
-        ) : (
-          <div className="w-full h-full flex items-center justify-center text-[#4A5771] fusion-aurora">
-            <ImageIcon className="w-10 h-10" />
-          </div>
-        )}
-
-        {sticker && socialBadge && false && (
-          <div className="absolute bottom-2 left-2 bg-white/90 bg-[#28303F]/80 text-white px-2 py-1 rounded-lg text-[10px] font-bold shadow-sm flex items-center gap-1">
-            <span>{sticker}</span>
-            <span className="truncate max-w-[80px]">{socialBadge}</span>
-          </div>
-        )}
-
-        <div className="absolute top-2 left-2 bg-white/90 bg-[#28303F]/90 text-white px-2 py-1 rounded-lg text-[10px] font-bold shadow-sm capitalize">
-          {listing.condition?.replace('_', ' ')}
+    <article className="marketplace-product-card group">
+      <Link to={`/listing/${listing.id}`} className="marketplace-product-card-link">
+        <div className="marketplace-product-media">
+          {hasImage ? (
+            <img
+              key={mainImage}
+              src={mainImage}
+              alt={listing.title}
+              loading="lazy"
+              onError={() => setImgError(true)}
+            />
+          ) : (
+            <div className="marketplace-product-image-fallback"><ImageIcon className="h-9 w-9" /></div>
+          )}
+          <div className="marketplace-product-image-shade" />
+          <span className="marketplace-condition-badge">{listing.condition?.replace('_', ' ') || 'Pre-owned'}</span>
+          {listing.status === 'sold' && <span className="marketplace-status-badge marketplace-status-sold">Sold out</span>}
+          {listing.featured && listing.status !== 'sold' && <span className="marketplace-status-badge marketplace-status-featured"><Sparkles className="h-3 w-3" /> Popular</span>}
+          {listing.flash_sale_ends_at && <span className="marketplace-status-badge marketplace-status-flash"><CountdownTimer targetDate={listing.flash_sale_ends_at} /></span>}
+          {listing.compare_at_price && listing.compare_at_price > listing.price && (
+            <span className="marketplace-discount-badge">-{Math.round((1 - listing.price / listing.compare_at_price) * 100)}%</span>
+          )}
         </div>
-
-        {listing.status === 'sold' && (
-          <div className="absolute top-2 left-16 bg-red-600 text-white px-2 py-1 rounded-lg text-[10px] font-bold shadow-sm">
-            Sold Out
+        <div className="marketplace-product-details">
+          <div className="marketplace-product-topline"><span>{listing.category || 'Marketplace'}</span>{listing.wholesale_enabled && <em className="marketplace-wholesale-badge">Wholesale</em>}<ProductSocialBadge listing={listing} /></div>
+          <h3>{listing.title}</h3>
+          <div className="marketplace-product-meta">
+            {listing.avg_rating !== undefined && listing.avg_rating > 0 ? (
+              <span className="marketplace-rating"><span>★</span> {Number(listing.avg_rating).toFixed(1)}{listing.review_count ? ` (${listing.review_count})` : ''}</span>
+            ) : <span className="marketplace-location"><MapPin className="h-3 w-3" />{listing.location || 'Kenya'}</span>}
+            {listing.brand && <span className="marketplace-brand-meta">{listing.brand}</span>}
           </div>
-        )}
-
-        {listing.featured && (
-          <div className="absolute top-2 right-16 bg-[#14b8a6]/80 text-white px-2 py-1 rounded text-[9px] font-bold shadow-sm">
-            Popular
+          <div className="marketplace-product-price-row">
+            <div>
+              <p className="marketplace-product-price" style={{ '--product-price': priceColor }}>{selectedVariantObj ? formatKES(effectivePrice) : displayPrice}</p>
+              {((listing.compare_at_price && listing.compare_at_price > listing.price) || listing.flash_sale_price) && (
+                <p className="marketplace-product-was">{formatKES(listing.compare_at_price || listing.price)}</p>
+              )}
+            </div>
+            <span className="marketplace-product-detail-arrow"><ArrowRight className="h-4 w-4" /></span>
           </div>
-        )}
+          {(listing.delivery_estimate || listing.location) && <div className="marketplace-delivery-note"><Package className="h-3 w-3" />{listing.delivery_estimate || `Delivery in ${listing.location}`}</div>}
+        </div>
+      </Link>
 
-        {listing.flash_sale_ends_at && (
-          <div className="absolute top-2 right-12 bg-red-500 text-white px-2 py-1 rounded-lg text-[10px] font-bold shadow-sm flex items-center gap-1">
-            <CountdownTimer targetDate={listing.flash_sale_ends_at} />
-          </div>
-        )}
-
-        {listing.compare_at_price && listing.compare_at_price > listing.price && (
-          <div className="absolute top-2 right-2 bg-red-600 text-white px-3 py-1.5 rounded-lg text-sm font-extrabold shadow-lg z-10">
-            -{Math.round((1 - listing.price / listing.compare_at_price) * 100)}%
-          </div>
-        )}
-
+      <div className="marketplace-card-actions">
         {compareMode && (
-          <button
-            onClick={toggleCompare}
-            className={`absolute top-2 left-2 p-1.5 rounded-full shadow-sm transition-all z-10 ${
-              isCompared
-                ? 'bg-[#14b8a6] text-white'
-                : 'bg-white/90 bg-[#28303F]/90 text-[#4A5771] hover:text-[#14b8a6]'
-            }`}
-            aria-label={isCompared ? 'Remove from comparison' : 'Add to comparison'}
-          >
-            {isCompared ? <CheckSquare className="w-3 h-3" /> : <Square className="w-3 h-3" />}
+          <button type="button" onClick={toggleCompare} className={`marketplace-card-action ${isCompared ? 'is-active' : ''}`} aria-label={isCompared ? 'Remove from comparison' : 'Add to comparison'}>
+            {isCompared ? <CheckSquare className="h-4 w-4" /> : <Square className="h-4 w-4" />}
           </button>
         )}
-
-        <button onClick={handleWishlist}
-          className={`absolute top-2 left-2 p-1.5 rounded-full shadow-sm transition-all z-10 ${
-            wishlisted
-              ? 'bg-[#14b8a6] text-white scale-110'
-              : 'bg-black/60 text-white/80 hover:text-[#14b8a6] hover:bg-black/80 md:opacity-0 md:group-hover:opacity-100'
-          }`}
-          aria-label={wishlisted ? 'Remove from wishlist' : 'Add to wishlist'}
-        >
-          <Heart className={`w-4 h-4 ${wishlisted ? 'fill-current' : ''}`} />
+        <button type="button" onClick={handleWishlist} disabled={wishBusy || !user} className={`marketplace-card-action ${wishlisted ? 'is-liked' : ''}`} aria-label={user ? (wishlisted ? 'Remove from wishlist' : 'Add to wishlist') : 'Sign in to save this item'}>
+          <Heart className={`h-[17px] w-[17px] ${wishlisted ? 'fill-current' : ''}`} />
         </button>
-
-        <button onClick={handleWebShare}
-          className="absolute top-2 right-12 bg-white/90 bg-[#28303F]/90 text-[#8E9BB5] p-1.5 rounded-full shadow-sm hover:bg-[#14b8a6] hover:text-white transition-all opacity-0 group-hover:opacity-100"
-          aria-label="Share">
-          <Share2 className="w-3 h-3" />
-        </button>
-
-        <button onClick={handleWhatsAppShare}
-          className="absolute top-2 right-2 bg-[#25D366] text-white p-1.5 rounded-full shadow-sm hover:bg-[#20BD5A] transition-all opacity-0 group-hover:opacity-100"
-          aria-label="Share on WhatsApp">
-          <Share2 className="w-3 h-3" />
-        </button>
-
-        <button
-          onClick={(e) => { e.preventDefault(); e.stopPropagation(); }}
-          className="absolute top-10 right-2 bg-white/90 bg-[#28303F]/90 text-white p-1.5 rounded-full shadow-sm hover:bg-[#14b8a6] hover:text-white transition-all opacity-0 group-hover:opacity-100"
-          aria-label="Quick view"
-        >
-          <Eye className="w-3 h-3" />
-        </button>
-
-        {/* Add to Cart button — disabled until all variant types selected */}
-        <button
-          onClick={handleAddToCart}
-          disabled={hasVariants && !allSelected}
-          className={`absolute bottom-2 right-2 flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-[10px] font-bold shadow-sm transition-all opacity-100 md:opacity-0 md:group-hover:opacity-100 ${
-            isMaintenanceCached()
-              ? 'bg-[#14b8a6] text-white'
-              : justAdded
-                ? 'bg-[#14b8a6] text-white'
-                : inCart
-                  ? 'bg-[#14b8a6]/90 text-white'
-                  : hasVariants && !allSelected
-                    ? 'bg-[#353F54] text-[#4A5771] cursor-not-allowed'
-                    : 'bg-white/90 bg-[#28303F]/90 text-white hover:bg-[#14b8a6] hover:text-white'
-          }`}
-          aria-label={
-            isMaintenanceCached()
-              ? 'Under maintenance'
-              : hasVariants && !allSelected
-                ? 'Select variants'
-                : 'Add to cart'
-          }
-        >
-          {isMaintenanceCached() ? (
-            <><AlertTriangle className="w-3 h-3" /> Unavailable</>
-          ) : hasVariants && !allSelected ? (
-            <><ShoppingCart className="w-3 h-3" /> Select variants</>
-          ) : (
-            <><ShoppingCart className="w-3 h-3" />
-            {justAdded ? 'Added!' : inCart ? `In Cart (${inCart.quantity})` : 'Add to Cart'}</>
-          )}
-        </button>
+        <button type="button" onClick={handleWebShare} className="marketplace-card-action marketplace-share-action" aria-label="Share product"><Share2 className="h-4 w-4" /></button>
+        <button type="button" onClick={handleWhatsAppShare} className="marketplace-card-action marketplace-whatsapp-action" aria-label="Share on WhatsApp"><MessageCircle className="h-4 w-4" /></button>
+        <button type="button" onClick={(event) => { event.preventDefault(); event.stopPropagation(); setQuickViewOpen(true); }} className="marketplace-card-action marketplace-quick-view-action" aria-label="Quick view"><Eye className="h-4 w-4" /></button>
       </div>
 
-      <div>
-        <div className="flex items-center gap-2 mb-1">
-          <h3 className="font-bold text-white text-sm truncate flex-1">{listing.title}</h3>
-          <ProductSocialBadge listing={listing} />
-        </div>
-        <p className="text-[#4A5771] text-xs">{listing.category}{listing.brand ? ` - ${listing.brand}` : ''}</p>
+      <button
+        type="button"
+        onClick={handleAddToCart}
+        disabled={hasVariants && !allSelected}
+        className={`marketplace-card-cart ${justAdded || inCart ? 'is-added' : ''} ${hasVariants && !allSelected ? 'is-disabled' : ''}`}
+        aria-label={hasVariants && !allSelected ? 'Select variants' : 'Add to cart'}
+      >
+        {isMaintenanceCached() ? <AlertTriangle className="h-4 w-4" /> : <ShoppingCart className="h-4 w-4" />}
+        <span>{isMaintenanceCached() ? 'Unavailable' : justAdded ? 'Added' : inCart ? 'In cart' : hasVariants && !allSelected ? 'Choose' : 'Add'}</span>
+      </button>
 
-        {listing.wholesale_enabled && (
-          <span className="inline-block mt-1 bg-[#14b8a6]/20 text-[#14b8a6] text-[9px] font-bold px-1.5 py-0.5 rounded">
-            Wholesale
-          </span>
-        )}
-
-        {listing.avg_rating !== undefined && listing.avg_rating > 0 && (
-          <div className="flex items-center gap-1.5 mt-1 text-[11px] text-[#4A5771]">
-            <span className="flex items-center gap-[1px]">
-              {[1, 2, 3, 4, 5].map(star => (
-                <svg
-                  key={star}
-                  className={`w-3 h-3 ${star <= Math.round(listing.avg_rating) ? 'text-yellow-400' : 'text-[#353F54]'}`}
-                  fill="currentColor"
-                  viewBox="0 0 20 20"
-                >
-                  <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-                </svg>
-              ))}
-            </span>
-            <span className="font-medium text-white">{listing.avg_rating.toFixed(1)}</span>
-            {listing.review_count > 0 && (
-              <span>({listing.review_count} {listing.review_count === 1 ? 'review' : 'reviews'})</span>
-            )}
-          </div>
-        )}
-
-        {/* Dynamic variant selectors based on normalized types */}
-        {hasVariants && variantData.types.map((type) => (
-          <div key={type.id} className="mt-1.5">
-            <span className="text-[8px] text-[#4A5771] uppercase tracking-wider font-bold">{type.name}</span>
-            {type.style === 'button' ? (
-              <>
-                <div className="mt-0.5 grid grid-cols-2 gap-1">
-                  {type.values.map((val, i) => {
-                    const value = val.value;
-                    const label = val.label || value;
-                    const isSelected = selections[type.id] === value;
-                    const disabled = isOptionDisabled(type.id, value);
-                    return (
-                      <button
-                        key={i}
-                        type="button"
-                        disabled={disabled}
-                        onClick={(e) => {
-                          e.preventDefault();
-                          e.stopPropagation();
-                          setSelections(prev => ({
-                            ...prev,
-                            [type.id]: isSelected ? null : value,
-                          }));
-                        }}
-                        className={`text-xs font-bold px-3 py-1.5 rounded-lg border transition-all w-full ${
-                          isSelected
-                            ? 'bg-[#14b8a6] text-white border-[#14b8a6]'
-                            : disabled
-                              ? 'bg-[#1E2A3D] text-[#4A5771] border-[#353F54] line-through cursor-not-allowed'
-                              : 'bg-[#28303F] text-[#8E9BB5] border-[#353F54] hover:border-[#14b8a6]'
-                        }`}
-                        title={disabled ? 'Out of stock' : label}
-                      >
-                        {label}
-                      </button>
-                    );
-                  })}
-                </div>
-                {selections[type.id] != null && (
-                  <div className="mt-0.5">
-                    <button
-                      type="button"
-                      onClick={(e) => {
-                        e.preventDefault();
-                        e.stopPropagation();
-                        setSelections(prev => ({...prev, [type.id]: null}));
-                      }}
-                      className="text-[8px] text-[#4A5771] hover:text-white font-bold"
-                      title={`Clear ${type.name}`}
-                    >
-                      x
-                    </button>
-                  </div>
-                )}
-              </>
-            ) : (
-              <div className={`mt-0.5 flex items-center gap-1 ${type.style === 'text' ? 'flex-wrap' : ''}`}>
-                {type.values.map((val, i) => {
+      {hasVariants && (
+        <div className="marketplace-card-variants" onClick={(event) => event.stopPropagation()}>
+          {variantData.types.map(type => (
+            <div key={type.id} className="marketplace-variant-row">
+              <span>{type.name}</span>
+              <div className="marketplace-variant-options">
+                {type.values.map((val, index) => {
                   const value = val.value;
                   const label = val.label || value;
                   const isSelected = selections[type.id] === value;
                   const disabled = isOptionDisabled(type.id, value);
-
                   if (type.style === 'color') {
-                    return (
-                      <div key={i} className="flex flex-col items-center gap-0.5">
-                        <button
-                          type="button"
-                          disabled={disabled}
-                          onClick={(e) => {
-                            e.preventDefault();
-                            e.stopPropagation();
-                            setSelections(prev => ({
-                              ...prev,
-                              [type.id]: isSelected ? null : value,
-                            }));
-                          }}
-                          className={`w-6 h-6 rounded-full border-2 flex-shrink-0 transition-all ${
-                            isSelected
-                              ? 'border-[#14b8a6] scale-125 shadow-sm shadow-[#14b8a6]/30'
-                              : disabled
-                                ? 'border-[#353F54] opacity-25 cursor-not-allowed'
-                                : 'border-[#4A5771] hover:border-[#14b8a6] hover:scale-110'
-                          }`}
-                          style={{ backgroundColor: value?.startsWith('#') ? value : '#ccc' }}
-                          title={`${label}${disabled ? ' (out of stock)' : ''}`}
-                        />
-                        <span className={`text-[7px] leading-tight ${isSelected ? 'text-[#8E9BB5] font-medium' : 'text-[#4A5771]'}`}>{label}</span>
-                      </div>
-                    );
-                  } else {
-                    // text style (chips/pills)
-                    return (
-                      <button
-                        key={i}
-                        type="button"
-                        disabled={disabled}
-                        onClick={(e) => {
-                          e.preventDefault();
-                          e.stopPropagation();
-                          setSelections(prev => ({
-                            ...prev,
-                            [type.id]: isSelected ? null : value,
-                          }));
-                        }}
-                        className={`text-[9px] font-bold px-2 py-0.5 rounded-full border transition-all ${
-                          isSelected
-                            ? 'bg-[#14b8a6] text-white border-[#14b8a6]'
-                            : disabled
-                              ? 'bg-[#1E2A3D] text-[#4A5771] border-[#353F54] line-through cursor-not-allowed'
-                              : 'bg-[#28303F] text-[#8E9BB5] border-[#353F54] hover:border-[#14b8a6]'
-                        }`}
-                        title={disabled ? 'Out of stock' : label}
-                      >
-                        {label}
-                      </button>
-                    );
+                    return <button key={index} type="button" disabled={disabled} onClick={() => setSelections(prev => ({ ...prev, [type.id]: isSelected ? null : value }))} className={`marketplace-color-option ${isSelected ? 'is-selected' : ''} ${disabled ? 'is-disabled' : ''}`} style={{ backgroundColor: value?.startsWith('#') ? value : '#d6d3d1' }} aria-label={label} title={label} />;
                   }
+                  return <button key={index} type="button" disabled={disabled} onClick={() => setSelections(prev => ({ ...prev, [type.id]: isSelected ? null : value }))} className={`marketplace-variant-option ${isSelected ? 'is-selected' : ''} ${disabled ? 'is-disabled' : ''}`}>{label}</button>;
                 })}
-                {/* Clear button inline for non-grid types */}
-                {selections[type.id] != null && (
-                  <button
-                    type="button"
-                    onClick={(e) => {
-                      e.preventDefault();
-                      e.stopPropagation();
-                      setSelections(prev => ({...prev, [type.id]: null}));
-                    }}
-                    className="text-[8px] text-[#4A5771] hover:text-white ml-0.5 font-bold"
-                    title={`Clear ${type.name}`}
-                  >
-                    x
-                  </button>
-                )}
               </div>
-            )}
-          </div>
-        ))}
-
-        {/* Active variants chip */}
-        {hasVariants && Object.values(selections).some(v => v != null) && (
-          <div className="flex items-center gap-1.5 mt-2">
-            <div className="bg-[#28303F] text-[10px] text-[#8E9BB5] font-medium px-2 py-0.5 rounded-full border border-[#353F54]">
-              {variantData.types
-                .filter(t => selections[t.id] != null)
-                .map(t => {
-                  const val = t.values.find(v => v.value === selections[t.id]);
-                  return val?.label || selections[t.id];
-                })
-                .join(' / ')}
             </div>
-            {allSelected && selectedVariantObj && selectedVariantObj.quantity <= 0 && (
-              <span className="text-[9px] text-red-500 font-bold">Out of stock</span>
-            )}
-            {allSelected && selectedVariantObj && selectedVariantObj.quantity > 0 && selectedVariantObj.quantity <= 2 && (
-              <span className="text-[9px] text-orange-500 font-bold">Only {selectedVariantObj.quantity} left!</span>
-            )}
-          </div>
-        )}
-
-        <div className="flex items-center justify-between mt-1">
-          <div className="flex items-center gap-2">
-            <p className="font-bold text-sm" style={{ color: priceColor }}>
-              {selectedVariantObj ? formatKES(effectivePrice) : displayPrice}
-            </p>
-            {(listing.compare_at_price && listing.compare_at_price > listing.price) || listing.flash_sale_price ? (
-              <p className="text-xs text-[#4A5771] line-through">
-                {selectedVariantObj && selectedVariantObj.priceAdjustment !== 0
-                  ? formatKES(listing.price)
-                  : formatKES(listing.compare_at_price || listing.price)
-                }
-              </p>
-            ) : null}
-          </div>
-          {listing.location && (
-            <span className="text-[#4A5771] text-[10px] flex items-center gap-0.5">
-              <MapPin className="w-2.5 h-2.5" />{listing.location}
-            </span>
-          )}
+          ))}
+          {Object.values(selections).some(value => value != null) && <span className="marketplace-selected-variant">{variantData.types.filter(type => selections[type.id] != null).map(type => type.values.find(value => value.value === selections[type.id])?.label || selections[type.id]).join(' / ')}</span>}
         </div>
-        {(listing.delivery_estimate || listing.location) && (
-          <div className="mt-1 text-[10px] text-[#38B8EA] font-medium flex items-center gap-1">
-            <svg className="w-3 h-3 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4" />
-            </svg>
-            {listing.delivery_estimate || `Free delivery in ${listing.location}`}
-          </div>
-        )}
-      </div>
-    </Link>
+      )}
+
+      {quickViewOpen && <QuickViewModal listing={listing} onClose={() => setQuickViewOpen(false)} />}
+    </article>
   );
 }
 

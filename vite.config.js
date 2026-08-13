@@ -52,6 +52,11 @@ function htmlGAInject() {
 
 export default defineConfig({
   base: '/',
+  server: {
+    host: '0.0.0.0',
+    // Arena previews use a generated hostname instead of localhost.
+    allowedHosts: true,
+  },
   plugins: [
     react(),
     htmlGAInject(),

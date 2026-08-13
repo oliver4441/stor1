@@ -15,7 +15,7 @@ const Spinner = React.forwardRef(
       <svg
         ref={ref}
         className={cn(
-          "animate-spin text-[#14b8a6]",
+          "marketplace-spinner animate-spin text-[var(--brand,#0e7665)]",
           sizeMap[size] || sizeMap.md,
           className
         )}

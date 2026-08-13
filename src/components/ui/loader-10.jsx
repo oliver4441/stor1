@@ -2,26 +2,16 @@ import * as React from "react";
 import { cn } from "@/lib/utils";
 import { Spinner } from "@/components/ui/spinner";
 
-// ── GooeyLoader ────────────────────────────────────────────────
-// Uses the Spinner component inside a centered container
-const GooeyLoader = React.forwardRef(
-  ({ className, ...props }, ref) => {
-    return (
-      <div
-        ref={ref}
-        className={cn(
-          "flex flex-col items-center justify-center gap-3 py-12",
-          className
-        )}
-        role="status"
-        aria-label="Loading"
-        {...props}
-      >
-        <Spinner size="xl" />
-      </div>
-    );
-  }
-);
+// A calm, branded loader shared by data-heavy screens (admin, wallet and account).
+const GooeyLoader = React.forwardRef(({ className, label = "Loading your workspace", ...props }, ref) => {
+  return (
+    <div ref={ref} className={cn("marketplace-inline-loader", className)} role="status" aria-label={label} {...props}>
+      <span className="marketplace-inline-loader-orbit" aria-hidden="true"><Spinner size="lg" /></span>
+      <span className="marketplace-inline-loader-label">{label}</span>
+      <span className="marketplace-inline-loader-line" aria-hidden="true"><i /></span>
+    </div>
+  );
+});
 GooeyLoader.displayName = "GooeyLoader";
 
 export { GooeyLoader };
