@@ -1,0 +1,68 @@
+name: Auto-merge Arena PRs
+
+on:
+  workflow_run:
+    workflows: ["Arena PR CI"]
+    types: [completed]
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  merge:
+    name: Merge passing Arena PR
+    if: >-
+      github.event.workflow_run.conclusion == 'success' &&
+      github.event.workflow_run.event == 'pull_request' &&
+      github.event.workflow_run.head_repository.full_name == github.repository
+    runs-on: ubuntu-latest
+    steps:
+      - name: Find PR for the successful CI run
+        id: pr
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          REPO: ${{ github.repository }}
+          SHA: ${{ github.event.workflow_run.head_sha }}
+        run: |
+          PR=$(gh api "repos/$REPO/commits/$SHA/pulls" \
+            -H 'Accept: application/vnd.github+json' \
+            --jq '.[] | select(.base.ref == "main") | select(.state == "open") | .number' | head -n 1)
+
+          if [ -z "$PR" ]; then
+            echo "No open PR targeting main was found for $SHA."
+            echo "number=" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
+          echo "Found PR #$PR"
+          echo "number=$PR" >> "$GITHUB_OUTPUT"
+
+      - name: Verify PR author
+        if: steps.pr.outputs.number != ''
+        id: author
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          REPO: ${{ github.repository }}
+          PR: ${{ steps.pr.outputs.number }}
+        run: |
+          AUTHOR=$(gh pr view "$PR" --repo "$REPO" --json author --jq '.author.login')
+          echo "PR author: $AUTHOR"
+
+          case "$AUTHOR" in
+            arena|arena-ai-coding-agent[bot])
+              echo "trusted=true" >> "$GITHUB_OUTPUT"
+              ;;
+            *)
+              echo "trusted=false" >> "$GITHUB_OUTPUT"
+              ;;
+          esac
+
+      - name: Merge PR
+        if: steps.pr.outputs.number != '' && steps.author.outputs.trusted == 'true'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          REPO: ${{ github.repository }}
+          PR: ${{ steps.pr.outputs.number }}
+        run: |
+          gh pr merge "$PR" --repo "$REPO" --squash --delete-branch
