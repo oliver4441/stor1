@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" class="dark">
+<html lang="en">
   <head>
     <meta charset="UTF-8" />
     <link rel="icon" type="image/jpeg" href="/logo.jpg" />
@@ -8,7 +8,7 @@
     <link rel="manifest" href="/manifest.json" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
     <!-- Theme colors -->
-    <meta name="theme-color" content="#1a5632" />
+    <meta name="theme-color" content="#0e7665" />
     <!-- Apple mobile web app meta -->
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
@@ -91,45 +91,27 @@
         }
       });
     </script>
-    <script>
-      // Permanently force dark mode
-      (function() {
-        document.documentElement.classList.add('dark');
-        // Override localStorage to prevent any theme switching
-        var origSetItem = localStorage.setItem.bind(localStorage);
-        var origRemoveItem = localStorage.removeItem.bind(localStorage);
-        localStorage.setItem = function(key, value) {
-          if (key === 'theme') {
-            value = 'dark';
-          }
-          return origSetItem(key, value);
-        };
-        localStorage.removeItem = function(key) {
-          if (key === 'theme') {
-            // Don't allow removing theme key
-            return;
-          }
-          return origRemoveItem(key);
-        };
-        // Also intercept any direct class manipulation on documentElement
-        var observer = new MutationObserver(function() {
-          document.documentElement.classList.add('dark');
-        });
-        observer.observe(document.documentElement, { attributes: true, attributeFilter: ['class'] });
-      })();
-    </script>
     <style>
-      /* Critical: show loading state immediately */
-      #root:empty::before {
-        content: 'Loading Omix Store...';
-        display: flex;
-        align-items: center;
-        justify-content: center;
+      /* Critical first paint: match the branded app shell before React mounts. */
+      :root { background: #f5f7f3; }
+      #root:empty {
         min-height: 100vh;
-        font-family: system-ui, -apple-system, sans-serif;
-        font-size: 18px;
-        color: #1a5632;
-        font-weight: 600;
+        display: grid;
+        place-items: center;
+        background: #f5f7f3;
+      }
+      #root:empty::before {
+        content: '';
+        width: 42px;
+        height: 42px;
+        border: 3px solid #dcebe4;
+        border-top-color: #0e7665;
+        border-radius: 50%;
+        animation: omix-first-paint-spin .8s linear infinite;
+      }
+      @keyframes omix-first-paint-spin { to { transform: rotate(360deg); } }
+      @media (prefers-reduced-motion: reduce) {
+        #root:empty::before { animation: none; }
       }
     </style>
   </head>

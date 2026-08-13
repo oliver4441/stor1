@@ -1,21 +1,43 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import InstallBanner from '../components/InstallBanner';
+import { ArrowRight, BadgeCheck, ChevronRight, CreditCard, MapPin, PackageCheck, ShieldCheck, Sparkles, Store, Truck, RotateCcw, Search as SearchIcon } from 'lucide-react';
 import { fetchListings, mapListingCategories } from '../utils/api';
 import { useLang } from '../utils/lang';
 import { supabase } from '../utils/supabase';
 import NiaContextualTrigger from '../components/NiaContextualTrigger';
 import SearchBar from '../components/SearchBar';
 import RecentlyViewed from '../components/RecentlyViewed';
-import QuickViewModal from '../components/QuickViewModal';
 import SeasonalParticles from '../components/SeasonalParticles';
 import { useSeasonalTheme } from '../context/SeasonalContext';
 import { CATEGORIES } from '../utils/constants';
 import FlashDealsBar from '../components/FlashDealsBar';
 import AutoScrollCarousel from '../components/AutoScrollCarousel';
 import ProductCard from '../components/ProductCard';
+import { ProductCardSkeleton } from '../components/Skeleton';
+import Pagination from '../components/Pagination';
 
 const ITEMS_PER_PAGE = 24;
+
+const CATEGORY_EMOJIS = {
+  Electronics: '◈',
+  Furniture: '⌂',
+  Clothing: '✦',
+  Services: '✳',
+  Vehicles: '↗',
+  'Home & Garden': '⌁',
+  Books: '▤',
+  Sports: '◎',
+  'Health & Beauty': '✿',
+  Food: '◇',
+  Drinks: '○',
+  Snacks: '✧',
+  Bakery: '◌',
+  Others: '＋',
+};
+
+const CATEGORY_TINTS = [
+  'sage', 'sand', 'lavender', 'sky', 'peach', 'mint', 'butter', 'rose',
+];
 
 function Home() {
   const { t } = useLang();
@@ -29,20 +51,14 @@ function Home() {
   const [popularProducts, setPopularProducts] = useState([]);
   const { activeTheme: theme, heroOverride } = useSeasonalTheme();
   const [isAiMode, setIsAiMode] = useState(false);
-  const [quickViewListing, setQuickViewListing] = useState(null);
   const totalPages = Math.ceil(totalCount / ITEMS_PER_PAGE);
 
   useEffect(() => {
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      setUser(session?.user ?? null);
-    });
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
-      setUser(session?.user ?? null);
-    });
+    supabase.auth.getSession().then(({ data: { session } }) => setUser(session?.user ?? null));
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => setUser(session?.user ?? null));
     return () => subscription.unsubscribe();
   }, []);
 
-  // Fetch popular products (sorted by purchase_count)
   useEffect(() => {
     const fetchPopular = async () => {
       try {
@@ -52,337 +68,222 @@ function Home() {
           .eq('status', 'active')
           .order('purchase_count', { ascending: false })
           .limit(8);
-        if (!error && data) {
-          setPopularProducts(mapListingCategories(data));
-        }
-      } catch (e) {
-        console.warn('Failed to fetch popular products:', e.message);
+        if (!error && data) setPopularProducts(mapListingCategories(data));
+      } catch (error) {
+        console.warn('Failed to fetch popular products:', error.message);
       }
     };
     fetchPopular();
   }, []);
-  // Reset to page 1 when filters change
+
   useEffect(() => {
     setPage(1);
   }, [activeCategory, searchQuery, isAiMode]);
 
-  // Fetch products for current page
   useEffect(() => {
+    let cancelled = false;
     setLoading(true);
-    const fetch = async () => {
+    const loadListings = async () => {
       const result = await fetchListings(activeCategory, isAiMode ? '' : searchQuery, page, ITEMS_PER_PAGE, 'new');
+      if (cancelled) return;
       setListings(result.listings);
       setTotalCount(result.total);
       setLoading(false);
     };
-    fetch();
+    loadListings().catch(error => {
+      if (!cancelled) {
+        console.warn('Failed to load listings:', error.message);
+        setListings([]);
+        setTotalCount(0);
+        setLoading(false);
+      }
+    });
+    return () => { cancelled = true; };
   }, [activeCategory, searchQuery, isAiMode, page]);
 
   const handlePageChange = (newPage) => {
     if (newPage < 1 || newPage > totalPages) return;
     setPage(newPage);
-    document.getElementById('products-section')?.scrollIntoView({ behavior: 'smooth' });
+    document.getElementById('products-section')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
   };
 
   const featuredProducts = listings.slice(0, 8);
-
-  const heroFrom = theme?.colors?.heroFrom || '#1E2A3D';
-  const heroVia = theme?.colors?.heroVia || '#242C3B';
-  const heroTo = theme?.colors?.heroTo || '#2A3548';
+  const showDiscoveryRows = activeCategory === 'All' && !searchQuery && !isAiMode;
+  const heroFrom = theme?.colors?.heroFrom || '#0d4f43';
+  const heroVia = theme?.colors?.heroVia || '#0f766e';
+  const heroTo = theme?.colors?.heroTo || '#173a35';
   const heroText = theme?.colors?.heroText || '#ffffff';
-  const heroSubtext = theme?.colors?.heroSubtext || '#8E9BB5';
-  const heroAccent = theme?.colors?.heroAccent || '#71717a';
-  const heroOverlay = theme?.colors?.heroOverlay || 'rgba(0,122,255,0.2)';
-  const ctaBg = theme?.colors?.ctaBg || '#71717a';
-  const ctaText = theme?.colors?.ctaText || '#ffffff';
-  const heroTitle = heroOverride?.title || theme?.heroTitle || "Kenya's #1 Online Store";
-  const heroSubtitle = heroOverride?.subtitle || theme?.heroSubtitle || 'M-Pesa Payments · Free Delivery · 7-Day Returns · Shop from anywhere in Kenya';
-  const heroImageUrl = heroOverride?.imageUrl || '';
-  const hasHeroImage = !!heroImageUrl;
+  const heroSubtext = theme?.colors?.heroSubtext || '#d8ebe4';
+  const heroAccent = theme?.colors?.heroAccent || '#a9e7c5';
+  const ctaBg = theme?.colors?.ctaBg || '#f5c56b';
+  const ctaText = theme?.colors?.ctaText || '#173a35';
+  const heroTitle = heroOverride?.title || theme?.heroTitle || 'Find something worth keeping.';
+  const heroSubtitle = heroOverride?.subtitle || theme?.heroSubtitle || 'Shop quality finds from trusted local sellers, with simple M-Pesa checkout and delivery across Kenya.';
+  const heroImage = heroOverride?.imageUrl || theme?.heroImages?.[0] || '/hero-bg.jpg';
   const particleType = theme?.particleType || 'none';
-  const heroImages = theme?.heroImages || [];
-  const hasHeroImages = heroImageUrl ? true : heroImages.length > 0;
   const sticker = theme?.sticker || '';
   const socialBadge = theme?.socialBadge || '';
-  const vibe = theme?.vibe || 'default';
 
   return (
-    <div data-name="home-page">
-      {/* Seasonal Particles */}
+    <div className="marketplace-home" data-name="home-page">
       <SeasonalParticles type={particleType} count={25} />
-
-      {/* Flash Deals Bar */}
       <FlashDealsBar />
 
-      {!user && (
-        <>
-      {/* Hero Section */}
-      <div className="relative overflow-hidden mb-8">
-        {/* Gradient Background — theme-aware */}
-        <div
-          className="absolute inset-0 seasonal-hero-gradient"
-          style={{
-            background: `linear-gradient(135deg, ${heroFrom}, ${heroVia}, ${heroTo})`,
-          }}
-        ></div>
-        {/* Ambient glow orb */}
-        <div
-          className="theme-ambient-orb"
-          style={{
-            background: `radial-gradient(circle, ${heroAccent || heroFrom} 0%, transparent 70%)`,
-            top: '-10%',
-            right: '-5%',
-          }}
-        />
-        <div
-          className="theme-ambient-orb"
-          style={{
-            background: `radial-gradient(circle, ${heroFrom} 0%, transparent 70%)`,
-            bottom: '-15%',
-            left: '-5%',
-            animationDelay: '-10s',
-            width: '400px',
-            height: '400px',
-          }}
-        />
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,rgba(255,255,255,0.15),transparent_50%)]"></div>
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_bottom_left,rgba(0,0,0,0.1),transparent_50%)]"></div>
-
-        {/* Floating sticker decoration */}
-        {sticker && (
-          <div className="absolute top-8 right-8 md:top-16 md:right-16 opacity-20 select-none pointer-events-none">
-            <span className="text-8xl md:text-9xl">{sticker}</span>
-          </div>
-        )}
-
-        {/* Hero Content */}
-        <div className="relative z-10 py-12 md:py-20 px-4">
-          <div className="max-w-7xl mx-auto text-center">
-            <h1
-              className="text-4xl md:text-6xl font-display font-black mb-4 tracking-tighter drop-shadow-lg"
-              style={{ color: heroText }}
-            >
-              {heroTitle}
-            </h1>
-            <p
-              className="mb-4 max-w-xl mx-auto text-lg font-medium drop-shadow-md"
-              style={{ color: heroSubtext }}
-            >
-              {heroSubtitle}
-            </p>
-
-            {/* Theme social proof badge */}
-            {socialBadge && (
-              <div className="mb-6 inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/15 backdrop-blur-sm border border-white/20 text-white text-sm font-bold">
-                <span>{sticker}</span>
-                <span>{socialBadge}</span>
-              </div>
-            )}
-
-            <div className="flex flex-col sm:flex-row items-center justify-center gap-3 mb-8">
-              <button
-                onClick={() => document.getElementById('products-section')?.scrollIntoView({ behavior: 'smooth' })}
-                className="px-6 py-3 rounded-xl font-bold text-sm transition-all shadow-lg cursor-pointer"
-                style={{ backgroundColor: ctaBg, color: ctaText }}
-              >
-                {t('home.browseListings') || 'Browse Products'}
+      <section
+        className="marketplace-hero"
+        style={{
+          '--hero-from': heroFrom,
+          '--hero-via': heroVia,
+          '--hero-to': heroTo,
+          '--hero-text': heroText,
+          '--hero-subtext': heroSubtext,
+          '--hero-accent': heroAccent,
+          '--hero-cta': ctaBg,
+          '--hero-cta-text': ctaText,
+        }}
+      >
+        <div className="marketplace-hero-glow marketplace-hero-glow-one" />
+        <div className="marketplace-hero-glow marketplace-hero-glow-two" />
+        <div className="marketplace-hero-inner">
+          <div className="marketplace-hero-copy">
+            <div className="marketplace-eyebrow marketplace-eyebrow-light">
+              <span className="marketplace-live-dot" />
+              {socialBadge || 'Kenya’s trusted marketplace'}
+            </div>
+            <h1>{heroTitle}</h1>
+            <p>{heroSubtitle}</p>
+            <div className="marketplace-hero-actions">
+              <button type="button" className="marketplace-button marketplace-button-hero" onClick={() => document.getElementById('products-section')?.scrollIntoView({ behavior: 'smooth', block: 'start' })}>
+                {t('home.browseListings') || 'Explore products'}
+                <ArrowRight className="h-4 w-4" />
               </button>
-              <Link
-                to={user ? '/account' : '/signup'}
-                className="px-6 py-3 rounded-xl bg-white/15 backdrop-blur-sm text-white font-bold text-sm hover:bg-white/25 transition-all border border-white/20"
-              >
-                {user ? (t('nav.account') || 'My Account') : (t('auth.signUp') || 'Sign Up')}
+              <Link to={user ? '/account' : '/signup'} className="marketplace-hero-secondary">
+                {user ? 'Open my account' : 'Join Omix'}
+                <ChevronRight className="h-4 w-4" />
               </Link>
             </div>
+            <div className="marketplace-hero-proof">
+              <span><BadgeCheck className="h-4 w-4" /> Verified sellers</span>
+              <span><MapPin className="h-4 w-4" /> Delivery across Kenya</span>
+            </div>
+          </div>
 
-            <SearchBar onSearch={(q) => { setSearchQuery(q); setIsAiMode(false); }} initialValue={searchQuery} />
+          <div className="marketplace-hero-visual">
+            <div className="marketplace-hero-image-frame">
+              <img src={heroImage} alt="A selection of products available on Omix Store" />
+              <div className="marketplace-hero-image-overlay" />
+              <div className="marketplace-hero-image-label"><span>{sticker || '✦'}</span> Curated for you</div>
+            </div>
+            <div className="marketplace-floating-card marketplace-floating-card-top">
+              <span className="marketplace-floating-icon"><ShieldCheck className="h-4 w-4" /></span>
+              <span><strong>Shop with confidence</strong><small>Protected checkout</small></span>
+            </div>
+            <div className="marketplace-floating-card marketplace-floating-card-bottom">
+              <span className="marketplace-floating-avatars"><i>J</i><i>M</i><i>K</i></span>
+              <span><strong>Local sellers, real finds</strong><small>New items added daily</small></span>
+            </div>
+          </div>
 
-            {/* World Cup Hero Images */}
-            {hasHeroImages && (
-              <div className="mt-10 max-w-4xl mx-auto">
-                <div className="grid grid-cols-3 gap-3 md:gap-5">
-                  {(heroImageUrl ? [heroImageUrl] : heroImages).map((img, idx) => (
-                    <div
-                      key={idx}
-                      className="relative rounded-2xl overflow-hidden shadow-2xl border-2 border-white/20 hover:border-white/50 transition-all duration-500 hover:scale-[1.03] hover:-translate-y-1 group"
-                      style={{ animationDelay: `${idx * 150}ms` }}
-                    >
-                      <img
-                        src={img}
-                        alt={`World Cup ${idx + 1}`}
-                        className="w-full aspect-[4/3] object-cover group-hover:scale-110 transition-transform duration-700"
-                      />
-                      <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent"></div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            )}
+          <div className="marketplace-hero-search">
+            <div className="marketplace-hero-search-heading"><SearchIcon className="h-4 w-4" /><span>What are you looking for?</span><small>Try “phone”, “sofa” or “sneakers”</small></div>
+            <SearchBar onSearch={(query) => { setSearchQuery(query); setIsAiMode(false); }} initialValue={searchQuery} />
           </div>
         </div>
-      </div>
+      </section>
 
-      </>
+      <section className="marketplace-trust-strip marketplace-container" aria-label="Why shop with Omix">
+        <div className="marketplace-trust-item"><span className="marketplace-trust-icon"><ShieldCheck /></span><div><strong>Secure checkout</strong><span>Pay safely with M-Pesa</span></div></div>
+        <div className="marketplace-trust-item"><span className="marketplace-trust-icon"><Truck /></span><div><strong>Simple delivery</strong><span>From local sellers to you</span></div></div>
+        <div className="marketplace-trust-item"><span className="marketplace-trust-icon"><RotateCcw /></span><div><strong>Shop confidently</strong><span>7-day return promise</span></div></div>
+        <div className="marketplace-trust-item"><span className="marketplace-trust-icon"><Store /></span><div><strong>Local & trusted</strong><span>Support Kenyan sellers</span></div></div>
+      </section>
+
+      <section className="marketplace-container marketplace-category-section">
+        <div className="marketplace-section-heading">
+          <div><span className="marketplace-eyebrow">Start exploring</span><h2>Shop by category</h2></div>
+          <Link to="/search" className="marketplace-text-link">View all <ArrowRight className="h-4 w-4" /></Link>
+        </div>
+        <div className="marketplace-category-cards">
+          {CATEGORIES.filter(category => category !== 'All').slice(0, 8).map((category, index) => (
+            <Link key={category} to={`/search?category=${encodeURIComponent(category)}`} className={`marketplace-category-card marketplace-category-card-${CATEGORY_TINTS[index] || 'sage'}`}>
+              <span className="marketplace-category-symbol">{CATEGORY_EMOJIS[category] || '＋'}</span>
+              <span>{category}</span>
+              <ChevronRight className="h-4 w-4" />
+            </Link>
+          ))}
+        </div>
+      </section>
+
+      {showDiscoveryRows && featuredProducts.length > 0 && (
+        <section className="marketplace-container marketplace-discovery-section">
+          <div className="marketplace-section-heading">
+            <div><span className="marketplace-eyebrow">Handpicked today</span><h2>{t('home.featuredListings') || 'Featured finds'}</h2></div>
+            <Link to="/search" className="marketplace-text-link">See more <ArrowRight className="h-4 w-4" /></Link>
+          </div>
+          <AutoScrollCarousel itemMinWidth={248} gap={16} speed={32} className="marketplace-product-carousel">
+            {featuredProducts.map(product => <ProductCard key={product.id} listing={product} />)}
+          </AutoScrollCarousel>
+        </section>
       )}
 
-      {/* Trust Strip */}
-      <div className="max-w-7xl mx-auto px-4 mb-8">
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-          <div className="flex items-center gap-3 bg-[#28303F] border border-[#353F54] rounded-xl p-4 hover:border-[#14b8a6]/30 transition-colors">
-            <div className="w-10 h-10 rounded-lg bg-[#14b8a6]/15 flex items-center justify-center flex-shrink-0 ring-1 ring-[#14b8a6]/20">
-              <svg className="w-5 h-5 text-[#14b8a6]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" /></svg>
-            </div>
-            <div>
-              <p className="text-sm text-white font-bold">M-Pesa Payments</p>
-              <p className="text-xs text-[#4A5771]">Secure checkout</p>
-            </div>
+      {showDiscoveryRows && popularProducts.length > 0 && (
+        <section className="marketplace-container marketplace-discovery-section marketplace-discovery-section-popular">
+          <div className="marketplace-section-heading">
+            <div><span className="marketplace-eyebrow">Loved by shoppers</span><h2>Popular right now</h2></div>
+            <Link to="/search" className="marketplace-text-link">Browse all <ArrowRight className="h-4 w-4" /></Link>
           </div>
-          <div className="flex items-center gap-3 bg-[#28303F] border border-[#353F54] rounded-xl p-4 hover:border-[#14b8a6]/30 transition-colors">
-            <div className="w-10 h-10 rounded-lg bg-[#14b8a6]/15 flex items-center justify-center flex-shrink-0 ring-1 ring-[#14b8a6]/20">
-              <svg className="w-5 h-5 text-[#14b8a6]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4" /></svg>
-            </div>
-            <div>
-              <p className="text-sm font-bold text-white">Free Delivery</p>
-              <p className="text-xs text-[#4A5771]">Nationwide delivery</p>
-            </div>
-          </div>
-          <div className="flex items-center gap-3 bg-[#28303F] border border-[#353F54] rounded-xl p-4 hover:border-[#14b8a6]/30 transition-colors">
-            <div className="w-10 h-10 rounded-lg bg-[#14b8a6]/15 flex items-center justify-center flex-shrink-0 ring-1 ring-[#14b8a6]/20">
-              <svg className="w-5 h-5 text-[#14b8a6]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
-            </div>
-            <div>
-              <p className="text-sm font-bold text-white">7-Day Returns</p>
-              <p className="text-xs text-[#4A5771]">Hassle-free</p>
-            </div>
-          </div>
-          <div className="flex items-center gap-3 bg-[#28303F] border border-[#353F54] rounded-xl p-4 hover:border-[#14b8a6]/30 transition-colors">
-            <div className="w-10 h-10 rounded-lg bg-[#14b8a6]/15 flex items-center justify-center flex-shrink-0 ring-1 ring-[#14b8a6]/20">
-              <svg className="w-5 h-5 text-[#14b8a6]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.062-.382-3.016z" /></svg>
-            </div>
-            <div>
-              <p className="text-sm font-bold text-white">Verified Seller</p>
-              <p className="text-xs text-[#4A5771]">Trusted & local</p>
-            </div>
-          </div>
+          <AutoScrollCarousel itemMinWidth={248} gap={16} speed={28} className="marketplace-product-carousel">
+            {popularProducts.map(product => <ProductCard key={product.id} listing={product} />)}
+          </AutoScrollCarousel>
+        </section>
+      )}
+
+      <section id="products-section" className="marketplace-container marketplace-catalog-section">
+        <div className="marketplace-catalog-toolbar">
+          <div><span className="marketplace-eyebrow">Fresh on Omix</span><h2>{searchQuery ? `Results for “${searchQuery}”` : 'Latest from the marketplace'}</h2><p>{loading ? 'Updating the collection…' : `${totalCount.toLocaleString()} ${totalCount === 1 ? 'item' : 'items'} ready to explore`}</p></div>
+          <Link to="/search" className="marketplace-button marketplace-button-secondary marketplace-catalog-all-link">Advanced search <ArrowRight className="h-4 w-4" /></Link>
         </div>
-      </div>
 
-      {/* Video Preview */}
-      <div className="max-w-4xl mx-auto px-4 mb-12">
-        <div className="fusion-recessed-card overflow-hidden shadow-2xl">
-          <video
-            autoPlay
-            muted
-            loop
-            playsInline
-            className="w-full aspect-video"
-            poster="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='1920' height='1080'%3E%3Crect fill='%230f0f10' width='1920' height='1080'/%3E%3C/svg%3E"
-          >
-            <source src="/videos/buy_sell_kericho.mp4" type="video/mp4" />
-          </video>
-        </div>
-        <p className="text-center text-sm text-zinc-400 mt-3">
-          {!user && <Link to="/how-it-works" className="text-[#14b8a6] font-bold hover:underline">{t('home.howItWorks')}</Link>}
-        </p>
-      </div>
-
-      <div className="max-w-7xl mx-auto px-4" id="products-section">
-        {/* Featured Products - Auto Scroll Carousel */}
-        {featuredProducts.length > 0 && activeCategory === 'All' && !searchQuery && (
-          <div className="mb-10">
-            <div className="flex items-center justify-between mb-4">
-              <h2 className="text-xl font-bold text-white">{t('home.featuredListings')}</h2>
-            </div>
-            <AutoScrollCarousel itemMinWidth={260} gap={16} speed={35}>
-              {featuredProducts.map((product) => (
-                <ProductCard key={product.id} listing={product} />
-              ))}
-            </AutoScrollCarousel>
-          </div>
-        )}
-
-        {/* Popular Products - Auto Scroll Carousel */}
-        {popularProducts.length > 0 && activeCategory === 'All' && !searchQuery && (
-          <div className="mb-10">
-            <div className="flex items-center justify-between mb-4">
-              <h2 className="text-xl font-bold text-white">Popular Right Now</h2>
-            </div>
-            <AutoScrollCarousel itemMinWidth={260} gap={16} speed={30}>
-              {popularProducts.map((product) => (
-                <ProductCard key={product.id} listing={product} />
-              ))}
-            </AutoScrollCarousel>
-          </div>
-        )}
-
-      {/* Categories — sticky on mobile */}
-        <div className="sticky top-14 md:top-[88px] z-30 bg-[#08080a]/90 backdrop-blur-sm -mx-4 px-4 pb-2 pt-2 mb-4">
-          <div className="flex gap-2 overflow-x-auto scrollbar-hide">
-            {CATEGORIES.map(cat => (
-              <button
-                key={cat}
-                onClick={() => setActiveCategory(cat)}
-                className={`px-4 py-2 rounded-[14px] text-sm font-medium whitespace-nowrap border transition-all flex-shrink-0 ${
-                  activeCategory === cat 
-                    ? 'bg-[#14b8a6] text-white border-[#14b8a6]' 
-                    : 'bg-[#28303F]/60 text-[#8E9BB5] border-[#353F54] hover:border-[#14b8a6] hover:text-white'
-                }`}
-              >
-                {cat}
-              </button>
-            ))}
+        <div className="marketplace-filter-bar">
+          <div className="marketplace-filter-label">Browse</div>
+          <div className="marketplace-filter-scroll scrollbar-hide">
+            {CATEGORIES.map(category => <button key={category} type="button" onClick={() => setActiveCategory(category)} className={`marketplace-filter-pill ${activeCategory === category ? 'is-active' : ''}`}>{category}</button>)}
           </div>
         </div>
 
-        {/* Grid */}
         {loading ? (
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6 animate-pulse">
-            {[...Array(8)].map((_, i) => (
-              <div key={i} className="space-y-3">
-                <div className="aspect-square bg-[#28303F] rounded-[14px]"></div>
-                <div className="h-4 bg-[#28303F] rounded w-3/4"></div>
-                <div className="h-4 bg-[#28303F] rounded w-1/2"></div>
-              </div>
-            ))}
+          <div className="marketplace-product-grid" aria-label="Loading products">
+            {Array.from({ length: 8 }, (_, index) => <ProductCardSkeleton key={index} />)}
+          </div>
+        ) : listings.length > 0 ? (
+          <div className="marketplace-product-grid">
+            {listings.map(listing => <ProductCard key={listing.id} listing={listing} />)}
           </div>
         ) : (
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
-            {listings.map(listing => (
-              <ProductCard key={listing.id} listing={listing} />
-            ))}
-          </div>
-        )}
-
-        {/* Pagination */}
-        {!loading && listings.length > 0 && totalPages > 1 && (
-          <div className="flex flex-col items-center gap-3 mt-8">
-            <p className="text-xs text-[#4A5771]">Page {page} of {totalPages}</p>
-            <Pagination currentPage={page} totalPages={totalPages} onPageChange={handlePageChange} />
-          </div>
-        )}
-
-        {/* Empty state */}
-        {!loading && listings.length === 0 && (
-          <div className="text-center py-20">
-            <p className="text-zinc-400 mb-4 text-lg">{t('home.noListings')}</p>
-            <Link to="/" className="text-[#14b8a6] font-bold text-lg hover:underline underline-offset-4 mb-8 block">
-              {t('home.browseListings') || 'Browse Products'}
-            </Link>
+          <div className="marketplace-empty-state">
+            <span className="marketplace-empty-icon"><SearchIcon className="h-7 w-7" /></span>
+            <h3>No products found yet</h3>
+            <p>Try another search or browse the full collection.</p>
+            <button type="button" className="marketplace-button marketplace-button-primary" onClick={() => { setSearchQuery(''); setActiveCategory('All'); }}>Clear filters</button>
             <NiaContextualTrigger page="emptyCart" />
           </div>
         )}
-      </div>
-      <InstallBanner />
 
-      {/* Recently Viewed */}
-      <div className="max-w-7xl mx-auto px-4 mt-12">
-        <RecentlyViewed allListings={listings} />
-      </div>
+        {!loading && listings.length > 0 && totalPages > 1 && (
+          <div className="marketplace-pagination"><p>Page {page} of {totalPages}</p><Pagination currentPage={page} totalPages={totalPages} onPageChange={handlePageChange} /></div>
+        )}
+      </section>
 
-      {/* Quick View Modal */}
-      {quickViewListing && (
-        <QuickViewModal listing={quickViewListing} onClose={() => setQuickViewListing(null)} />
-      )}
+      <section className="marketplace-container marketplace-how-it-works">
+        <div className="marketplace-process-intro"><span className="marketplace-eyebrow">A simpler way to shop</span><h2>From browse to doorstep.</h2><p>Every part of Omix is designed to make local shopping feel clear, safe and enjoyable.</p><Link to="/how-it-works" className="marketplace-text-link">See how it works <ArrowRight className="h-4 w-4" /></Link></div>
+        <div className="marketplace-process-steps">
+          <div><span>01</span><CreditCard className="h-5 w-5" /><h3>Find your fit</h3><p>Explore thoughtful listings from sellers around Kenya.</p></div>
+          <div><span>02</span><PackageCheck className="h-5 w-5" /><h3>Checkout simply</h3><p>Pay securely with M-Pesa and get clear order updates.</p></div>
+          <div><span>03</span><Truck className="h-5 w-5" /><h3>Receive with ease</h3><p>Your seller gets it moving and you follow along.</p></div>
+        </div>
+      </section>
+
+      <div className="marketplace-container marketplace-recently-viewed"><RecentlyViewed allListings={listings} /></div>
     </div>
   );
 }

@@ -5,6 +5,7 @@ import { HelmetProvider } from 'react-helmet-async'
 import App from './App.jsx'
 import './index.css'
 import './styles/fusion.css'
+import './styles/marketplace.css'
 
 // Register service worker for push notifications
 if ('serviceWorker' in navigator) {

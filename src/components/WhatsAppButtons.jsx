@@ -119,7 +119,7 @@ export function WhatsAppNavButton({ phone, className = '' }) {
       href={whatsappUrl}
       target="_blank"
       rel="noopener noreferrer"
-      className={`relative p-2 rounded-full hover:bg-zinc-800 text-zinc-300 transition-colors ${className}`}
+      className={`marketplace-icon-button marketplace-whatsapp-nav ${className}`}
       aria-label="Chat on WhatsApp"
     >
       <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">

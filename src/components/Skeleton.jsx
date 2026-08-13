@@ -4,7 +4,7 @@
 export function Skeleton({ className, ...props }) {
   return (
     <div
-      className={`relative overflow-hidden rounded-xl bg-zinc-800 ${className || ''}`}
+      className={`marketplace-skeleton relative overflow-hidden rounded-xl ${className || ''}`}
       {...props}
     >
       {/* Shimmer overlay */}
@@ -24,7 +24,7 @@ export function ProductCardSkeleton() {
   return (
     <div className="block group">
       {/* Image placeholder — matches aspect-[4/5] ratio used in ProductCard */}
-      <div className="bg-zinc-900 rounded-2xl overflow-hidden aspect-[4/5] mb-3 relative">
+      <div className="marketplace-skeleton-card rounded-[18px] overflow-hidden aspect-[1/1.12] mb-3 relative">
         <Skeleton className="absolute inset-0 rounded-none" />
         {/* Condition badge skeleton */}
         <Skeleton className="absolute top-2 left-2 w-16 h-5 rounded-lg" />

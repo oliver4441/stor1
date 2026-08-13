@@ -244,13 +244,14 @@ const THEME_STORAGE_KEY = 'omix_theme_mode';
 
 export function ThemeProvider({ children }) {
   const [theme, setThemeState] = useState(() => {
-    try { return localStorage.getItem(THEME_STORAGE_KEY) || 'dark'; }
-    catch { return 'dark'; }
+    try { return localStorage.getItem(THEME_STORAGE_KEY) || 'light'; }
+    catch { return 'light'; }
   });
 
   // Apply theme: set attribute + inject/remove CSS
   useEffect(() => {
     document.documentElement.setAttribute('data-theme', theme);
+    document.documentElement.classList.toggle('dark', theme === 'dark');
     try { localStorage.setItem(THEME_STORAGE_KEY, theme); } catch {}
 
     let styleEl = document.getElementById('omix-theme-overrides');

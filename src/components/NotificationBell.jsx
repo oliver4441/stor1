@@ -117,7 +117,7 @@ export default function NotificationBell() {
     <div className="relative" ref={bellRef}>
       <button
         onClick={handleToggle}
-        className="relative p-2 rounded-full hover:bg-zinc-800 text-zinc-300 transition-colors"
+        className="marketplace-icon-button marketplace-notification-button"
         aria-label={`Notifications, ${unreadCount} unread`}
         aria-expanded={open}
       >
@@ -136,7 +136,7 @@ export default function NotificationBell() {
       {open && (
         <div
           ref={panelRef}
-          className="absolute right-0 top-full mt-2 w-80 sm:w-96 bg-zinc-900 border border-zinc-700 rounded-2xl shadow-2xl overflow-hidden z-[100]"
+          className="marketplace-notification-panel absolute right-0 top-full mt-2 w-80 sm:w-96 rounded-2xl shadow-2xl overflow-hidden z-[100]"
         >
           {/* Header */}
           <div className="flex items-center justify-between px-4 py-3 border-b border-zinc-800">
