@@ -81,6 +81,23 @@ Normal storefront              (/admin, /login, /auth/*)
    fallback `public/maintenance.html` is generated from it by
    `scripts/build-maintenance-page.js`, which runs on every `npm run build`.
 
+## Logo
+
+The brand mark is the vector Omix wireframe knot at `public/omix-mark.svg`,
+generated deterministically by `scripts/generate-omix-mark.js` (re-run the
+script after any change to regenerate). Both pages show it in a dark rounded
+tile above the “Omix Market” eyebrow.
+
+To switch to the original Omix Systems logo file instead:
+
+1. Save it as `public/omix-systems-logo.jpeg` (square works best).
+2. Set `brand.imageSrc` to `"/omix-systems-logo.jpeg"` in
+   `src/config/maintenance.json`.
+3. Rebuild (`npm run build`).
+
+Both the React page and the static fallback pick it up — no component
+changes needed.
+
 ## Changing copy / evolving to launch
 
 Edit `src/config/maintenance.json`, then rebuild:

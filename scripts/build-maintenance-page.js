@@ -24,6 +24,11 @@ const previewCta = copy.preview.url
   ? `<a href="${esc(copy.preview.url)}" target="_blank" rel="noopener noreferrer" class="btn btn-secondary">${esc(copy.preview.ctaLabel)} <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></a>`
   : '';
 
+const logoTile = copy.brand.imageSrc
+  ? `<img src="${esc(copy.brand.imageSrc)}" alt="${esc(copy.brand.logoAlt)}" width="116" height="116" />`
+  : readFileSync(join(__dirname, '..', 'public', 'omix-mark.svg'), 'utf8')
+      .replace('<svg ', '<svg width="116" height="116" ');
+
 const html = `<!DOCTYPE html>
 <html lang="en">
 <head>
@@ -98,13 +103,13 @@ const html = `<!DOCTYPE html>
     main { flex: 1; display: flex; justify-content: center; padding: 56px 20px 40px; position: relative; z-index: 1; }
     .hero { width: min(100%, 620px); display: flex; flex-direction: column; align-items: center; text-align: center; }
     .brand { display: flex; flex-direction: column; align-items: center; gap: 14px; animation: m-rise-sm 600ms var(--ease-out) 40ms both; }
-    .brand-mark {
-      width: 56px; height: 56px; display: grid; place-items: center;
-      border-radius: 17px; transform: rotate(-5deg);
-      background: linear-gradient(145deg, #0e7665, #0b594d); color: #fff;
-      box-shadow: 0 6px 12px rgba(14, 118, 101, .2);
+    .logo-tile {
+      width: 116px; height: 116px; display: block; overflow: hidden;
+      border-radius: 30px; background: #04060c; border: 1px solid var(--line);
+      box-shadow: 0 16px 36px rgba(4,10,8,.22), 0 2px 6px rgba(4,10,8,.18);
+      animation: m-logo-settle 700ms var(--ease-out) 40ms both;
     }
-    .brand-mark span { font-family: 'Poppins', sans-serif; font-weight: 800; font-size: 30px; transform: rotate(5deg); }
+    .logo-tile img, .logo-tile svg { display: block; width: 100%; height: 100%; object-fit: cover; }
     .eyebrow {
       font-family: 'Poppins', sans-serif; font-size: 12px; font-weight: 800;
       letter-spacing: .24em; text-transform: uppercase; color: var(--brand);
@@ -175,12 +180,13 @@ const html = `<!DOCTYPE html>
     @keyframes m-drop { from { opacity: 0; transform: translateY(-6px); } to { opacity: 1; transform: translateY(0); } }
     @keyframes m-rise { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
     @keyframes m-rise-sm { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+    @keyframes m-logo-settle { from { opacity: 0; transform: scale(.94); } to { opacity: 1; transform: scale(1); } }
     @keyframes m-fade { from { opacity: 0; } to { opacity: 1; } }
     @keyframes m-grid-drift { from { transform: translate3d(0,0,0); } to { transform: translate3d(-16px,-10px,0); } }
     @keyframes m-dot-travel { from { transform: translateX(0); opacity: .55; } 50% { opacity: 1; } to { transform: translateX(66px); opacity: .55; } }
     @keyframes m-pulse { 0%, 100% { opacity: 1; transform: scale(1); } 50% { opacity: .45; transform: scale(.82); } }
     @media (prefers-reduced-motion: reduce) {
-      body::before, .banner, .brand, h1, .build-line, .build-line > span, .lede, .feedback, .signoff, footer, .dot { animation: none; }
+      body::before, .banner, .brand, .logo-tile, h1, .build-line, .build-line > span, .lede, .feedback, .signoff, footer, .dot { animation: none; }
       .btn:hover, .btn:active { transform: none; }
       .btn:hover svg, .btn:focus-visible svg { transform: none; }
       .btn svg { transition: none; }
@@ -206,7 +212,7 @@ const html = `<!DOCTYPE html>
   <main id="main">
     <div class="hero">
       <div class="brand" aria-label="Omix Market">
-        <span class="brand-mark" aria-hidden="true"><span>O</span></span>
+        <span class="logo-tile">${logoTile}</span>
         <span class="eyebrow">${esc(copy.brand.eyebrow)}</span>
       </div>
       <h1>${esc(copy.hero.title)}</h1>

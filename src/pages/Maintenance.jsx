@@ -15,6 +15,7 @@ import { maintenanceCopy as copy, PREVIEW_URL } from '../config/maintenance';
  */
 export default function Maintenance() {
   const canonical = 'https://market.omixsystems.store/';
+  const logoSrc = copy.brand.imageSrc || copy.brand.logoSvg;
 
   // The third-party Tidio chat widget loads globally from index.html.
   // Hide it while the transition experience is shown (it loads async,
@@ -64,8 +65,8 @@ export default function Maintenance() {
       <main id="maintenance-main" className="omix-maintenance-main">
         <div className="omix-maintenance-hero">
           <div className="omix-maintenance-brand" aria-label="Omix Market">
-            <span className="marketplace-brand-mark marketplace-brand-mark-lg" aria-hidden="true">
-              <span>O</span>
+            <span className="omix-maintenance-logo">
+              <img src={logoSrc} alt={copy.brand.logoAlt} width="116" height="116" />
             </span>
             <span className="omix-maintenance-eyebrow">{copy.brand.eyebrow}</span>
           </div>
