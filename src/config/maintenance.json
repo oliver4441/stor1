@@ -1,0 +1,44 @@
+{
+  "_comment": "Omix Market — Maintenance / Transition Mode copy deck. SINGLE SOURCE OF TRUTH for all maintenance messaging. The React maintenance page (src/pages/Maintenance.jsx) imports this file, and the standalone server fallback page (public/maintenance.html) is generated from it via `node scripts/build-maintenance-page.js` (also runs automatically on `npm run build`). Edit copy here — never hardcode maintenance messages in components.",
+
+  "brand": {
+    "eyebrow": "Omix Market",
+    "wordmark": "omix",
+    "wordmarkSuffix": "store"
+  },
+
+  "banner": {
+    "title": "Omix Market is temporarily unavailable",
+    "body": "We're rebuilding the marketplace to give you a better shopping experience."
+  },
+
+  "hero": {
+    "title": "We're building something new.",
+    "body": "We're currently rebuilding Omix Market to create a faster, simpler and better shopping experience."
+  },
+
+  "feedback": {
+    "heading": "Help shape the new Omix Market",
+    "body1": "We're rebuilding Omix Market and we want to build it around what our customers actually need.",
+    "body2": "Tell us what you love, what frustrates you, and what you'd like to see in the new marketplace.",
+    "ctaLabel": "Share Your Ideas",
+    "ctaUrl": "https://tally.so/r/OD6Vx7"
+  },
+
+  "preview": {
+    "_comment": "Leave url as null until a public preview of the new Omix Market exists. When set, a secondary 'Preview the New Omix Market' CTA appears. Never invent a URL.",
+    "url": null,
+    "ctaLabel": "Preview the New Omix Market"
+  },
+
+  "signoff": "We'll be back soon.",
+
+  "staff": {
+    "label": "Staff? Sign in to the dashboard"
+  },
+
+  "seo": {
+    "title": "Omix Market — We're Building Something New",
+    "description": "Omix Market is currently undergoing a major upgrade. We're building a faster, simpler and better shopping experience."
+  }
+}
