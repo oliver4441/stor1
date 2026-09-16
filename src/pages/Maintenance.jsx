@@ -71,6 +71,9 @@ export default function Maintenance() {
           </div>
 
           <h1 className="omix-maintenance-title">{copy.hero.title}</h1>
+          <span className="omix-maintenance-build-line" aria-hidden="true">
+            <span />
+          </span>
           <p className="omix-maintenance-lede">{copy.hero.body}</p>
 
           <section className="omix-maintenance-feedback" aria-labelledby="maintenance-feedback-heading">

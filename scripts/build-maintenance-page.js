@@ -62,6 +62,18 @@ const html = `<!DOCTYPE html>
       background: var(--bg); color: var(--ink);
       min-height: 100svh; display: flex; flex-direction: column;
       -webkit-font-smoothing: antialiased;
+      position: relative; overflow-x: clip;
+    }
+    body::before {
+      content: ''; position: absolute; inset: -24px; z-index: 0; pointer-events: none;
+      background-image: linear-gradient(rgba(14,118,101,.055) 1px, transparent 1px), linear-gradient(90deg, rgba(14,118,101,.055) 1px, transparent 1px);
+      background-size: 44px 44px; background-position: center top;
+      -webkit-mask-image: radial-gradient(ellipse 90% 70% at 50% 30%, black 20%, transparent 75%);
+      mask-image: radial-gradient(ellipse 90% 70% at 50% 30%, black 20%, transparent 75%);
+      animation: m-grid-drift 18s ease-in-out infinite alternate;
+    }
+    @media (prefers-color-scheme: dark) {
+      body::before { background-image: linear-gradient(rgba(82,201,165,.07) 1px, transparent 1px), linear-gradient(90deg, rgba(82,201,165,.07) 1px, transparent 1px); }
     }
     a:focus-visible {
       outline: 3px solid rgba(14, 118, 101, .55);
@@ -74,7 +86,7 @@ const html = `<!DOCTYPE html>
       font-size: 13px; font-weight: 800; text-decoration: none;
     }
     .skip:focus-visible { top: 12px; outline-color: rgba(255,255,255,.7); }
-    .banner { background: #211910; border-bottom: 1px solid #4a3a22; }
+    .banner { background: #211910; border-bottom: 1px solid #4a3a22; position: relative; z-index: 1; animation: m-drop 450ms var(--ease-out) both; }
     .banner-inner {
       width: min(100% - 32px, 860px); margin: 0 auto;
       display: flex; align-items: flex-start; gap: 12px; padding: 12px 0;
@@ -83,9 +95,9 @@ const html = `<!DOCTYPE html>
     .banner-inner p { margin: 0; font-size: 13px; line-height: 1.5; display: flex; flex-direction: column; gap: 2px; }
     .banner-inner strong { color: #fff7e8; font-weight: 800; }
     .banner-inner span { color: #d8c6a3; }
-    main { flex: 1; display: flex; justify-content: center; padding: 56px 20px 40px; }
+    main { flex: 1; display: flex; justify-content: center; padding: 56px 20px 40px; position: relative; z-index: 1; }
     .hero { width: min(100%, 620px); display: flex; flex-direction: column; align-items: center; text-align: center; }
-    .brand { display: flex; flex-direction: column; align-items: center; gap: 14px; }
+    .brand { display: flex; flex-direction: column; align-items: center; gap: 14px; animation: m-rise-sm 600ms var(--ease-out) 40ms both; }
     .brand-mark {
       width: 56px; height: 56px; display: grid; place-items: center;
       border-radius: 17px; transform: rotate(-5deg);
@@ -101,14 +113,19 @@ const html = `<!DOCTYPE html>
       margin: 22px 0 0; font-family: 'Poppins', sans-serif; font-weight: 800;
       letter-spacing: -.03em; line-height: 1.08;
       font-size: clamp(2.1rem, 7.5vw, 3.4rem); text-wrap: balance;
+      animation: m-rise 600ms var(--ease-out) 130ms both;
     }
+    .build-line { margin-top: 22px; width: 72px; height: 2px; border-radius: 999px; background: var(--line); overflow: hidden; animation: m-fade 600ms var(--ease-out) 220ms both; }
+    .build-line > span { display: block; width: 6px; height: 2px; border-radius: 999px; background: var(--brand); animation: m-dot-travel 9s ease-in-out infinite alternate; }
     .lede {
-      margin: 18px 0 0; max-width: 46ch; color: var(--ink-soft);
+      margin: 22px 0 0; max-width: 46ch; color: var(--ink-soft);
       font-size: clamp(.95rem, 2.6vw, 1.05rem); line-height: 1.7; text-wrap: pretty;
+      animation: m-rise 600ms var(--ease-out) 280ms both;
     }
     .feedback {
       margin-top: 40px; padding-top: 36px; border-top: 1px solid var(--line);
       width: 100%; display: flex; flex-direction: column; align-items: center;
+      animation: m-rise 600ms var(--ease-out) 380ms both;
     }
     .feedback-icon {
       width: 44px; height: 44px; display: grid; place-items: center;
@@ -129,19 +146,23 @@ const html = `<!DOCTYPE html>
       font-size: 15px; font-weight: 800; text-decoration: none; line-height: 1;
       transition: transform 180ms var(--ease-out), background 180ms ease;
     }
-    .btn:hover { transform: translateY(-2px); }
+    .btn:hover { transform: translateY(-1px); }
     .btn:active { transform: translateY(0) scale(.98); }
+    .btn svg { transition: transform 200ms var(--ease-out); }
+    .btn:hover svg, .btn:focus-visible svg { transform: translateX(3px); }
     .btn-primary { background: #0e7665; color: #fff; box-shadow: 0 9px 18px rgba(14, 118, 101, .16); }
     .btn-primary:hover { background: #0b594d; }
     .btn-secondary { background: transparent; color: var(--ink); border-color: var(--line); }
     .signoff {
       margin: 40px 0 0; display: inline-flex; align-items: center; gap: 10px;
       font-size: .9rem; font-weight: 600; color: var(--ink-soft);
+      animation: m-fade 600ms var(--ease-out) 500ms both;
     }
-    .dot { width: 8px; height: 8px; border-radius: 999px; background: var(--brand); }
+    .dot { width: 8px; height: 8px; border-radius: 999px; background: var(--brand); animation: m-pulse 3.2s ease-in-out infinite; }
     footer {
       display: flex; flex-direction: column; align-items: center; gap: 10px;
       padding: 22px 20px 28px; border-top: 1px solid var(--line); text-align: center;
+      position: relative; z-index: 1; animation: m-fade 600ms var(--ease-out) 560ms both;
     }
     footer p { margin: 0; font-size: 12px; color: var(--ink-soft); }
     .staff {
@@ -151,6 +172,19 @@ const html = `<!DOCTYPE html>
     }
     .staff:hover { color: var(--brand); }
     .staff svg { width: 14px; height: 14px; }
+    @keyframes m-drop { from { opacity: 0; transform: translateY(-6px); } to { opacity: 1; transform: translateY(0); } }
+    @keyframes m-rise { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+    @keyframes m-rise-sm { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+    @keyframes m-fade { from { opacity: 0; } to { opacity: 1; } }
+    @keyframes m-grid-drift { from { transform: translate3d(0,0,0); } to { transform: translate3d(-16px,-10px,0); } }
+    @keyframes m-dot-travel { from { transform: translateX(0); opacity: .55; } 50% { opacity: 1; } to { transform: translateX(66px); opacity: .55; } }
+    @keyframes m-pulse { 0%, 100% { opacity: 1; transform: scale(1); } 50% { opacity: .45; transform: scale(.82); } }
+    @media (prefers-reduced-motion: reduce) {
+      body::before, .banner, .brand, h1, .build-line, .build-line > span, .lede, .feedback, .signoff, footer, .dot { animation: none; }
+      .btn:hover, .btn:active { transform: none; }
+      .btn:hover svg, .btn:focus-visible svg { transform: none; }
+      .btn svg { transition: none; }
+    }
     @media (min-width: 640px) {
       main { padding: 72px 24px 56px; }
       .banner-inner { align-items: center; }
@@ -176,6 +210,7 @@ const html = `<!DOCTYPE html>
         <span class="eyebrow">${esc(copy.brand.eyebrow)}</span>
       </div>
       <h1>${esc(copy.hero.title)}</h1>
+      <span class="build-line" aria-hidden="true"><span></span></span>
       <p class="lede">${esc(copy.hero.body)}</p>
       <section class="feedback" aria-labelledby="feedback-heading">
         <span class="feedback-icon" aria-hidden="true">

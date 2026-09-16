@@ -93,6 +93,29 @@ npm run build                            # full build (runs the above too)
 To evolve into a launch experience later (e.g. “🚀 The new Omix Market is
 here.”), update the same JSON file — no component changes needed.
 
+## Motion system
+
+Both the React page and the static fallback share the same CSS-only motion
+language (`transform` + `opacity` only — no libraries, no video/GIF/Lottie,
+no layout-animating properties):
+
+- **Entrance (450–600ms, coordinated):** banner drops in, then brand →
+  heading → build line → supporting copy → feedback block/CTA → signoff →
+  footer, each staggered ~60–100ms so the page reads as one composition.
+- **“Building” motifs:** an extremely subtle blueprint grid drifts behind
+  the content on an 18s cycle (radially masked, never competes with text),
+  and a small dot sweeps slowly along a hairline under the heading (9s).
+- **CTA physics:** 1px lift on hover, 3px arrow nudge (hover + keyboard
+  focus), subtle press scale. Navigation is never delayed.
+- **Banner:** enters once and stays stable — the warning icon is never
+  pulsed or blinked.
+- **Reduced motion:** `prefers-reduced-motion: reduce` disables every
+  animation/transition; the page remains fully usable as a static page.
+
+Motion tokens live in `src/styles/maintenance.css` (React) and are mirrored
+in `scripts/build-maintenance-page.js` (static fallback). Keep the two in
+sync when tuning timing or easing.
+
 ## Not to be confused with…
 
 - **Legacy Supabase `app_settings.maintenance_mode`** (Admin → Settings →

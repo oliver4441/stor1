@@ -3,16 +3,48 @@
  *
  * Presentation for src/pages/Maintenance.jsx. Reuses the Omix marketplace
  * tokens (var(--brand), surfaces, radii) so the page always matches the
- * product. Mobile-first, accessible, minimal motion.
+ * product. Mobile-first, accessible.
+ *
+ * Motion system (see docs/MAINTENANCE_MODE.md → Motion):
+ *   Fast:      150–200ms   (CTA hover/press, arrow nudge)
+ *   Entrance:  450–600ms   (coordinated brand → heading → copy → CTA)
+ *   Ambient:   9–18s       (blueprint grid drift, build-line sweep)
+ * transform + opacity only. All motion disabled under
+ * prefers-reduced-motion. No libraries, no media assets.
  */
 
 .omix-maintenance {
+  position: relative;
   min-height: 100svh;
   display: flex;
   flex-direction: column;
   background: var(--app-bg);
   color: var(--app-ink);
   overflow-x: clip;
+}
+
+/* ── Ambient blueprint grid ──────────────────────────────────────────
+   Extremely subtle geometric backdrop ("something is being built").
+   Slow 18s drift, radially masked so it never competes with content. */
+.omix-maintenance::before {
+  content: '';
+  position: absolute;
+  inset: -24px;
+  z-index: 0;
+  pointer-events: none;
+  background-image:
+    linear-gradient(rgba(14, 118, 101, 0.055) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(14, 118, 101, 0.055) 1px, transparent 1px);
+  background-size: 44px 44px;
+  background-position: center top;
+  -webkit-mask-image: radial-gradient(ellipse 90% 70% at 50% 30%, black 20%, transparent 75%);
+  mask-image: radial-gradient(ellipse 90% 70% at 50% 30%, black 20%, transparent 75%);
+  animation: omix-maintenance-grid-drift 18s ease-in-out infinite alternate;
+}
+html[data-theme='dark'] .omix-maintenance::before {
+  background-image:
+    linear-gradient(rgba(82, 201, 165, 0.07) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(82, 201, 165, 0.07) 1px, transparent 1px);
 }
 
 /* ── Skip link ─────────────────────────────────────────────────────── */
@@ -43,7 +75,7 @@
   z-index: 50;
   background: #211910;
   border-bottom: 1px solid #4a3a22;
-  animation: omix-maintenance-drop 360ms var(--ease-out) both;
+  animation: omix-maintenance-drop 450ms var(--ease-out) both;
 }
 .omix-maintenance-banner-inner {
   width: min(100% - 32px, 860px);
@@ -79,6 +111,8 @@
 
 /* ── Hero ──────────────────────────────────────────────────────────── */
 .omix-maintenance-main {
+  position: relative;
+  z-index: 1;
   flex: 1;
   display: flex;
   justify-content: center;
@@ -90,13 +124,14 @@
   flex-direction: column;
   align-items: center;
   text-align: center;
-  animation: omix-maintenance-rise 480ms var(--ease-out) 80ms both;
 }
+/* Coordinated entrance: brand → heading → build line → copy → CTA block */
 .omix-maintenance-brand {
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 14px;
+  animation: omix-maintenance-rise-sm 600ms var(--ease-out) 40ms both;
 }
 .marketplace-brand-mark-lg {
   width: 56px;
@@ -122,14 +157,34 @@
   line-height: 1.08;
   font-size: clamp(2.1rem, 7.5vw, 3.4rem);
   text-wrap: balance;
+  animation: omix-maintenance-rise 600ms var(--ease-out) 130ms both;
+}
+/* Subtle "build line" under the heading — a quiet assembly motif */
+.omix-maintenance-build-line {
+  margin-top: 22px;
+  width: 72px;
+  height: 2px;
+  border-radius: 999px;
+  background: var(--app-line-strong);
+  overflow: hidden;
+  animation: omix-maintenance-fade 600ms var(--ease-out) 220ms both;
+}
+.omix-maintenance-build-line > span {
+  display: block;
+  width: 6px;
+  height: 2px;
+  border-radius: 999px;
+  background: var(--brand);
+  animation: omix-maintenance-dot-travel 9s ease-in-out infinite alternate;
 }
 .omix-maintenance-lede {
-  margin: 18px 0 0;
+  margin: 22px 0 0;
   max-width: 46ch;
   font-size: clamp(0.95rem, 2.6vw, 1.05rem);
   line-height: 1.7;
   color: var(--app-ink-soft);
   text-wrap: pretty;
+  animation: omix-maintenance-rise 600ms var(--ease-out) 280ms both;
 }
 
 /* ── Feedback block ────────────────────────────────────────────────── */
@@ -141,6 +196,7 @@
   display: flex;
   flex-direction: column;
   align-items: center;
+  animation: omix-maintenance-rise 600ms var(--ease-out) 380ms both;
 }
 .omix-maintenance-feedback-icon {
   width: 44px;
@@ -149,9 +205,6 @@
   place-items: center;
   border-radius: 14px;
   background: var(--brand-soft);
-  color: var(--brand);
-}
-html[data-theme='dark'] .omix-maintenance-feedback-icon {
   color: var(--brand);
 }
 .omix-maintenance-feedback-icon svg {
@@ -171,7 +224,7 @@ html[data-theme='dark'] .omix-maintenance-feedback-icon {
   max-width: 48ch;
   font-size: 0.925rem;
   line-height: 1.7;
-  color: var(--app-muted);
+  color: var(--app-ink-soft);
   text-wrap: pretty;
 }
 .omix-maintenance-actions {
@@ -189,9 +242,21 @@ html[data-theme='dark'] .omix-maintenance-feedback-icon {
   font-size: 15px;
   text-decoration: none;
 }
+/* Restrained CTA physics: 1px lift + arrow nudge (no delayed nav) */
+.omix-maintenance-cta.marketplace-button:hover {
+  transform: translateY(-1px);
+}
+.omix-maintenance-cta.marketplace-button:active {
+  transform: translateY(0) scale(0.98);
+}
 .omix-maintenance-cta svg {
   width: 18px;
   height: 18px;
+  transition: transform 200ms var(--ease-out);
+}
+.omix-maintenance-cta:hover svg,
+.omix-maintenance-cta:focus-visible svg {
+  transform: translateX(3px);
 }
 /* Keep CTA contrast strong in dark theme (brand token lightens there) */
 html[data-theme='dark'] .omix-maintenance-cta.marketplace-button-primary {
@@ -211,18 +276,21 @@ html[data-theme='dark'] .omix-maintenance-cta.marketplace-button-primary:hover {
   gap: 10px;
   font-size: 0.9rem;
   font-weight: 600;
-  color: var(--app-muted);
+  color: var(--app-ink-soft);
+  animation: omix-maintenance-fade 600ms var(--ease-out) 500ms both;
 }
 .omix-maintenance-pulse {
   width: 8px;
   height: 8px;
   border-radius: 999px;
   background: var(--brand);
-  animation: omix-maintenance-pulse 2.4s ease-in-out infinite;
+  animation: omix-maintenance-pulse 3.2s ease-in-out infinite;
 }
 
 /* ── Footer ────────────────────────────────────────────────────────── */
 .omix-maintenance-footer {
+  position: relative;
+  z-index: 1;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -230,6 +298,7 @@ html[data-theme='dark'] .omix-maintenance-cta.marketplace-button-primary:hover {
   padding: 22px 20px 28px;
   border-top: 1px solid var(--app-line);
   text-align: center;
+  animation: omix-maintenance-fade 600ms var(--ease-out) 560ms both;
 }
 .omix-maintenance-footer p {
   margin: 0;
@@ -259,7 +328,7 @@ html[data-theme='dark'] .omix-maintenance-cta.marketplace-button-primary:hover {
 @keyframes omix-maintenance-drop {
   from {
     opacity: 0;
-    transform: translateY(-10px);
+    transform: translateY(-6px);
   }
   to {
     opacity: 1;
@@ -269,11 +338,50 @@ html[data-theme='dark'] .omix-maintenance-cta.marketplace-button-primary:hover {
 @keyframes omix-maintenance-rise {
   from {
     opacity: 0;
-    transform: translateY(14px);
+    transform: translateY(12px);
   }
   to {
     opacity: 1;
     transform: translateY(0);
+  }
+}
+@keyframes omix-maintenance-rise-sm {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+@keyframes omix-maintenance-fade {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+@keyframes omix-maintenance-grid-drift {
+  from {
+    transform: translate3d(0, 0, 0);
+  }
+  to {
+    transform: translate3d(-16px, -10px, 0);
+  }
+}
+@keyframes omix-maintenance-dot-travel {
+  from {
+    transform: translateX(0);
+    opacity: 0.55;
+  }
+  50% {
+    opacity: 1;
+  }
+  to {
+    transform: translateX(66px);
+    opacity: 0.55;
   }
 }
 @keyframes omix-maintenance-pulse {
@@ -289,10 +397,29 @@ html[data-theme='dark'] .omix-maintenance-cta.marketplace-button-primary:hover {
 }
 
 @media (prefers-reduced-motion: reduce) {
+  .omix-maintenance::before,
   .omix-maintenance-banner,
-  .omix-maintenance-hero,
+  .omix-maintenance-brand,
+  .omix-maintenance-title,
+  .omix-maintenance-build-line,
+  .omix-maintenance-build-line > span,
+  .omix-maintenance-lede,
+  .omix-maintenance-feedback,
+  .omix-maintenance-signoff,
+  .omix-maintenance-footer,
   .omix-maintenance-pulse {
     animation: none;
+  }
+  .omix-maintenance-cta.marketplace-button:hover,
+  .omix-maintenance-cta.marketplace-button:active {
+    transform: none;
+  }
+  .omix-maintenance-cta:hover svg,
+  .omix-maintenance-cta:focus-visible svg {
+    transform: none;
+  }
+  .omix-maintenance-cta svg {
+    transition: none;
   }
 }
 
