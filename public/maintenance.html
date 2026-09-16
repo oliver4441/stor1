@@ -19,15 +19,10 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Poppins:wght@600;700;800&display=swap" rel="stylesheet" />
   <style>
     :root {
-      --bg: #f5f7f3; --ink: #17211d; --ink-soft: #405049; --muted: #73817a; --subtle: #a3afa8;
-      --line: #e2e9e3; --brand: #0e7665; --brand-deep: #0b594d; --brand-soft: #e1f2eb;
+      color-scheme: dark;
+      --bg: #000; --ink: #f1f6f2; --ink-soft: #c2d0c8; --muted: #8a9d93; --subtle: #60736a;
+      --line: #263730; --line-strong: #344a40; --brand: #52c9a5; --brand-deep: #2ba783; --brand-soft: #173d32;
       --ease-out: cubic-bezier(.22, 1, .36, 1);
-    }
-    @media (prefers-color-scheme: dark) {
-      :root {
-        --bg: #0c1412; --ink: #f1f6f2; --ink-soft: #c2d0c8; --muted: #8a9d93; --subtle: #60736a;
-        --line: #263730; --brand: #52c9a5; --brand-deep: #2ba783; --brand-soft: #173d32;
-      }
     }
     * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
     html, body { margin: 0; padding: 0; }
@@ -40,14 +35,11 @@
     }
     body::before {
       content: ''; position: absolute; inset: -24px; z-index: 0; pointer-events: none;
-      background-image: linear-gradient(rgba(14,118,101,.055) 1px, transparent 1px), linear-gradient(90deg, rgba(14,118,101,.055) 1px, transparent 1px);
+      background-image: linear-gradient(rgba(82,201,165,.07) 1px, transparent 1px), linear-gradient(90deg, rgba(82,201,165,.07) 1px, transparent 1px);
       background-size: 44px 44px; background-position: center top;
       -webkit-mask-image: radial-gradient(ellipse 90% 70% at 50% 30%, black 20%, transparent 75%);
       mask-image: radial-gradient(ellipse 90% 70% at 50% 30%, black 20%, transparent 75%);
       animation: m-grid-drift 18s ease-in-out infinite alternate;
-    }
-    @media (prefers-color-scheme: dark) {
-      body::before { background-image: linear-gradient(rgba(82,201,165,.07) 1px, transparent 1px), linear-gradient(90deg, rgba(82,201,165,.07) 1px, transparent 1px); }
     }
     a:focus-visible {
       outline: 3px solid rgba(14, 118, 101, .55);
@@ -147,6 +139,8 @@
     }
     .staff:hover { color: var(--brand); }
     .staff svg { width: 14px; height: 14px; }
+    .footlink { color: inherit; text-decoration: underline; text-underline-offset: 3px; text-decoration-color: var(--line-strong); border-radius: 4px; }
+    .footlink:hover { color: var(--brand); text-decoration-color: var(--brand); }
     @keyframes m-drop { from { opacity: 0; transform: translateY(-6px); } to { opacity: 1; transform: translateY(0); } }
     @keyframes m-rise { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
     @keyframes m-rise-sm { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
@@ -185,7 +179,7 @@
         <span class="logo-tile is-light"><img src="/logo.jpg" alt="Omix Store logo" width="116" height="116" /></span>
         <span class="eyebrow">Omix Market</span>
       </div>
-      <h1>We're building something new.</h1>
+      <h1 aria-label="We're building something new."><span aria-hidden="true"><span style="color:#5b8cff">W</span><span style="color:#22d3ee">e</span><span style="color:#2dd4bf">'</span><span style="color:#4ade80">r</span><span style="color:#c084fc">e</span> <span style="color:#5b8cff">b</span><span style="color:#22d3ee">u</span><span style="color:#2dd4bf">i</span><span style="color:#4ade80">l</span><span style="color:#c084fc">d</span><span style="color:#5b8cff">i</span><span style="color:#22d3ee">n</span><span style="color:#2dd4bf">g</span> <span style="color:#4ade80">s</span><span style="color:#c084fc">o</span><span style="color:#5b8cff">m</span><span style="color:#22d3ee">e</span><span style="color:#2dd4bf">t</span><span style="color:#4ade80">h</span><span style="color:#c084fc">i</span><span style="color:#5b8cff">n</span><span style="color:#22d3ee">g</span> <span style="color:#2dd4bf">n</span><span style="color:#4ade80">e</span><span style="color:#c084fc">w</span><span style="color:#5b8cff">.</span></span></h1>
       <span class="build-line" aria-hidden="true"><span></span></span>
       <p class="lede">We're currently rebuilding Omix Market to create a faster, simpler and better shopping experience.</p>
       <section class="feedback" aria-labelledby="feedback-heading">
@@ -204,7 +198,7 @@
     </div>
   </main>
   <footer>
-    <p>&copy; 2026 Omix Market</p>
+    <p>&copy; 2026 <a class="footlink" href="http://blog.omixsystems.store">Omix Digital Solution</a></p>
     <a class="staff" href="/login">Staff? Sign in to the dashboard <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></a>
   </footer>
 </body>

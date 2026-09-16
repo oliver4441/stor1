@@ -98,6 +98,15 @@ To switch logo files, update `brand.imageSrc` (+ `tileTheme` if the
 background brightness changes) and rebuild (`npm run build`) — no component
 changes needed.
 
+## Branding tokens
+
+- The canvas is forced black (`#000`) with dark-surface tokens on both
+  pages, regardless of the visitor's theme.
+- The hero title renders per-letter in the `hero.titleColors` cycle (full
+  text exposed via `aria-label` for assistive tech).
+- The footer credit (`footer.copyrightHolder` + `footer.url`) links to the
+  Omix blog. All three live in `src/config/maintenance.json`.
+
 ## Changing copy / evolving to launch
 
 Edit `src/config/maintenance.json`, then rebuild:

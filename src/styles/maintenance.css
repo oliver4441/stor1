@@ -18,8 +18,19 @@
   min-height: 100svh;
   display: flex;
   flex-direction: column;
+  /* Forced black canvas (all themes) with dark-surface tokens */
+  --app-bg: #000;
+  --app-ink: #f1f6f2;
+  --app-ink-soft: #c2d0c8;
+  --app-muted: #8a9d93;
+  --app-line: #263730;
+  --app-line-strong: #344a40;
+  --brand: #52c9a5;
+  --brand-deep: #2ba783;
+  --brand-soft: #173d32;
   background: var(--app-bg);
   color: var(--app-ink);
+  color-scheme: dark;
   overflow-x: clip;
 }
 
@@ -33,20 +44,14 @@
   z-index: 0;
   pointer-events: none;
   background-image:
-    linear-gradient(rgba(14, 118, 101, 0.055) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(14, 118, 101, 0.055) 1px, transparent 1px);
+    linear-gradient(rgba(82, 201, 165, 0.07) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(82, 201, 165, 0.07) 1px, transparent 1px);
   background-size: 44px 44px;
   background-position: center top;
   -webkit-mask-image: radial-gradient(ellipse 90% 70% at 50% 30%, black 20%, transparent 75%);
   mask-image: radial-gradient(ellipse 90% 70% at 50% 30%, black 20%, transparent 75%);
   animation: omix-maintenance-grid-drift 18s ease-in-out infinite alternate;
 }
-html[data-theme='dark'] .omix-maintenance::before {
-  background-image:
-    linear-gradient(rgba(82, 201, 165, 0.07) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(82, 201, 165, 0.07) 1px, transparent 1px);
-}
-
 /* ── Skip link ─────────────────────────────────────────────────────── */
 .omix-maintenance-skip {
   position: absolute;
@@ -55,7 +60,7 @@ html[data-theme='dark'] .omix-maintenance::before {
   z-index: 100;
   padding: 10px 16px;
   border-radius: 10px;
-  background: var(--brand);
+  background: #0e7665;
   color: #fff;
   font-size: 13px;
   font-weight: 800;
@@ -273,12 +278,12 @@ html[data-theme='dark'] .omix-maintenance::before {
 .omix-maintenance-cta:focus-visible svg {
   transform: translateX(3px);
 }
-/* Keep CTA contrast strong in dark theme (brand token lightens there) */
-html[data-theme='dark'] .omix-maintenance-cta.marketplace-button-primary {
+/* Pin deep-teal CTA for contrast on the black canvas (all themes) */
+.omix-maintenance-cta.marketplace-button-primary {
   background: #0e7665;
   color: #fff;
 }
-html[data-theme='dark'] .omix-maintenance-cta.marketplace-button-primary:hover {
+.omix-maintenance-cta.marketplace-button-primary:hover {
   background: #0b594d;
   color: #fff;
 }
@@ -333,6 +338,17 @@ html[data-theme='dark'] .omix-maintenance-cta.marketplace-button-primary:hover {
 }
 .omix-maintenance-staff-link:hover {
   color: var(--brand);
+}
+.omix-maintenance-footer-link {
+  color: inherit;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  text-decoration-color: var(--app-line-strong);
+  border-radius: 4px;
+}
+.omix-maintenance-footer-link:hover {
+  color: var(--brand);
+  text-decoration-color: var(--brand);
 }
 .omix-maintenance-staff-link svg {
   width: 14px;

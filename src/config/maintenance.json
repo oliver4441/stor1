@@ -19,7 +19,12 @@
 
   "hero": {
     "title": "We're building something new.",
+    "titleColors": ["#5b8cff", "#22d3ee", "#2dd4bf", "#4ade80", "#c084fc"],
     "body": "We're currently rebuilding Omix Market to create a faster, simpler and better shopping experience."
+  },
+  "footer": {
+    "copyrightHolder": "Omix Digital Solution",
+    "url": "http://blog.omixsystems.store"
   },
 
   "feedback": {

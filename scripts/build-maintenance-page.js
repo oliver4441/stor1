@@ -30,6 +30,14 @@ const logoTile = copy.brand.imageSrc
   : readFileSync(join(__dirname, '..', 'public', 'omix-mark.svg'), 'utf8')
       .replace('<svg ', '<svg width="116" height="116" ');
 
+const titleHtml = (() => {
+  let i = 0;
+  const colors = copy.hero.titleColors;
+  return [...copy.hero.title].map((ch) => ch === ' '
+    ? ' '
+    : `<span style="color:${colors[(i++) % colors.length]}">${esc(ch)}</span>`).join('');
+})();
+
 const html = `<!DOCTYPE html>
 <html lang="en">
 <head>
@@ -51,15 +59,10 @@ const html = `<!DOCTYPE html>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Poppins:wght@600;700;800&display=swap" rel="stylesheet" />
   <style>
     :root {
-      --bg: #f5f7f3; --ink: #17211d; --ink-soft: #405049; --muted: #73817a; --subtle: #a3afa8;
-      --line: #e2e9e3; --brand: #0e7665; --brand-deep: #0b594d; --brand-soft: #e1f2eb;
+      color-scheme: dark;
+      --bg: #000; --ink: #f1f6f2; --ink-soft: #c2d0c8; --muted: #8a9d93; --subtle: #60736a;
+      --line: #263730; --line-strong: #344a40; --brand: #52c9a5; --brand-deep: #2ba783; --brand-soft: #173d32;
       --ease-out: cubic-bezier(.22, 1, .36, 1);
-    }
-    @media (prefers-color-scheme: dark) {
-      :root {
-        --bg: #0c1412; --ink: #f1f6f2; --ink-soft: #c2d0c8; --muted: #8a9d93; --subtle: #60736a;
-        --line: #263730; --brand: #52c9a5; --brand-deep: #2ba783; --brand-soft: #173d32;
-      }
     }
     * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
     html, body { margin: 0; padding: 0; }
@@ -72,14 +75,11 @@ const html = `<!DOCTYPE html>
     }
     body::before {
       content: ''; position: absolute; inset: -24px; z-index: 0; pointer-events: none;
-      background-image: linear-gradient(rgba(14,118,101,.055) 1px, transparent 1px), linear-gradient(90deg, rgba(14,118,101,.055) 1px, transparent 1px);
+      background-image: linear-gradient(rgba(82,201,165,.07) 1px, transparent 1px), linear-gradient(90deg, rgba(82,201,165,.07) 1px, transparent 1px);
       background-size: 44px 44px; background-position: center top;
       -webkit-mask-image: radial-gradient(ellipse 90% 70% at 50% 30%, black 20%, transparent 75%);
       mask-image: radial-gradient(ellipse 90% 70% at 50% 30%, black 20%, transparent 75%);
       animation: m-grid-drift 18s ease-in-out infinite alternate;
-    }
-    @media (prefers-color-scheme: dark) {
-      body::before { background-image: linear-gradient(rgba(82,201,165,.07) 1px, transparent 1px), linear-gradient(90deg, rgba(82,201,165,.07) 1px, transparent 1px); }
     }
     a:focus-visible {
       outline: 3px solid rgba(14, 118, 101, .55);
@@ -179,6 +179,8 @@ const html = `<!DOCTYPE html>
     }
     .staff:hover { color: var(--brand); }
     .staff svg { width: 14px; height: 14px; }
+    .footlink { color: inherit; text-decoration: underline; text-underline-offset: 3px; text-decoration-color: var(--line-strong); border-radius: 4px; }
+    .footlink:hover { color: var(--brand); text-decoration-color: var(--brand); }
     @keyframes m-drop { from { opacity: 0; transform: translateY(-6px); } to { opacity: 1; transform: translateY(0); } }
     @keyframes m-rise { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
     @keyframes m-rise-sm { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
@@ -217,7 +219,7 @@ const html = `<!DOCTYPE html>
         <span class="${tileClass}">${logoTile}</span>
         <span class="eyebrow">${esc(copy.brand.eyebrow)}</span>
       </div>
-      <h1>${esc(copy.hero.title)}</h1>
+      <h1 aria-label="${esc(copy.hero.title)}"><span aria-hidden="true">${titleHtml}</span></h1>
       <span class="build-line" aria-hidden="true"><span></span></span>
       <p class="lede">${esc(copy.hero.body)}</p>
       <section class="feedback" aria-labelledby="feedback-heading">
@@ -236,7 +238,7 @@ const html = `<!DOCTYPE html>
     </div>
   </main>
   <footer>
-    <p>&copy; ${new Date().getFullYear()} Omix Market</p>
+    <p>&copy; ${new Date().getFullYear()} <a class="footlink" href="${esc(copy.footer.url)}">${esc(copy.footer.copyrightHolder)}</a></p>
     <a class="staff" href="/login">${esc(copy.staff.label)} <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></a>
   </footer>
 </body>

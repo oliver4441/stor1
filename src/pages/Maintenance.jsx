@@ -5,6 +5,23 @@ import { ArrowRight, AlertTriangle, Lightbulb } from 'lucide-react';
 import { maintenanceCopy as copy, PREVIEW_URL } from '../config/maintenance';
 
 /**
+ * Renders the hero title with a per-letter color cycle. The full text is
+ * exposed via aria-label so assistive tech announces it as one heading.
+ */
+function renderTitleLetters(text, colors) {
+  let i = 0;
+  return text.split('').map((ch, idx) =>
+    ch === ' ' ? (
+      <span key={idx}>{' '}</span>
+    ) : (
+      <span key={idx} style={{ color: colors[i++ % colors.length] }}>
+        {ch}
+      </span>
+    )
+  );
+}
+
+/**
  * Omix Market — Maintenance / Transition experience.
  *
  * Shown INSTEAD of the public storefront while maintenance mode is on
@@ -72,7 +89,9 @@ export default function Maintenance() {
             <span className="omix-maintenance-eyebrow">{copy.brand.eyebrow}</span>
           </div>
 
-          <h1 className="omix-maintenance-title">{copy.hero.title}</h1>
+          <h1 className="omix-maintenance-title" aria-label={copy.hero.title}>
+            <span aria-hidden="true">{renderTitleLetters(copy.hero.title, copy.hero.titleColors)}</span>
+          </h1>
           <span className="omix-maintenance-build-line" aria-hidden="true">
             <span />
           </span>
@@ -119,7 +138,12 @@ export default function Maintenance() {
       </main>
 
       <footer className="omix-maintenance-footer">
-        <p>© {new Date().getFullYear()} Omix Market</p>
+        <p>
+          © {new Date().getFullYear()}{' '}
+          <a className="omix-maintenance-footer-link" href={copy.footer.url}>
+            {copy.footer.copyrightHolder}
+          </a>
+        </p>
         <Link to="/login" className="omix-maintenance-staff-link">
           {copy.staff.label}
           <ArrowRight aria-hidden="true" />
