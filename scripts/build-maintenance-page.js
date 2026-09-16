@@ -24,6 +24,7 @@ const previewCta = copy.preview.url
   ? `<a href="${esc(copy.preview.url)}" target="_blank" rel="noopener noreferrer" class="btn btn-secondary">${esc(copy.preview.ctaLabel)} <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></a>`
   : '';
 
+const tileClass = copy.brand.imageSrc && copy.brand.tileTheme === 'light' ? 'logo-tile is-light' : 'logo-tile';
 const logoTile = copy.brand.imageSrc
   ? `<img src="${esc(copy.brand.imageSrc)}" alt="${esc(copy.brand.logoAlt)}" width="116" height="116" />`
   : readFileSync(join(__dirname, '..', 'public', 'omix-mark.svg'), 'utf8')
@@ -110,6 +111,7 @@ const html = `<!DOCTYPE html>
       animation: m-logo-settle 700ms var(--ease-out) 40ms both;
     }
     .logo-tile img, .logo-tile svg { display: block; width: 100%; height: 100%; object-fit: cover; }
+    .logo-tile.is-light { background: #fff; }
     .eyebrow {
       font-family: 'Poppins', sans-serif; font-size: 12px; font-weight: 800;
       letter-spacing: .24em; text-transform: uppercase; color: var(--brand);
@@ -212,7 +214,7 @@ const html = `<!DOCTYPE html>
   <main id="main">
     <div class="hero">
       <div class="brand" aria-label="Omix Market">
-        <span class="logo-tile">${logoTile}</span>
+        <span class="${tileClass}">${logoTile}</span>
         <span class="eyebrow">${esc(copy.brand.eyebrow)}</span>
       </div>
       <h1>${esc(copy.hero.title)}</h1>

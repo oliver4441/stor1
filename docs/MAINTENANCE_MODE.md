@@ -83,19 +83,19 @@ Normal storefront              (/admin, /login, /auth/*)
 
 ## Logo
 
-The brand mark is the vector Omix wireframe knot at `public/omix-mark.svg`,
-generated deterministically by `scripts/generate-omix-mark.js` (re-run the
-script after any change to regenerate). Both pages show it in a dark rounded
-tile above the “Omix Market” eyebrow.
+Both pages show the existing Omix Store logo (`public/logo.jpg`, the same
+asset used for the favicon and social cards) in a rounded tile above the
+“Omix Market” eyebrow.
 
-To switch to the original Omix Systems logo file instead:
+- `brand.imageSrc` in `src/config/maintenance.json` selects the logo file.
+- `brand.tileTheme` (`"light"` / `"dark"`) matches the tile behind it to
+  the image background so raster logos blend seamlessly.
+- If `imageSrc` is ever removed, both pages fall back to the vector Omix
+  wireframe knot at `public/omix-mark.svg` (generated deterministically by
+  `scripts/generate-omix-mark.js`) on a dark tile.
 
-1. Save it as `public/omix-systems-logo.jpeg` (square works best).
-2. Set `brand.imageSrc` to `"/omix-systems-logo.jpeg"` in
-   `src/config/maintenance.json`.
-3. Rebuild (`npm run build`).
-
-Both the React page and the static fallback pick it up — no component
+To switch logo files, update `brand.imageSrc` (+ `tileTheme` if the
+background brightness changes) and rebuild (`npm run build`) — no component
 changes needed.
 
 ## Changing copy / evolving to launch

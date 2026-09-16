@@ -152,6 +152,10 @@ html[data-theme='dark'] .omix-maintenance::before {
   height: 100%;
   object-fit: cover;
 }
+/* Light tile for light-background raster logos (blends seamlessly) */
+.omix-maintenance-logo.is-light {
+  background: #fff;
+}
 .omix-maintenance-eyebrow {
   font-family: 'Poppins', sans-serif;
   font-size: 12px;
