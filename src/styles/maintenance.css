@@ -1,0 +1,491 @@
+/*
+ * Omix Market — Maintenance / Transition experience
+ *
+ * Presentation for src/pages/Maintenance.jsx. Reuses the Omix marketplace
+ * tokens (var(--brand), surfaces, radii) so the page always matches the
+ * product. Mobile-first, accessible.
+ *
+ * Motion system (see docs/MAINTENANCE_MODE.md → Motion):
+ *   Fast:      150–200ms   (CTA hover/press, arrow nudge)
+ *   Entrance:  450–600ms   (coordinated brand → heading → copy → CTA)
+ *   Ambient:   9–18s       (blueprint grid drift, build-line sweep)
+ * transform + opacity only. All motion disabled under
+ * prefers-reduced-motion. No libraries, no media assets.
+ */
+
+.omix-maintenance {
+  position: relative;
+  min-height: 100svh;
+  display: flex;
+  flex-direction: column;
+  /* Forced black canvas (all themes) with dark-surface tokens */
+  --app-bg: #000;
+  --app-ink: #f1f6f2;
+  --app-ink-soft: #c2d0c8;
+  --app-muted: #8a9d93;
+  --app-line: #263730;
+  --app-line-strong: #344a40;
+  --brand: #52c9a5;
+  --brand-deep: #2ba783;
+  --brand-soft: #173d32;
+  background: var(--app-bg);
+  color: var(--app-ink);
+  color-scheme: dark;
+  overflow-x: clip;
+}
+
+/* ── Ambient blueprint grid ──────────────────────────────────────────
+   Extremely subtle geometric backdrop ("something is being built").
+   Slow 18s drift, radially masked so it never competes with content. */
+.omix-maintenance::before {
+  content: '';
+  position: absolute;
+  inset: -24px;
+  z-index: 0;
+  pointer-events: none;
+  background-image:
+    linear-gradient(rgba(82, 201, 165, 0.07) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(82, 201, 165, 0.07) 1px, transparent 1px);
+  background-size: 44px 44px;
+  background-position: center top;
+  -webkit-mask-image: radial-gradient(ellipse 90% 70% at 50% 30%, black 20%, transparent 75%);
+  mask-image: radial-gradient(ellipse 90% 70% at 50% 30%, black 20%, transparent 75%);
+  animation: omix-maintenance-grid-drift 18s ease-in-out infinite alternate;
+}
+/* ── Skip link ─────────────────────────────────────────────────────── */
+.omix-maintenance-skip {
+  position: absolute;
+  left: 12px;
+  top: -48px;
+  z-index: 100;
+  padding: 10px 16px;
+  border-radius: 10px;
+  background: #0e7665;
+  color: #fff;
+  font-size: 13px;
+  font-weight: 800;
+  text-decoration: none;
+  transition: top 160ms var(--ease-out);
+}
+.omix-maintenance-skip:focus-visible {
+  top: 12px;
+  outline: 3px solid rgba(255, 255, 255, 0.7);
+  outline-offset: 2px;
+}
+
+/* ── Announcement banner (persistent, top) ─────────────────────────── */
+.omix-maintenance-banner {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  background: #211910;
+  border-bottom: 1px solid #4a3a22;
+  animation: omix-maintenance-drop 450ms var(--ease-out) both;
+}
+.omix-maintenance-banner-inner {
+  width: min(100% - 32px, 860px);
+  margin: 0 auto;
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 12px 0;
+}
+.omix-maintenance-banner-icon {
+  flex: none;
+  width: 20px;
+  height: 20px;
+  margin-top: 1px;
+  color: #f0c46c;
+}
+.omix-maintenance-banner-text {
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  font-size: 13px;
+  line-height: 1.5;
+}
+.omix-maintenance-banner-text strong {
+  color: #fff7e8;
+  font-weight: 800;
+  letter-spacing: -0.01em;
+}
+.omix-maintenance-banner-text span {
+  color: #d8c6a3;
+}
+
+/* ── Hero ──────────────────────────────────────────────────────────── */
+.omix-maintenance-main {
+  position: relative;
+  z-index: 1;
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  padding: 56px 20px 40px;
+}
+.omix-maintenance-hero {
+  width: min(100%, 620px);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+/* Coordinated entrance: brand → heading → build line → copy → CTA block */
+.omix-maintenance-brand {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+  animation: omix-maintenance-rise-sm 600ms var(--ease-out) 40ms both;
+}
+.omix-maintenance-logo {
+  width: 116px;
+  height: 116px;
+  display: block;
+  overflow: hidden;
+  border-radius: 30px;
+  background: #04060c;
+  border: 1px solid var(--app-line-strong);
+  box-shadow:
+    0 16px 36px rgba(4, 10, 8, 0.22),
+    0 2px 6px rgba(4, 10, 8, 0.18);
+  animation: omix-maintenance-logo-settle 700ms var(--ease-out) 40ms both;
+}
+.omix-maintenance-logo img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+/* Light tile for light-background raster logos (blends seamlessly) */
+.omix-maintenance-logo.is-light {
+  background: #fff;
+}
+.omix-maintenance-eyebrow {
+  font-family: 'Poppins', sans-serif;
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: var(--brand);
+}
+.omix-maintenance-title {
+  margin: 22px 0 0;
+  font-family: 'Poppins', sans-serif;
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  line-height: 1.08;
+  font-size: clamp(2.1rem, 7.5vw, 3.4rem);
+  text-wrap: balance;
+  animation: omix-maintenance-rise 600ms var(--ease-out) 130ms both;
+}
+/* Subtle "build line" under the heading — a quiet assembly motif */
+.omix-maintenance-build-line {
+  margin-top: 22px;
+  width: 72px;
+  height: 2px;
+  border-radius: 999px;
+  background: var(--app-line-strong);
+  overflow: hidden;
+  animation: omix-maintenance-fade 600ms var(--ease-out) 220ms both;
+}
+.omix-maintenance-build-line > span {
+  display: block;
+  width: 6px;
+  height: 2px;
+  border-radius: 999px;
+  background: var(--brand);
+  animation: omix-maintenance-dot-travel 9s ease-in-out infinite alternate;
+}
+.omix-maintenance-lede {
+  margin: 22px 0 0;
+  max-width: 46ch;
+  font-size: clamp(0.95rem, 2.6vw, 1.05rem);
+  line-height: 1.7;
+  color: var(--app-ink-soft);
+  text-wrap: pretty;
+  animation: omix-maintenance-rise 600ms var(--ease-out) 280ms both;
+}
+
+/* ── Feedback block ────────────────────────────────────────────────── */
+.omix-maintenance-feedback {
+  margin-top: 40px;
+  padding-top: 36px;
+  border-top: 1px solid var(--app-line);
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  animation: omix-maintenance-rise 600ms var(--ease-out) 380ms both;
+}
+.omix-maintenance-feedback-icon {
+  width: 44px;
+  height: 44px;
+  display: grid;
+  place-items: center;
+  border-radius: 14px;
+  background: var(--brand-soft);
+  color: var(--brand);
+}
+.omix-maintenance-feedback-icon svg {
+  width: 22px;
+  height: 22px;
+}
+.omix-maintenance-feedback h2 {
+  margin: 16px 0 0;
+  font-family: 'Poppins', sans-serif;
+  font-size: clamp(1.15rem, 4vw, 1.4rem);
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  text-wrap: balance;
+}
+.omix-maintenance-feedback p {
+  margin: 10px 0 0;
+  max-width: 48ch;
+  font-size: 0.925rem;
+  line-height: 1.7;
+  color: var(--app-ink-soft);
+  text-wrap: pretty;
+}
+.omix-maintenance-actions {
+  margin-top: 26px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+}
+.omix-maintenance-cta {
+  min-height: 52px;
+  min-width: min(100%, 300px);
+  padding: 0 28px;
+  font-size: 15px;
+  text-decoration: none;
+}
+/* Restrained CTA physics: 1px lift + arrow nudge (no delayed nav) */
+.omix-maintenance-cta.marketplace-button:hover {
+  transform: translateY(-1px);
+}
+.omix-maintenance-cta.marketplace-button:active {
+  transform: translateY(0) scale(0.98);
+}
+.omix-maintenance-cta svg {
+  width: 18px;
+  height: 18px;
+  transition: transform 200ms var(--ease-out);
+}
+.omix-maintenance-cta:hover svg,
+.omix-maintenance-cta:focus-visible svg {
+  transform: translateX(3px);
+}
+/* Pin deep-teal CTA for contrast on the black canvas (all themes) */
+.omix-maintenance-cta.marketplace-button-primary {
+  background: #0e7665;
+  color: #fff;
+}
+.omix-maintenance-cta.marketplace-button-primary:hover {
+  background: #0b594d;
+  color: #fff;
+}
+
+/* ── Signoff ───────────────────────────────────────────────────────── */
+.omix-maintenance-signoff {
+  margin: 40px 0 0;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--app-ink-soft);
+  animation: omix-maintenance-fade 600ms var(--ease-out) 500ms both;
+}
+.omix-maintenance-pulse {
+  width: 8px;
+  height: 8px;
+  border-radius: 999px;
+  background: var(--brand);
+  animation: omix-maintenance-pulse 3.2s ease-in-out infinite;
+}
+
+/* ── Footer ────────────────────────────────────────────────────────── */
+.omix-maintenance-footer {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  padding: 22px 20px 28px;
+  border-top: 1px solid var(--app-line);
+  text-align: center;
+  animation: omix-maintenance-fade 600ms var(--ease-out) 560ms both;
+}
+.omix-maintenance-footer p {
+  margin: 0;
+  font-size: 12px;
+  color: var(--app-ink-soft);
+}
+.omix-maintenance-staff-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12.5px;
+  font-weight: 700;
+  color: var(--app-ink-soft);
+  text-decoration: none;
+  padding: 8px 4px;
+  border-radius: 8px;
+}
+.omix-maintenance-staff-link:hover {
+  color: var(--brand);
+}
+.omix-maintenance-footer-link {
+  color: inherit;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  text-decoration-color: var(--app-line-strong);
+  border-radius: 4px;
+}
+.omix-maintenance-footer-link:hover {
+  color: var(--brand);
+  text-decoration-color: var(--brand);
+}
+.omix-maintenance-staff-link svg {
+  width: 14px;
+  height: 14px;
+}
+
+/* ── Motion ────────────────────────────────────────────────────────── */
+@keyframes omix-maintenance-drop {
+  from {
+    opacity: 0;
+    transform: translateY(-6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+@keyframes omix-maintenance-rise {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+@keyframes omix-maintenance-rise-sm {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+@keyframes omix-maintenance-logo-settle {
+  from {
+    opacity: 0;
+    transform: scale(0.94);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+@keyframes omix-maintenance-fade {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+@keyframes omix-maintenance-grid-drift {
+  from {
+    transform: translate3d(0, 0, 0);
+  }
+  to {
+    transform: translate3d(-16px, -10px, 0);
+  }
+}
+@keyframes omix-maintenance-dot-travel {
+  from {
+    transform: translateX(0);
+    opacity: 0.55;
+  }
+  50% {
+    opacity: 1;
+  }
+  to {
+    transform: translateX(66px);
+    opacity: 0.55;
+  }
+}
+@keyframes omix-maintenance-pulse {
+  0%,
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.45;
+    transform: scale(0.82);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .omix-maintenance::before,
+  .omix-maintenance-banner,
+  .omix-maintenance-brand,
+  .omix-maintenance-logo,
+  .omix-maintenance-title,
+  .omix-maintenance-build-line,
+  .omix-maintenance-build-line > span,
+  .omix-maintenance-lede,
+  .omix-maintenance-feedback,
+  .omix-maintenance-signoff,
+  .omix-maintenance-footer,
+  .omix-maintenance-pulse {
+    animation: none;
+  }
+  .omix-maintenance-cta.marketplace-button:hover,
+  .omix-maintenance-cta.marketplace-button:active {
+    transform: none;
+  }
+  .omix-maintenance-cta:hover svg,
+  .omix-maintenance-cta:focus-visible svg {
+    transform: none;
+  }
+  .omix-maintenance-cta svg {
+    transition: none;
+  }
+}
+
+/* ── Larger screens ────────────────────────────────────────────────── */
+@media (min-width: 640px) {
+  .omix-maintenance-main {
+    padding: 72px 24px 56px;
+  }
+  .omix-maintenance-banner-inner {
+    align-items: center;
+  }
+  .omix-maintenance-banner-icon {
+    margin-top: 0;
+  }
+  .omix-maintenance-actions {
+    flex-direction: row;
+    justify-content: center;
+  }
+  .omix-maintenance-cta {
+    min-width: 0;
+  }
+  .omix-maintenance-footer {
+    flex-direction: row;
+    justify-content: center;
+    gap: 24px;
+  }
+}

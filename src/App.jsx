@@ -23,6 +23,7 @@ import PWAUpdateChecker from './components/PWAUpdateChecker';
 import CookieConsentBanner from './components/CookieConsentBanner';
 import RealtimeOrderWatcher from './components/RealtimeOrderWatcher';
 import MaintenanceBanner from './components/MaintenanceBanner';
+import MaintenanceGate from './components/MaintenanceGate';
 import NotificationNudge from './components/NotificationNudge';
 import RouteFallback from './components/RouteFallback';
 
@@ -58,6 +59,7 @@ const Events = React.lazy(() => import('./pages/Events'));
 const Wallet = React.lazy(() => import('./pages/Wallet'));
 const GiftCards = React.lazy(() => import('./pages/GiftCards'));
 const RateSeller = React.lazy(() => import('./pages/RateSeller'));
+const Maintenance = React.lazy(() => import('./pages/Maintenance'));
 
 // Admin pages — co-split as an admin chunk
 const AdminRoute = React.lazy(() => import('./components/AdminRoute'));
@@ -125,6 +127,7 @@ function App() {
     <ErrorBoundary>
       <ScrollToTop />
       <RealtimeOrderWatcher />
+      <MaintenanceGate>
       <div className="min-h-screen flex flex-col marketplace-shell">
         <a href="#main-content" className="sr-only focus:not-sr-only focus:absolute focus:top-2 focus:left-2 focus:z-[100] focus:bg-white focus:text-black focus:px-4 focus:py-2 focus:rounded-lg focus:font-bold">Skip to main content</a>
         <Navbar />
@@ -211,6 +214,8 @@ function App() {
               </Route>
               <Route path="/listings" element={<Navigate to="/search" replace />} />
               <Route path="/earn" element={<Navigate to="/affiliate" replace />} />
+              {/* Staff preview of the transition experience (bypasses the gate) */}
+              <Route path="/maintenance" element={<Maintenance />} />
               <Route path="*" element={<NotFound />} />
             </Routes>
           </Suspense>
@@ -224,6 +229,7 @@ function App() {
         <PWAUpdateChecker />
         <CookieConsentBanner />
       </div>
+      </MaintenanceGate>
     </ErrorBoundary>
     </NotificationProvider>
     </NiaChatProvider>

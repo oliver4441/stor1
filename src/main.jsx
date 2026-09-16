@@ -7,6 +7,7 @@ import './index.css'
 import './styles/fusion.css'
 import './styles/marketplace.css'
 import './styles/admin.css'
+import './styles/maintenance.css'
 
 // Register service worker for push notifications
 if ('serviceWorker' in navigator) {

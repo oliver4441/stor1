@@ -62,6 +62,66 @@ app.get('/health', (req, res) => {
   res.json({ status: 'ok', service: 'stor1-frontend', timestamp: new Date().toISOString() });
 });
 
+// ── Maintenance / Transition Mode ───────────────────────────────────
+// Single flag: MAINTENANCE_MODE=true (or VITE_MAINTENANCE_MODE=true).
+// While enabled, public HTML navigations receive the branded maintenance
+// page with HTTP 503. NEVER gated: /health, /api/*, /admin/*, /login,
+// /auth/*, /maintenance, and static assets — so auth, APIs, webhooks,
+// admin dashboard and PWA files keep working. The React app additionally
+// gates client-side (MaintenanceGate) for hosts without this server
+// (e.g. Vercel). See docs/MAINTENANCE_MODE.md.
+const MAINTENANCE_MODE =
+  process.env.MAINTENANCE_MODE === 'true' ||
+  process.env.VITE_MAINTENANCE_MODE === 'true';
+
+const MAINTENANCE_BYPASS_PREFIXES = ['/health', '/api', '/admin', '/login', '/auth', '/maintenance'];
+
+function isMaintenanceBypassPath(pathname) {
+  if (!pathname) return false;
+  // Static assets (js/css/images/manifest/service workers/…): never gated
+  if (/\.[a-z0-9]{1,8}$/i.test(pathname)) return true;
+  return MAINTENANCE_BYPASS_PREFIXES.some(
+    (prefix) => pathname === prefix || pathname.startsWith(prefix + '/')
+  );
+}
+
+function resolveMaintenanceFile() {
+  const candidates = [
+    path.join(__dirname, 'dist', 'maintenance.html'),
+    path.join(__dirname, 'public', 'maintenance.html'),
+  ];
+  return candidates.find((file) => fs.existsSync(file)) || null;
+}
+
+// Ops-friendly status probe (no sensitive data)
+app.get('/api/maintenance-status', (req, res) => {
+  res.json({ maintenanceMode: MAINTENANCE_MODE });
+});
+
+app.use((req, res, next) => {
+  if (!MAINTENANCE_MODE) return next();
+  if (req.method !== 'GET' && req.method !== 'HEAD') return next();
+  if (isMaintenanceBypassPath(req.path)) return next();
+  // Only intercept page navigations — leave JSON/XHR traffic alone
+  const accept = req.headers.accept || '';
+  if (accept.includes('application/json') && !accept.includes('text/html')) return next();
+
+  res.status(503);
+  res.set('Retry-After', '3600');
+  res.set('X-Robots-Tag', 'noindex, nofollow');
+  res.set('Cache-Control', 'no-store');
+  const file = resolveMaintenanceFile();
+  if (file) return res.sendFile(file);
+  return res.type('html').send(
+    '<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="robots" content="noindex, nofollow"><title>Omix Market — We\'re Building Something New</title></head>' +
+    '<body style="font-family:system-ui,sans-serif;text-align:center;padding:15vh 24px;background:#f5f7f3;color:#17211d">' +
+    '<h1>We\'re building something new.</h1>' +
+    '<p>Omix Market is temporarily unavailable while we rebuild the marketplace.</p>' +
+    '<p><a href="https://tally.so/r/OD6Vx7">Share Your Ideas</a></p>' +
+    '<p>We\'ll be back soon.</p></body></html>'
+  );
+});
+
 // ── Paystack Payment Endpoints ────────────────────────────────────────
 
 // Initialize a Paystack transaction
@@ -686,6 +746,7 @@ app.get('*', (req, res) => {
 
 app.listen(port, () => {
   console.log(`Server is running on port ${port}`);
+  console.log(`Maintenance mode: ${MAINTENANCE_MODE ? 'ENABLED (public storefront gated, 503)' : 'DISABLED'}`);
   console.log(`Nia AI proxy: ${process.env.VITE_OPENCODE_API_KEY ? 'ENABLED' : 'DISABLED'}`);
   console.log(`Push notifications: ${VAPID_PUBLIC_KEY && VAPID_PRIVATE_KEY ? 'ENABLED' : 'DISABLED'}`);
 });
