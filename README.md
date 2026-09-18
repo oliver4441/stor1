@@ -1,123 +1,84 @@
-# STOR1
+# STOR1 / Omix Store
 
-A modern marketplace platform for discovering, buying, and managing products in one place.
+A modern P2P marketplace platform for discovering, buying, and managing products in one place.
 
 ## Overview
 
-STOR1 is a full-stack marketplace application focused on a fast, responsive shopping experience with dedicated tools for customers, sellers, affiliates, and administrators.
+STOR1 (Omix Store) is a full-stack marketplace application built for desktop and mobile devices. It includes storefront browsing, seller and affiliate portals, administrative dashboards, and real-time payment integrations.
 
-### Highlights
+### Key Features
 
-- Responsive marketplace UI for desktop and mobile
-- Product discovery, search, categories, and featured products
-- Customer account and order flows
-- Seller and affiliate functionality
-- Administrative dashboard
-- PWA-ready experience with app installation support
-- Theme support and responsive navigation
-- Automated pull-request build validation with GitHub Actions
+- Responsive marketplace UI (Tailwind CSS)
+- Product search, filtering, and seller listings
+- Customer orders, wallet, and loyalty points
+- Seller dashboard and affiliate tracking
+- Admin management dashboard
+- Paystack (M-Pesa) payment processing
+- AI assistant (Nia) & push notifications
 
 ## Tech Stack
 
-- **Frontend:** React + Vite
-- **Styling:** Tailwind CSS
-- **Backend / data:** Supabase
-- **Authentication:** Supabase Auth
-- **Icons:** Lucide React
-- **Deployment:** Vercel-compatible Vite deployment
-- **CI:** GitHub Actions
-
-## Getting Started
-
-### Requirements
-
-- Node.js 20+
-- npm
-- A configured Supabase project
-
-### Installation
-
-```bash
-npm install
-```
-
-Create a `.env` file with the environment variables required by the application, then start the development server:
-
-```bash
-npm run dev
-```
-
-For a production build:
-
-```bash
-npm run build
-```
-
-To preview the production build locally:
-
-```bash
-npm run preview
-```
+- **Frontend:** React 18, React Router v6, Vite 5, Tailwind CSS
+- **State & Data Fetching:** React Context, TanStack Query (React Query)
+- **Backend / DB:** Supabase (Auth & PostgreSQL), Express Node.js Server (`server.js`)
+- **Testing & Quality:** Vitest, React Testing Library, Playwright, ESLint, Prettier, TypeScript (`tsc`)
+- **Deployment:** Render / Vercel
 
 ## Project Structure
 
 ```text
 src/
-├── components/    # Reusable UI components
-├── context/       # Application state and providers
+├── app/           # App shell, routing, providers
+├── components/    # Reusable UI components & auth guards
+├── features/      # Feature-based modules (auth, cart, products, seller)
 ├── hooks/         # Reusable React hooks
-├── lib/           # Shared utilities and integrations
-├── pages/         # Application pages and layouts
-└── services/      # Data and application services
+├── lib/           # Supabase client, utils, validation, observability
+├── pages/         # Route-level page components
+├── services/      # API/data services
+├── styles/        # Global CSS and Tailwind stylesheets
+└── types/         # TypeScript definitions (e.g., Supabase schema)
+tests/
+├── unit/          # Vitest unit tests
+└── e2e/           # Playwright E2E tests
+supabase/
+└── migrations/    # RLS policies and SQL migrations
 ```
 
-## Development Workflow
+## Quick Start
 
-STOR1 uses pull requests for changes targeting `main`.
+1. **Install dependencies:**
+   ```bash
+   npm install
+   ```
 
-1. Create a feature branch.
-2. Make and test your changes locally.
-3. Push the branch to GitHub.
-4. Open a pull request against `main`.
-5. GitHub Actions validates the production build.
-6. Approved Arena PRs can be automatically merged when the required CI check succeeds.
+2. **Configure environment:**
+   Copy `.env.example` to `.env` and fill in your Supabase credentials:
+   ```bash
+   cp .env.example .env
+   ```
 
-Keep credentials and private environment variables out of the repository.
+3. **Start local development server:**
+   ```bash
+   npm run dev
+   ```
 
-## Environment Variables
+4. **Run checks and tests:**
+   ```bash
+   npm run lint
+   npm run typecheck
+   npm run test
+   ```
 
-Never commit secrets to Git. Configure Supabase and other deployment credentials through your local `.env` file or your hosting provider's environment-variable settings.
+5. **Build for production:**
+   ```bash
+   npm run build
+   ```
 
-## Contributing
+## Supabase & Database Setup
 
-Before submitting a pull request:
-
-- Keep changes focused and reviewable.
-- Run `npm run build` locally.
-- Verify affected customer, seller, affiliate, and admin flows.
-- Check responsive behavior on mobile and desktop.
-- Do not commit credentials, API keys, or private configuration.
-
-## Production Checklist
-
-Before releasing a significant change, verify:
-
-- Authentication and authorization
-- Product search and browsing
-- Cart and checkout flows
-- Orders and account pages
-- Seller and affiliate dashboards
-- Admin routes
-- Mobile navigation
-- PWA installation
-- Theme behavior
-- Supabase connectivity
-- Production build and deployment
+- Run database migrations located in `supabase/migrations/` using the Supabase CLI or Supabase Dashboard SQL Editor.
+- Row Level Security (RLS) policies are configured in `supabase/migrations/20250101000000_enable_rls.sql`.
 
 ## License
 
-This project is currently maintained as a private application. Licensing terms should be defined before distributing the source or derivative works publicly.
-
----
-
-**STOR1** — marketplace infrastructure built for a fast, modern shopping experience.
+This project is licensed under the [MIT License](LICENSE).
