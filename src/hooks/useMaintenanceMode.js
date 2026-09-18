@@ -2,21 +2,16 @@ import { useState, useEffect, useCallback } from 'react';
 import { supabase } from '../utils/supabase';
 
 const CACHE_KEY = 'omix_maintenance_mode';
-const CACHE_TTL = 60_000; // 1 minute cache
+const CACHE_TTL = 60000; // 1 minute cache
 
 /**
  * Global maintenance mode hook.
  * Fetches the `maintenance_mode` flag from Supabase app_settings.
  * Caches in localStorage for 60s to avoid excessive requests.
  * Returns { isMaintenance, loading, refetch, setMaintenance }.
- *
- * Usage:
- *   const { isMaintenance } = useMaintenanceMode();
- *   if (isMaintenance) showBanner();
  */
 export function useMaintenanceMode() {
   const [isMaintenance, setIsMaintenance] = useState(() => {
-    // Check localStorage cache first for instant render
     try {
       const cached = localStorage.getItem(CACHE_KEY);
       if (cached) {
@@ -41,7 +36,6 @@ export function useMaintenanceMode() {
       const mode = data?.value === true;
       setIsMaintenance(mode);
 
-      // Cache in localStorage
       try {
         localStorage.setItem(CACHE_KEY, JSON.stringify({ value: mode, ts: Date.now() }));
       } catch { /* ignore */ }
@@ -49,7 +43,6 @@ export function useMaintenanceMode() {
       return mode;
     } catch (err) {
       console.warn('Failed to fetch maintenance mode:', err.message);
-      // On error, fall back to cached value or false
       return isMaintenance;
     } finally {
       setLoading(false);
@@ -59,11 +52,11 @@ export function useMaintenanceMode() {
   // Fetch on mount
   useEffect(() => {
     fetchMode();
-  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+  }, []);
 
-  // Poll every 30s for changes (admin may toggle at any time)
+  // Poll every 30s for changes
   useEffect(() => {
-    const interval = setInterval(fetchMode, 30_000);
+    const interval = setInterval(fetchMode, 30000);
     return () => clearInterval(interval);
   }, [fetchMode]);
 
@@ -92,10 +85,6 @@ export function useMaintenanceMode() {
   return { isMaintenance, loading, refetch: fetchMode, setMaintenance };
 }
 
-/**
- * Non-reactive version — just checks localStorage cache synchronously.
- * Use this in event handlers where you can't use hooks.
- */
 export function isMaintenanceCached() {
   try {
     const cached = localStorage.getItem(CACHE_KEY);

@@ -15,10 +15,8 @@ export default function NiaChat() {
     handleUserInput, handleChipClick,
     messagesEndRef, COLORS,
   } = useNiaChat();
-  const { user } = useAuth();
+  useAuth();
   const { lang } = useLang();
-
-  if (!isOpen) return null;
 
   const [inputText, setInputText] = useState('');
   const inputRef = useRef(null);
@@ -31,6 +29,8 @@ export default function NiaChat() {
       return () => clearTimeout(timer);
     }
   }, [isOpen]);
+
+  if (!isOpen) return null;
 
   const handleSend = () => {
     if (!inputText.trim() || isTyping) return;

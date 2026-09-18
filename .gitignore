@@ -1,8 +1,12 @@
-.vercel
-.env
-.env*.local
-*.local
 node_modules/
 dist/
 build/
-.env.bak
+.env
+.env.*
+!.env.example
+.DS_Store
+coverage/
+.vscode/
+.idea/
+.vercel/
+*.local

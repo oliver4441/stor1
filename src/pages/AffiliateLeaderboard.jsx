@@ -1,213 +1,189 @@
-import { useState, useEffect, useCallback } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { getLeaderboard, getAffiliateProfile } from '../utils/affiliate_api';
-import { supabase } from '../utils/supabase';
-
-const PERIODS = [
-  { key: 'all-time', label: 'All Time' },
-  { key: 'monthly',  label: 'This Month' },
-  { key: 'weekly',   label: 'This Week' },
-  { key: 'daily',    label: 'Today' },
-];
-
-const TIER_BADGE = {
-  gold:   'bg-amber-500/20 text-amber-400 border border-amber-500/30',
-  silver: 'bg-zinc-500/20 text-zinc-300 border border-zinc-500/30',
-};
-
-const RANK_BADGE = {
-  1: 'bg-yellow-500/20 text-yellow-400 border border-yellow-500/30',
-  2: 'bg-zinc-400/20 text-zinc-300 border border-zinc-400/30',
-  3: 'bg-orange-500/20 text-orange-400 border border-orange-500/30',
-};
-
-function RankBadge({ rank }) {
-  if (rank <= 3) {
-    const medals = ['\u{1F947}', '\u{1F948}', '\u{1F949}'];
-    return (
-      <span className={`inline-flex items-center justify-center w-8 h-8 rounded-full text-sm font-bold ${RANK_BADGE[rank] || ''}`}>
-        {medals[rank - 1]}
-      </span>
-    );
-  }
-  return (
-    <span className="inline-flex items-center justify-center w-8 h-8 rounded-full bg-zinc-800 text-zinc-400 text-sm font-mono">
-      {rank}
-    </span>
-  );
-}
+import { useState, useEffect } from 'react';
+import { useAuth } from '../context/AuthContext';
+import { useLang } from '../utils/lang';
+import { getAffiliateProfile, getLeaderboard } from '../utils/affiliate_api';
+import { Trophy, Medal, Award, Users, Crown, UserCheck } from 'lucide-react';
 
 export default function AffiliateLeaderboard() {
-  const navigate = useNavigate();
-  const [leaderboard, setLeaderboard] = useState([]);
-  const [period, setPeriod] = useState('all-time');
-  const [loading, setLoading] = useState(true);
-  const [userId, setUserId] = useState(null);
-  const [myEntry, setMyEntry] = useState(null);
+  const { user } = useAuth();
+  const { lang } = useLang();
+  const isSwahili = lang === 'sw';
 
-  const fetchLeaderboard = useCallback(async (p) => {
+  const [leaderboard, setLeaderboard] = useState([]);
+  const [userRank, setUserRank] = useState(null);
+  const [userProfile, setUserProfile] = useState(null);
+  const [period, setPeriod] = useState('all'); // all, month, week
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    loadData();
+  }, [period, user]);
+
+  const loadData = async () => {
     setLoading(true);
     try {
-      const data = await getLeaderboard(p, 50);
-      setLeaderboard(data);
+      const data = await getLeaderboard(period);
+      setLeaderboard(data || []);
 
-      // Find current user's entry
-      if (userId && data.length > 0) {
-        const mine = data.find(e => e.user_id === userId);
-        if (mine) {
-          setMyEntry(mine);
-        } else {
-          setMyEntry(null);
+      if (user) {
+        const prof = await getAffiliateProfile(user.id);
+        setUserProfile(prof);
+        const rank = data.findIndex(item => item.user_id === user.id);
+        if (rank !== -1) {
+          setUserRank(rank + 1);
         }
       }
-    } catch (err) {
-      console.error('Failed to load leaderboard:', err);
+    } catch {
+      // ignore
     } finally {
       setLoading(false);
     }
-  }, [userId]);
+  };
 
-  useEffect(() => {
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      if (session?.user) setUserId(session.user.id);
-    });
-  }, []);
-
-  useEffect(() => {
-    fetchLeaderboard(period);
-  }, [period, fetchLeaderboard]);
-
-  const handlePeriodChange = (key) => {
-    setPeriod(key);
+  const getRankBadge = (rank) => {
+    switch (rank) {
+      case 1:
+        return <Crown className="w-6 h-6 text-yellow-500 fill-yellow-500/20" />;
+      case 2:
+        return <Medal className="w-6 h-6 text-slate-400 fill-slate-400/20" />;
+      case 3:
+        return <Award className="w-6 h-6 text-amber-600 fill-amber-600/20" />;
+      default:
+        return <span className="font-bold text-gray-500 w-6 text-center">{rank}</span>;
+    }
   };
 
   return (
-    <div className="min-h-screen bg-[#08080a] text-zinc-100">
-      {/* Header */}
-      <div className="bg-zinc-900/50 border-b border-zinc-800/50">
-        <div className="max-w-4xl mx-auto px-4 py-6">
-          <div className="flex items-center gap-3 mb-4">
-            <button onClick={() => navigate('/affiliate-dashboard')} className="text-zinc-400 hover:text-zinc-200 transition-colors">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M19 12H5M12 19l-7-7 7-7"/>
-              </svg>
-            </button>
-            <div>
-              <h1 className="text-xl font-bold text-zinc-100">Affiliate Leaderboard</h1>
-              <p className="text-sm text-zinc-400 mt-0.5">Top performers ranked by sales</p>
+    <div className="min-h-screen bg-gray-50 py-8 px-4 sm:px-6 lg:px-8">
+      <div className="max-w-4xl mx-auto space-y-6">
+        {/* Header */}
+        <div className="bg-gradient-to-r from-emerald-600 to-teal-700 rounded-2xl p-6 sm:p-8 text-white shadow-lg relative overflow-hidden">
+          <div className="relative z-10 space-y-2">
+            <div className="inline-flex items-center gap-2 bg-white/10 backdrop-blur-md px-3 py-1 rounded-full text-xs font-medium">
+              <Trophy className="w-4 h-4 text-yellow-300" />
+              <span>{isSwahili ? 'Bodi ya Viongozi' : 'Affiliate Champions'}</span>
             </div>
+            <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight">
+              {isSwahili ? 'Viongozi wa Mipango ya Washirika' : 'Top Performing Affiliates'}
+            </h1>
+            <p className="text-emerald-100 text-sm max-w-xl">
+              {isSwahili
+                ? 'Angalia washirika wanaoongoza kwa mauzo na kamisheni. Pambana uingie kwenye orodha!'
+                : 'See who is leading the pack in referrals and earnings. Climb the ranks today!'}
+            </p>
           </div>
+        </div>
 
-          {/* Period Tabs */}
-          <div className="flex gap-1 bg-zinc-900 rounded-xl p-1 overflow-x-auto">
-            {PERIODS.map(({ key, label }) => (
+        {/* Filters */}
+        <div className="flex justify-between items-center bg-white p-4 rounded-xl border border-gray-100 shadow-sm">
+          <span className="text-sm font-semibold text-gray-700">
+            {isSwahili ? 'Kipindi:' : 'Timeframe:'}
+          </span>
+          <div className="flex gap-2">
+            {[
+              { id: 'all', label: isSwahili ? 'Muda Wote' : 'All Time' },
+              { id: 'month', label: isSwahili ? 'Mwezi Huu' : 'This Month' },
+              { id: 'week', label: isSwahili ? 'Wiki Hii' : 'This Week' },
+            ].map((p) => (
               <button
-                key={key}
-                onClick={() => handlePeriodChange(key)}
-                className={`flex-1 px-3 py-2 rounded-lg text-sm font-medium transition-all ${
-                  period === key
-                    ? 'bg-[#1a3a5c] text-white shadow-sm'
-                    : 'text-zinc-400 hover:text-zinc-200'
+                key={p.id}
+                onClick={() => setPeriod(p.id)}
+                className={`px-3 py-1.5 text-xs font-medium rounded-lg transition-colors ${
+                  period === p.id
+                    ? 'bg-emerald-600 text-white'
+                    : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
                 }`}
               >
-                {label}
+                {p.label}
               </button>
             ))}
           </div>
         </div>
-      </div>
 
-      <div className="max-w-4xl mx-auto px-4 py-6">
-        {loading ? (
-          <div className="space-y-3">
-            {[1,2,3,4,5].map(i => (
-              <div key={i} className="animate-pulse bg-zinc-900/50 rounded-xl h-16" />
-            ))}
-          </div>
-        ) : leaderboard.length === 0 ? (
-          <div className="text-center py-16">
-            <svg className="w-16 h-16 mx-auto text-zinc-700 mb-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-              <path d="M6 9H4.5a2.5 2.5 0 0 1 0-5C7 4 8 2 12 2c3 0 4 1 4 1s1 0 3 2a2.5 2.5 0 0 1 0 5H18"/>
-              <path d="M18 9v11a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2V9"/>
-              <path d="M10 14h4"/>
-              <path d="M10 10h4"/>
-            </svg>
-            <p className="text-zinc-500">No affiliates have sales in this period yet</p>
-            <p className="text-zinc-600 text-sm mt-1">Be the first to make a sale and claim the top spot</p>
-          </div>
-        ) : (
-          <>
-            {/* My Rank (if not in top list) */}
-            {myEntry && !leaderboard.slice(0, 3).find(e => e.user_id === userId) && (
-              <div className="bg-zinc-900/80 border border-zinc-800/50 rounded-xl p-4 mb-4">
-                <div className="text-xs text-zinc-500 uppercase tracking-wider mb-2">My Position</div>
-                <div className="flex items-center gap-3">
-                  <span className="text-zinc-500 font-mono text-sm w-8 text-center">#{myEntry.rank}</span>
-                  <div className="flex-1 min-w-0">
-                    <div className="text-sm font-medium text-zinc-200 truncate">{myEntry.full_name || 'Anonymous'}</div>
-                    <div className="text-xs text-zinc-500">
-                      {myEntry.converted_referrals} converted · KSh {myEntry.total_sales.toLocaleString('en-KE')} in sales
-                    </div>
-                  </div>
-                  <span className={`px-2 py-0.5 rounded text-xs font-medium ${TIER_BADGE[myEntry.tier] || TIER_BADGE.silver}`}>
-                    {myEntry.tier?.charAt(0).toUpperCase() + myEntry.tier?.slice(1) || 'Silver'}
-                  </span>
+        {/* User Rank Card */}
+        {user && userProfile && (
+          <div className="bg-emerald-50 border border-emerald-200 rounded-xl p-4 flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <div className="p-2.5 bg-emerald-600 text-white rounded-lg">
+                <UserCheck className="w-5 h-5" />
+              </div>
+              <div>
+                <div className="text-xs text-emerald-800 font-medium">
+                  {isSwahili ? 'Nafasi Yako' : 'Your Rank'}
+                </div>
+                <div className="text-lg font-bold text-emerald-950">
+                  {userRank ? `#${userRank}` : (isSwahili ? 'Bado Hujaorodheshwa' : 'Unranked')}
                 </div>
               </div>
-            )}
+            </div>
+            <div className="text-right">
+              <div className="text-xs text-emerald-800 font-medium">
+                {isSwahili ? 'Jumla ya Kamisheni' : 'Total Earned'}
+              </div>
+              <div className="text-sm font-extrabold text-emerald-900">
+                KES {(userProfile.total_earned || 0).toLocaleString()}
+              </div>
+            </div>
+          </div>
+        )}
 
-            {/* Leaderboard List */}
-            <div className="space-y-2">
-              {leaderboard.map((entry) => {
-                const isMe = entry.user_id === userId;
+        {/* Leaderboard Table */}
+        <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+          {loading ? (
+            <div className="p-8 text-center text-gray-500 text-sm">
+              {isSwahili ? 'Inapakia bodi ya viongozi...' : 'Loading leaderboard...'}
+            </div>
+          ) : leaderboard.length === 0 ? (
+            <div className="p-8 text-center text-gray-500 text-sm">
+              {isSwahili ? 'Hakuna data kwa sasa.' : 'No performance data for this period.'}
+            </div>
+          ) : (
+            <div className="divide-y divide-gray-100">
+              {leaderboard.map((item, index) => {
+                const rank = index + 1;
+                const isCurrentUser = user && item.user_id === user.id;
+
                 return (
                   <div
-                    key={entry.id}
-                    className={`rounded-xl p-4 transition-colors ${
-                      isMe
-                        ? 'bg-[#1a3a5c]/5 border border-[#1a3a5c]/20'
-                        : 'bg-zinc-900/50 border border-zinc-800/30 hover:border-zinc-700/50'
+                    key={item.user_id || index}
+                    className={`flex items-center justify-between p-4 transition-colors ${
+                      isCurrentUser ? 'bg-emerald-50/60' : 'hover:bg-gray-50/80'
                     }`}
                   >
-                    <div className="flex items-center gap-3">
-                      <RankBadge rank={entry.rank} />
-
-                      {/* Avatar placeholder */}
-                      <div className="w-10 h-10 rounded-full bg-zinc-800 flex items-center justify-center text-sm font-bold text-zinc-500 flex-shrink-0">
-                        {(entry.full_name || 'A').charAt(0).toUpperCase()}
-                      </div>
-
-                      <div className="flex-1 min-w-0">
-                        <div className="flex items-center gap-2">
-                          <span className="text-sm font-medium text-zinc-200 truncate">
-                            {entry.full_name || 'Anonymous Affiliate'}
-                          </span>
-                          {isMe && (
-                            <span className="text-[10px] px-1.5 py-0.5 rounded bg-[#1a3a5c]/10 text-[#1a3a5c] font-medium">You</span>
+                    <div className="flex items-center gap-4">
+                      <div className="w-8 flex justify-center">{getRankBadge(rank)}</div>
+                      <div>
+                        <div className="font-semibold text-gray-900 text-sm flex items-center gap-2">
+                          {item.full_name || (isSwahili ? 'Mshirika' : 'Affiliate Member')}
+                          {isCurrentUser && (
+                            <span className="text-[10px] bg-emerald-600 text-white px-1.5 py-0.5 rounded font-bold">
+                              {isSwahili ? 'WEWE' : 'YOU'}
+                            </span>
                           )}
-                          <span className={`px-1.5 py-0.5 rounded text-[10px] font-medium ${TIER_BADGE[entry.tier] || TIER_BADGE.silver}`}>
-                            {entry.tier?.charAt(0).toUpperCase() + entry.tier?.slice(1) || 'Silver'}
+                        </div>
+                        <div className="text-xs text-gray-500 flex items-center gap-3 mt-0.5">
+                          <span className="flex items-center gap-1">
+                            <Users className="w-3 h-3 text-gray-400" />
+                            {item.total_referrals || 0} {isSwahili ? 'rufaa' : 'referrals'}
                           </span>
                         </div>
-                        <div className="flex items-center gap-3 text-xs text-zinc-500 mt-0.5">
-                          <span>{entry.converted_referrals} converted</span>
-                          <span>{entry.total_referrals} total</span>
-                        </div>
                       </div>
+                    </div>
 
-                      <div className="text-right">
-                        <div className="text-sm font-semibold text-zinc-200">
-                          KSh {entry.total_sales.toLocaleString('en-KE')}
-                        </div>
-                        <div className="text-[11px] text-zinc-500">in sales</div>
+                    <div className="text-right">
+                      <div className="text-sm font-extrabold text-emerald-600">
+                        KES {(item.total_earned || 0).toLocaleString()}
+                      </div>
+                      <div className="text-[10px] text-gray-400">
+                        {isSwahili ? 'kamisheni' : 'commission'}
                       </div>
                     </div>
                   </div>
                 );
               })}
             </div>
-          </>
-        )}
+          )}
+        </div>
       </div>
     </div>
   );

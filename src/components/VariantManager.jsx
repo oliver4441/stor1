@@ -421,7 +421,6 @@ export default function VariantManager({
   // Only compute initial data on first mount
   const initialData = useMemo(
     () => convertOldToNew(value, baseSku),
-    // eslint-disable-next-line react-hooks/exhaustive-deps
     []
   );
 
@@ -465,7 +464,6 @@ export default function VariantManager({
     if (onChange) {
       onChange(stateRef.current);
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [onChange]);
 
   // Call notifyParent on state changes (skip initial mount)
