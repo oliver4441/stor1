@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { loginSchema, listingSchema } from '../../src/lib/validation';
+import { loginSchema, listingSchema } from '../../src/lib/validation.js';
 
 describe('Validation Schemas', () => {
   it('validates login input correctly', () => {
